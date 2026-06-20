@@ -1,0 +1,67 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class ToolSpec:
+    name: str
+    installed: bool
+    exposed: bool
+    dangerous: bool
+    requires_explicit_flags: tuple[str, ...]
+    description: str
+
+
+TOOLS: dict[str, ToolSpec] = {
+    "search_docs": ToolSpec(
+        "search_docs", True, True, False, (), "Search the local operator-aware docs index."
+    ),
+    "plan_workflow": ToolSpec(
+        "plan_workflow", True, True, False, (), "Create a cited plan and run trace from a task."
+    ),
+    "render_template": ToolSpec(
+        "render_template", True, False, False, (), "Render approved Jinja2 workflow templates."
+    ),
+    "validate_script": ToolSpec(
+        "validate_script", True, True, False, (), "Run static and semantic validation."
+    ),
+    "run_dry": ToolSpec(
+        "run_dry", True, True, False, ("--dry-run",), "Validate and record a dry run."
+    ),
+    "run_live": ToolSpec(
+        "run_live",
+        True,
+        True,
+        True,
+        ("--project", "--confirm-live"),
+        "Execute a validated script through the Earth Engine Python API.",
+    ),
+    "monitor_exports": ToolSpec(
+        "monitor_exports",
+        True,
+        True,
+        True,
+        ("--project",),
+        "Inspect Earth Engine batch export task states.",
+    ),
+    "write_run_trace": ToolSpec(
+        "write_run_trace", True, False, False, (), "Persist reproducibility artifacts."
+    ),
+}
+
+
+def installed_tools() -> list[dict]:
+    return [spec.__dict__ for spec in TOOLS.values() if spec.installed]
+
+
+def exposed_tools() -> list[dict]:
+    return [spec.__dict__ for spec in TOOLS.values() if spec.exposed]
+
+
+def require_flags(tool_name: str, provided: set[str]) -> None:
+    spec = TOOLS[tool_name]
+    missing = [flag for flag in spec.requires_explicit_flags if flag not in provided]
+    if missing:
+        joined = ", ".join(missing)
+        raise ValueError(f"{tool_name} requires {joined}")

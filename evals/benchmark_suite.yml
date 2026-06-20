@@ -1,0 +1,15 @@
+id: gee_harness_benchmark_v0.2
+tasks:
+  - id: unit_retrieval_s2
+    kind: retrieval
+    query: Sentinel-2 NDVI reduceRegions export CSV
+    top_k: 5
+    expected_source_contains: sentinel-2
+  - id: combo_hk_monthly_render_validate
+    kind: render_validate
+    template: hk_district_monthly_ndvi
+    context: evals/contexts/hk_2024_monthly_ndvi.json
+  - id: theme_hk_live_smoke_render_validate
+    kind: render_validate
+    template: hk_district_january_ndvi_smoke
+    context: examples/hk_january_ndvi_smoke/task.yaml

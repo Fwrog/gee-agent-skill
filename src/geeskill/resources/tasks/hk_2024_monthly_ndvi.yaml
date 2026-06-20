@@ -1,0 +1,23 @@
+id: hk_2024_monthly_ndvi
+task: Compute 2024 monthly mean NDVI for Hong Kong districts and export CSV.
+template: hk_district_monthly_ndvi
+query: Sentinel-2 NDVI monthly reduceRegions export CSV Hong Kong districts
+outputs:
+  plan: outputs/plans/hk_2024_monthly_ndvi.md
+  script: outputs/scripts/hk_2024_monthly_ndvi.py
+context:
+  script_name: hk_2024_monthly_ndvi
+  year: 2024
+  dataset_id: COPERNICUS/S2_SR_HARMONIZED
+  admin_collection: FAO/GAUL/2015/level2
+  admin0_name: Hong Kong
+  admin0_property: ADM0_NAME
+  district_property: ADM2_NAME
+  scale: 10
+  crs: EPSG:4326
+  tile_scale: 4
+  cloudy_pixel_percentage: 80
+  export_description: hk_2024_monthly_ndvi
+  drive_folder: gee_exports
+  file_prefix: hk_2024_monthly_ndvi
+  max_pixels: 10000000000000

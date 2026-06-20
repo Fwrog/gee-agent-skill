@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gee-agent-skill"
+version = "0.2.0"
+description = "Traceable Google Earth Engine research harness with local RAG, templates, validation, run traces, and CLI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "gee-agent-skill maintainers" }]
+dependencies = [
+  "Jinja2>=3.1",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+earthengine = [
+  "earthengine-api>=1.5",
+  "geemap>=0.35",
+]
+dev = [
+  "build>=1.2",
+  "pytest>=8.0",
+]
+
+[project.scripts]
+gee-skill = "geeskill.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+geeskill = [
+  "resources/contexts/*.json",
+  "resources/index/*.json",
+  "resources/tasks/*.yaml",
+  "resources/templates/*.j2",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"

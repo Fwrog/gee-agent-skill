@@ -1,0 +1,5 @@
+interface:
+  display_name: "GEE Agent Skill"
+  short_description: "Reproducible Google Earth Engine workflows"
+  default_prompt: "Use $gee-agent-skill to plan and validate a reproducible Earth Engine NDVI workflow."
+

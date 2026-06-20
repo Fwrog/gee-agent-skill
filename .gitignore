@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+build/
+dist/
+*.egg-info/
+tmp/
+outputs/
+
+# Never commit Google or Earth Engine credentials.
+credentials.json
+*credentials*.json
+*service-account*.json
+*service_account*.json
+*.pem
+*.p12
+.config/earthengine/
+.config/gcloud/
+

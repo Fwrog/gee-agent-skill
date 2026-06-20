@@ -1,0 +1,14 @@
+id: hk_2024_monthly_ndvi
+version: "0.1.0"
+task: "compute 2024 Hong Kong district monthly NDVI means and export CSV"
+expected_template: hk_district_monthly_ndvi
+offline_checks:
+  - plan includes citations from local docs
+  - rendered script imports ee but does not initialize at import time
+  - rendered script filters COPERNICUS/S2_SR_HARMONIZED by 2024 date range
+  - rendered script filters FAO/GAUL/2015/level2 to Hong Kong districts
+  - rendered script applies SCL cloud masking
+  - rendered script uses reduceRegions with scale and CRS
+  - rendered script exports CSV through ee.batch.Export.table.toDrive
+  - static validator reports no errors
+
