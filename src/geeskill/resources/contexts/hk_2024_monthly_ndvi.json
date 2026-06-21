@@ -2,10 +2,9 @@
   "script_name": "hk_2024_monthly_ndvi",
   "year": 2024,
   "dataset_id": "COPERNICUS/S2_SR_HARMONIZED",
-  "admin_collection": "FAO/GAUL/2015/level2",
-  "admin0_name": "Hong Kong",
-  "admin0_property": "ADM0_NAME",
-  "district_property": "ADM2_NAME",
+  "boundary_geojson": "references/boundaries/hk_18_districts.geojson",
+  "boundary_source": "Home Affairs Department Hong Kong administrative district boundary GeoJSON",
+  "district_property": "District",
   "scale": 10,
   "crs": "EPSG:4326",
   "tile_scale": 4,
@@ -15,4 +14,3 @@
   "file_prefix": "hk_2024_monthly_ndvi",
   "max_pixels": 10000000000000
 }
-

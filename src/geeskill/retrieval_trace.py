@@ -77,6 +77,13 @@ def build_retrieval_trace(query: str, results: list[SearchResult]) -> dict[str, 
             "known_failures": sum(
                 1 for item in evidence if item["evidence_type"] == "known_failure_case"
             ),
+            "export_guidance": sum(
+                1
+                for item in evidence
+                if "export" in (
+                    f"{item['source_path']} {item['title']} {item['excerpt']}"
+                ).lower()
+            ),
         },
     }
 

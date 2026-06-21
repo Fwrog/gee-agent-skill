@@ -20,11 +20,27 @@ TOOLS: dict[str, ToolSpec] = {
     "plan_workflow": ToolSpec(
         "plan_workflow", True, True, False, (), "Create a cited plan and run trace from a task."
     ),
+    "ask": ToolSpec(
+        "ask",
+        True,
+        True,
+        False,
+        (),
+        "Deterministically route a supported natural-language task through RAG, planning, validation, preflight, and run trace.",
+    ),
     "render_template": ToolSpec(
         "render_template", True, False, False, (), "Render approved Jinja2 workflow templates."
     ),
     "validate_script": ToolSpec(
         "validate_script", True, True, False, (), "Run static and semantic validation."
+    ),
+    "preflight_hk_ndvi": ToolSpec(
+        "preflight_hk_ndvi",
+        True,
+        True,
+        False,
+        ("--project",),
+        "Run safe live probes for the Hong Kong Sentinel-2 NDVI workflow before export.",
     ),
     "run_dry": ToolSpec(
         "run_dry", True, True, False, ("--dry-run",), "Validate and record a dry run."

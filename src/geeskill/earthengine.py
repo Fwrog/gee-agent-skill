@@ -39,8 +39,14 @@ def initialize(project: str | None, authenticate: bool = False):
 
 def execute_script(script_path: Path, project: str | None, authenticate: bool = False) -> dict[str, Any]:
     initialize(project=project, authenticate=authenticate)
-    namespace = runpy.run_path(str(script_path), run_name="__main__")
-    return {"script": str(script_path), "namespace_keys": sorted(namespace.keys())}
+    try:
+        namespace = runpy.run_path(str(script_path), run_name="__main__")
+        return {"script": str(script_path), "namespace_keys": sorted(namespace.keys())}
+    except SystemExit as exc:
+        code = exc.code if isinstance(exc.code, int) else 0 if exc.code is None else 1
+        if code == 0:
+            return {"script": str(script_path), "system_exit_code": code, "namespace_keys": []}
+        raise RuntimeError(f"Script exited with status {code}: {script_path}") from exc
 
 
 def render_map_preview(

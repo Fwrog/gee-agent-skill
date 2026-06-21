@@ -6,6 +6,16 @@ It supports Sentinel-2 NDVI time series and zonal statistics, Landsat Collection
 
 It does not provide Google credentials, replace Earth Engine account setup, prove scientific conclusions, or run live exports without explicit flags.
 
+## v0.1 Natural-Language Target
+
+The supported v0.1 live workflow is deliberately small:
+
+```text
+Compute January 2024 mean NDVI for Hong Kong and export CSV.
+```
+
+This routes through deterministic intent parsing, local RAG evidence, a traceable plan, the `hk_january_2024_ndvi_csv` template, validation, whole-Hong-Kong data preflight, explicit live export, export monitoring, and a run trace. Full 2024 district-level monthly NDVI remains a v0.2 workflow.
+
 ## Quickstart
 
 ```bash
@@ -25,6 +35,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
 python scripts\ingest_docs.py --docs-dir references\knowledge_base --out references\index\gee_docs_index.json
+gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." --dry-run --json
 gee-skill smoke-test
 python -m pytest
 ```
@@ -38,13 +49,61 @@ pip install -e ".[earthengine]"
 earthengine authenticate
 ```
 
+Windows PowerShell:
+
+```powershell
+$env:EE_PROJECT="your-google-cloud-project-id"
+earthengine authenticate --auth_mode=localhost
+earthengine set_project $env:EE_PROJECT
+python -c "import os, ee; ee.Initialize(project=os.environ['EE_PROJECT']); print(ee.Number(1).getInfo())"
+```
+
 本仓库不提供 Google 凭据。用户需要自行注册 Earth Engine、配置 Google Cloud project，并在本地认证。不要提交 credentials.
 
 Never commit service account JSON, OAuth tokens, local credential files, or credential paths.
 
+## Live Workflow Stages
+
+Live Earth Engine work has three separate gates:
+
+1. OAuth connectivity: prove local auth and project initialization work.
+
+```bash
+python -c "import os, ee; ee.Initialize(project=os.environ['EE_PROJECT']); print(ee.Number(1).getInfo())"
+```
+
+Expected output is `1`.
+
+2. Data-aware preflight: check the whole-Hong-Kong AOI, Sentinel-2 image counts, NDVI bands, and a tiny sanity statistic before any export task is created.
+
+```powershell
+gee-skill preflight-hk-ndvi `
+  --project $env:EE_PROJECT `
+  --year 2024 `
+  --month 1 `
+  --scope hong-kong `
+  --json
+```
+
+This writes `preflight_report.json` under `outputs/runs/<run_id>/`. The default Hong Kong workflow uses the curated official district boundary GeoJSON at `references/boundaries/hk_18_districts.geojson` as a whole-Hong-Kong AOI.
+
+3. Live export: start the Drive CSV task only after validation and preflight pass.
+
+```powershell
+gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." `
+  --project $env:EE_PROJECT `
+  --confirm-live `
+  --run-id hk-2024-01-ndvi-v01 `
+  --json
+
+gee-skill monitor-exports `
+  --project $env:EE_PROJECT `
+  --json
+```
+
 ## Full Example
 
-The full benchmark task is:
+The v0.2 benchmark task is:
 
 ```text
 Compute 2024 monthly mean NDVI for Hong Kong districts and export CSV.
@@ -62,7 +121,7 @@ This writes a run directory under `outputs/runs/<run_id>/` with `task.yaml`, `re
 
 ## Private Live Smoke Test
 
-After local authentication, run a deliberately small export:
+For v0.1, prefer the `ask` command shown above. The older one-district command remains available for boundary-specific smoke testing:
 
 ```bash
 gee-skill live-smoke-test \
@@ -73,14 +132,18 @@ gee-skill live-smoke-test \
   --export-folder gee_exports
 ```
 
-This computes January 2024 NDVI mean for one Hong Kong district and creates a CSV export task. It records `live_run_report.json` and `export_tasks.json` when live mode starts. Without credentials or project access, it fails gracefully with `AUTH_ERROR` or `PROJECT_ERROR` guidance.
+This computes January 2024 NDVI mean for one Hong Kong district and creates a CSV export task. It records `preflight_report.json`, `live_run_report.json`, and `export_tasks.json`. Without credentials or project access, it fails gracefully with `AUTH_ERROR` or `PROJECT_ERROR` guidance. If data preflight fails, it returns a structured preflight error before `task.start()`.
 
 ## Commands
 
 - `gee-skill tools`: inspect installed vs exposed harness tools.
+- `gee-skill ask "<natural-language task>" --dry-run --json`: run the supported v0.1 natural-language workflow offline.
+- `gee-skill ask "<natural-language task>" --project <id> --confirm-live --json`: preflight and submit the supported v0.1 live export after explicit confirmation.
 - `gee-skill search-docs "<query>"`: search the local operator-aware docs index.
 - `gee-skill plan examples/.../task.yaml`: create a cited plan, generated script, retrieval trace, and run trace.
 - `gee-skill validate path/to/script.py --json`: run static and semantic validation.
+- `gee-skill preflight-hk-ndvi --project <id> --year 2024 --month 1 --scope hong-kong --json`: run v0.1 live data probes before export.
+- `gee-skill preflight-hk-ndvi --project <id> --year 2024 --month 1 --scope district --district "Central and Western" --json`: run district-specific probes.
 - `gee-skill smoke-test`: run offline retrieval/render/validation checks.
 - `gee-skill run path/to/script.py --dry-run --json`: validate and write a dry-run trace.
 - `gee-skill run path/to/script.py --project <id> --confirm-live`: execute a validated script live.
@@ -91,6 +154,7 @@ This computes January 2024 NDVI mean for one Hong Kong district and creates a CS
 
 - [Harness trace model](docs/harness.md)
 - [Live smoke test protocol](docs/live_smoke.md)
+- [v0.1 Hong Kong January NDVI workflow](docs/v01_hk_january_ndvi.md)
 - [Error taxonomy](docs/error_taxonomy.md)
 - [Extending workflows](docs/extending.md)
 - [Skill guidelines applied](docs/trae_skill_guidelines.md)
@@ -103,10 +167,10 @@ SKILL.md                         Concise skill entrypoint
 assets/templates/                Jinja2 Earth Engine Python workflow templates
 examples/                        Task YAML examples
 references/knowledge_base/       Curated docs, dataset cards, operator chains, failure cases
+references/boundaries/            Curated Hong Kong district boundary GeoJSON
 references/index/                Generated local retrieval index
 src/geeskill/                    CLI, registry, RAG, validation, runtime, trace code
 evals/                           Benchmark suite and contexts
 tests/                           Offline regression tests
 outputs/runs/                    Generated run traces
 ```
-

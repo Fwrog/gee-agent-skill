@@ -5,10 +5,19 @@ import json
 import sys
 from pathlib import Path
 
+from .ask import route_request
 from .earthengine import EarthEngineUnavailable, execute_script, monitor_tasks, render_map_preview
 from .errors import classify_exception, error_payload
 from .evaluation import run_benchmark_suite
-from .paths import default_context_path, default_index_path, default_task_path, default_templates_dir, project_root
+from .hk_ndvi_preflight import HKNDVIPreflightConfig, run_hk_ndvi_preflight
+from .paths import (
+    default_boundary_path,
+    default_context_path,
+    default_index_path,
+    default_task_path,
+    default_templates_dir,
+    project_root,
+)
 from .planner import build_plan
 from .rag import load_index, results_to_dicts, search
 from .retrieval_trace import build_retrieval_trace
@@ -76,17 +85,198 @@ def _load_plan_inputs(args: argparse.Namespace) -> tuple[dict, str, str | None, 
 
 def _operator_aware_results(index: dict, query: str, top_k: int):
     results = search(index, query, top_k=top_k)
-    supplements = search(
-        index,
-        "known failure cases Earth Engine AUTH_ERROR EMPTY_COLLECTION "
-        "EXPORT_TASK_ERROR CLIENT_SERVER_MISUSE recovery",
-        top_k=3,
-    )
     by_chunk = {item.chunk_id: item for item in results}
-    for item in supplements:
-        if "failure" in item.source_path.lower() or "error" in item.title.lower():
+    supplement_queries = [
+        "Sentinel-2 SR Harmonized B8 B4 NDVI SCL cloud mask",
+        "filterDate filterBounds normalizedDifference reduceRegion Export.table.toDrive CSV",
+        "Image has no bands empty image collection missing NDVI band failure recovery",
+    ]
+    for supplement_query in supplement_queries:
+        for item in search(index, supplement_query, top_k=4):
             by_chunk.setdefault(item.chunk_id, item)
     return list(by_chunk.values())
+
+
+def _write_ask_final_report(
+    trace: RunTrace,
+    *,
+    task: dict,
+    validation: dict,
+    dry_run: dict,
+    preflight: dict | None = None,
+    live_run: dict | None = None,
+) -> None:
+    trace.write_final_report(
+        "GEE v0.1 Natural-Language Run Trace",
+        {
+            "Task": task,
+            "Validation": validation,
+            "Dry Run": dry_run,
+            "Preflight": preflight or "Not executed.",
+            "Live Run": live_run or "Not executed.",
+        },
+    )
+
+
+def _prepare_ask_artifacts(args: argparse.Namespace, task: dict) -> tuple[RunTrace, Path, dict, dict, dict]:
+    trace = RunTrace.create(run_id=args.run_id)
+    trace.write_yaml("task.yaml", task)
+    query = task.get("query") or task["task"]
+    index = load_index(Path(args.index))
+    results = _operator_aware_results(index, query, top_k=args.top_k)
+    trace.write_json("retrieval_trace.json", build_retrieval_trace(query, results))
+    plan = build_plan(task["task"], results, template=task["template"])
+    trace.write_text("plan.md", plan.body)
+
+    plan_path = Path(task.get("outputs", {}).get("plan", trace.path("plan.md")))
+    plan_path.parent.mkdir(parents=True, exist_ok=True)
+    plan_path.write_text(plan.body, encoding="utf-8")
+
+    context = dict(task["context"])
+    context["drive_folder"] = args.export_folder
+    if args.boundary_geojson:
+        context["boundary_geojson"] = args.boundary_geojson
+    task["context"] = context
+    rendered = render_template(Path(args.templates_dir), task["template"], context)
+    script_path = Path(task.get("outputs", {}).get("script", "outputs/scripts/hk_2024_01_ndvi_csv.py"))
+    script_path.parent.mkdir(parents=True, exist_ok=True)
+    script_path.write_text(rendered, encoding="utf-8")
+    trace.write_text("generated_script.py", rendered)
+
+    validation = validate_script(script_path).to_dict()
+    dry = dry_run_report(script_path, validation)
+    trace.write_json("validation_report.json", validation)
+    trace.write_json("dry_run_report.json", dry)
+    return trace, script_path, validation, dry, context
+
+
+def _preflight_from_v01_context(args: argparse.Namespace, context: dict) -> dict:
+    config = _preflight_config_from_values(
+        project=args.project,
+        year=int(context["year"]),
+        month=int(context["month"]),
+        scope="hong-kong",
+        district=None,
+        boundary_geojson=str(context["boundary_geojson"]),
+        dataset_id=str(context["dataset_id"]),
+        scale=int(context["scale"]),
+        crs=str(context["crs"]),
+        cloudy_pixel_percentage=int(context["cloudy_pixel_percentage"]),
+        tile_scale=int(context["tile_scale"]),
+    )
+    return run_hk_ndvi_preflight(config)
+
+
+def cmd_ask(args: argparse.Namespace) -> int:
+    if args.dry_run and args.confirm_live:
+        return _print_error("Choose either --dry-run or --confirm-live, not both.")
+    if not args.dry_run and not args.confirm_live:
+        return _print_error("Use --dry-run for offline generation or --confirm-live for live export.")
+    route = route_request(
+        args.request,
+        export_folder=args.export_folder,
+        boundary_geojson=args.boundary_geojson,
+    )
+    if not route.get("ok"):
+        if args.json:
+            print(json.dumps(route, indent=2, ensure_ascii=False))
+        else:
+            print(json.dumps(route.get("error"), indent=2, ensure_ascii=False))
+        return 1
+    if args.confirm_live and not args.project:
+        payload = {
+            "ok": False,
+            "error": error_payload("PROJECT_ERROR", "Live ask requires --project <google-cloud-project-id>."),
+        }
+        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else payload["error"]["message"])
+        return 2
+
+    task = dict(route["task"])
+    try:
+        trace, script_path, validation, dry, context = _prepare_ask_artifacts(args, task)
+    except (TemplateContextError, ValueError, FileNotFoundError) as exc:
+        return _print_error(str(exc))
+
+    if not validation["ok"]:
+        _write_ask_final_report(trace, task=task, validation=validation, dry_run=dry)
+        payload = {
+            "ok": False,
+            "mode": "dry-run" if args.dry_run else "live",
+            "route": route,
+            "script": str(script_path),
+            "run_trace": str(trace.run_dir),
+            "validation": validation,
+        }
+        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else "Validation failed; refusing execution.")
+        return 1
+
+    if args.dry_run:
+        _write_ask_final_report(trace, task=task, validation=validation, dry_run=dry)
+        payload = {
+            "ok": True,
+            "mode": "dry-run",
+            "route": route,
+            "script": str(script_path),
+            "run_trace": str(trace.run_dir),
+            "validation": validation,
+            "dry_run": dry,
+        }
+        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else f"Dry run OK: {script_path}")
+        return 0
+
+    try:
+        preflight = _preflight_from_v01_context(args, context)
+        trace.write_json("preflight_report.json", preflight)
+        if not preflight.get("ok"):
+            _write_ask_final_report(trace, task=task, validation=validation, dry_run=dry, preflight=preflight)
+            payload = {
+                "ok": False,
+                "mode": "live",
+                "route": route,
+                "script": str(script_path),
+                "run_trace": str(trace.run_dir),
+                "preflight": preflight,
+                "error": preflight.get("critical_error"),
+            }
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+            return 1
+        result = execute_script(script_path, project=args.project, authenticate=args.authenticate)
+        tasks = [_task_summary(task) for task in monitor_tasks(project=args.project, authenticate=False, timeout_seconds=0)]
+        export_description = context["export_description"]
+        matching_tasks = [task for task in tasks if task.get("description") == export_description]
+        failed = [task for task in matching_tasks if task.get("state") == "FAILED"]
+        live = {
+            "ok": not failed,
+            **result,
+            "export_description": export_description,
+            "tasks": tasks,
+            "matching_tasks": matching_tasks,
+        }
+        if failed:
+            live["error"] = error_payload(
+                "EXPORT_TASK_FAILED",
+                f"Export task {export_description!r} reached FAILED state immediately.",
+            )
+        trace.write_json("live_run_report.json", live)
+        trace.write_json("export_tasks.json", tasks)
+        _write_ask_final_report(trace, task=task, validation=validation, dry_run=dry, preflight=preflight, live_run=live)
+        payload = {
+            "ok": bool(live["ok"]),
+            "mode": "live",
+            "route": route,
+            "script": str(script_path),
+            "run_trace": str(trace.run_dir),
+            "preflight": preflight,
+            "live_run": live,
+        }
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 0 if live["ok"] else 1
+    except Exception as exc:
+        payload = classify_exception(exc).to_dict()
+        trace.write_json("live_run_report.json", {"ok": False, "error": payload})
+        _write_ask_final_report(trace, task=task, validation=validation, dry_run=dry, live_run={"ok": False, "error": payload})
+        print(json.dumps({"ok": False, "run_trace": str(trace.run_dir), "error": payload}, indent=2, ensure_ascii=False))
+        return 2
 
 
 def _write_plan_trace(
@@ -349,6 +539,116 @@ def cmd_monitor_exports(args: argparse.Namespace) -> int:
     return 0
 
 
+def _preflight_config_from_values(
+    *,
+    project: str | None,
+    year: int,
+    month: int,
+    scope: str = "district",
+    district: str | None = None,
+    boundary_geojson: str | None = None,
+    dataset_id: str = "COPERNICUS/S2_SR_HARMONIZED",
+    district_property: str = "District",
+    scale: int = 10,
+    crs: str = "EPSG:4326",
+    cloudy_pixel_percentage: int = 80,
+    tile_scale: int = 4,
+) -> HKNDVIPreflightConfig:
+    return HKNDVIPreflightConfig(
+        project=project,
+        year=year,
+        month=month,
+        scope=scope,
+        district=district,
+        dataset_id=dataset_id,
+        boundary_geojson=boundary_geojson or str(default_boundary_path()),
+        district_property=district_property,
+        scale=scale,
+        crs=crs,
+        cloudy_pixel_percentage=cloudy_pixel_percentage,
+        tile_scale=tile_scale,
+    )
+
+
+def _write_preflight_trace(trace: RunTrace, config: HKNDVIPreflightConfig, report: dict) -> None:
+    trace.write_yaml(
+        "task.yaml",
+        {
+            "task": "Preflight Hong Kong Sentinel-2 NDVI workflow",
+            "year": config.year,
+            "month": config.month,
+            "scope": config.scope,
+            "district": config.district,
+            "dataset_id": config.dataset_id,
+            "boundary_geojson": str(config.boundary_geojson),
+            "district_property": config.district_property,
+        },
+    )
+    trace.write_json("retrieval_trace.json", {"query": None, "evidence": [], "coverage": {}})
+    trace.write_text(
+        "plan.md",
+        "Run safe Earth Engine probes for boundary, district, image, band, and sanity-stat availability before export.",
+    )
+    trace.write_json("preflight_report.json", report)
+    trace.write_final_report(
+        "HK NDVI Preflight Trace",
+        {
+            "Status": "Passed." if report.get("ok") else "Blocked before export.",
+            "Preflight": report,
+        },
+    )
+
+
+def cmd_preflight_hk_ndvi(args: argparse.Namespace) -> int:
+    scope = args.scope or ("district" if args.district else "hong-kong")
+    config = _preflight_config_from_values(
+        project=args.project,
+        year=args.year,
+        month=args.month,
+        scope=scope,
+        district=args.district,
+        boundary_geojson=args.boundary_geojson,
+        scale=args.scale,
+        crs=args.crs,
+        cloudy_pixel_percentage=args.cloudy_pixel_percentage,
+    )
+    trace = RunTrace.create(run_id=args.run_id)
+    try:
+        report = run_hk_ndvi_preflight(config)
+    except Exception as exc:
+        payload = classify_exception(exc).to_dict()
+        report = {
+            "ok": False,
+            "decision": "block_export",
+            "project": config.project,
+            "year": config.year,
+            "month": config.month,
+            "scope": config.scope,
+            "aoi_name": config.district or "Hong Kong",
+            "aoi_source": str(config.boundary_geojson),
+            "aoi_area_m2": None,
+            "dataset_id": config.dataset_id,
+            "image_count_before_cloud_filter": None,
+            "image_count_after_cloud_filter": None,
+            "band_names": [],
+            "mean_ndvi_probe": None,
+            "critical_error": payload,
+            "errors": [payload],
+            "warnings": [],
+            "checks": {},
+        }
+    _write_preflight_trace(trace, config, report)
+    payload = {"ok": bool(report.get("ok")), "run_trace": str(trace.run_dir), "preflight": report}
+    if args.json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+    else:
+        status = "passed" if report.get("ok") else "blocked"
+        print(f"Preflight {status}: {trace.run_dir}")
+        if report.get("critical_error"):
+            print(json.dumps(report["critical_error"], indent=2, ensure_ascii=False))
+    return 0 if report.get("ok") else 1
+
+
 def cmd_live_smoke_test(args: argparse.Namespace) -> int:
     for flag, value in {
         "--project": args.project,
@@ -367,6 +667,9 @@ def cmd_live_smoke_test(args: argparse.Namespace) -> int:
     context["drive_folder"] = args.export_folder
     context["export_description"] = args.export_description or f"hk_2024_{args.smoke_month:02d}_ndvi_smoke"
     context["file_prefix"] = context["export_description"]
+    boundary_path = Path(args.boundary_geojson) if args.boundary_geojson else default_boundary_path()
+    context["boundary_geojson"] = boundary_path.as_posix()
+    context["district_property"] = "District"
     trace = RunTrace.create(run_id=args.run_id)
     trace.write_yaml("task.yaml", {**task, "context": context})
     try:
@@ -383,6 +686,40 @@ def cmd_live_smoke_test(args: argparse.Namespace) -> int:
         if not validation["ok"]:
             trace.write_final_report("Live Smoke Test", {"Status": "Blocked by validation.", "Validation": validation})
             print(json.dumps({"ok": False, "run_trace": str(trace.run_dir), "validation": validation}, indent=2, ensure_ascii=False))
+            return 1
+        preflight_config = _preflight_config_from_values(
+            project=args.project,
+            year=int(context["year"]),
+            month=int(context["smoke_month"]),
+            scope="district",
+            district=str(context["smoke_region"]),
+            boundary_geojson=context["boundary_geojson"],
+            dataset_id=str(context["dataset_id"]),
+            district_property=str(context["district_property"]),
+            scale=int(context["scale"]),
+            crs=str(context["crs"]),
+            cloudy_pixel_percentage=int(context["cloudy_pixel_percentage"]),
+            tile_scale=int(context["tile_scale"]),
+        )
+        preflight = run_hk_ndvi_preflight(preflight_config)
+        trace.write_json("preflight_report.json", preflight)
+        if not preflight.get("ok"):
+            trace.write_final_report(
+                "Live Smoke Test",
+                {"Status": "Blocked by live preflight before export.", "Preflight": preflight},
+            )
+            print(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "run_trace": str(trace.run_dir),
+                        "preflight": preflight,
+                        "error": preflight.get("critical_error"),
+                    },
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
             return 1
         result = execute_script(script_path, project=args.project, authenticate=args.authenticate)
         tasks = monitor_tasks(project=args.project, authenticate=False, timeout_seconds=0)
@@ -428,6 +765,21 @@ def build_parser() -> argparse.ArgumentParser:
     search_parser.add_argument("--top-k", type=int, default=5)
     search_parser.add_argument("--json", action="store_true")
     search_parser.set_defaults(func=cmd_search_docs)
+
+    ask_parser = sub.add_parser("ask", help="Route a natural-language GEE task through the v0.1 harness.")
+    ask_parser.add_argument("request")
+    ask_parser.add_argument("--project")
+    ask_parser.add_argument("--dry-run", action="store_true")
+    ask_parser.add_argument("--confirm-live", action="store_true")
+    ask_parser.add_argument("--run-id")
+    ask_parser.add_argument("--json", action="store_true")
+    ask_parser.add_argument("--authenticate", action="store_true")
+    ask_parser.add_argument("--index", default=str(default_index_path(root)))
+    ask_parser.add_argument("--top-k", type=int, default=8)
+    ask_parser.add_argument("--templates-dir", default=str(default_templates_dir(root)))
+    ask_parser.add_argument("--export-folder", default="gee_exports")
+    ask_parser.add_argument("--boundary-geojson")
+    ask_parser.set_defaults(func=cmd_ask)
 
     plan_parser = sub.add_parser("plan", help="Create a cited Earth Engine workflow plan and run trace.")
     plan_parser.add_argument("task_file", nargs="?")
@@ -477,6 +829,20 @@ def build_parser() -> argparse.ArgumentParser:
     monitor_parser.add_argument("--json", action="store_true")
     monitor_parser.set_defaults(func=cmd_monitor_exports)
 
+    preflight = sub.add_parser("preflight-hk-ndvi", help="Preflight Hong Kong Sentinel-2 NDVI before export.")
+    preflight.add_argument("--project", required=True)
+    preflight.add_argument("--year", type=int, required=True)
+    preflight.add_argument("--month", type=int, required=True)
+    preflight.add_argument("--scope", choices=["hong-kong", "district"])
+    preflight.add_argument("--district")
+    preflight.add_argument("--boundary-geojson")
+    preflight.add_argument("--scale", type=int, default=10)
+    preflight.add_argument("--crs", default="EPSG:4326")
+    preflight.add_argument("--cloudy-pixel-percentage", type=int, default=80)
+    preflight.add_argument("--run-id")
+    preflight.add_argument("--json", action="store_true")
+    preflight.set_defaults(func=cmd_preflight_hk_ndvi)
+
     live_smoke = sub.add_parser("live-smoke-test", help="Run the private Hong Kong one-district live smoke export.")
     live_smoke.add_argument("--project", required=True)
     live_smoke.add_argument("--confirm-live", action="store_true")
@@ -487,6 +853,7 @@ def build_parser() -> argparse.ArgumentParser:
     live_smoke.add_argument("--authenticate", action="store_true")
     live_smoke.add_argument("--index", default=str(default_index_path(root)))
     live_smoke.add_argument("--templates-dir", default=str(default_templates_dir(root)))
+    live_smoke.add_argument("--boundary-geojson")
     live_smoke.add_argument("--run-id")
     live_smoke.set_defaults(func=cmd_live_smoke_test)
 

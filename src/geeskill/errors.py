@@ -35,6 +35,48 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "suggested_fix": "Widen the date range/AOI, relax cloud filters, or verify collection coverage.",
         "user_action_required": True,
     },
+    "EMPTY_AOI": {
+        "likely_cause": "The administrative boundary source or AOI filter returned no usable features.",
+        "retryable": False,
+        "suggested_fix": "Inspect the boundary source schema and use the curated Hong Kong district GeoJSON or a valid user boundary.",
+        "user_action_required": True,
+    },
+    "AOI_SCHEMA_ERROR": {
+        "likely_cause": "The AOI source exists but does not expose the expected properties or geometry schema.",
+        "retryable": False,
+        "suggested_fix": "Inspect preflight_report.json and update the boundary source or property names.",
+        "user_action_required": True,
+    },
+    "DISTRICT_NOT_FOUND": {
+        "likely_cause": "The requested district name does not match the boundary source district-name field.",
+        "retryable": False,
+        "suggested_fix": "Use one of the sampled district names from preflight_report.json.",
+        "user_action_required": True,
+    },
+    "EMPTY_IMAGE_COLLECTION": {
+        "likely_cause": "Dataset, date, AOI, or cloud metadata filters returned zero candidate images.",
+        "retryable": True,
+        "suggested_fix": "Check the AOI/date range, relax cloud filtering, or verify dataset coverage before exporting.",
+        "user_action_required": True,
+    },
+    "EMPTY_FILTERED_COLLECTION": {
+        "likely_cause": "Images exist before cloud filtering but none remain after the cloud metadata threshold.",
+        "retryable": True,
+        "suggested_fix": "Relax the cloud threshold, change month, or inspect source imagery availability.",
+        "user_action_required": True,
+    },
+    "NO_NDVI_BAND": {
+        "likely_cause": "NDVI was not produced because source bands are missing or the mapped collection is empty.",
+        "retryable": False,
+        "suggested_fix": "Confirm Sentinel-2 B8/B4 bands exist and the add_ndvi mapping runs on a non-empty collection.",
+        "user_action_required": True,
+    },
+    "NULL_NDVI_STAT": {
+        "likely_cause": "The NDVI image exists but the sanity reducer returned no usable mean value for the AOI.",
+        "retryable": True,
+        "suggested_fix": "Inspect cloud masks, AOI geometry, scale, and valid-pixel coverage.",
+        "user_action_required": True,
+    },
     "GEOMETRY_ERROR": {
         "likely_cause": "AOI geometry, asset id, or administrative filter is invalid or empty.",
         "retryable": True,
@@ -51,6 +93,24 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "likely_cause": "Earth Engine export task creation or execution failed.",
         "retryable": True,
         "suggested_fix": "Inspect task status/error_message, destination permissions, selectors, and quotas.",
+        "user_action_required": True,
+    },
+    "EXPORT_TASK_FAILED": {
+        "likely_cause": "A submitted Earth Engine export task reached FAILED state.",
+        "retryable": True,
+        "suggested_fix": "Inspect export_tasks.json, fix the root workflow/data issue, then submit a new task.",
+        "user_action_required": True,
+    },
+    "AMBIGUOUS_TASK": {
+        "likely_cause": "The natural-language request is missing date, metric, AOI, or output intent.",
+        "retryable": False,
+        "suggested_fix": "Use a supported request such as: Compute January 2024 mean NDVI for Hong Kong and export CSV.",
+        "user_action_required": True,
+    },
+    "UNSUPPORTED_TASK": {
+        "likely_cause": "The request is outside the v0.1 deterministic router.",
+        "retryable": False,
+        "suggested_fix": "Use the v0.1 Hong Kong January 2024 NDVI CSV request or run a template-specific workflow.",
         "user_action_required": True,
     },
     "QUOTA_OR_TIMEOUT": {

@@ -4,11 +4,15 @@ tasks:
     kind: retrieval
     query: Sentinel-2 NDVI reduceRegions export CSV
     top_k: 5
-    expected_source_contains: sentinel-2
+    expected_source_contains: sentinel2
   - id: combo_hk_monthly_render_validate
     kind: render_validate
     template: hk_district_monthly_ndvi
     context: evals/contexts/hk_2024_monthly_ndvi.json
+  - id: combo_hk_v01_ndvi_csv_render_validate
+    kind: render_validate
+    template: hk_january_2024_ndvi_csv
+    context: evals/contexts/hk_2024_01_ndvi_v01.json
   - id: theme_hk_live_smoke_render_validate
     kind: render_validate
     template: hk_district_january_ndvi_smoke

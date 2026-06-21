@@ -33,10 +33,15 @@ def task_to_context(task: dict[str, Any]) -> dict[str, Any]:
         "drive_folder",
         "file_prefix",
         "max_pixels",
+        "month",
+        "date_start",
+        "date_end",
+        "aoi_name",
+        "aoi_source",
+        "boundary_geojson",
         "smoke_month",
         "smoke_region",
     ):
         if key in task and key not in context:
             context[key] = task[key]
     return context
-

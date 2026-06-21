@@ -43,6 +43,13 @@ def default_context_path(name: str) -> Path:
     return package_resources_dir() / "contexts" / name
 
 
+def default_boundary_path(name: str = "hk_18_districts.geojson") -> Path:
+    source_path = project_root() / "references" / "boundaries" / name
+    if source_path.exists():
+        return source_path
+    return package_resources_dir() / "boundaries" / name
+
+
 def default_task_path(name: str) -> Path:
     source_path = project_root() / "examples" / name / "task.yaml"
     if source_path.exists():

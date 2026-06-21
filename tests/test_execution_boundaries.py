@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from geeskill.cli import main
+from geeskill.earthengine import execute_script
 from geeskill.templates import load_context, render_template
 
 
@@ -25,3 +26,12 @@ def test_run_live_requires_explicit_project(tmp_path, capsys):
     assert rc == 2
     assert "requires --project" in capsys.readouterr().err
 
+
+def test_execute_script_treats_system_exit_zero_as_success(tmp_path, monkeypatch):
+    import geeskill.earthengine as earthengine
+
+    monkeypatch.setattr(earthengine, "initialize", lambda project, authenticate=False: None)
+    script = tmp_path / "ok.py"
+    script.write_text("raise SystemExit(0)\n", encoding="utf-8")
+    result = execute_script(script, project="example-project")
+    assert result["system_exit_code"] == 0
