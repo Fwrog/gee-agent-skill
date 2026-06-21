@@ -13,6 +13,10 @@ tasks:
     kind: render_validate
     template: hk_january_2024_ndvi_csv
     context: evals/contexts/hk_2024_01_ndvi_v01.json
+  - id: theme_hk_v02_landcover_ndvi_render_validate
+    kind: render_validate
+    template: hk_january_2024_ndvi_by_landcover_csv
+    context: evals/contexts/hk_2024_01_ndvi_landcover_v02.json
   - id: theme_hk_live_smoke_render_validate
     kind: render_validate
     template: hk_district_january_ndvi_smoke

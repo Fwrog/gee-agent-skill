@@ -14,6 +14,18 @@ The supported v0.1 intent is:
 Compute January 2024 mean NDVI for Hong Kong and export CSV.
 ```
 
+For v0.2 plan-first execution, the preferred flow is:
+
+```text
+ask --plan -> review-plan -> preflight-plan -> run-plan --confirm-live -> monitor-exports
+```
+
+The supported v0.2 validation target is:
+
+```text
+Compute January 2024 Hong Kong NDVI by land-cover class and export CSV.
+```
+
 Required trace files:
 
 - `task.yaml`: exact task definition.
@@ -23,6 +35,7 @@ Required trace files:
 - `validation_report.json`: static and semantic findings.
 - `dry_run_report.json`: proof that no Earth Engine contact occurred.
 - `preflight_report.json`: live data probes for boundary, image availability, NDVI bands, and export decision when preflight runs.
+- `landcover_diagnostics.json`: Dynamic World diagnostics when land-cover preflight runs.
 - `live_run_report.json`: live execution result, only when live mode runs.
 - `export_tasks.json`: task ids, descriptions, states, timestamps, and errors.
 - `environment.json`: Python, platform, package version, and cwd.

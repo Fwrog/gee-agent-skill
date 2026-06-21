@@ -34,6 +34,20 @@ gee-skill preflight-hk-ndvi `
 
 Preflight checks initialization, the whole-Hong-Kong AOI source, feature count, area, Sentinel-2 image counts before and after cloud metadata filtering, NDVI band creation, and a tiny sanity statistic. It writes `preflight_report.json` and does not create an export task.
 
+For the v0.2 land-cover-aware workflow, include Dynamic World diagnostics:
+
+```powershell
+gee-skill preflight-hk-ndvi `
+  --project $env:EE_PROJECT `
+  --year 2024 `
+  --month 1 `
+  --scope hong-kong `
+  --landcover dynamic-world `
+  --json
+```
+
+This checks Dynamic World image count, `label`, probability bands, class fractions, and sample all-surface/non-water/vegetation NDVI. It writes `landcover_diagnostics.json` when those probes run.
+
 Stage 3: live export
 
 ```powershell
@@ -79,6 +93,11 @@ If preflight returns:
 - `EMPTY_AOI`: the boundary file is missing, empty, or filtered to zero features.
 - `DISTRICT_NOT_FOUND`: use one of the sampled `District` names in `preflight_report.json`.
 - `EMPTY_IMAGE_COLLECTION`: inspect the AOI, date range, or cloud threshold.
+- `EMPTY_S2_COLLECTION`: Sentinel-2 is empty for a land-cover-aware workflow.
+- `EMPTY_DYNAMIC_WORLD_COLLECTION`: Dynamic World is empty for the AOI/month.
 - `EMPTY_FILTERED_COLLECTION`: images exist before cloud filtering but not after the cloud metadata threshold.
 - `NO_NDVI_BAND`: verify Sentinel-2 B8/B4 bands and the NDVI mapping step.
+- `NO_LANDCOVER_LABEL`: Dynamic World did not expose the expected `label` band.
+- `NO_PROBABILITY_BANDS`: Dynamic World probability bands are missing.
+- `CLASS_MASK_EMPTY`: class masks had no usable overlap at the requested threshold/AOI.
 - `NULL_NDVI_STAT`: NDVI exists but the sanity reducer returned no value; inspect cloud masks, AOI geometry, scale, and valid-pixel coverage.

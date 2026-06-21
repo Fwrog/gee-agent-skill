@@ -11,13 +11,17 @@
 ## Add A Dataset Card
 
 1. Add markdown under `references/knowledge_base/datasets/`.
-2. Include `source_id`, `source_type`, `publisher`, `url`, `retrieved_at`, `primary_status`, `dataset_id`, and `risk_level`.
+2. Include `source_id`, `source_type`, `publisher`, `source_url`, `last_checked`, `primary_status`, `dataset_id`, and `risk_level`.
 3. Record bands, scale/offset, QA bands, cloud/quality policy, temporal coverage, and caveats.
 4. Rebuild the index:
 
 ```bash
 python scripts/ingest_docs.py --docs-dir references/knowledge_base --out references/index/gee_docs_index.json
 ```
+
+## Add General GEE Knowledge
+
+Use `references/knowledge_base/core/`, `operators/`, `workflows/`, and `failure-cases/` for reusable GEE AI knowledge that is not tied to one dataset. Include source URLs, last-checked dates, operator chains, known failures, and recovery hints so retrieval traces remain auditable.
 
 ## Add A Semantic Validator
 
@@ -26,4 +30,3 @@ python scripts/ingest_docs.py --docs-dir references/knowledge_base --out referen
 3. Map blocking failures to an error category when possible.
 4. Add a positive fixture and at least one expected failure fixture.
 5. Confirm `gee-skill validate <script> --json` exposes the new ruleset.
-

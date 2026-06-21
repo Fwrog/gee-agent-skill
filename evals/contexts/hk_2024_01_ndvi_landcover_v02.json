@@ -1,0 +1,23 @@
+{
+  "script_name": "hk_2024_01_ndvi_by_landcover_csv",
+  "year": 2024,
+  "month": 1,
+  "date_start": "2024-01-01",
+  "date_end": "2024-02-01",
+  "aoi_name": "Hong Kong",
+  "aoi_source": "Hong Kong 18 Districts GeoJSON curated in references/boundaries",
+  "boundary_geojson": "references/boundaries/hk_18_districts.geojson",
+  "dataset_id": "COPERNICUS/S2_SR_HARMONIZED",
+  "landcover_dataset_id": "GOOGLE/DYNAMICWORLD/V1",
+  "landcover_strategy": "dynamic_world_time_matched_probability_masks",
+  "dynamic_world_probability_threshold": 0.35,
+  "worldcover_dataset_id": "ESA/WorldCover/v200",
+  "scale": 10,
+  "crs": "EPSG:4326",
+  "tile_scale": 4,
+  "cloudy_pixel_percentage": 80,
+  "max_pixels": 100000000,
+  "export_description": "hk_2024_01_ndvi_landcover_v02",
+  "drive_folder": "gee_exports",
+  "file_prefix": "hk_2024_01_ndvi_landcover_v02"
+}

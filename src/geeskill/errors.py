@@ -59,6 +59,18 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "suggested_fix": "Check the AOI/date range, relax cloud filtering, or verify dataset coverage before exporting.",
         "user_action_required": True,
     },
+    "EMPTY_S2_COLLECTION": {
+        "likely_cause": "Sentinel-2 date, AOI, or cloud filters returned zero images.",
+        "retryable": True,
+        "suggested_fix": "Check AOI/date coverage or relax cloud filtering before running NDVI export.",
+        "user_action_required": True,
+    },
+    "EMPTY_DYNAMIC_WORLD_COLLECTION": {
+        "likely_cause": "Dynamic World has no images for the requested AOI and time range.",
+        "retryable": True,
+        "suggested_fix": "Check Dynamic World temporal coverage, AOI overlap, and date filters.",
+        "user_action_required": True,
+    },
     "EMPTY_FILTERED_COLLECTION": {
         "likely_cause": "Images exist before cloud filtering but none remain after the cloud metadata threshold.",
         "retryable": True,
@@ -69,6 +81,30 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "likely_cause": "NDVI was not produced because source bands are missing or the mapped collection is empty.",
         "retryable": False,
         "suggested_fix": "Confirm Sentinel-2 B8/B4 bands exist and the add_ndvi mapping runs on a non-empty collection.",
+        "user_action_required": True,
+    },
+    "NO_LANDCOVER_LABEL": {
+        "likely_cause": "The selected land-cover dataset does not expose the expected class label band.",
+        "retryable": False,
+        "suggested_fix": "Confirm the land-cover dataset id and expected label band before export.",
+        "user_action_required": True,
+    },
+    "NO_PROBABILITY_BANDS": {
+        "likely_cause": "The selected probabilistic land-cover dataset is missing expected class probability bands.",
+        "retryable": False,
+        "suggested_fix": "Use Dynamic World V1 or update the template/preflight for the selected land-cover schema.",
+        "user_action_required": True,
+    },
+    "CLASS_MASK_EMPTY": {
+        "likely_cause": "Land-cover class masks contain no usable pixels after confidence, AOI, and NDVI overlap filters.",
+        "retryable": True,
+        "suggested_fix": "Lower the probability threshold, use a larger AOI/time window, or accept nulls for sparse classes.",
+        "user_action_required": True,
+    },
+    "EXPORT_REFUSED_BY_PREFLIGHT": {
+        "likely_cause": "Validation or live data preflight blocked export before task.start().",
+        "retryable": True,
+        "suggested_fix": "Inspect preflight_report.json and landcover_diagnostics.json, fix blocking checks, then rerun.",
         "user_action_required": True,
     },
     "NULL_NDVI_STAT": {

@@ -18,6 +18,7 @@ from .paths import (
     default_templates_dir,
     project_root,
 )
+from .plans import build_task_plan, load_task_plan, plan_review_text, write_task_plan
 from .planner import build_plan
 from .rag import load_index, results_to_dicts, search
 from .retrieval_trace import build_retrieval_trace
@@ -88,7 +89,13 @@ def _operator_aware_results(index: dict, query: str, top_k: int):
     by_chunk = {item.chunk_id: item for item in results}
     supplement_queries = [
         "Sentinel-2 SR Harmonized B8 B4 NDVI SCL cloud mask",
+        "Dynamic World V1 label probability bands land cover class mask",
+        "ESA WorldCover v200 land cover class reference",
         "filterDate filterBounds normalizedDifference reduceRegion Export.table.toDrive CSV",
+        "Earth Engine client server deferred execution avoid getInfo map iterate",
+        "Earth Engine scale projection CRS reducer reduceRegion reduceRegions bestEffort tileScale",
+        "Earth Engine joins ImageCollection temporal join saveFirst saveAll",
+        "Earth Engine export tasks quotas timeout debugging",
         "Image has no bands empty image collection missing NDVI band failure recovery",
     ]
     for supplement_query in supplement_queries:
@@ -118,19 +125,32 @@ def _write_ask_final_report(
     )
 
 
-def _prepare_ask_artifacts(args: argparse.Namespace, task: dict) -> tuple[RunTrace, Path, dict, dict, dict]:
+def _plan_query(task: dict) -> str:
+    return task.get("query") or task.get("task") or ""
+
+
+def _create_ask_trace_with_plan(args: argparse.Namespace, task: dict) -> tuple[RunTrace, dict, list, str]:
     trace = RunTrace.create(run_id=args.run_id)
     trace.write_yaml("task.yaml", task)
-    query = task.get("query") or task["task"]
+    task_plan = build_task_plan(task)
+    trace.write_yaml("task_plan.yaml", task_plan)
+    query = _plan_query(task)
     index = load_index(Path(args.index))
     results = _operator_aware_results(index, query, top_k=args.top_k)
     trace.write_json("retrieval_trace.json", build_retrieval_trace(query, results))
     plan = build_plan(task["task"], results, template=task["template"])
     trace.write_text("plan.md", plan.body)
+    external_plan = Path(task.get("outputs", {}).get("task_plan", trace.path("task_plan.yaml")))
+    write_task_plan(external_plan, task_plan)
+    return trace, task_plan, results, plan.body
+
+
+def _prepare_ask_artifacts(args: argparse.Namespace, task: dict) -> tuple[RunTrace, Path, dict, dict, dict]:
+    trace, task_plan, results, plan_body = _create_ask_trace_with_plan(args, task)
 
     plan_path = Path(task.get("outputs", {}).get("plan", trace.path("plan.md")))
     plan_path.parent.mkdir(parents=True, exist_ok=True)
-    plan_path.write_text(plan.body, encoding="utf-8")
+    plan_path.write_text(plan_body, encoding="utf-8")
 
     context = dict(task["context"])
     context["drive_folder"] = args.export_folder
@@ -151,6 +171,8 @@ def _prepare_ask_artifacts(args: argparse.Namespace, task: dict) -> tuple[RunTra
 
 
 def _preflight_from_v01_context(args: argparse.Namespace, context: dict) -> dict:
+    landcover_dataset_id = context.get("landcover_dataset_id")
+    landcover = "dynamic-world" if landcover_dataset_id == "GOOGLE/DYNAMICWORLD/V1" else None
     config = _preflight_config_from_values(
         project=args.project,
         year=int(context["year"]),
@@ -163,15 +185,227 @@ def _preflight_from_v01_context(args: argparse.Namespace, context: dict) -> dict
         crs=str(context["crs"]),
         cloudy_pixel_percentage=int(context["cloudy_pixel_percentage"]),
         tile_scale=int(context["tile_scale"]),
+        landcover=landcover,
+        landcover_dataset_id=landcover_dataset_id,
+        landcover_strategy=context.get("landcover_strategy"),
+        dynamic_world_probability_threshold=float(context.get("dynamic_world_probability_threshold", 0.35)),
     )
     return run_hk_ndvi_preflight(config)
 
 
+def _task_from_task_plan(task_plan: dict) -> dict:
+    execution = dict(task_plan.get("execution") or {})
+    interpreted = dict(task_plan.get("interpreted_intent") or {})
+    return {
+        "id": task_plan.get("task_id"),
+        "intent": interpreted.get("name"),
+        "task": execution.get("task") or interpreted.get("description"),
+        "query": execution.get("query") or task_plan.get("raw_user_request"),
+        "template": execution.get("template") or interpreted.get("template"),
+        "context": dict(execution.get("context") or {}),
+        "outputs": dict(execution.get("outputs") or {}),
+        "output_schema": list(task_plan.get("output_schema") or []),
+        "limitations": list(task_plan.get("limitations") or []),
+        "version": task_plan.get("version"),
+    }
+
+
+def _write_plan_command_trace(
+    args: argparse.Namespace,
+    task_plan: dict,
+    task: dict,
+    *,
+    plan_text: str,
+    retrieval_trace: dict | None = None,
+    rendered: str | None = None,
+    validation: dict | None = None,
+    dry_run: dict | None = None,
+    preflight: dict | None = None,
+    live_run: dict | None = None,
+) -> RunTrace:
+    trace = RunTrace.create(run_id=args.run_id)
+    trace.write_yaml("task.yaml", task)
+    trace.write_yaml("task_plan.yaml", task_plan)
+    trace.write_json("retrieval_trace.json", retrieval_trace or {"query": task.get("query"), "evidence": [], "coverage": {}})
+    trace.write_text("plan.md", plan_text)
+    if rendered is not None:
+        trace.write_text("generated_script.py", rendered)
+    trace.write_json("validation_report.json", validation or {"ok": None, "findings": [], "status": "not_rendered"})
+    trace.write_json("dry_run_report.json", dry_run or {"dry_run": False, "contacted_earth_engine": False, "status": "not_rendered"})
+    if preflight is not None:
+        trace.write_json("preflight_report.json", preflight)
+        if preflight.get("landcover_diagnostics"):
+            trace.write_json("landcover_diagnostics.json", preflight["landcover_diagnostics"])
+    if live_run is not None:
+        trace.write_json("live_run_report.json", live_run)
+        if "tasks" in live_run:
+            trace.write_json("export_tasks.json", live_run["tasks"])
+    trace.write_final_report(
+        "GEE Plan-First Run Trace",
+        {
+            "Task Plan": task_plan,
+            "Validation": validation or "Not rendered.",
+            "Dry Run": dry_run or "Not rendered.",
+            "Preflight": preflight or "Not executed.",
+            "Live Run": live_run or "Not executed.",
+        },
+    )
+    return trace
+
+
+def _plan_retrieval_trace(index_path: str, task: dict, top_k: int) -> dict:
+    query = task.get("query") or task.get("task") or ""
+    index = load_index(Path(index_path))
+    results = _operator_aware_results(index, query, top_k=top_k)
+    return build_retrieval_trace(query, results)
+
+
+def cmd_review_plan(args: argparse.Namespace) -> int:
+    try:
+        task_plan = load_task_plan(Path(args.task_plan))
+        review = plan_review_text(task_plan)
+    except (FileNotFoundError, ValueError) as exc:
+        return _print_error(str(exc))
+    if args.json:
+        print(json.dumps({"ok": True, "task_plan": task_plan, "review": review}, indent=2, ensure_ascii=False))
+    else:
+        print(review)
+    return 0
+
+
+def cmd_preflight_plan(args: argparse.Namespace) -> int:
+    if not args.project:
+        return _print_error("preflight-plan requires --project <google-cloud-project-id>.")
+    try:
+        task_plan = load_task_plan(Path(args.task_plan))
+        task = _task_from_task_plan(task_plan)
+        plan_text = plan_review_text(task_plan)
+        preflight = _preflight_from_v01_context(args, task["context"])
+        trace = _write_plan_command_trace(args, task_plan, task, plan_text=plan_text, preflight=preflight)
+    except Exception as exc:
+        return _print_harness_error(exc, as_json=args.json)
+    payload = {"ok": bool(preflight.get("ok")), "run_trace": str(trace.run_dir), "preflight": preflight}
+    if args.json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+    else:
+        print(f"Preflight {'passed' if preflight.get('ok') else 'blocked'}: {trace.run_dir}")
+    return 0 if preflight.get("ok") else 1
+
+
+def cmd_run_plan(args: argparse.Namespace) -> int:
+    if not args.project:
+        return _print_error("run-plan requires --project <google-cloud-project-id>.")
+    if not args.confirm_live:
+        return _print_error("run-plan requires --confirm-live.")
+    try:
+        task_plan = load_task_plan(Path(args.task_plan))
+        task = _task_from_task_plan(task_plan)
+        plan_text = plan_review_text(task_plan)
+        context = dict(task["context"])
+        if args.export_folder:
+            context["drive_folder"] = args.export_folder
+        task["context"] = context
+        rendered = render_template(Path(args.templates_dir), task["template"], context)
+        script_path = Path(task.get("outputs", {}).get("script") or "outputs/scripts/plan_script.py")
+        script_path.parent.mkdir(parents=True, exist_ok=True)
+        script_path.write_text(rendered, encoding="utf-8")
+        validation = validate_script(script_path).to_dict()
+        dry = dry_run_report(script_path, validation)
+        preflight = None
+        live = None
+        retrieval = _plan_retrieval_trace(args.index, task, args.top_k)
+        if not validation["ok"]:
+            trace = _write_plan_command_trace(
+                args,
+                task_plan,
+                task,
+                plan_text=plan_text,
+                retrieval_trace=retrieval,
+                rendered=rendered,
+                validation=validation,
+                dry_run=dry,
+            )
+            payload = {"ok": False, "run_trace": str(trace.run_dir), "script": str(script_path), "validation": validation}
+            print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else "Validation failed; refusing live execution.")
+            return 1
+        preflight = _preflight_from_v01_context(args, context)
+        if not preflight.get("ok"):
+            live = {
+                "ok": False,
+                "error": error_payload(
+                    "EXPORT_REFUSED_BY_PREFLIGHT",
+                    "run-plan refused to start export because preflight failed.",
+                ),
+            }
+            trace = _write_plan_command_trace(
+                args,
+                task_plan,
+                task,
+                plan_text=plan_text,
+                retrieval_trace=retrieval,
+                rendered=rendered,
+                validation=validation,
+                dry_run=dry,
+                preflight=preflight,
+                live_run=live,
+            )
+            payload = {
+                "ok": False,
+                "run_trace": str(trace.run_dir),
+                "script": str(script_path),
+                "preflight": preflight,
+                "error": preflight.get("critical_error") or live["error"],
+            }
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+            return 1
+        result = execute_script(script_path, project=args.project, authenticate=args.authenticate)
+        tasks = [_task_summary(task) for task in monitor_tasks(project=args.project, authenticate=False, timeout_seconds=0)]
+        export_description = context.get("export_description")
+        matching_tasks = [item for item in tasks if item.get("description") == export_description]
+        failed = [item for item in matching_tasks if item.get("state") == "FAILED"]
+        live = {
+            "ok": not failed,
+            **result,
+            "export_description": export_description,
+            "tasks": tasks,
+            "matching_tasks": matching_tasks,
+        }
+        if failed:
+            live["error"] = error_payload(
+                "EXPORT_TASK_FAILED",
+                f"Export task {export_description!r} reached FAILED state immediately.",
+            )
+        trace = _write_plan_command_trace(
+            args,
+            task_plan,
+            task,
+            plan_text=plan_text,
+            retrieval_trace=retrieval,
+            rendered=rendered,
+            validation=validation,
+            dry_run=dry,
+            preflight=preflight,
+            live_run=live,
+        )
+        payload = {
+            "ok": bool(live["ok"]),
+            "run_trace": str(trace.run_dir),
+            "script": str(script_path),
+            "preflight": preflight,
+            "live_run": live,
+        }
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 0 if live["ok"] else 1
+    except Exception as exc:
+        return _print_harness_error(exc, as_json=args.json)
+
+
 def cmd_ask(args: argparse.Namespace) -> int:
-    if args.dry_run and args.confirm_live:
-        return _print_error("Choose either --dry-run or --confirm-live, not both.")
-    if not args.dry_run and not args.confirm_live:
-        return _print_error("Use --dry-run for offline generation or --confirm-live for live export.")
+    modes = [bool(args.plan), bool(args.dry_run), bool(args.confirm_live)]
+    if sum(1 for item in modes if item) > 1:
+        return _print_error("Choose only one of --plan, --dry-run, or --confirm-live.")
+    if not any(modes):
+        return _print_error("Use --plan, --dry-run, or --confirm-live.")
     route = route_request(
         args.request,
         export_folder=args.export_folder,
@@ -192,6 +426,32 @@ def cmd_ask(args: argparse.Namespace) -> int:
         return 2
 
     task = dict(route["task"])
+    if args.plan:
+        try:
+            trace, task_plan, _results, plan_body = _create_ask_trace_with_plan(args, task)
+        except (TemplateContextError, ValueError, FileNotFoundError) as exc:
+            return _print_error(str(exc))
+        trace.write_json("validation_report.json", {"ok": None, "findings": [], "status": "not_rendered"})
+        trace.write_json("dry_run_report.json", {"dry_run": False, "contacted_earth_engine": False, "status": "plan_only"})
+        trace.write_final_report(
+            "GEE Plan-First Run Trace",
+            {
+                "Task Plan": task_plan,
+                "Plan": plan_body,
+                "Status": "Plan only. No script rendering and no Earth Engine contact.",
+            },
+        )
+        payload = {
+            "ok": True,
+            "mode": "plan",
+            "route": route,
+            "run_trace": str(trace.run_dir),
+            "task_plan": str(trace.path("task_plan.yaml")),
+            "plan": str(trace.path("plan.md")),
+        }
+        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else f"Plan written: {trace.path('task_plan.yaml')}")
+        return 0
+
     try:
         trace, script_path, validation, dry, context = _prepare_ask_artifacts(args, task)
     except (TemplateContextError, ValueError, FileNotFoundError) as exc:
@@ -227,6 +487,8 @@ def cmd_ask(args: argparse.Namespace) -> int:
     try:
         preflight = _preflight_from_v01_context(args, context)
         trace.write_json("preflight_report.json", preflight)
+        if preflight.get("landcover_diagnostics"):
+            trace.write_json("landcover_diagnostics.json", preflight["landcover_diagnostics"])
         if not preflight.get("ok"):
             _write_ask_final_report(trace, task=task, validation=validation, dry_run=dry, preflight=preflight)
             payload = {
@@ -553,6 +815,10 @@ def _preflight_config_from_values(
     crs: str = "EPSG:4326",
     cloudy_pixel_percentage: int = 80,
     tile_scale: int = 4,
+    landcover: str | None = None,
+    landcover_dataset_id: str | None = None,
+    landcover_strategy: str | None = None,
+    dynamic_world_probability_threshold: float = 0.35,
 ) -> HKNDVIPreflightConfig:
     return HKNDVIPreflightConfig(
         project=project,
@@ -567,6 +833,10 @@ def _preflight_config_from_values(
         crs=crs,
         cloudy_pixel_percentage=cloudy_pixel_percentage,
         tile_scale=tile_scale,
+        landcover=landcover,
+        landcover_dataset_id=landcover_dataset_id,
+        landcover_strategy=landcover_strategy,
+        dynamic_world_probability_threshold=dynamic_world_probability_threshold,
     )
 
 
@@ -580,6 +850,10 @@ def _write_preflight_trace(trace: RunTrace, config: HKNDVIPreflightConfig, repor
             "scope": config.scope,
             "district": config.district,
             "dataset_id": config.dataset_id,
+            "landcover": config.landcover,
+            "landcover_dataset_id": config.landcover_dataset_id,
+            "landcover_strategy": config.landcover_strategy,
+            "dynamic_world_probability_threshold": config.dynamic_world_probability_threshold,
             "boundary_geojson": str(config.boundary_geojson),
             "district_property": config.district_property,
         },
@@ -590,6 +864,8 @@ def _write_preflight_trace(trace: RunTrace, config: HKNDVIPreflightConfig, repor
         "Run safe Earth Engine probes for boundary, district, image, band, and sanity-stat availability before export.",
     )
     trace.write_json("preflight_report.json", report)
+    if report.get("landcover_diagnostics"):
+        trace.write_json("landcover_diagnostics.json", report["landcover_diagnostics"])
     trace.write_final_report(
         "HK NDVI Preflight Trace",
         {
@@ -611,6 +887,10 @@ def cmd_preflight_hk_ndvi(args: argparse.Namespace) -> int:
         scale=args.scale,
         crs=args.crs,
         cloudy_pixel_percentage=args.cloudy_pixel_percentage,
+        landcover=args.landcover,
+        landcover_dataset_id="GOOGLE/DYNAMICWORLD/V1" if args.landcover == "dynamic-world" else None,
+        landcover_strategy="dynamic_world_time_matched_probability_masks" if args.landcover == "dynamic-world" else None,
+        dynamic_world_probability_threshold=args.dynamic_world_probability_threshold,
     )
     trace = RunTrace.create(run_id=args.run_id)
     try:
@@ -769,6 +1049,7 @@ def build_parser() -> argparse.ArgumentParser:
     ask_parser = sub.add_parser("ask", help="Route a natural-language GEE task through the v0.1 harness.")
     ask_parser.add_argument("request")
     ask_parser.add_argument("--project")
+    ask_parser.add_argument("--plan", action="store_true")
     ask_parser.add_argument("--dry-run", action="store_true")
     ask_parser.add_argument("--confirm-live", action="store_true")
     ask_parser.add_argument("--run-id")
@@ -793,6 +1074,31 @@ def build_parser() -> argparse.ArgumentParser:
     plan_parser.add_argument("--script-out")
     plan_parser.add_argument("--run-id")
     plan_parser.set_defaults(func=cmd_plan)
+
+    review_plan = sub.add_parser("review-plan", help="Review a saved task_plan.yaml without Earth Engine contact.")
+    review_plan.add_argument("task_plan")
+    review_plan.add_argument("--json", action="store_true")
+    review_plan.set_defaults(func=cmd_review_plan)
+
+    preflight_plan = sub.add_parser("preflight-plan", help="Run safe live checks for a saved task_plan.yaml.")
+    preflight_plan.add_argument("task_plan")
+    preflight_plan.add_argument("--project", required=True)
+    preflight_plan.add_argument("--run-id")
+    preflight_plan.add_argument("--json", action="store_true")
+    preflight_plan.set_defaults(func=cmd_preflight_plan)
+
+    run_plan = sub.add_parser("run-plan", help="Render, validate, preflight, and run a confirmed task_plan.yaml.")
+    run_plan.add_argument("task_plan")
+    run_plan.add_argument("--project", required=True)
+    run_plan.add_argument("--confirm-live", action="store_true")
+    run_plan.add_argument("--authenticate", action="store_true")
+    run_plan.add_argument("--export-folder")
+    run_plan.add_argument("--index", default=str(default_index_path(root)))
+    run_plan.add_argument("--top-k", type=int, default=8)
+    run_plan.add_argument("--templates-dir", default=str(default_templates_dir(root)))
+    run_plan.add_argument("--run-id")
+    run_plan.add_argument("--json", action="store_true")
+    run_plan.set_defaults(func=cmd_run_plan)
 
     validate_parser = sub.add_parser("validate", help="Validate a rendered Earth Engine Python script.")
     validate_parser.add_argument("script")
@@ -839,6 +1145,8 @@ def build_parser() -> argparse.ArgumentParser:
     preflight.add_argument("--scale", type=int, default=10)
     preflight.add_argument("--crs", default="EPSG:4326")
     preflight.add_argument("--cloudy-pixel-percentage", type=int, default=80)
+    preflight.add_argument("--landcover", choices=["dynamic-world"])
+    preflight.add_argument("--dynamic-world-probability-threshold", type=float, default=0.35)
     preflight.add_argument("--run-id")
     preflight.add_argument("--json", action="store_true")
     preflight.set_defaults(func=cmd_preflight_hk_ndvi)

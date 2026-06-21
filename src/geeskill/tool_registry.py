@@ -20,6 +20,17 @@ TOOLS: dict[str, ToolSpec] = {
     "plan_workflow": ToolSpec(
         "plan_workflow", True, True, False, (), "Create a cited plan and run trace from a task."
     ),
+    "review_plan": ToolSpec(
+        "review_plan", True, True, False, (), "Review a saved task plan without Earth Engine contact."
+    ),
+    "preflight_plan": ToolSpec(
+        "preflight_plan",
+        True,
+        True,
+        False,
+        ("--project",),
+        "Run safe live probes for a saved task plan before export.",
+    ),
     "ask": ToolSpec(
         "ask",
         True,
@@ -52,6 +63,14 @@ TOOLS: dict[str, ToolSpec] = {
         True,
         ("--project", "--confirm-live"),
         "Execute a validated script through the Earth Engine Python API.",
+    ),
+    "run_plan_live": ToolSpec(
+        "run_plan_live",
+        True,
+        True,
+        True,
+        ("--project", "--confirm-live"),
+        "Render, validate, preflight, and execute a saved task plan.",
     ),
     "monitor_exports": ToolSpec(
         "monitor_exports",

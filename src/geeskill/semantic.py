@@ -21,6 +21,9 @@ RULESETS = {
         "sentinel1_flood_before_after", "Sentinel-1 before/after flood workflow."
     ),
     "export_table_csv": SemanticRuleSet("export_table_csv", "Export.table.toDrive CSV export."),
+    "dynamic_world_landcover_ndvi": SemanticRuleSet(
+        "dynamic_world_landcover_ndvi", "Dynamic World land-cover-aware Sentinel-2 NDVI diagnostics."
+    ),
 }
 
 
@@ -37,6 +40,8 @@ def infer_semantic_rulesets(text: str, explicit: str | None = None) -> list[str]
         rules.append("sentinel1_flood_before_after")
     if "export.table.todrive" in lower or "ee.batch.export.table.todrive" in lower:
         rules.append("export_table_csv")
+    if "google/dynamicworld/v1" in lower and "ndvi" in lower:
+        rules.append("dynamic_world_landcover_ndvi")
     return rules
 
 
@@ -54,6 +59,8 @@ def validate_semantics(path: Path, rulesets: list[str] | None = None) -> list[Fi
             findings.extend(_sentinel1_flood(text, lower))
         elif ruleset == "export_table_csv":
             findings.extend(_export_table_csv(text, lower))
+        elif ruleset == "dynamic_world_landcover_ndvi":
+            findings.extend(_dynamic_world_landcover_ndvi(text, lower))
         else:
             findings.append(Finding("warning", "unknown-semantic-ruleset", f"Unknown ruleset: {ruleset}", ruleset=ruleset))
     if selected and not any(item.severity == "error" for item in findings):
@@ -148,4 +155,69 @@ def _export_table_csv(text: str, lower: str) -> list[Finding]:
     findings += _require("fileformat=\"csv\"" in lower or "fileformat='csv'" in lower, ruleset, "csv-format", "CSV export must set fileFormat='CSV'.", "EXPORT_TASK_ERROR")
     findings += _require("description=" in lower, ruleset, "export-description", "Export task needs a stable description.", "EXPORT_TASK_ERROR")
     findings += _require("selectors=" in lower, ruleset, "export-selectors", "CSV export should specify selectors.", "EXPORT_TASK_ERROR")
+    return findings
+
+
+def _dynamic_world_landcover_ndvi(text: str, lower: str) -> list[Finding]:
+    ruleset = "dynamic_world_landcover_ndvi"
+    findings: list[Finding] = []
+    findings += _require(
+        "google/dynamicworld/v1" in lower,
+        ruleset,
+        "dynamic-world-dataset",
+        "Land-cover-aware NDVI must document/use GOOGLE/DYNAMICWORLD/V1.",
+        "DATASET_NOT_FOUND",
+    )
+    findings += _require(
+        '"label"' in text or "'label'" in text,
+        ruleset,
+        "dynamic-world-label",
+        "Dynamic World workflow must reference the label band for schema validation.",
+        "NO_LANDCOVER_LABEL",
+    )
+    for band in ("water", "trees", "grass", "shrub_and_scrub", "built", "bare"):
+        findings += _require(
+            f'"{band}"' in text or f"'{band}'" in text,
+            ruleset,
+            f"dynamic-world-{band}",
+            f"Dynamic World workflow must reference probability band {band}.",
+            "NO_PROBABILITY_BANDS",
+        )
+    findings += _require(
+        "dynamic_world_probability_threshold" in lower,
+        ruleset,
+        "dynamic-world-threshold",
+        "Probability threshold must be named and exported for reproducibility.",
+        "VALIDATION_ERROR",
+    )
+    findings += _require(
+        "water_fraction" in lower and "built_fraction" in lower and "vegetation_fraction" in lower,
+        ruleset,
+        "class-fractions",
+        "Output must include land-cover class fractions for interpretation.",
+        "CLASS_MASK_EMPTY",
+        retryable=True,
+    )
+    findings += _require(
+        "all_surface_mean_ndvi" in lower and "non_water_mean_ndvi" in lower and "vegetation_mean_ndvi" in lower,
+        ruleset,
+        "diagnostic-ndvi-fields",
+        "Output must compare all-surface, non-water, and vegetation NDVI.",
+        "VALIDATION_ERROR",
+    )
+    findings += _require(
+        "preflight_required_before_export" in lower,
+        ruleset,
+        "preflight-required-marker",
+        "Live export must be run through a preflight-aware command.",
+        "EXPORT_REFUSED_BY_PREFLIGHT",
+        retryable=True,
+    )
+    findings += _require(
+        "selectors=" in lower,
+        ruleset,
+        "explicit-selectors",
+        "Land-cover-aware CSV export must use explicit selectors.",
+        "EXPORT_TASK_ERROR",
+    )
     return findings

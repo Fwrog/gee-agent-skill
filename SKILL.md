@@ -13,12 +13,19 @@ Use this skill for reproducible Google Earth Engine Python workflows that must b
 
 1. For the supported v0.1 natural-language workflow, run:
    `gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." --dry-run --json`.
-2. For live v0.1, first preflight:
+2. For the v0.2 land-cover-aware workflow, plan first without contacting Earth Engine:
+   `gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --plan --json`.
+3. Review the plan, then preflight with live credentials:
+   `gee-skill review-plan outputs/runs/<run_id>/task_plan.yaml` and
+   `gee-skill preflight-plan outputs/runs/<run_id>/task_plan.yaml --project <project-id> --json`.
+4. Only after review and preflight pass, run:
+   `gee-skill run-plan outputs/runs/<run_id>/task_plan.yaml --project <project-id> --confirm-live --json`.
+5. For live v0.1, first preflight:
    `gee-skill preflight-hk-ndvi --project <project-id> --year 2024 --month 1 --scope hong-kong --json`.
-3. Only after validation and preflight pass, run:
+6. Only after validation and preflight pass, run:
    `gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." --project <project-id> --confirm-live --run-id hk-2024-01-ndvi-v01 --json`.
-4. Monitor exports: `gee-skill monitor-exports --project <project-id> --json`.
-5. For template-driven workflows, search evidence, plan from task YAML, validate, then dry-run or live-run with explicit flags.
+7. Monitor exports: `gee-skill monitor-exports --project <project-id> --json`.
+8. For template-driven workflows, search evidence, plan from task YAML, validate, then dry-run or live-run with explicit flags.
 
 ## Do Not Use
 
@@ -43,6 +50,7 @@ Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 - `validation_report.json`
 - `dry_run_report.json`
 - `preflight_report.json` when live data preflight runs
+- `landcover_diagnostics.json` when land-cover preflight runs
 - `live_run_report.json` when live mode runs
 - `export_tasks.json` when export tasks are inspected or created
 - `environment.json`
@@ -52,7 +60,11 @@ Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 
 - Read [docs/harness.md](docs/harness.md) for run traces and tool registry behavior.
 - Read [docs/live_smoke.md](docs/live_smoke.md) for private live smoke-test commands.
+- Read [docs/how_to_start.md](docs/how_to_start.md) for the recommended user path.
+- Read [docs/concepts.md](docs/concepts.md) for plan-first, RAG, preflight, and trace concepts.
 - Read [docs/v01_hk_january_ndvi.md](docs/v01_hk_january_ndvi.md) for the v0.1 release target.
+- Read [docs/v02_landcover_aware_ndvi.md](docs/v02_landcover_aware_ndvi.md) for the v0.2 land-cover-aware workflow.
+- Read [docs/troubleshooting.md](docs/troubleshooting.md) for common failures and boundary mismatch guidance.
 - Read [docs/error_taxonomy.md](docs/error_taxonomy.md) for failure categories and recovery hints.
 - Read [docs/extending.md](docs/extending.md) before adding workflow recipes, dataset cards, or semantic validators.
 - Use `references/knowledge_base/` as the retrieval corpus; official Google docs are canonical, research notes are design guidance.

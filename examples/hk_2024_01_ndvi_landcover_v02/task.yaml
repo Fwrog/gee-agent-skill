@@ -1,0 +1,66 @@
+id: hk_2024_01_ndvi_landcover_v02
+version: v0.2
+intent: hk_january_2024_ndvi_by_landcover_csv
+task: Compute January 2024 Hong Kong NDVI by land-cover class and export CSV.
+template: hk_january_2024_ndvi_by_landcover_csv
+query: Sentinel-2 SR Harmonized Dynamic World January 2024 Hong Kong NDVI land-cover class fractions Export.table.toDrive CSV
+context:
+  script_name: hk_2024_01_ndvi_by_landcover_csv
+  year: 2024
+  month: 1
+  date_start: '2024-01-01'
+  date_end: '2024-02-01'
+  aoi_name: Hong Kong
+  aoi_source: Hong Kong 18 Districts GeoJSON curated in references/boundaries
+  boundary_geojson: references/boundaries/hk_18_districts.geojson
+  dataset_id: COPERNICUS/S2_SR_HARMONIZED
+  landcover_dataset_id: GOOGLE/DYNAMICWORLD/V1
+  landcover_strategy: dynamic_world_time_matched_probability_masks
+  dynamic_world_probability_threshold: 0.35
+  worldcover_dataset_id: ESA/WorldCover/v200
+  scale: 10
+  crs: EPSG:4326
+  tile_scale: 4
+  cloudy_pixel_percentage: 80
+  max_pixels: 100000000
+  export_description: hk_2024_01_ndvi_landcover_v02
+  drive_folder: gee_exports
+  file_prefix: hk_2024_01_ndvi_landcover_v02
+outputs:
+  script: outputs/scripts/hk_2024_01_ndvi_by_landcover_csv.py
+  plan: outputs/plans/hk_2024_01_ndvi_landcover_v02.md
+  task_plan: outputs/plans/hk_2024_01_ndvi_landcover_v02.task_plan.yaml
+output_schema:
+  - aoi_name
+  - year
+  - month
+  - date_start
+  - date_end
+  - dataset_id
+  - landcover_dataset_id
+  - landcover_strategy
+  - scale_m
+  - crs
+  - all_surface_mean_ndvi
+  - non_water_mean_ndvi
+  - land_only_mean_ndvi
+  - vegetation_mean_ndvi
+  - trees_mean_ndvi
+  - grass_mean_ndvi
+  - shrub_and_scrub_mean_ndvi
+  - built_mean_ndvi
+  - bare_mean_ndvi
+  - water_fraction
+  - built_fraction
+  - vegetation_fraction
+  - trees_fraction
+  - grass_fraction
+  - s2_image_count_before_cloud_filter
+  - s2_image_count_after_cloud_filter
+  - dynamic_world_image_count
+  - dynamic_world_probability_threshold
+  - export_description
+limitations:
+  - Dynamic World is probabilistic; low-confidence or sparse classes may produce null NDVI values.
+  - Land-cover data defines masks and interpretation strata, not administrative boundaries.
+  - All-surface NDVI includes water, built-up, bare, and vegetated pixels.

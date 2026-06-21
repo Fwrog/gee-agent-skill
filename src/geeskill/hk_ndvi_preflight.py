@@ -12,8 +12,27 @@ from .paths import default_boundary_path
 
 
 DEFAULT_DATASET_ID = "COPERNICUS/S2_SR_HARMONIZED"
+DEFAULT_LANDCOVER_DATASET_ID = "GOOGLE/DYNAMICWORLD/V1"
 DEFAULT_BOUNDARY_NAME = "hk_18_districts.geojson"
 DEFAULT_DISTRICT_PROPERTY = "District"
+DYNAMIC_WORLD_PROBABILITY_BANDS = [
+    "water",
+    "trees",
+    "grass",
+    "flooded_vegetation",
+    "crops",
+    "shrub_and_scrub",
+    "built",
+    "bare",
+    "snow_and_ice",
+]
+DYNAMIC_WORLD_VEGETATION_BANDS = [
+    "trees",
+    "grass",
+    "flooded_vegetation",
+    "crops",
+    "shrub_and_scrub",
+]
 
 
 @dataclass(frozen=True)
@@ -30,6 +49,10 @@ class HKNDVIPreflightConfig:
     crs: str = "EPSG:4326"
     cloudy_pixel_percentage: int = 80
     tile_scale: int = 4
+    landcover: str | None = None
+    landcover_dataset_id: str | None = None
+    landcover_strategy: str | None = None
+    dynamic_world_probability_threshold: float = 0.35
 
 
 class HKNDVIProbe(Protocol):
@@ -40,6 +63,8 @@ class HKNDVIProbe(Protocol):
     def select_district(self, district_name: str | None, district_names: list[str]) -> dict[str, Any]: ...
 
     def probe_images(self, year: int, month: int) -> dict[str, Any]: ...
+
+    def probe_landcover(self, year: int, month: int) -> dict[str, Any]: ...
 
 
 def normalize_district_name(name: str) -> str:
@@ -208,6 +233,134 @@ class EarthEngineHKNDVIProbe:
             "sanity_stat": sanity_stat,
         }
 
+    def probe_landcover(self, year: int, month: int) -> dict[str, Any]:
+        ee = self._ee()
+        if self.selected is None:
+            raise RuntimeError("District selection has not been probed.")
+        start = ee.Date.fromYMD(year, month, 1)
+        end = start.advance(1, "month")
+        aoi = self.selected.geometry()
+        dataset_id = self.config.landcover_dataset_id or DEFAULT_LANDCOVER_DATASET_ID
+        threshold = float(self.config.dynamic_world_probability_threshold)
+        dw = ee.ImageCollection(dataset_id).filterDate(start, end).filterBounds(aoi)
+        count = int(dw.size().getInfo())
+        band_names: list[str] = []
+        diagnostics: dict[str, Any] = {
+            "landcover_dataset_id": dataset_id,
+            "landcover_strategy": self.config.landcover_strategy or "dynamic_world_time_matched_probability_masks",
+            "dynamic_world_probability_threshold": threshold,
+            "dynamic_world_image_count": count,
+            "dynamic_world_band_names": band_names,
+            "missing_probability_bands": list(DYNAMIC_WORLD_PROBABILITY_BANDS),
+            "has_label_band": False,
+            "class_fractions": {},
+            "ndvi_probes": {},
+            "warnings": [],
+        }
+        if count == 0:
+            return diagnostics
+
+        first = ee.Image(dw.first())
+        band_names = first.bandNames().getInfo()
+        diagnostics["dynamic_world_band_names"] = band_names
+        diagnostics["has_label_band"] = "label" in band_names
+        missing = [band for band in DYNAMIC_WORLD_PROBABILITY_BANDS if band not in band_names]
+        diagnostics["missing_probability_bands"] = missing
+        if missing:
+            return diagnostics
+
+        s2 = (
+            ee.ImageCollection(self.config.dataset_id)
+            .filterDate(start, end)
+            .filterBounds(aoi)
+            .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", self.config.cloudy_pixel_percentage))
+            .map(_mask_sentinel2_scl)
+            .map(_add_ndvi)
+        )
+        ndvi = s2.select("NDVI").mean().rename("NDVI")
+        probabilities = dw.select(DYNAMIC_WORLD_PROBABILITY_BANDS).mean()
+        masks = _dynamic_world_masks(ee, probabilities, threshold)
+
+        class_fractions = ee.Dictionary(
+            {
+                key: _mask_fraction(ee, mask, aoi, self.config)
+                for key, mask in masks.items()
+            }
+        ).getInfo()
+        ndvi_probes = ee.Dictionary(
+            {
+                "all_surface_mean_ndvi": _masked_ndvi_mean(ee, ndvi, None, aoi, self.config),
+                "non_water_mean_ndvi": _masked_ndvi_mean(ee, ndvi, masks["non_water"], aoi, self.config),
+                "vegetation_mean_ndvi": _masked_ndvi_mean(ee, ndvi, masks["vegetation"], aoi, self.config),
+                "built_mean_ndvi": _masked_ndvi_mean(ee, ndvi, masks["built"], aoi, self.config),
+                "water_mean_ndvi": _masked_ndvi_mean(ee, ndvi, masks["water"], aoi, self.config),
+            }
+        ).getInfo()
+        diagnostics["class_fractions"] = class_fractions
+        diagnostics["ndvi_probes"] = ndvi_probes
+        for key in ("water", "built", "vegetation", "trees", "grass"):
+            value = class_fractions.get(key)
+            if value is None:
+                diagnostics["warnings"].append(f"{key} fraction is null at this scale/AOI.")
+            elif float(value) <= 0:
+                diagnostics["warnings"].append(f"{key} fraction is zero; class NDVI may be null.")
+        return diagnostics
+
+
+def _dynamic_world_masks(ee, probabilities, threshold: float) -> dict[str, Any]:
+    water = probabilities.select("water").gte(threshold)
+    trees = probabilities.select("trees").gte(threshold)
+    grass = probabilities.select("grass").gte(threshold)
+    flooded = probabilities.select("flooded_vegetation").gte(threshold)
+    crops = probabilities.select("crops").gte(threshold)
+    shrub = probabilities.select("shrub_and_scrub").gte(threshold)
+    built = probabilities.select("built").gte(threshold)
+    bare = probabilities.select("bare").gte(threshold)
+    vegetation = trees.Or(grass).Or(flooded).Or(crops).Or(shrub)
+    non_water = water.Not()
+    return {
+        "water": water.rename("class_mask"),
+        "non_water": non_water.rename("class_mask"),
+        "land_only": non_water.rename("class_mask"),
+        "vegetation": vegetation.rename("class_mask"),
+        "trees": trees.rename("class_mask"),
+        "grass": grass.rename("class_mask"),
+        "flooded_vegetation": flooded.rename("class_mask"),
+        "crops": crops.rename("class_mask"),
+        "shrub_and_scrub": shrub.rename("class_mask"),
+        "built": built.rename("class_mask"),
+        "bare": bare.rename("class_mask"),
+    }
+
+
+def _mask_fraction(ee, mask, aoi, config: HKNDVIPreflightConfig):
+    return (
+        mask.unmask(0)
+        .reduceRegion(
+            reducer=ee.Reducer.mean(),
+            geometry=aoi,
+            scale=max(config.scale, 100),
+            crs=config.crs,
+            bestEffort=True,
+            maxPixels=100000000,
+            tileScale=config.tile_scale,
+        )
+        .get("class_mask")
+    )
+
+
+def _masked_ndvi_mean(ee, ndvi, mask, aoi, config: HKNDVIPreflightConfig):
+    image = ndvi if mask is None else ndvi.updateMask(mask)
+    return image.reduceRegion(
+        reducer=ee.Reducer.mean(),
+        geometry=aoi,
+        scale=max(config.scale, 100),
+        crs=config.crs,
+        bestEffort=True,
+        maxPixels=100000000,
+        tileScale=config.tile_scale,
+    ).get("NDVI")
+
 
 def _mask_sentinel2_scl(image):
     scl = image.select("SCL")
@@ -255,6 +408,11 @@ def _base_report(config: HKNDVIPreflightConfig) -> dict[str, Any]:
         "image_count_after_cloud_filter": None,
         "band_names": [],
         "mean_ndvi_probe": None,
+        "landcover_dataset_id": config.landcover_dataset_id,
+        "landcover_strategy": config.landcover_strategy,
+        "dynamic_world_probability_threshold": config.dynamic_world_probability_threshold,
+        "dynamic_world_image_count": None,
+        "landcover_diagnostics": None,
         "expected_export_rows": 0,
         "checks": {},
     }
@@ -309,9 +467,10 @@ def run_hk_ndvi_preflight(
     report["band_names"] = image_info.get("monthly_ndvi_band_names") or []
     report["mean_ndvi_probe"] = (image_info.get("sanity_stat") or {}).get("NDVI")
     if int(image_info.get("s2_image_count") or 0) == 0:
+        category = "EMPTY_S2_COLLECTION" if config.landcover_dataset_id else "EMPTY_IMAGE_COLLECTION"
         return _fail(
             report,
-            "EMPTY_IMAGE_COLLECTION",
+            category,
             "Sentinel-2 SR Harmonized has zero images for this month and AOI before cloud filtering.",
         )
     if int(image_info.get("s2_cloud_filtered_image_count") or 0) == 0:
@@ -326,6 +485,58 @@ def run_hk_ndvi_preflight(
         return _fail(report, "NO_NDVI_BAND", "NDVI band is absent after mapping add_ndvi.")
     if report["mean_ndvi_probe"] is None:
         return _fail(report, "NULL_NDVI_STAT", "NDVI sanity reducer returned no mean value.")
+
+    landcover_dataset = config.landcover_dataset_id
+    if config.landcover == "dynamic-world" and landcover_dataset is None:
+        landcover_dataset = DEFAULT_LANDCOVER_DATASET_ID
+    if landcover_dataset:
+        if not hasattr(live_probe, "probe_landcover"):
+            return _fail(report, "VALIDATION_ERROR", "The configured preflight probe cannot inspect land-cover data.")
+        landcover_info = live_probe.probe_landcover(config.year, config.month)
+        report["checks"]["landcover"] = landcover_info
+        report["landcover_dataset_id"] = landcover_info.get("landcover_dataset_id") or landcover_dataset
+        report["landcover_strategy"] = landcover_info.get("landcover_strategy") or config.landcover_strategy
+        report["dynamic_world_probability_threshold"] = landcover_info.get(
+            "dynamic_world_probability_threshold",
+            config.dynamic_world_probability_threshold,
+        )
+        report["dynamic_world_image_count"] = landcover_info.get("dynamic_world_image_count")
+        report["landcover_diagnostics"] = landcover_info
+        if int(landcover_info.get("dynamic_world_image_count") or 0) == 0:
+            return _fail(
+                report,
+                "EMPTY_DYNAMIC_WORLD_COLLECTION",
+                "Dynamic World has zero images for this month and AOI.",
+            )
+        if not landcover_info.get("has_label_band"):
+            return _fail(report, "NO_LANDCOVER_LABEL", "Dynamic World label band is absent.")
+        missing_probability_bands = list(landcover_info.get("missing_probability_bands") or [])
+        if missing_probability_bands:
+            return _fail(
+                report,
+                "NO_PROBABILITY_BANDS",
+                "Dynamic World probability bands are missing: " + ", ".join(missing_probability_bands),
+            )
+        fractions = landcover_info.get("class_fractions") or {}
+        core_fraction_values = [
+            fractions.get("water"),
+            fractions.get("built"),
+            fractions.get("vegetation"),
+            fractions.get("trees"),
+            fractions.get("grass"),
+        ]
+        if not any(value is not None for value in core_fraction_values):
+            return _fail(
+                report,
+                "CLASS_MASK_EMPTY",
+                "Dynamic World class fractions were all null for water/built/vegetation probes.",
+            )
+        report["warnings"].extend(landcover_info.get("warnings") or [])
+        probes = landcover_info.get("ndvi_probes") or {}
+        if probes.get("non_water_mean_ndvi") is None:
+            report["warnings"].append("Non-water NDVI probe is null; check water mask or valid-pixel overlap.")
+        if probes.get("vegetation_mean_ndvi") is None:
+            report["warnings"].append("Vegetation NDVI probe is null; vegetation may be sparse or low-confidence.")
 
     report["ok"] = True
     report["decision"] = "allow_export"

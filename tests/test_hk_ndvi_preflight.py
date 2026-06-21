@@ -14,12 +14,26 @@ class FakeProbe:
         image_count=5,
         filtered_count=3,
         ndvi=True,
+        dynamic_world_count=4,
+        landcover_label=True,
+        landcover_probabilities=True,
+        class_fractions=None,
     ):
         self.district_count = district_count
         self.selected_count = selected_count
         self.image_count = image_count
         self.filtered_count = filtered_count
         self.ndvi = ndvi
+        self.dynamic_world_count = dynamic_world_count
+        self.landcover_label = landcover_label
+        self.landcover_probabilities = landcover_probabilities
+        self.class_fractions = class_fractions or {
+            "water": 0.42,
+            "built": 0.25,
+            "vegetation": 0.18,
+            "trees": 0.12,
+            "grass": 0.04,
+        }
 
     def initialize(self):
         self.initialized = True
@@ -55,6 +69,29 @@ class FakeProbe:
             "sanity_stat": {"NDVI": 0.4} if self.ndvi else {},
         }
 
+    def probe_landcover(self, year, month):
+        bands = ["label"] if self.landcover_label else []
+        if self.landcover_probabilities:
+            bands.extend(["water", "trees", "grass", "flooded_vegetation", "crops", "shrub_and_scrub", "built", "bare", "snow_and_ice"])
+        return {
+            "landcover_dataset_id": "GOOGLE/DYNAMICWORLD/V1",
+            "landcover_strategy": "dynamic_world_time_matched_probability_masks",
+            "dynamic_world_probability_threshold": 0.35,
+            "dynamic_world_image_count": self.dynamic_world_count,
+            "dynamic_world_band_names": bands,
+            "missing_probability_bands": [] if self.landcover_probabilities else ["water"],
+            "has_label_band": self.landcover_label,
+            "class_fractions": self.class_fractions,
+            "ndvi_probes": {
+                "all_surface_mean_ndvi": 0.08,
+                "non_water_mean_ndvi": 0.16,
+                "vegetation_mean_ndvi": 0.45,
+                "built_mean_ndvi": 0.06,
+                "water_mean_ndvi": -0.02,
+            },
+            "warnings": [],
+        }
+
 
 def _config():
     return HKNDVIPreflightConfig(
@@ -62,6 +99,19 @@ def _config():
         year=2024,
         month=1,
         district="Central and Western",
+    )
+
+
+def _landcover_config():
+    return HKNDVIPreflightConfig(
+        project="example-project",
+        year=2024,
+        month=1,
+        scope="hong-kong",
+        landcover="dynamic-world",
+        landcover_dataset_id="GOOGLE/DYNAMICWORLD/V1",
+        landcover_strategy="dynamic_world_time_matched_probability_masks",
+        dynamic_world_probability_threshold=0.35,
     )
 
 
@@ -112,6 +162,44 @@ def test_preflight_fails_with_no_ndvi_band():
     report = run_hk_ndvi_preflight(_config(), probe=FakeProbe(ndvi=False))
     assert report["ok"] is False
     assert report["critical_error"]["category"] == "NO_NDVI_BAND"
+
+
+def test_landcover_preflight_succeeds_with_non_empty_dynamic_world():
+    report = run_hk_ndvi_preflight(_landcover_config(), probe=FakeProbe())
+    assert report["ok"] is True
+    assert report["dynamic_world_image_count"] == 4
+    assert report["landcover_diagnostics"]["class_fractions"]["vegetation"] == 0.18
+
+
+def test_landcover_preflight_fails_with_empty_s2_collection():
+    report = run_hk_ndvi_preflight(_landcover_config(), probe=FakeProbe(image_count=0))
+    assert report["ok"] is False
+    assert report["critical_error"]["category"] == "EMPTY_S2_COLLECTION"
+
+
+def test_landcover_preflight_fails_with_empty_dynamic_world_collection():
+    report = run_hk_ndvi_preflight(_landcover_config(), probe=FakeProbe(dynamic_world_count=0))
+    assert report["ok"] is False
+    assert report["critical_error"]["category"] == "EMPTY_DYNAMIC_WORLD_COLLECTION"
+
+
+def test_landcover_preflight_fails_with_missing_label_band():
+    report = run_hk_ndvi_preflight(_landcover_config(), probe=FakeProbe(landcover_label=False))
+    assert report["ok"] is False
+    assert report["critical_error"]["category"] == "NO_LANDCOVER_LABEL"
+
+
+def test_landcover_preflight_fails_with_missing_probability_bands():
+    report = run_hk_ndvi_preflight(_landcover_config(), probe=FakeProbe(landcover_probabilities=False))
+    assert report["ok"] is False
+    assert report["critical_error"]["category"] == "NO_PROBABILITY_BANDS"
+
+
+def test_landcover_preflight_fails_when_core_class_fractions_are_null():
+    fractions = {"water": None, "built": None, "vegetation": None, "trees": None, "grass": None}
+    report = run_hk_ndvi_preflight(_landcover_config(), probe=FakeProbe(class_fractions=fractions))
+    assert report["ok"] is False
+    assert report["critical_error"]["category"] == "CLASS_MASK_EMPTY"
 
 
 def test_live_smoke_refuses_export_when_preflight_fails(monkeypatch, capsys):
