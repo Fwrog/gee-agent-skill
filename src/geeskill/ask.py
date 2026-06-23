@@ -198,7 +198,7 @@ def route_request(
             "status": "unsupported",
             "error": error_payload(
                 "UNSUPPORTED_TASK",
-                "v0.1 supports January 2024 whole-Hong-Kong NDVI CSV. Full 2024 district-level monthly NDVI is planned for v0.2.",
+                "The legacy golden-route matcher supports the reviewed Hong Kong January 2024 NDVI CSV examples. Use the v0.3 plan command for broader requests.",
             ),
             "closest_supported_command": (
                 'gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." '
@@ -222,7 +222,7 @@ def route_request(
             "status": "ambiguous",
             "error": error_payload(
                 "AMBIGUOUS_TASK",
-                "Request is missing one or more v0.1 requirements: NDVI, Hong Kong AOI, and January 2024.",
+                "Request is missing one or more legacy golden-route fields: NDVI, Hong Kong AOI, and January 2024.",
             ),
             "supported_examples": SUPPORTED_EXAMPLES,
         }
@@ -232,7 +232,7 @@ def route_request(
         "status": "unsupported",
         "error": error_payload(
             "UNSUPPORTED_TASK",
-            "The request is outside the v0.1 deterministic router.",
+            "The request is outside the legacy golden-route matcher. Use gee-skill plan from-text for v0.3 general planning.",
         ),
         "supported_examples": SUPPORTED_EXAMPLES,
     }

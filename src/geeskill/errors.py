@@ -17,6 +17,12 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "suggested_fix": "Pass --project <project-id> and confirm Earth Engine API/IAM access.",
         "user_action_required": True,
     },
+    "NETWORK_ERROR": {
+        "likely_cause": "A transient network, TLS, or OAuth token endpoint request failed during live initialization.",
+        "retryable": True,
+        "suggested_fix": "Retry the live preflight/run after confirming normal internet access; do not reauthenticate unless failures persist.",
+        "user_action_required": False,
+    },
     "DATASET_NOT_FOUND": {
         "likely_cause": "The Earth Engine dataset id is missing, misspelled, or unavailable to the account.",
         "retryable": False,
@@ -144,9 +150,9 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "user_action_required": True,
     },
     "UNSUPPORTED_TASK": {
-        "likely_cause": "The request is outside the v0.1 deterministic router.",
+        "likely_cause": "The request is outside the currently registered deterministic recipes.",
         "retryable": False,
-        "suggested_fix": "Use the v0.1 Hong Kong January 2024 NDVI CSV request or run a template-specific workflow.",
+        "suggested_fix": "Use a supported recipe such as NDVI, NDWI, NDBI, Landsat LST, Sentinel-1 flood mapping, CSV export, or GeoTIFF export.",
         "user_action_required": True,
     },
     "QUOTA_OR_TIMEOUT": {
@@ -204,6 +210,15 @@ def classify_exception(exc: Exception) -> HarnessError:
     lower = text.lower()
     if "earthengine-api is not installed" in lower:
         category = "AUTH_ERROR"
+    elif (
+        "oauth2.googleapis.com" in lower
+        or "/token" in lower
+        or "max retries exceeded" in lower
+        or "ssleoferror" in lower
+        or "ssl:" in lower
+        or "httpsconnectionpool" in lower
+    ):
+        category = "NETWORK_ERROR"
     elif "project" in lower:
         category = "PROJECT_ERROR"
     elif "credential" in lower or "authenticate" in lower or "permission" in lower:

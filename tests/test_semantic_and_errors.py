@@ -68,3 +68,72 @@ def f():
     assert error["ruleset"] == "sentinel2_ndvi_monthly_zonal"
     assert error["suggested_fix"]
     assert error["user_action_required"] is True
+
+
+def test_agent_script_contract_rejects_inline_authenticate_and_missing_constants(tmp_path):
+    script = tmp_path / "bad_agent_script.py"
+    script.write_text(
+        """
+import ee
+ee.Authenticate()
+def run():
+    collection = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED').filterDate('2024-01-01', '2024-02-01')
+    task = ee.batch.Export.image.toDrive(image=collection.mean(), description='x')
+    task.start()
+""",
+        encoding="utf-8",
+    )
+    findings = validate_semantics(script, ["agent_script_contract"])
+    codes = {item.code for item in findings}
+    assert "no-inline-authenticate" in codes
+    assert "date-window-constants" in codes
+    assert "dataset-id-constant" in codes
+    assert "scale-constant" in codes
+    assert "main-guard-for-task-start" in codes
+
+
+def test_agent_script_contract_accepts_table_export_without_maxpixels(tmp_path):
+    script = tmp_path / "table_agent_script.py"
+    script.write_text(
+        """
+import ee
+
+START_DATE = '2024-01-01'
+END_DATE = '2024-02-01'
+DATASET_ID = 'COPERNICUS/S2_SR_HARMONIZED'
+SCALE = 10
+CRS = 'EPSG:4326'
+EXPORT_DESCRIPTION = 'table_export'
+
+
+def main():
+    aoi = ee.Geometry.Point([0, 0]).buffer(1000)
+    collection = ee.ImageCollection(DATASET_ID).filterDate(START_DATE, END_DATE).filterBounds(aoi)
+    table = ee.FeatureCollection([ee.Feature(None, {'count': collection.size()})])
+    task = ee.batch.Export.table.toDrive(
+        collection=table,
+        description=EXPORT_DESCRIPTION,
+        fileFormat='CSV',
+        selectors=['count'],
+    )
+    task.start()
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
+""",
+        encoding="utf-8",
+    )
+    findings = validate_semantics(script, ["agent_script_contract"])
+    assert not [item for item in findings if item.severity == "error"]
+
+
+def test_agent_script_contract_accepts_rendered_hk_template(tmp_path):
+    context = load_context(Path("evals/contexts/hk_2024_01_ndvi_v01.json"))
+    script = tmp_path / "hk.py"
+    script.write_text(
+        render_template(Path("assets/templates"), "hk_january_2024_ndvi_csv", context),
+        encoding="utf-8",
+    )
+    findings = validate_semantics(script, ["agent_script_contract"])
+    assert not [item for item in findings if item.severity == "error"]

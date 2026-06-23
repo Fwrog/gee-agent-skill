@@ -22,9 +22,10 @@ ee.Initialize(project="my-project")
 
 The CLI should initialize Earth Engine only for live commands such as `run` and `monitor-exports`. Offline commands such as retrieval, planning, rendering, validation, and smoke tests must not require credentials.
 
+`gee-skill auth check --json` is a safe local diagnostic surface. Without `--project` or `--use-discovered-project`, it imports the Earth Engine API and reports non-secret project sources from `EE_PROJECT`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_QUOTA_PROJECT`, `CLOUDSDK_CORE_PROJECT`, and `gcloud config`. It must not inspect Earth Engine credential/token files. Use `gee-skill auth check --project <project-id> --json` or `gee-skill auth check --use-discovered-project --json` for live initialization probes.
+
 ## Failure Hints
 
 - If initialization fails, ask the user to confirm Earth Engine registration, API enablement, IAM access, and project id.
 - Never commit credentials, service account JSON, tokens, or local credential paths.
 - Prefer explicit `project` initialization for reproducible execution.
-

@@ -2,9 +2,9 @@ include SKILL.md
 include README.md
 include LICENSE
 recursive-include agents *.yaml
-recursive-include assets *.j2
-recursive-include references *.md *.json *.geojson
+recursive-include assets *.j2 *.png
+recursive-include references *.md *.json *.geojson *.yml
+recursive-include docs *.md
 recursive-include evals *.json *.yml
 recursive-include examples *.yaml
 recursive-include scripts *.py
-recursive-include docs *.md

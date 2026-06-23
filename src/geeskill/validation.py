@@ -294,12 +294,13 @@ def validate_script(path: Path, semantic_rulesets: list[str] | None = None) -> V
         findings.append(_finding("warning", "missing-export", "No Earth Engine export call detected."))
     if "description=" not in text:
         findings.append(_finding("warning", "missing-export-description", "No export description detected.", category="EXPORT_TASK_ERROR"))
-    if "maxPixels" not in text and "max_pixels" not in text and "MAX_PIXELS" not in text:
+    lower = text.lower()
+    if ("export.image.todrive" in lower or "ee.batch.export.image.todrive" in lower) and "maxPixels" not in text and "max_pixels" not in text and "MAX_PIXELS" not in text:
         findings.append(
             _finding(
                 "warning",
                 "missing-max-pixels",
-                "No maxPixels/max_pixels setting detected for export safety.",
+                "No maxPixels/max_pixels setting detected for image export safety.",
                 category="QUOTA_OR_TIMEOUT",
                 retryable=True,
             )

@@ -4,6 +4,7 @@ Every structured error includes category, likely cause, retryability, suggested 
 
 - `AUTH_ERROR`: credentials or Earth Engine access are missing.
 - `PROJECT_ERROR`: Google Cloud Project is missing, inaccessible, or not enabled for Earth Engine.
+- `NETWORK_ERROR`: live initialization hit a transient network, TLS, or OAuth token endpoint failure.
 - `DATASET_NOT_FOUND`: dataset id is wrong or unavailable.
 - `BAND_NOT_FOUND`: selected band does not exist for the dataset.
 - `EMPTY_COLLECTION`: filters produced no images.
@@ -19,7 +20,7 @@ Every structured error includes category, likely cause, retryability, suggested 
 - `EXPORT_TASK_ERROR`: export creation, destination, or task state failed.
 - `EXPORT_TASK_FAILED`: a submitted export task reached failed state.
 - `AMBIGUOUS_TASK`: natural-language request is missing required date, AOI, metric, or output intent.
-- `UNSUPPORTED_TASK`: natural-language request is outside the deterministic v0.1 router.
+- `UNSUPPORTED_TASK`: natural-language request is outside the currently registered deterministic recipes.
 - `QUOTA_OR_TIMEOUT`: platform quota, memory, queue, or timeout limits were hit.
 - `CLIENT_SERVER_MISUSE`: unsafe client-side calls such as large `getInfo()` usage.
 

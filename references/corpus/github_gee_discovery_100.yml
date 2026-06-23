@@ -1,0 +1,3880 @@
+schema_version: gee-corpus-discovery/v0.3
+created_at: '2026-06-23'
+source: GitHub Search API
+query: topic:google-earth-engine
+query_url: https://api.github.com/search/repositories?q=topic%3Agoogle-earth-engine&sort=stars&order=desc&per_page=100&page=1
+total_count_reported: 617
+purpose: Broad 100+ repository discovery inventory for pattern-only GEE corpus exams.
+  Do not copy third-party code into this repository.
+boundary:
+  seed_inventory: references/corpus/github_gee_seed_repos.yml remains the 30-50 reviewed
+    candidate set.
+  discovery_inventory: This file is metadata-only and does not imply code ingestion
+    approval.
+  promotion_rule: Promote only factual/operator patterns after license, provenance,
+    and official-doc compatibility review.
+repositories:
+- full_name: gee-community/geemap
+  url: https://github.com/gee-community/geemap
+  description: A Python package for interactive geospatial analysis and visualization
+    with Google Earth Engine.
+  language: Python
+  license: MIT
+  stars: 3961
+  forks: 1144
+  updated_at: '2026-06-18T18:26:10Z'
+  pushed_at: '2026-06-20T00:29:25Z'
+  archived: false
+  fork: false
+  topics:
+  - colab
+  - data-science
+  - dataviz
+  - earth-engine
+  - earthengine
+  - folium
+  - geospatial
+  - gis
+  - google-earth-engine
+  - image-processing
+  - ipyleaflet
+  - ipywidgets
+  - jupyter
+  - jupyter-notebook
+  - landsat
+  - mapping
+  - python
+  - remote-sensing
+  - streamlit
+  - streamlit-webapp
+  task_tags:
+  - python
+  - landsat_lst
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/earthengine-py-notebooks
+  url: https://github.com/giswqs/earthengine-py-notebooks
+  description: A collection of 360+ Jupyter Python notebook examples for using Google
+    Earth Engine with interactive mapping
+  language: Jupyter Notebook
+  license: MIT
+  stars: 1540
+  forks: 426
+  updated_at: '2026-06-18T18:50:04Z'
+  pushed_at: '2021-03-16T15:05:05Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earthengine
+  - geospatial
+  - gis
+  - google-earth-engine
+  - notebook
+  - notebook-jupyter
+  - python
+  - remote-sensing
+  - tutorials
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: acgeospatial/awesome-earthobservation-code
+  url: https://github.com/acgeospatial/awesome-earthobservation-code
+  description: A curated list of awesome tools, tutorials, code, projects, links,
+    stuff about Earth Observation, Geospatial Satellite Imagery
+  language: HTML
+  license: CC0-1.0
+  stars: 1354
+  forks: 248
+  updated_at: '2026-06-19T22:16:42Z'
+  pushed_at: '2026-05-13T19:36:13Z'
+  archived: false
+  fork: false
+  topics:
+  - awesome
+  - awesome-list
+  - earth-observation
+  - geospatial-data
+  - google-earth-engine
+  - remote-sensing
+  - satellite-data
+  - satellite-imagery
+  task_tags:
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: opengeos/Awesome-GEE
+  url: https://github.com/opengeos/Awesome-GEE
+  description: A curated list of Google Earth Engine resources
+  language: unknown
+  license: CC0-1.0
+  stars: 1214
+  forks: 226
+  updated_at: '2026-06-19T07:02:35Z'
+  pushed_at: '2026-05-26T18:11:24Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earthengine
+  - geospatial
+  - gis
+  - google-earth-engine
+  - ipyleaflet
+  - javascript
+  - jupyter-notebook
+  - mapping
+  - python
+  - remote-sensing
+  task_tags:
+  - python
+  - javascript_code_editor
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: samapriya/awesome-gee-community-datasets
+  url: https://github.com/samapriya/awesome-gee-community-datasets
+  description: Community Datasets added by users and made available for use at large
+  language: HTML
+  license: CC-BY-4.0
+  stars: 1185
+  forks: 183
+  updated_at: '2026-06-22T14:55:09Z'
+  pushed_at: '2026-06-22T15:02:05Z'
+  archived: false
+  fork: false
+  topics:
+  - awesome-list
+  - catalog
+  - community-catalog
+  - community-datasets
+  - earth-engine
+  - geospatial
+  - geospatial-data
+  - gis
+  - google-earth-engine
+  - googleearthengine
+  - open-datasets
+  - remote-sensing
+  task_tags: []
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: awesome-spectral-indices/awesome-spectral-indices
+  url: https://github.com/awesome-spectral-indices/awesome-spectral-indices
+  description: A ready-to-use curated list of Spectral Indices for Remote Sensing
+    applications.
+  language: Python
+  license: MIT
+  stars: 1132
+  forks: 179
+  updated_at: '2026-06-22T15:04:20Z'
+  pushed_at: '2026-06-07T13:24:23Z'
+  archived: false
+  fork: false
+  topics:
+  - awesome
+  - earth-engine
+  - geographic-information-systems
+  - gis
+  - google-earth-engine
+  - javascript
+  - landsat
+  - landsat-7
+  - landsat-8
+  - modis
+  - python
+  - radar
+  - raster
+  - remote-sensing
+  - satellite-imagery
+  - sentinel
+  - sentinel-1
+  - sentinel-2
+  - spectral-index
+  - spectral-indices
+  task_tags:
+  - python
+  - javascript_code_editor
+  - spectral_indices
+  - sentinel2_optical
+  - sentinel1_sar
+  - landsat_lst
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/qgis-earthengine-examples
+  url: https://github.com/giswqs/qgis-earthengine-examples
+  description: A collection of 300+ Python examples for using Google Earth Engine
+    in QGIS
+  language: Python
+  license: MIT
+  stars: 985
+  forks: 283
+  updated_at: '2026-06-11T17:48:23Z'
+  pushed_at: '2021-11-05T14:30:34Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earthengine
+  - geoprocessing
+  - gis
+  - google-earth-engine
+  - image-processing
+  - python
+  - qgis
+  - remote-sensing
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: kvos/CoastSat
+  url: https://github.com/kvos/CoastSat
+  description: Global shoreline mapping tool from satellite imagery
+  language: Jupyter Notebook
+  license: GPL-3.0
+  stars: 880
+  forks: 302
+  updated_at: '2026-06-21T15:51:36Z'
+  pushed_at: '2026-06-05T13:54:15Z'
+  archived: false
+  fork: false
+  topics:
+  - coastal-engineering
+  - earth-engine
+  - geospatial
+  - google-earth-engine
+  - jupyter-notebook
+  - landsat-5
+  - landsat-7
+  - landsat-8
+  - landsat-9
+  - python
+  - remote-sensing
+  - satellite-images
+  - sentinel-2
+  - shoreline-detection
+  task_tags:
+  - python
+  - sentinel2_optical
+  - landsat_lst
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: r-spatial/rgee
+  url: https://github.com/r-spatial/rgee
+  description: Google Earth Engine for R
+  language: R
+  license: NOASSERTION
+  stars: 773
+  forks: 159
+  updated_at: '2026-06-22T07:07:32Z'
+  pushed_at: '2026-06-22T07:07:28Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earthengine
+  - google-earth-engine
+  - googleearthengine
+  - r
+  - spatial-analysis
+  - spatial-data
+  task_tags: []
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: gee-community/geetools
+  url: https://github.com/gee-community/geetools
+  description: A collection of tools to work with Google Earth Engine Python API
+  language: Python
+  license: MIT
+  stars: 566
+  forks: 128
+  updated_at: '2026-06-08T10:19:19Z'
+  pushed_at: '2026-04-21T18:37:11Z'
+  archived: false
+  fork: false
+  topics:
+  - earthengine
+  - geospatial
+  - google-earth-engine
+  - python
+  - remote-sensing
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: bellingcat/sar-interference-tracker
+  url: https://github.com/bellingcat/sar-interference-tracker
+  description: A Google Earth Engine tool for identifying satellite radar interference.
+  language: JavaScript
+  license: MIT
+  stars: 560
+  forks: 54
+  updated_at: '2026-06-22T15:37:48Z'
+  pushed_at: '2022-02-23T13:57:03Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - interference
+  - javascript
+  - open-source-research
+  - radar
+  - satellite
+  task_tags:
+  - javascript_code_editor
+  - sentinel1_sar
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: GeoRetina/chat2geo
+  url: https://github.com/GeoRetina/chat2geo
+  description: Chat2Geo delivers a ChatGPT-like experience tailored for remote-sensing-based
+    geospatial analysis. Its mission is to democratize geospatial insights at scale
+    by harnessing cutting-edge AI technologies, making advanced analysis accessible
+    to everyone.
+  language: TypeScript
+  license: MIT
+  stars: 505
+  forks: 112
+  updated_at: '2026-06-22T18:23:37Z'
+  pushed_at: '2026-06-09T18:33:38Z'
+  archived: true
+  fork: false
+  topics:
+  - ai
+  - aiagents
+  - geospatial
+  - gis
+  - google-earth-engine
+  - remote-sensing
+  - webapp
+  task_tags: []
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  - archived
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_maintainer_review
+- full_name: davemlz/eemont
+  url: https://github.com/davemlz/eemont
+  description: A python package that extends Google Earth Engine.
+  language: Python
+  license: MIT
+  stars: 450
+  forks: 75
+  updated_at: '2026-06-12T11:12:09Z'
+  pushed_at: '2026-05-29T02:07:15Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - geographic-information-systems
+  - gis
+  - google
+  - google-earth-engine
+  - python
+  - python3
+  - raster
+  - remote-sensing
+  - satellite-imagery
+  - satellite-images
+  - spectral-indices
+  task_tags:
+  - python
+  - spectral_indices
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: fitoprincipe/geetools-code-editor
+  url: https://github.com/fitoprincipe/geetools-code-editor
+  description: A set of tools to use in Google Earth Engine Code Editor (JavaScript)
+  language: unknown
+  license: MIT
+  stars: 324
+  forks: 112
+  updated_at: '2026-03-29T23:02:08Z'
+  pushed_at: '2023-10-02T23:06:19Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - javascript
+  - remote-sensing
+  - satellite-imagery
+  task_tags:
+  - javascript_code_editor
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: csaybar/EEwPython
+  url: https://github.com/csaybar/EEwPython
+  description: A series of Jupyter notebook to learn Google Earth Engine with Python
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 288
+  forks: 126
+  updated_at: '2026-06-13T19:18:06Z'
+  pushed_at: '2024-06-23T16:05:23Z'
+  archived: false
+  fork: false
+  topics:
+  - gee
+  - google-earth-engine
+  - r
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: kr-stn/EarthEngine_scripts
+  url: https://github.com/kr-stn/EarthEngine_scripts
+  description: scripts and snippets for Google Earth Engine
+  language: JavaScript
+  license: NOASSERTION
+  stars: 276
+  forks: 115
+  updated_at: '2026-05-10T16:28:52Z'
+  pushed_at: '2018-12-20T09:35:24Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - google-earth-engine
+  task_tags:
+  - javascript_code_editor
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: awesome-spectral-indices/spyndex
+  url: https://github.com/awesome-spectral-indices/spyndex
+  description: Awesome Spectral Indices in Python.
+  language: Python
+  license: MIT
+  stars: 246
+  forks: 30
+  updated_at: '2026-06-12T11:12:16Z'
+  pushed_at: '2026-05-28T04:08:19Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - google-earth-engine
+  - numpy
+  - pandas
+  - python
+  - python3
+  - remote-sensing
+  - satellite-imagery
+  - spectral
+  - spectral-data
+  - spectral-index
+  - spectral-indices
+  - xarray
+  task_tags:
+  - python
+  - spectral_indices
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: eMapR/LT-GEE
+  url: https://github.com/eMapR/LT-GEE
+  description: 'Google Earth Engine implementation of the LandTrendr spectral-temporal
+    segmentation algorithm. For documentation see:'
+  language: JavaScript
+  license: Apache-2.0
+  stars: 227
+  forks: 70
+  updated_at: '2026-06-10T07:13:11Z'
+  pushed_at: '2024-01-31T21:35:16Z'
+  archived: false
+  fork: false
+  topics:
+  - change-detection
+  - google-earth-engine
+  - landsat
+  - landscape-dynamics
+  - landtrendr
+  - mapping
+  - time-series-analysis
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  - landcover_change
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: ESDS-Leipzig/cubo
+  url: https://github.com/ESDS-Leipzig/cubo
+  description: On-Demand Earth System Data Cubes (ESDCs) in Python
+  language: Python
+  license: MIT
+  stars: 205
+  forks: 17
+  updated_at: '2026-05-28T20:17:08Z'
+  pushed_at: '2026-02-12T15:32:50Z'
+  archived: false
+  fork: false
+  topics:
+  - dask
+  - data
+  - data-cube
+  - datacube
+  - earth-engine
+  - eo
+  - geographic-information-systems
+  - geospatial
+  - gis
+  - google-earth-engine
+  - landsat
+  - modis
+  - python
+  - remote-sensing
+  - sentinel-2
+  - stac
+  - xarray
+  task_tags:
+  - python
+  - sentinel2_optical
+  - landsat_lst
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: awesome-spectral-indices/spectral
+  url: https://github.com/awesome-spectral-indices/spectral
+  description: Awesome Spectral Indices for the Google Earth Engine JavaScript API
+    (Code Editor).
+  language: JavaScript
+  license: MIT
+  stars: 202
+  forks: 40
+  updated_at: '2026-05-30T22:21:30Z'
+  pushed_at: '2026-05-28T04:19:42Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - geographic-information-systems
+  - gis
+  - google-earth-engine
+  - javascript
+  - landsat
+  - modis
+  - remote-sensing
+  - sentinel
+  - spectral
+  - spectral-data
+  - spectral-dataset
+  - spectral-index
+  - spectral-indices
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/geebook
+  url: https://github.com/giswqs/geebook
+  description: 'Earth Engine and Geemap: Geospatial Data Science with Python'
+  language: Jupyter Notebook
+  license: CC-BY-4.0
+  stars: 191
+  forks: 63
+  updated_at: '2026-06-09T05:51:29Z'
+  pushed_at: '2023-09-19T03:00:43Z'
+  archived: false
+  fork: false
+  topics:
+  - data-science
+  - dataviz
+  - earth-engine
+  - geemap
+  - geopython
+  - geospatial
+  - google-earth-engine
+  - ipyleaflet
+  - ipywidgets
+  - jupyter
+  - mapping
+  - python
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: philippgaertner/awesome-earth-engine-apps
+  url: https://github.com/philippgaertner/awesome-earth-engine-apps
+  description: 'A collection of all public Google Earth Engine Apps. '
+  language: unknown
+  license: MIT
+  stars: 186
+  forks: 38
+  updated_at: '2026-05-07T17:27:45Z'
+  pushed_at: '2024-01-03T16:28:08Z'
+  archived: false
+  fork: false
+  topics:
+  - apps
+  - earth-engine
+  - google-earth-engine
+  task_tags: []
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: msoechting/lexcube
+  url: https://github.com/msoechting/lexcube
+  description: 'Lexcube: 3D Data Cube Visualization in Jupyter Notebooks'
+  language: TypeScript
+  license: GPL-3.0
+  stars: 176
+  forks: 11
+  updated_at: '2026-06-08T06:11:00Z'
+  pushed_at: '2026-05-20T08:14:13Z'
+  archived: false
+  fork: false
+  topics:
+  - dask
+  - datacube
+  - earth-engine
+  - eo
+  - geographical-information-system
+  - geospatial
+  - gis
+  - google-earth-engine
+  - javascript
+  - jupyterlab-extension
+  - python
+  - raster
+  - remote-sensing
+  - typescript
+  - visualization
+  - xarray
+  task_tags:
+  - python
+  - javascript_code_editor
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: open-geocomputing/OpenEarthEngineLibrary
+  url: https://github.com/open-geocomputing/OpenEarthEngineLibrary
+  description: ''
+  language: JavaScript
+  license: NOASSERTION
+  stars: 149
+  forks: 41
+  updated_at: '2026-05-11T05:41:03Z'
+  pushed_at: '2025-04-06T20:21:07Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earth-observation
+  - gee
+  - google-earth-engine
+  - open-source
+  - remote-sensing
+  - satellite-imagery
+  task_tags:
+  - javascript_code_editor
+  - production_tooling
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: seanyx/RivWidthCloudPaper
+  url: https://github.com/seanyx/RivWidthCloudPaper
+  description: A Google Earth Engine based algorithm that extracts river centerlines
+    and widths from satellite images
+  language: Python
+  license: NOASSERTION
+  stars: 139
+  forks: 41
+  updated_at: '2026-06-03T13:49:47Z'
+  pushed_at: '2022-12-31T23:45:17Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - hydrology
+  - javascript
+  - morphology
+  - python
+  - remote-sensing
+  - river
+  - river-networks
+  task_tags:
+  - python
+  - javascript_code_editor
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: samapriya/geeup
+  url: https://github.com/samapriya/geeup
+  description: Simple CLI for Google Earth Engine Uploads
+  language: Python
+  license: Apache-2.0
+  stars: 139
+  forks: 30
+  updated_at: '2026-06-10T12:15:47Z'
+  pushed_at: '2025-12-31T23:01:03Z'
+  archived: false
+  fork: false
+  topics:
+  - batch-upload
+  - cli
+  - command-line-tool
+  - earth-engine-uploads
+  - gee-upload
+  - google-earth-engine
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/earthengine-py-examples
+  url: https://github.com/giswqs/earthengine-py-examples
+  description: A collection of 300+ examples for using Earth Engine and the geemap
+    Python package
+  language: Python
+  license: MIT
+  stars: 139
+  forks: 51
+  updated_at: '2026-04-13T08:38:07Z'
+  pushed_at: '2020-06-12T15:47:59Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earthengine
+  - geemap
+  - geospatial
+  - gis
+  - google-earth-engine
+  - python
+  - remote-sensing
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: willyhagi/climate-data-science
+  url: https://github.com/willyhagi/climate-data-science
+  description: Climate Data Science and Earth Observation with Python.
+  language: Jupyter Notebook
+  license: MIT
+  stars: 135
+  forks: 46
+  updated_at: '2026-04-10T13:18:16Z'
+  pushed_at: '2020-10-10T19:31:32Z'
+  archived: true
+  fork: false
+  topics:
+  - climatology
+  - earth-observation
+  - google-earth-engine
+  - meteorology
+  - pangeo
+  - time-series-analysis
+  - xarray
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  - archived
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_maintainer_review
+- full_name: sofiaermida/Landsat_SMW_LST
+  url: https://github.com/sofiaermida/Landsat_SMW_LST
+  description: Land Surface Temperature from Landsat on Google Earth Engine
+  language: JavaScript
+  license: NOASSERTION
+  stars: 128
+  forks: 66
+  updated_at: '2026-06-15T18:04:49Z'
+  pushed_at: '2023-08-02T09:03:34Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - googleearthengine
+  - land-surface-temperature
+  - landsat
+  - surface-temperature
+  - temperature
+  task_tags:
+  - javascript_code_editor
+  - landsat_lst
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: mhscience/landslides_detection
+  url: https://github.com/mhscience/landslides_detection
+  description: 'Machine learning tool to detect landslides from optical satellite
+    imagery '
+  language: Python
+  license: MIT
+  stars: 126
+  forks: 34
+  updated_at: '2026-06-01T16:23:37Z'
+  pushed_at: '2022-12-08T11:43:56Z'
+  archived: false
+  fork: false
+  topics:
+  - geomatics
+  - google-earth-engine
+  - image-segmentation
+  - k-means
+  - landslides-detection
+  - merging-algorithms
+  - obia
+  - object-based-image-analysis
+  - optical-satellite-imagery
+  - random-forest
+  - rsgislib
+  task_tags:
+  - python
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: krishnakafle/gee-tutorials
+  url: https://github.com/krishnakafle/gee-tutorials
+  description: 'This code base is collection of codes that are freely available for
+    google earth engine. This is the collection of tutorials prepared by multiple
+    individuals that were shared publicly as documents for learning purposes. These
+    documents has been converted to web pages and are made easy access to the normal
+    users via web page. '
+  language: JavaScript
+  license: NOASSERTION
+  stars: 117
+  forks: 42
+  updated_at: '2026-05-26T11:39:05Z'
+  pushed_at: '2023-01-19T11:48:54Z'
+  archived: false
+  fork: false
+  topics:
+  - classification
+  - earth-engine-classification
+  - gee
+  - gee-application
+  - gee-python-api
+  - gee-tutorial
+  - gee-tutorials
+  - google-earth-engine
+  - google-earth-engine-tutorials
+  - satellite-imagery
+  - supervised-classification-methods
+  - unsupervised-learning
+  - unsupervised-machine-learning
+  task_tags:
+  - python
+  - javascript_code_editor
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: Climate-Vision/ClimateVision
+  url: https://github.com/Climate-Vision/ClimateVision
+  description: Open-source ML platform for detecting deforestation, ice melt, and
+    flooding from Sentinel-2 / Landsat imagery.
+  language: Python
+  license: MIT
+  stars: 114
+  forks: 94
+  updated_at: '2026-06-13T01:47:12Z'
+  pushed_at: '2026-06-22T15:15:33Z'
+  archived: false
+  fork: false
+  topics:
+  - climate
+  - deep-learning
+  - deforestation
+  - fastapi
+  - google-earth-engine
+  - machine-learning
+  - pytorch
+  - remote-sensing
+  - satellite-imagery
+  - u-net-image-segmentation
+  task_tags:
+  - python
+  - sentinel2_optical
+  - landsat_lst
+  - water_flood
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: leftfield-geospatial/geedim
+  url: https://github.com/leftfield-geospatial/geedim
+  description: Export and cloud mask Google Earth Engine imagery
+  language: Python
+  license: Apache-2.0
+  stars: 106
+  forks: 13
+  updated_at: '2026-06-08T08:41:04Z'
+  pushed_at: '2026-06-08T08:41:00Z'
+  archived: false
+  fork: false
+  topics:
+  - cloud-masking
+  - download
+  - export
+  - geotiff
+  - google-earth-engine
+  - image
+  - numpy
+  - xarray
+  task_tags:
+  - python
+  quality_flags:
+  - declares_license
+  - high_star
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: SERVIR/water-quality-gee
+  url: https://github.com/SERVIR/water-quality-gee
+  description: Water quality scripts for Google Earth Engine
+  language: JavaScript
+  license: MIT
+  stars: 93
+  forks: 40
+  updated_at: '2026-06-09T03:20:19Z'
+  pushed_at: '2018-05-29T19:31:53Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - remote-sensing
+  - water-quality
+  task_tags:
+  - javascript_code_editor
+  - water_flood
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: Panagiotou/ImageToDEM
+  url: https://github.com/Panagiotou/ImageToDEM
+  description: Generating Elevation Surface from a Single RGB Remotely Sensed Image
+    Using Deep Learning
+  language: JavaScript
+  license: MIT
+  stars: 94
+  forks: 12
+  updated_at: '2026-05-11T03:17:22Z'
+  pushed_at: '2021-08-13T09:52:26Z'
+  archived: false
+  fork: false
+  topics:
+  - cgan
+  - deep-learning
+  - digital-elevation-model
+  - gdal-python
+  - google-earth-engine
+  - perlin-noise
+  - python3
+  - satellite-image
+  - tensorflow2
+  - terrain-generation
+  - terrain-visualization
+  task_tags:
+  - python
+  - javascript_code_editor
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: gee-community/example-scripts
+  url: https://github.com/gee-community/example-scripts
+  description: Example scripts originally derived from Prof. Dana Tomlin's handouts
+    for his course on Geospatial Software Design. Shared with his permission.
+  language: unknown
+  license: MIT
+  stars: 92
+  forks: 48
+  updated_at: '2025-11-23T13:38:35Z'
+  pushed_at: '2018-06-22T17:29:59Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - google-earth-engine
+  - javascript
+  - python
+  task_tags:
+  - python
+  - javascript_code_editor
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/GEE-Courses
+  url: https://github.com/giswqs/GEE-Courses
+  description: A collection of Jupyter notebooks for GEE Courses
+  language: unknown
+  license: MIT
+  stars: 90
+  forks: 27
+  updated_at: '2026-06-09T04:41:29Z'
+  pushed_at: '2022-03-26T03:42:03Z'
+  archived: false
+  fork: false
+  topics:
+  - earthengine
+  - geemap
+  - geopython
+  - geospatial
+  - google-earth-engine
+  - jupyter
+  - leafmap
+  - python
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: fitoprincipe/geebap
+  url: https://github.com/fitoprincipe/geebap
+  description: Best Available Pixel (BAP) composite in Google Earth Engine (GEE) using
+    the Python API
+  language: Python
+  license: GPL-3.0
+  stars: 86
+  forks: 24
+  updated_at: '2026-02-04T19:04:26Z'
+  pushed_at: '2024-05-30T14:03:15Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - python
+  - remote-sensing
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: google/earthengine-jupyter
+  url: https://github.com/google/earthengine-jupyter
+  description: Tools for working with the Earth Engine from a Jupyter development
+    environment
+  language: Jupyter Notebook
+  license: Apache-2.0
+  stars: 82
+  forks: 9
+  updated_at: '2025-03-10T11:49:14Z'
+  pushed_at: '2023-04-10T00:25:19Z'
+  archived: true
+  fork: false
+  topics:
+  - experimental
+  - google-earth-engine
+  - jupyter
+  - python
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  - archived
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_maintainer_review
+- full_name: rramosp/geetiles
+  url: https://github.com/rramosp/geetiles
+  description: download Google Earth Engine datasets to tiles as geotiff arrays
+  language: Python
+  license: MIT
+  stars: 77
+  forks: 4
+  updated_at: '2026-06-05T00:49:48Z'
+  pushed_at: '2025-03-11T11:41:53Z'
+  archived: false
+  fork: false
+  topics:
+  - deep-learning
+  - earth-observation
+  - google-earth-engine
+  - satellite-imagery
+  task_tags:
+  - python
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: kvos/CoastSat.slope
+  url: https://github.com/kvos/CoastSat.slope
+  description: Beach-face slope estimation from satellite-derived shorelines, extension
+    of the CoastSat toolbox.
+  language: Jupyter Notebook
+  license: GPL-3.0
+  stars: 77
+  forks: 19
+  updated_at: '2026-06-21T15:51:28Z'
+  pushed_at: '2022-01-18T23:48:11Z'
+  archived: false
+  fork: false
+  topics:
+  - beach-slope
+  - coastal-engineering
+  - earth-engine
+  - google-earth-engine
+  - remote-sensing
+  - satellite-images
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: bfast2/geeBfastMonitor
+  url: https://github.com/bfast2/geeBfastMonitor
+  description: Google Earth Engine implementation of the popular R bfast package
+  language: JavaScript
+  license: NOASSERTION
+  stars: 75
+  forks: 30
+  updated_at: '2025-10-24T08:33:30Z'
+  pushed_at: '2020-09-06T17:22:49Z'
+  archived: false
+  fork: false
+  topics:
+  - bfast
+  - google-earth-engine
+  - javascript
+  task_tags:
+  - javascript_code_editor
+  - production_tooling
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: giswqs/geemap-apps
+  url: https://github.com/giswqs/geemap-apps
+  description: Interactive web apps created using geemap and streamlit
+  language: Python
+  license: MIT
+  stars: 70
+  forks: 54
+  updated_at: '2026-06-20T03:27:09Z'
+  pushed_at: '2023-07-16T01:46:56Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earthengine
+  - geemap
+  - geospatial
+  - google-earth-engine
+  - mapping
+  - python
+  - streamlit
+  task_tags:
+  - python
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: gee-community/ee-runner
+  url: https://github.com/gee-community/ee-runner
+  description: Command-line runner for Google Earth Engine Playground scripts
+  language: JavaScript
+  license: Apache-2.0
+  stars: 68
+  forks: 19
+  updated_at: '2025-11-05T21:04:40Z'
+  pushed_at: '2024-11-29T10:06:14Z'
+  archived: false
+  fork: false
+  topics:
+  - cloud-computing
+  - gis
+  - google-earth-engine
+  - landsat
+  - remote-sensing
+  task_tags:
+  - javascript_code_editor
+  - landsat_lst
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: r-earthengine/ee_extra
+  url: https://github.com/r-earthengine/ee_extra
+  description: A ninja python package that unifies the Google Earth Engine ecosystem.
+  language: Python
+  license: NOASSERTION
+  stars: 68
+  forks: 11
+  updated_at: '2026-06-21T02:58:09Z'
+  pushed_at: '2026-06-21T02:58:05Z'
+  archived: false
+  fork: false
+  topics:
+  - dataviz
+  - earth-engine
+  - geographic-information-systems
+  - gis
+  - google-earth-engine
+  - javascript
+  - landsat
+  - modis
+  - python
+  - python3
+  - r
+  - remote-sensing
+  - rstats
+  - satellite-imagery
+  - sentinel
+  task_tags:
+  - python
+  - javascript_code_editor
+  - landsat_lst
+  - production_tooling
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: kaust-halo/geeet
+  url: https://github.com/kaust-halo/geeet
+  description: Evapotranspiration (ET) models for use in python and with integration
+    into Google Earth Engine
+  language: Python
+  license: MIT
+  stars: 68
+  forks: 17
+  updated_at: '2026-06-04T14:30:07Z'
+  pushed_at: '2025-10-26T07:38:48Z'
+  archived: false
+  fork: false
+  topics:
+  - evaporation
+  - evapotranspiration
+  - gee
+  - google-earth-engine
+  - remote-sensing
+  - satellite-data
+  - tseb
+  task_tags:
+  - python
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/Wetland-Hydro-GEE
+  url: https://github.com/giswqs/Wetland-Hydro-GEE
+  description: Mapping wetland hydrological dynamics using Google Earth Engine (GEE)
+  language: JavaScript
+  license: NOASSERTION
+  stars: 59
+  forks: 18
+  updated_at: '2026-04-13T13:50:41Z'
+  pushed_at: '2019-07-12T15:01:53Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - gee
+  - gis
+  - google-earth-engine
+  - hydrological-data-analysis
+  - lidar
+  - naip
+  - remote-sensing
+  - wetlands
+  task_tags:
+  - javascript_code_editor
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: bellingcat/cloud-free-subregion
+  url: https://github.com/bellingcat/cloud-free-subregion
+  description: 'Google Earth Engine application that finds Sentinel-2 images that
+    are cloud-free in a particular area of interest. '
+  language: JavaScript
+  license: MIT
+  stars: 59
+  forks: 12
+  updated_at: '2026-04-13T13:50:45Z'
+  pushed_at: '2021-06-24T14:13:43Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - javascript
+  - open-source-research
+  - sentinel-2
+  task_tags:
+  - javascript_code_editor
+  - sentinel2_optical
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: opengeos/Earth-Engine-Catalog
+  url: https://github.com/opengeos/Earth-Engine-Catalog
+  description: The Google Earth Engine data catalog in CSV format
+  language: Python
+  license: MIT
+  stars: 58
+  forks: 10
+  updated_at: '2026-06-22T05:07:49Z'
+  pushed_at: '2026-06-22T05:07:44Z'
+  archived: false
+  fork: false
+  topics:
+  - data-catalog
+  - geospatial
+  - google-earth-engine
+  task_tags:
+  - python
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: brownag/rgeedim
+  url: https://github.com/brownag/rgeedim
+  description: ' Search, composite, and download ''Google Earth Engine'' imagery with
+    the ''Python'' module ''geedim'''
+  language: R
+  license: NOASSERTION
+  stars: 53
+  forks: 3
+  updated_at: '2026-06-10T16:45:18Z'
+  pushed_at: '2026-06-10T16:41:42Z'
+  archived: false
+  fork: false
+  topics:
+  - geedim
+  - geotiff
+  - gis
+  - google-earth-engine
+  - python
+  - r
+  - raster
+  - remote-sensing
+  - satellite-imagery
+  - spatial
+  - terra
+  task_tags:
+  - python
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: pinkychow1010/EO-Climate-Hazard-Analysis-App
+  url: https://github.com/pinkychow1010/EO-Climate-Hazard-Analysis-App
+  description: 'A Google Earth Engine API (interactive dashboard) for satellite-based
+    global climate hazard analysis (urban heat, landcover changes, etc).  Project
+    under World Bank Group. ⬇️ ⬇️ '
+  language: unknown
+  license: GPL-3.0
+  stars: 52
+  forks: 6
+  updated_at: '2026-05-31T20:16:04Z'
+  pushed_at: '2023-07-15T17:59:01Z'
+  archived: false
+  fork: false
+  topics:
+  - climate-change
+  - climate-risk
+  - earth-engine
+  - earth-observation
+  - gee
+  - geospatial
+  - google-earth-engine
+  - image-processing
+  - land-surface-temperature
+  - landsat
+  - landuse-change
+  - mapping
+  - modis
+  - natural-hazard
+  - pakistan
+  - portfolio-page
+  - remote-sensing
+  - urban-analysis
+  - urban-heat-island
+  - world-bank
+  task_tags:
+  - landsat_lst
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: fsn1995/Drought-Analysis
+  url: https://github.com/fsn1995/Drought-Analysis
+  description: Drought analysis with Google Earth Engine. (Compare SPEI with NDVI
+    anomalies)
+  language: JavaScript
+  license: GPL-3.0
+  stars: 51
+  forks: 35
+  updated_at: '2026-01-28T21:20:46Z'
+  pushed_at: '2019-10-30T22:11:21Z'
+  archived: false
+  fork: false
+  topics:
+  - drought
+  - google-earth-engine
+  - ndvi
+  - spei
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: bluegreen-labs/gee_subset
+  url: https://github.com/bluegreen-labs/gee_subset
+  description: Google Earth Engine subset script & library
+  language: Python
+  license: AGPL-3.0
+  stars: 50
+  forks: 32
+  updated_at: '2026-01-23T06:40:09Z'
+  pushed_at: '2022-12-05T11:23:58Z'
+  archived: false
+  fork: false
+  topics:
+  - data-retrieval
+  - google-earth-engine
+  - python
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: chathumal93/Pytorch-UNet-Flood-Segmentation
+  url: https://github.com/chathumal93/Pytorch-UNet-Flood-Segmentation
+  description: This repository contains a PyTorch implementation of a U-Net model
+    for segmenting water areas (flood and permananet water) in Sentinel-1 satellite
+    images.
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 50
+  forks: 13
+  updated_at: '2026-06-19T08:32:53Z'
+  pushed_at: '2024-05-21T08:59:12Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - sar
+  - sentinel-1
+  - unet
+  - unet-pytorch
+  - unet-segmentation
+  task_tags:
+  - python
+  - sentinel1_sar
+  - water_flood
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: SMByC/CCD-Plugin
+  url: https://github.com/SMByC/CCD-Plugin
+  description: The CCD-Plugin uses Google Earth Engine to get Landsat or Sentinel2
+    datasets and run the Continuous Change Detection  (CCDC) algorithm to analyze
+    the trends and breakpoints of change over multi-year time series at a given coordinate.
+  language: Python
+  license: GPL-3.0
+  stars: 48
+  forks: 7
+  updated_at: '2026-06-20T21:21:30Z'
+  pushed_at: '2026-06-20T21:21:26Z'
+  archived: false
+  fork: false
+  topics:
+  - ccdc
+  - google-earth-engine
+  - landsat
+  - qgis-plugin
+  - remote-sensing
+  - time-series
+  task_tags:
+  - python
+  - sentinel2_optical
+  - landsat_lst
+  - landcover_change
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/gee-tutorials
+  url: https://github.com/giswqs/gee-tutorials
+  description: Google Earth Engine tutorials
+  language: Jupyter Notebook
+  license: MIT
+  stars: 47
+  forks: 18
+  updated_at: '2026-01-20T22:43:12Z'
+  pushed_at: '2021-03-18T01:40:39Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - geopython
+  - geospatial
+  - gis
+  - google-earth-engine
+  - ipyleaflet
+  - jupyter
+  - mapping
+  - python
+  - remote-sensing
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: calekochenour/remote-sensing-textbook
+  url: https://github.com/calekochenour/remote-sensing-textbook
+  description: Textbook that provides JavaScript and Python code to create open reproducible
+    remote sensing analyses and workflows in Google Earth Engine.
+  language: HTML
+  license: BSD-3-Clause
+  stars: 46
+  forks: 16
+  updated_at: '2026-04-12T16:17:03Z'
+  pushed_at: '2021-04-19T16:46:42Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - javascript
+  - jupyter-notebooks
+  - python
+  - remote-sensing
+  - reproducible-science
+  - reproducible-workflows
+  - scientific-computing
+  - textbook
+  task_tags:
+  - python
+  - javascript_code_editor
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: sukantjain/Google-Earth-Engine
+  url: https://github.com/sukantjain/Google-Earth-Engine
+  description: A Collection of Python and Javascript Script to perform Geographical
+    analysis using Google Earth Engine Python API and Javascript Code Editor
+  language: JavaScript
+  license: NOASSERTION
+  stars: 42
+  forks: 24
+  updated_at: '2026-06-07T20:11:30Z'
+  pushed_at: '2026-03-22T15:44:31Z'
+  archived: false
+  fork: false
+  topics:
+  - geographical-information-system
+  - google-earth-engine
+  - image-processing
+  - javascript
+  - jupyter-notebook
+  - python
+  task_tags:
+  - python
+  - javascript_code_editor
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: gee-community/geeViz
+  url: https://github.com/gee-community/geeViz
+  description: Repository of GEE libraries produced by RedCastle Inc at the US Forest
+    Service Geospatial Technology Applications Center
+  language: Python
+  license: Apache-2.0
+  stars: 41
+  forks: 9
+  updated_at: '2026-06-10T21:38:25Z'
+  pushed_at: '2026-06-10T21:38:20Z'
+  archived: false
+  fork: false
+  topics:
+  - ccdc
+  - colab
+  - data-science
+  - data-visualization
+  - dataviz
+  - earthengine
+  - folium
+  - gis
+  - google-earth-engine
+  - google-maps-api
+  - image-processing
+  - jupyter
+  - landscape-metrics
+  - landtrendr
+  - lcms
+  - mapping
+  - python
+  - remote-sensing
+  - time-lapse
+  task_tags:
+  - python
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: GeoINTA/curso-gee
+  url: https://github.com/GeoINTA/curso-gee
+  description: Google Earth Engine para el monitoreo del uso y cobertura del suelo
+    de la República Argentina
+  language: unknown
+  license: GPL-3.0
+  stars: 41
+  forks: 29
+  updated_at: '2025-12-01T12:38:16Z'
+  pushed_at: '2017-12-12T19:54:03Z'
+  archived: false
+  fork: false
+  topics:
+  - gee
+  - google-earth-engine
+  - tutorial
+  task_tags:
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: Martin-Jung/Habitatmapping
+  url: https://github.com/Martin-Jung/Habitatmapping
+  description: Code and data repository for creating a habitat type map
+  language: JavaScript
+  license: CC-BY-4.0
+  stars: 37
+  forks: 11
+  updated_at: '2026-05-13T05:46:31Z'
+  pushed_at: '2020-10-14T18:30:09Z'
+  archived: false
+  fork: false
+  topics:
+  - biodiversity
+  - google-earth-engine
+  - habitat
+  - iucn-red-list
+  - spatial-data
+  task_tags:
+  - javascript_code_editor
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: geonextgis/geeagri
+  url: https://github.com/geonextgis/geeagri
+  description: Python tools for agricultural analysis powered by Google Earth Engine.
+  language: Python
+  license: MIT
+  stars: 37
+  forks: 9
+  updated_at: '2026-06-06T18:10:26Z'
+  pushed_at: '2026-05-25T18:40:08Z'
+  archived: false
+  fork: false
+  topics:
+  - agriculture
+  - analysis
+  - geemap
+  - geospatial
+  - google-earth-engine
+  - jupyter-notebook
+  - mapping
+  - python
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: davemlz/GEE_TimeSeries
+  url: https://github.com/davemlz/GEE_TimeSeries
+  description: Google Earth Engine time series with Savitzky-Golay filter
+  language: Python
+  license: NOASSERTION
+  stars: 35
+  forks: 9
+  updated_at: '2025-11-19T05:32:44Z'
+  pushed_at: '2021-04-08T16:02:13Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - satellite-imagery
+  - savitzky-golay-filter
+  - sentinel-2
+  - series
+  task_tags:
+  - python
+  - sentinel2_optical
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: gee-community/eetasks
+  url: https://github.com/gee-community/eetasks
+  description: Earth Engine tasks monitoring in vscode
+  language: TypeScript
+  license: MIT
+  stars: 34
+  forks: 3
+  updated_at: '2026-06-05T19:29:57Z'
+  pushed_at: '2024-12-20T07:23:26Z'
+  archived: false
+  fork: false
+  topics:
+  - earthengine
+  - google-earth-engine
+  - task-manager
+  - vscode-extension
+  task_tags: []
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: openearth/hydro-engine
+  url: https://github.com/openearth/hydro-engine
+  description: Hydro Engine is a service and a command-line tool to query static and
+    dynamic hydrographic data derived from Earth Observations
+  language: Jupyter Notebook
+  license: MIT
+  stars: 33
+  forks: 9
+  updated_at: '2026-03-21T02:21:01Z'
+  pushed_at: '2018-11-01T16:51:19Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - hydrology
+  - remote-sensing
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: webandras/gee_s1_sar_wetlands
+  url: https://github.com/webandras/gee_s1_sar_wetlands
+  description: Supplementary Material to my Remote Sensing publication 'Sentinel-1-Imagery-Based
+    High-Resolution Water Cover Detection on Wetlands, Aided by Google Earth Engine'
+  language: JavaScript
+  license: MIT
+  stars: 32
+  forks: 7
+  updated_at: '2026-01-12T23:24:57Z'
+  pushed_at: '2020-05-26T23:32:54Z'
+  archived: true
+  fork: false
+  topics:
+  - api
+  - c-sar
+  - google-earth-engine
+  - googleearthengine
+  - javascript
+  - remote-sensing
+  - scientific-publications
+  - sentinel-1
+  - synthetic-aperture-radar
+  task_tags:
+  - javascript_code_editor
+  - sentinel1_sar
+  - water_flood
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  - archived
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_maintainer_review
+- full_name: serapeum-org/earthlens
+  url: https://github.com/serapeum-org/earthlens
+  description: Remote Sensing data - Earth observation data
+  language: Python
+  license: GPL-3.0
+  stars: 31
+  forks: 2
+  updated_at: '2026-06-17T23:28:23Z'
+  pushed_at: '2026-06-18T13:37:37Z'
+  archived: false
+  fork: false
+  topics:
+  - amazon-s3
+  - ecmwf
+  - era5
+  - google-earth-engine
+  - remote-sensing
+  task_tags:
+  - python
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/earthengine-apps
+  url: https://github.com/giswqs/earthengine-apps
+  description: A collection of Earth Engine Apps created using geemap and voila
+  language: Jupyter Notebook
+  license: MIT
+  stars: 30
+  forks: 20
+  updated_at: '2025-05-26T00:53:34Z'
+  pushed_at: '2023-05-28T19:03:32Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - geemap
+  - geospatial
+  - gis
+  - google-earth-engine
+  - heorku
+  - huggingface
+  - ipyleaflet
+  - jupyter-notebook
+  - mapping
+  - python
+  - remote-sensing
+  - voila
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/eefolium
+  url: https://github.com/giswqs/eefolium
+  description: A lightweight Python package for interactive mapping with Earth Engine
+    and folium
+  language: Python
+  license: MIT
+  stars: 28
+  forks: 9
+  updated_at: '2024-07-22T23:25:28Z'
+  pushed_at: '2023-09-07T14:17:45Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - folium
+  - gee
+  - geospatial
+  - gis
+  - google-earth-engine
+  - jupyter
+  - jupyter-notebooks
+  - python
+  - python-api
+  - remotesensing
+  - tutorials
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: chrieke/GoogleEarthEngine-side-projects
+  url: https://github.com/chrieke/GoogleEarthEngine-side-projects
+  description: Google Earth Engine side projects and tutorial scripts
+  language: JavaScript
+  license: MIT
+  stars: 27
+  forks: 18
+  updated_at: '2024-11-26T18:42:28Z'
+  pushed_at: '2020-12-27T14:08:13Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-observation
+  - google-earth-engine
+  - remote-sensing
+  - satellite-imagery
+  task_tags:
+  - javascript_code_editor
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: aazuspan/geeTools
+  url: https://github.com/aazuspan/geeTools
+  description: Remote sensing and spatial analysis tools for Google Earth Engine
+  language: JavaScript
+  license: GPL-3.0
+  stars: 27
+  forks: 3
+  updated_at: '2025-07-14T18:39:00Z'
+  pushed_at: '2022-09-13T00:50:15Z'
+  archived: false
+  fork: false
+  topics:
+  - burn-severity
+  - cloud-masking
+  - google-earth-engine
+  - hli
+  - radiometric-correction
+  - rdnbr
+  - remote-sensing
+  - tpi
+  task_tags:
+  - javascript_code_editor
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: esjoal/GEE_GPR_mapping_vegetation
+  url: https://github.com/esjoal/GEE_GPR_mapping_vegetation
+  description: Mapping vegetation properties in Google Earth Engine using GPR models
+    and the Sentinel-2 L1C product.
+  language: Python
+  license: MIT
+  stars: 26
+  forks: 8
+  updated_at: '2026-03-09T23:22:15Z'
+  pushed_at: '2022-03-24T12:43:49Z'
+  archived: false
+  fork: false
+  topics:
+  - agriculture
+  - gaussian-processes
+  - google-earth-engine
+  - mapping
+  - retrieval-model
+  - sentinel-2
+  - vegetation
+  task_tags:
+  - python
+  - spectral_indices
+  - sentinel2_optical
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: krishnakafle/Blog_kaflekrishna
+  url: https://github.com/krishnakafle/Blog_kaflekrishna
+  description: All the code in this branch will be python based, upon jupyter notebook.
+    You will be able to find all codes for Google Earth Engine(GEE) on this repository.
+    You will be able to link code with each post blog on readme file for each folders.  Content
+    from the Blog https://kaflekrishna.com.np will be uploaded here.  https://google-earth-engine.com/
+  language: Jupyter Notebook
+  license: MIT
+  stars: 26
+  forks: 11
+  updated_at: '2026-01-23T02:10:32Z'
+  pushed_at: '2026-01-23T02:10:28Z'
+  archived: false
+  fork: false
+  topics:
+  - data-science
+  - enhanced-vegetation-index
+  - evi
+  - gee
+  - gee-python-api
+  - google-earth-engine
+  - modis
+  - ndvi
+  - python
+  - python-api
+  - remote-sensing
+  - savitzky-golay
+  - savitzky-golay-filter
+  - sentinel
+  - spatial-analysis
+  - vegetation-indices
+  task_tags:
+  - python
+  - spectral_indices
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/geemap-heroku
+  url: https://github.com/giswqs/geemap-heroku
+  description: Python scripts for deploying Earth Engine Apps to heroku
+  language: Jupyter Notebook
+  license: MIT
+  stars: 26
+  forks: 41
+  updated_at: '2025-05-26T04:58:44Z'
+  pushed_at: '2024-01-11T19:20:59Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - geemap
+  - geospatial
+  - gis
+  - google-earth-engine
+  - ipyleaflet
+  - jupyter-notebook
+  - mapping
+  - python
+  - remote-sensing
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: joshualerickson/exploreRGEE
+  url: https://github.com/joshualerickson/exploreRGEE
+  description: Exploring RGEE.
+  language: R
+  license: NOASSERTION
+  stars: 23
+  forks: 4
+  updated_at: '2024-12-07T02:55:42Z'
+  pushed_at: '2022-05-01T18:57:54Z'
+  archived: false
+  fork: false
+  topics:
+  - exploratory
+  - google-earth-engine
+  - rgee
+  task_tags: []
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: worldbank/GEE_Zonal
+  url: https://github.com/worldbank/GEE_Zonal
+  description: Collection of python tools for running zonal stats on Google Earth
+    Engine layers
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 23
+  forks: 7
+  updated_at: '2026-06-14T14:04:48Z'
+  pushed_at: '2025-04-11T17:19:43Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - zonal-statistics
+  task_tags:
+  - python
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: davemlz/outreach
+  url: https://github.com/davemlz/outreach
+  description: A repository with Google Earth Engine workshops, courses and conferences.
+  language: JavaScript
+  license: NOASSERTION
+  stars: 22
+  forks: 3
+  updated_at: '2024-05-11T00:40:16Z'
+  pushed_at: '2023-11-25T09:34:24Z'
+  archived: false
+  fork: false
+  topics:
+  - classification
+  - earth-engine
+  - geographic-data
+  - geographic-information-systems
+  - gis
+  - google
+  - google-earth-engine
+  - javascript
+  - python
+  - remote-sensing
+  - spectral-indices
+  task_tags:
+  - python
+  - javascript_code_editor
+  - spectral_indices
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: gicait/intro-to-gee-and-application
+  url: https://github.com/gicait/intro-to-gee-and-application
+  description: This tutorial includes introduction to fundamentals of Google Earth
+    Engine (GEE) with Python and Applications (Case Studies) of GEE.
+  language: unknown
+  license: CC0-1.0
+  stars: 22
+  forks: 12
+  updated_at: '2026-03-04T08:10:20Z'
+  pushed_at: '2022-12-09T09:45:12Z'
+  archived: false
+  fork: false
+  topics:
+  - gee
+  - geospatial-data
+  - google-earth-engine
+  - javascript
+  - python
+  - remote-sensing
+  - tutorial
+  task_tags:
+  - python
+  - javascript_code_editor
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: OmdenaAI/omdena-bhopal-water-quality-monitoring
+  url: https://github.com/OmdenaAI/omdena-bhopal-water-quality-monitoring
+  description: Monitoring the Water Quality in Bhopal Region using Satellite Imagery.
+  language: Jupyter Notebook
+  license: GPL-3.0
+  stars: 21
+  forks: 12
+  updated_at: '2025-12-07T08:12:29Z'
+  pushed_at: '2023-04-07T21:41:57Z'
+  archived: false
+  fork: false
+  topics:
+  - data-science
+  - google-earth-engine
+  - open-source
+  - satellite-data
+  - satellite-imagery
+  task_tags:
+  - python
+  - water_flood
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: awesome-spectral-indices/awesome-ASI
+  url: https://github.com/awesome-spectral-indices/awesome-ASI
+  description: A curated list of Awesome Spectral Indices (ASI) resources
+  language: unknown
+  license: MIT
+  stars: 21
+  forks: 4
+  updated_at: '2026-01-16T13:14:38Z'
+  pushed_at: '2023-12-17T16:40:25Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - earth-observation
+  - geographical-information-system
+  - gis
+  - google-earth-engine
+  - javascript
+  - landsat
+  - modis
+  - python
+  - r
+  - remote-sensing
+  - sentinel
+  - spectral-index
+  - spectral-indices
+  task_tags:
+  - python
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: tianjialiu/HMS-Smoke
+  url: https://github.com/tianjialiu/HMS-Smoke
+  description: 'HMS Smoke Explorer: To visualize NOAA''s Hazard Mapping System (HMS)
+    smoke product'
+  language: JavaScript
+  license: MIT
+  stars: 21
+  forks: 7
+  updated_at: '2026-06-11T07:18:37Z'
+  pushed_at: '2026-06-11T07:18:33Z'
+  archived: false
+  fork: false
+  topics:
+  - fires
+  - goes
+  - google-earth-engine
+  - modis
+  - smoke
+  task_tags:
+  - javascript_code_editor
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: calekochenour/gee-vegetation-change
+  url: https://github.com/calekochenour/gee-vegetation-change
+  description: Reproducible remote sensing analysis using Google Earth Engine (GEE)
+    to identify vegetation change in Columbia.
+  language: Jupyter Notebook
+  license: BSD-3-Clause
+  stars: 20
+  forks: 7
+  updated_at: '2026-03-26T20:57:14Z'
+  pushed_at: '2020-09-23T13:38:38Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - jupyter-notebook
+  - land-cover
+  - landsat-8
+  - ndvi
+  - python
+  - remote-sensing
+  - vegetation-change
+  task_tags:
+  - python
+  - spectral_indices
+  - landsat_lst
+  - landcover_change
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: WangHuangHan/CanopyCarbonPrediction_GEE
+  url: https://github.com/WangHuangHan/CanopyCarbonPrediction_GEE
+  description: This project uses satellite images on Google Earth Engine to predict
+    canopy height and estimate carbon content in the University of Malaya forest area.
+  language: JavaScript
+  license: NOASSERTION
+  stars: 20
+  forks: 3
+  updated_at: '2026-06-17T07:44:59Z'
+  pushed_at: '2025-02-02T12:56:46Z'
+  archived: false
+  fork: false
+  topics:
+  - aboveground-biomass
+  - canopy-height-models
+  - carbon-storage
+  - google-earth-engine
+  - javascript
+  - machine-learning
+  - remote-sensing
+  - satellite-imagery
+  task_tags:
+  - javascript_code_editor
+  - landcover_change
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: ollinevalainen/satellitetools
+  url: https://github.com/ollinevalainen/satellitetools
+  description: Get Sentinel-2 data from Google Earth Engine or from cloud-optimized
+    geotiffs in AWS Open data registry maintained by Element84, and compute biophysical
+    parameters using SNAP Biophysical processor algorithm.
+  language: Python
+  license: MIT
+  stars: 20
+  forks: 9
+  updated_at: '2026-04-23T06:12:37Z'
+  pushed_at: '2026-01-13T16:53:27Z'
+  archived: false
+  fork: false
+  topics:
+  - cloud-optimized-geotiff
+  - google-earth-engine
+  - lai
+  - python
+  - remote-sensing
+  - satellite-imagery
+  - sentinel-2
+  - vegetation
+  - vegetation-index
+  task_tags:
+  - python
+  - spectral_indices
+  - sentinel2_optical
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: lukasValentin/OBIA4RTM
+  url: https://github.com/lukasValentin/OBIA4RTM
+  description: Object-Based Image Analysis Tools for Radiative Transfer Modeling
+  language: Python
+  license: NOASSERTION
+  stars: 20
+  forks: 2
+  updated_at: '2024-12-13T14:38:31Z'
+  pushed_at: '2023-04-23T14:05:24Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - image-analysis
+  - imagery
+  - obia
+  - remote
+  - remote-sensing
+  - rtm
+  - sentinel-2
+  - vegetation
+  task_tags:
+  - python
+  - spectral_indices
+  - sentinel2_optical
+  - production_tooling
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: saumyatas/Zonal-Statistics
+  url: https://github.com/saumyatas/Zonal-Statistics
+  description: GEE, an open-source platform, for fast computation to Spatio-temporal
+    analysis of satellite data.
+  language: JavaScript
+  license: MIT
+  stars: 20
+  forks: 7
+  updated_at: '2024-11-05T12:39:57Z'
+  pushed_at: '2021-11-30T06:07:09Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - landsat
+  - modis
+  - ndvi
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: Surv-Lukmon/Crop-Classification
+  url: https://github.com/Surv-Lukmon/Crop-Classification
+  description: Crop type classification with 10m spatial resolution using Random Forest
+    Machine Learning Algorithm and time-series sentinel-2 images in Google Earth Engine
+    Python API.
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 19
+  forks: 6
+  updated_at: '2026-05-19T06:40:53Z'
+  pushed_at: '2024-08-07T23:16:28Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - machine-learning
+  - python
+  - sentinel
+  task_tags:
+  - python
+  - sentinel2_optical
+  - landcover_change
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: jstrzempko/GEE-Random-Forest-HBM-Tutorial
+  url: https://github.com/jstrzempko/GEE-Random-Forest-HBM-Tutorial
+  description: Habitat Suitability Modeling with Random Forest Classification in Google
+    Earth Engine
+  language: JavaScript
+  license: NOASSERTION
+  stars: 19
+  forks: 8
+  updated_at: '2026-02-05T20:21:45Z'
+  pushed_at: '2021-01-29T16:41:31Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - habitat-suitability
+  - random-forest-classification
+  - tutorial
+  task_tags:
+  - javascript_code_editor
+  - landcover_change
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: andrebelem/Curso_Basico_Geemap
+  url: https://github.com/andrebelem/Curso_Basico_Geemap
+  description: 'This course introduces beginners to Google Earth Engine using Python
+    in Google Colab. Explore remote sensing, process geospatial data, create dynamic
+    visualizations, and understand drought indices. Develop skills for environmental
+    monitoring and decision-making without needing local installations. '
+  language: Python
+  license: MIT
+  stars: 19
+  forks: 6
+  updated_at: '2026-02-04T17:15:04Z'
+  pushed_at: '2025-06-25T11:48:11Z'
+  archived: false
+  fork: false
+  topics:
+  - colab-notebook
+  - geemap
+  - google-earth-engine
+  - python
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: tianjialiu/FIRECAM
+  url: https://github.com/tianjialiu/FIRECAM
+  description: 'FIRECAM: Fire Inventories - Regional Evaluation, Comparison, and Metrics'
+  language: JavaScript
+  license: MIT
+  stars: 19
+  forks: 11
+  updated_at: '2026-03-12T20:34:19Z'
+  pushed_at: '2026-03-12T20:34:15Z'
+  archived: false
+  fork: false
+  topics:
+  - emissions
+  - fire-emissions
+  - fire-inventory
+  - fires
+  - gfedv4s-emissions
+  - google-earth-engine
+  - modis
+  task_tags:
+  - javascript_code_editor
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: BzGEO/PACE_OCI_Toolkit
+  url: https://github.com/BzGEO/PACE_OCI_Toolkit
+  description: Google Earth Engine (GEE) JavaScript-based tools for working with NASA
+    PACE OCI data
+  language: JavaScript
+  license: MIT
+  stars: 19
+  forks: 4
+  updated_at: '2026-06-20T14:10:52Z'
+  pushed_at: '2026-06-20T14:10:48Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-observation
+  - google-earth-engine
+  - hyperspectral
+  - image-classification
+  - image-processing
+  - javascript
+  - pace
+  - pace-early-adopter
+  - pace-oci
+  - remote-sensing
+  - repository
+  - satellite-data
+  - satellite-imagery
+  - terrestrial
+  - uah-essc
+  - uah-las
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: giswqs/geog-414-fall2022
+  url: https://github.com/giswqs/geog-414-fall2022
+  description: Spatial Data Management with Google Earth Engine
+  language: Jupyter Notebook
+  license: MIT
+  stars: 18
+  forks: 4
+  updated_at: '2025-12-01T11:27:17Z'
+  pushed_at: '2023-08-16T03:29:50Z'
+  archived: false
+  fork: false
+  topics:
+  - data-science
+  - data-visualization
+  - earthengine
+  - geemap
+  - geospatial
+  - google-earth-engine
+  - jupyter
+  - open-source
+  - streamlit
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: davemlz/water-storage-retrieval
+  url: https://github.com/davemlz/water-storage-retrieval
+  description: Semi-supervised water storage retrieval using Sentinel-2
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 18
+  forks: 5
+  updated_at: '2025-06-08T07:42:45Z'
+  pushed_at: '2020-06-09T21:40:06Z'
+  archived: false
+  fork: false
+  topics:
+  - bathymetry
+  - copernicus
+  - esa
+  - gee
+  - google-earth-engine
+  - gradient-boosting
+  - idw
+  - inverse-distance-weighting
+  - kmeans
+  - kmeans-algorithm
+  - kmeans-clustering
+  - linear-regression
+  - random-forest
+  - satellite-imagery
+  - sentinel
+  - sentinel-2
+  - snic
+  - water
+  - water-resources
+  - water-storage-calculator
+  task_tags:
+  - python
+  - sentinel2_optical
+  - water_flood
+  - landcover_change
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: NASA-EarthRISE/training_Getting_started_with_GEDI_spaceborne_lidar
+  url: https://github.com/NASA-EarthRISE/training_Getting_started_with_GEDI_spaceborne_lidar
+  description: This repo contains the training webpage and hands-on tutorials for
+    users to learn the fundamental characteristics of GEDI spaceborne lidar for real-world
+    applications and explore GEDI data with tips for contextualized quality preparation.
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 17
+  forks: 10
+  updated_at: '2026-06-03T13:46:13Z'
+  pushed_at: '2025-11-18T20:24:36Z'
+  archived: false
+  fork: false
+  topics:
+  - analysis-ready-data
+  - applied-science
+  - biomass-change
+  - colab-notebook
+  - ecosystems
+  - gedi
+  - google-earth-engine
+  - lidar
+  - remote-sensing
+  - remote-sensing-in-r
+  - tutorials
+  - vegetation
+  - waveform
+  task_tags:
+  - python
+  - spectral_indices
+  - landcover_change
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: giswqs/wetland
+  url: https://github.com/giswqs/wetland
+  description: Mapping surface water and wetland hydrological dynamics using Google
+    Earth Engine
+  language: Python
+  license: MIT
+  stars: 17
+  forks: 5
+  updated_at: '2025-05-20T13:13:41Z'
+  pushed_at: '2023-09-19T14:10:00Z'
+  archived: false
+  fork: false
+  topics:
+  - gee
+  - gis
+  - google-earth-engine
+  - hydrology
+  - naip
+  - python
+  - remote-sensing
+  - surface-water
+  - water
+  - wetlands
+  task_tags:
+  - python
+  - water_flood
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: fsn1995/Fun-with-Google-Earth-Engine
+  url: https://github.com/fsn1995/Fun-with-Google-Earth-Engine
+  description: Google Earth Engine practice
+  language: JavaScript
+  license: Apache-2.0
+  stars: 16
+  forks: 8
+  updated_at: '2025-12-24T16:21:10Z'
+  pushed_at: '2020-04-27T20:04:48Z'
+  archived: false
+  fork: false
+  topics:
+  - ec-jrc
+  - fire-events
+  - gee
+  - google-earth-engine
+  - pca
+  - remote-sensing
+  task_tags:
+  - javascript_code_editor
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: erin-ntnu/Change-detection-images-GEE
+  url: https://github.com/erin-ntnu/Change-detection-images-GEE
+  description: difference images for landslide detection with GEE
+  language: unknown
+  license: NOASSERTION
+  stars: 15
+  forks: 6
+  updated_at: '2025-12-11T07:34:09Z'
+  pushed_at: '2022-02-22T12:55:11Z'
+  archived: false
+  fork: false
+  topics:
+  - change-detection
+  - google-earth-engine
+  - landslide
+  - sentinel-1
+  - sentinel-2
+  task_tags:
+  - sentinel2_optical
+  - sentinel1_sar
+  - landcover_change
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: balakumaran247/TN_LULC_GEE_App
+  url: https://github.com/balakumaran247/TN_LULC_GEE_App
+  description: Google Earth Engine App - Tamil Nadu LandUse LandCover classification
+    - Random Forest Classifier
+  language: unknown
+  license: NOASSERTION
+  stars: 15
+  forks: 0
+  updated_at: '2026-04-28T07:38:14Z'
+  pushed_at: '2021-10-06T18:22:23Z'
+  archived: false
+  fork: false
+  topics:
+  - gee
+  - google-earth-engine
+  - land-use-land-cover
+  - landcover-classification
+  - landuseplanning
+  - lulc
+  - machine-learning
+  - random-forest
+  - tamilnadu
+  task_tags:
+  - landcover_change
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: bellingcat/Multispectral-Satellite-Imagery-Explorer
+  url: https://github.com/bellingcat/Multispectral-Satellite-Imagery-Explorer
+  description: Google Earth Engine App for exploring Landsat 8 multispectral imagery.
+  language: JavaScript
+  license: NOASSERTION
+  stars: 14
+  forks: 1
+  updated_at: '2026-06-07T23:51:18Z'
+  pushed_at: '2025-01-10T10:56:55Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - javascript
+  - landsat-8
+  - open-source-research
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: ondrejpudis/crop-yield-predictor
+  url: https://github.com/ondrejpudis/crop-yield-predictor
+  description: A tool which is capable of making predictions of cereal and potato
+    yields for districts of the Slovak Republic.
+  language: Jupyter Notebook
+  license: MIT
+  stars: 13
+  forks: 10
+  updated_at: '2024-02-20T16:35:30Z'
+  pushed_at: '2021-10-23T18:21:31Z'
+  archived: false
+  fork: false
+  topics:
+  - crop-yield-prediction
+  - cropland-feature-extraction
+  - google-earth-engine
+  - landsat-7
+  - machine-learning
+  - remote-sensing
+  task_tags:
+  - python
+  - landsat_lst
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: lookmeebbear/sdb_thailand
+  url: https://github.com/lookmeebbear/sdb_thailand
+  description: 'Satellite Derived Bathymetry with IceSAT-2 LiDAR Data : Case Study
+    in the coast of Thailand - Thepchai Srinoi and Dr.Phisan Santitamnont SV CU'
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 13
+  forks: 5
+  updated_at: '2026-01-06T09:24:15Z'
+  pushed_at: '2024-04-25T05:07:55Z'
+  archived: false
+  fork: false
+  topics:
+  - chulalongkorn
+  - google-earth-engine
+  - icesat-2
+  - python
+  - remote-sensing
+  - satellite-derived-bathymetry
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: ternaustralia/cmrset-examples
+  url: https://github.com/ternaustralia/cmrset-examples
+  description: This repository contains code examples which demonstrate how users
+    can access the CMRSET actual evapotranspiration data product and related data
+    services.
+  language: Jupyter Notebook
+  license: MIT
+  stars: 13
+  forks: 5
+  updated_at: '2026-05-22T13:12:06Z'
+  pushed_at: '2024-06-05T11:16:50Z'
+  archived: false
+  fork: false
+  topics:
+  - agriculture
+  - australia
+  - earth-engine
+  - evapotranspiration
+  - examples
+  - gis
+  - google-earth-engine
+  - hydrology
+  - javascript
+  - jupyter-notebook
+  - landsat
+  - modis
+  - python
+  - remote-sensing
+  - satellite-imagery
+  - tutorials
+  - viirs
+  - water-resources
+  - wps
+  task_tags:
+  - python
+  - javascript_code_editor
+  - landsat_lst
+  - water_flood
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: sabrinanicc/GEE-NDVI-Change-Detection
+  url: https://github.com/sabrinanicc/GEE-NDVI-Change-Detection
+  description: 'Code used to create NDVI change detection maps from Sentinel-2 imagery
+    on the Google Earth Engine platform. '
+  language: JavaScript
+  license: NOASSERTION
+  stars: 13
+  forks: 6
+  updated_at: '2025-10-29T00:12:59Z'
+  pushed_at: '2019-12-04T22:26:55Z'
+  archived: false
+  fork: false
+  topics:
+  - change-detection
+  - google-earth-engine
+  - javascript
+  - ndvi
+  - sentinel-2
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - sentinel2_optical
+  - landcover_change
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: yashveeeeeeer/india-district-nightlights-viirs
+  url: https://github.com/yashveeeeeeer/india-district-nightlights-viirs
+  description: District-wise nighttime lights database for India (641 districts, 2012-2024)
+    using VIIRS satellite data.
+  language: Python
+  license: NOASSERTION
+  stars: 13
+  forks: 0
+  updated_at: '2026-04-04T14:19:18Z'
+  pushed_at: '2026-03-17T17:48:59Z'
+  archived: false
+  fork: false
+  topics:
+  - census-india
+  - development-economics
+  - district-data
+  - economics
+  - gdp-proxy
+  - geospatial
+  - gis
+  - google-earth-engine
+  - india
+  - india-data
+  - nightlights
+  - nighttime-lights
+  - panel-data
+  - python
+  - radiance
+  - remote-sensing
+  - satellite-data
+  - urbanization
+  - viirs
+  - zonal-statistics
+  task_tags:
+  - python
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: hariomahlawat/An-open-dataset-for-landuse-classification-in-India-for-Sentinel-2
+  url: https://github.com/hariomahlawat/An-open-dataset-for-landuse-classification-in-India-for-Sentinel-2
+  description: 'We provide a pixel level training dataset for landuse classification
+    (four categories - Green, Water, Barren land and Built up Areas) using google
+    earth engine for India. All associated scripts are also provided. '
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 12
+  forks: 2
+  updated_at: '2024-06-25T22:40:14Z'
+  pushed_at: '2020-07-16T14:42:00Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - image-classification
+  - india
+  - landuse
+  - landuse-change
+  - machine-learning
+  - pixel-level-dataset
+  - satellite-data
+  - satellite-imagery
+  - sentinel-2
+  - training-dataset
+  task_tags:
+  - python
+  - sentinel2_optical
+  - water_flood
+  - landcover_change
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: cameronking4/google-earth-engine-mcp
+  url: https://github.com/cameronking4/google-earth-engine-mcp
+  description: MCP server for Google Earth Engine. Query Google Earth Engine with
+    natural language. Fetch datasets, run tasks and visualize in chat.
+  language: TypeScript
+  license: MIT
+  stars: 12
+  forks: 4
+  updated_at: '2026-06-19T04:59:43Z'
+  pushed_at: '2025-05-11T12:08:44Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - mcp
+  - mcp-server
+  - nextjs
+  - s2
+  - satellite-data
+  - satellite-imagery
+  - vercel-mcp-adapter
+  task_tags:
+  - sentinel2_optical
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: swcoughlan/flood-analysis
+  url: https://github.com/swcoughlan/flood-analysis
+  description: Jupyter Notebook for SAR flood analysis in Pakistan with Google Earth
+    Engine Python API
+  language: Jupyter Notebook
+  license: NOASSERTION
+  stars: 12
+  forks: 3
+  updated_at: '2026-04-05T03:12:24Z'
+  pushed_at: '2024-01-01T12:46:22Z'
+  archived: false
+  fork: false
+  topics:
+  - gee
+  - google-earth-engine
+  - sar
+  - sentinel-1
+  task_tags:
+  - python
+  - sentinel1_sar
+  - water_flood
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: aazuspan/taskee
+  url: https://github.com/aazuspan/taskee
+  description: Mobile and native notifications for Earth Engine tasks
+  language: Python
+  license: MIT
+  stars: 12
+  forks: 0
+  updated_at: '2026-06-13T18:36:25Z'
+  pushed_at: '2026-06-13T18:36:21Z'
+  archived: false
+  fork: false
+  topics:
+  - android
+  - cli
+  - gee
+  - google-earth-engine
+  - linux
+  - macos
+  - notifications
+  - pushbullet
+  - rich
+  - task-manager
+  - tasks
+  - windows
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: KMarkert/mekong-ssc-gae
+  url: https://github.com/KMarkert/mekong-ssc-gae
+  description: A Google AppEngine application using Google Earth Engine to monitor
+    suspended sediment concentration in the Lower Mekong Basin.
+  language: Python
+  license: GPL-3.0
+  stars: 12
+  forks: 4
+  updated_at: '2026-05-25T02:24:47Z'
+  pushed_at: '2018-11-27T01:26:39Z'
+  archived: false
+  fork: false
+  topics:
+  - google-appengine
+  - google-earth-engine
+  - lower-mekong-basin
+  - suspended-sediment
+  task_tags:
+  - python
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: Chintan2108/NDVI-and-Vegetation-Health-Calculation
+  url: https://github.com/Chintan2108/NDVI-and-Vegetation-Health-Calculation
+  description: Land and Vegetation Remote Sensing - A webapp build and deployed in
+    Google Earth Engine, to calculate the Normalised Vegetation Difference Index of
+    a visible vegetation cover and use the same to analyze the health and age of that
+    patch. The  datasats used are GEE calibrated Landsat 7 rasters and the sensor
+    used is ETM 2+ (Enhanced Thematic Mapper).
+  language: JavaScript
+  license: NOASSERTION
+  stars: 12
+  forks: 5
+  updated_at: '2024-08-24T02:25:42Z'
+  pushed_at: '2018-12-08T07:07:34Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - landsat-7
+  - ndvi
+  - remote-sensing
+  - sensor
+  - vegetation-health-calculation
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: giswqs/geemap-tutorials
+  url: https://github.com/giswqs/geemap-tutorials
+  description: Interactive geemap tutorials on heroku
+  language: Jupyter Notebook
+  license: MIT
+  stars: 12
+  forks: 6
+  updated_at: '2025-11-24T00:11:57Z'
+  pushed_at: '2021-01-26T01:57:42Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - folium
+  - geemap
+  - google-earth-engine
+  - ipyleaflet
+  - jupyter
+  - mapping
+  - python
+  task_tags:
+  - python
+  - education_tutorial
+  quality_flags:
+  - known_gee_org_or_maintainer
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: palubad/S1-BAP
+  url: https://github.com/palubad/S1-BAP
+  description: 'A semi-automatic GEE tool to monitor burned area progression using
+    Sentinel-1 SAR data. Attachment for the article in the IEEE JSTARS by Paluba D.
+    et al. (2024): Tracking burned area progression in an unsupervised manner using
+    Sentinel-1 SAR data in Google Earth Engine https://doi.org/10.1109/JSTARS.2024.3427382'
+  language: JavaScript
+  license: MIT
+  stars: 12
+  forks: 1
+  updated_at: '2026-06-01T09:40:34Z'
+  pushed_at: '2024-08-05T14:57:40Z'
+  archived: false
+  fork: false
+  topics:
+  - burned-area
+  - clustering
+  - earth-engine
+  - earth-observation
+  - forest
+  - forestry
+  - google-earth-engine
+  - sar
+  - sentinel-1
+  - synthetic-aperture-radar
+  - unsupervised-learning
+  - wildfire
+  task_tags:
+  - javascript_code_editor
+  - sentinel1_sar
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: Vizzuality/sql2gee
+  url: https://github.com/Vizzuality/sql2gee
+  description: Library to parse SQL-like queries to Google's Earth Engine syntax
+  language: Python
+  license: MIT
+  stars: 11
+  forks: 4
+  updated_at: '2023-01-12T07:37:07Z'
+  pushed_at: '2026-04-13T17:43:21Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  - python
+  - sql
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - declares_license
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: parvvaresh/ETL-gee
+  url: https://github.com/parvvaresh/ETL-gee
+  description: 'The gee library is a Python package designed for processing and analyzing
+    Sentinel-1 and Sentinel-2 satellite imagery using Google Earth Engine (GEE). It
+    allows for the loading, processing, and combining of Sentinel-1 and Sentinel-2
+    data, as well as the calculation of various vegetation indices. '
+  language: Python
+  license: NOASSERTION
+  stars: 11
+  forks: 1
+  updated_at: '2026-01-27T08:46:07Z'
+  pushed_at: '2024-11-24T19:34:37Z'
+  archived: false
+  fork: false
+  topics:
+  - etl-pipeline
+  - get-data
+  - google-earth-engine
+  - satellite-imagery
+  task_tags:
+  - python
+  - spectral_indices
+  - sentinel2_optical
+  - sentinel1_sar
+  - production_tooling
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: japhethkimeu/soil_loss_assessment
+  url: https://github.com/japhethkimeu/soil_loss_assessment
+  description: Implementation of RUSLE method in GEE
+  language: JavaScript
+  license: NOASSERTION
+  stars: 11
+  forks: 3
+  updated_at: '2026-03-02T06:31:53Z'
+  pushed_at: '2023-10-09T06:18:13Z'
+  archived: false
+  fork: false
+  topics:
+  - chirps-rainfall-data
+  - google-earth-engine
+  - javascript
+  - modis-land-products
+  - sentinel-2
+  - soil-loss
+  task_tags:
+  - javascript_code_editor
+  - sentinel2_optical
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: BzGEO/GeoAI_compendium
+  url: https://github.com/BzGEO/GeoAI_compendium
+  description: References regarding geospatial artificial intelligence (#geoAI) and
+    geospatial machine learning (#geoML)
+  language: unknown
+  license: Apache-2.0
+  stars: 11
+  forks: 1
+  updated_at: '2026-06-21T15:28:17Z'
+  pushed_at: '2026-06-21T15:28:13Z'
+  archived: false
+  fork: false
+  topics:
+  - arcgis-pro
+  - artificial-intelligence
+  - deep-learning
+  - deep-neural-networks
+  - geo-artificial-intelligence
+  - geo-machine-learning
+  - geoai
+  - geoml
+  - geospatial
+  - google-earth-engine
+  - machine-learning
+  - references
+  - supervised-classification
+  - supervised-learning
+  - supervised-machine-learning
+  - unsupervised-classification
+  - unsupervised-learning
+  - unsupervised-machine-learning
+  task_tags: []
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: davemlz/ee-pokepalettes
+  url: https://github.com/davemlz/ee-pokepalettes
+  description: Pokemon Color Palettes for the Google Earth Engine JavaScript API (Code
+    Editor)
+  language: JavaScript
+  license: MIT
+  stars: 11
+  forks: 3
+  updated_at: '2024-05-27T20:36:19Z'
+  pushed_at: '2021-08-30T18:51:09Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-engine
+  - geographic-information-systems
+  - gis
+  - google-earth-engine
+  - javascript
+  - palette
+  - palettes
+  - pokemon
+  - python
+  - raster
+  - remote-sensing
+  - satellite-imagery
+  task_tags:
+  - python
+  - javascript_code_editor
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: francbartoli/gee-bridge
+  url: https://github.com/francbartoli/gee-bridge
+  description: RESTful Web API bridge for Google Earth Engine calculations
+  language: Python
+  license: NOASSERTION
+  stars: 10
+  forks: 4
+  updated_at: '2024-04-19T13:44:52Z'
+  pushed_at: '2019-01-06T17:23:08Z'
+  archived: false
+  fork: false
+  topics:
+  - api
+  - django
+  - django-rest-framework
+  - gee
+  - google-earth-engine
+  task_tags:
+  - python
+  - production_tooling
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: starfiee/ndvi-pipeline
+  url: https://github.com/starfiee/ndvi-pipeline
+  description: Automated satellite imagery pipeline using Sentinel-2 and Google Earth
+    Engine for field-level NDVI analysis
+  language: Python
+  license: NOASSERTION
+  stars: 10
+  forks: 2
+  updated_at: '2026-06-22T06:15:37Z'
+  pushed_at: '2026-06-22T06:15:33Z'
+  archived: false
+  fork: false
+  topics:
+  - computer-vision
+  - geopandas
+  - geospatial
+  - google-earth-engine
+  - ndvi
+  - python
+  - remote-sensing
+  - sentinel-2
+  task_tags:
+  - python
+  - spectral_indices
+  - sentinel2_optical
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: NASA-DEVELOP/SAVeTrEE
+  url: https://github.com/NASA-DEVELOP/SAVeTrEE
+  description: 'SAVeTrEE is a script within Google Earth Engine for classifying areas
+    of vegetation mortality. It prompts the user for a year, duration, and spectral
+    index for which a mortality map should be produced, then fits a trend line to
+    an imagery time sequence of vegetative spectral index values calculated from Landsat
+    multispectral data. The slope of the trend line, as well as the spectral index
+    values, are used in determining the final classification of each pixel within
+    the study area. Classification categories are: 1) Growing 2) Mortality (declining)
+    3) Stable Vegetation and 4) Stable Barren.'
+  language: unknown
+  license: NOASSERTION
+  stars: 9
+  forks: 12
+  updated_at: '2024-05-14T12:33:47Z'
+  pushed_at: '2018-06-15T18:16:48Z'
+  archived: false
+  fork: false
+  topics:
+  - earth-science
+  - google-earth-engine
+  - javascript
+  - wildfires
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - landsat_lst
+  - production_tooling
+  quality_flags:
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_only_until_license_review
+- full_name: aanwarigeo/sentinel-1-soil-moisture
+  url: https://github.com/aanwarigeo/sentinel-1-soil-moisture
+  description: Estimate field-scale soil moisture from Sentinel-1 SAR data using GEE,
+    R, and QGIS over rainfed agriculture pratices.
+  language: R
+  license: GPL-3.0
+  stars: 9
+  forks: 3
+  updated_at: '2026-06-08T06:46:38Z'
+  pushed_at: '2025-05-02T17:26:28Z'
+  archived: false
+  fork: false
+  topics:
+  - agriculture-monitoring
+  - change-detection
+  - geospatial
+  - google-earth-engine
+  - open-science
+  - qgis
+  - r
+  - remote-sensing
+  - sar
+  - sentinel-1
+  - soil-moisture
+  task_tags:
+  - sentinel1_sar
+  - landcover_change
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: tianjialiu/SMOKE-Policy-Tool
+  url: https://github.com/tianjialiu/SMOKE-Policy-Tool
+  description: 'SMOKE Policy Tool: A framework to model and project the impact of
+    Indonesian fires on public health in Equatorial Asia for 2005-2029 based on land
+    use/ land cover classification, GFEDv4s fire emissions, and meteorology in Google
+    Earth Engine'
+  language: JavaScript
+  license: MIT
+  stars: 9
+  forks: 8
+  updated_at: '2024-11-20T23:32:49Z'
+  pushed_at: '2024-11-19T08:35:16Z'
+  archived: false
+  fork: false
+  topics:
+  - fire-emissions
+  - fires
+  - geos-chem
+  - google-earth-engine
+  - health-impacts
+  - policy-tool
+  - public-health
+  - smoke
+  task_tags:
+  - javascript_code_editor
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: fliphilipp/icesat2geemap
+  url: https://github.com/fliphilipp/icesat2geemap
+  description: Interactively visualize and contextualize high-resolution spaceborne
+    LiDAR data from NASA's ICESat-2 mission, using the OpenAltimetry API along with
+    the Google Earth Engine Python API and the python package geemap for mapping.
+  language: Jupyter Notebook
+  license: MIT
+  stars: 9
+  forks: 3
+  updated_at: '2025-06-17T09:12:23Z'
+  pushed_at: '2022-03-04T05:54:41Z'
+  archived: false
+  fork: false
+  topics:
+  - geemap
+  - google-earth-engine
+  - icesat-2
+  - landsat-8
+  - openaltimetry
+  - sentinel-2
+  task_tags:
+  - python
+  - sentinel2_optical
+  - landsat_lst
+  - production_tooling
+  - education_tutorial
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: palubad/MMTS-GEE
+  url: https://github.com/palubad/MMTS-GEE
+  description: 'Google Earth Engine tool to generate multi-modal and multi-temporal
+    datasets, including spatially and temporally aligned Sentinel-1 SAR data, Sentinel-2
+    multispectral data, weather and DEM-based data. A supplementary material for Paluba
+    et al. 2024: "Identification of Optimal Sentinel-1 SAR Polarimetric Parameters
+    for Forest Monitoring in Czechia'
+  language: JavaScript
+  license: GPL-3.0
+  stars: 9
+  forks: 1
+  updated_at: '2025-12-29T01:33:36Z'
+  pushed_at: '2025-11-09T07:49:46Z'
+  archived: false
+  fork: false
+  topics:
+  - copernicus-dem
+  - dataset
+  - digital-elevation-model
+  - earth-engine
+  - earth-observation
+  - era5-land
+  - gee
+  - google-earth-engine
+  - machine-learning
+  - multimodal
+  - multitemporal-data
+  - multitemporal-remote-sensing
+  - remote-sensing
+  - sentinel-1
+  - sentinel-2
+  - synthetic-aperture-radar
+  - time-series
+  - time-series-analysis
+  task_tags:
+  - javascript_code_editor
+  - spectral_indices
+  - sentinel2_optical
+  - sentinel1_sar
+  - landcover_change
+  - production_tooling
+  quality_flags:
+  - declares_license
+  - updated_within_3y
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate
+- full_name: Servir-Mekong/ecodash
+  url: https://github.com/Servir-Mekong/ecodash
+  description: ''
+  language: Python
+  license: GPL-3.0
+  stars: 9
+  forks: 5
+  updated_at: '2023-03-01T07:15:16Z'
+  pushed_at: '2023-03-02T03:06:13Z'
+  archived: false
+  fork: false
+  topics:
+  - google-earth-engine
+  task_tags:
+  - python
+  quality_flags:
+  - declares_license
+  review_state: discovered_unreviewed
+  sampling_level: metadata_only_discovery
+  harvest_level: metadata_and_patterns_only_candidate

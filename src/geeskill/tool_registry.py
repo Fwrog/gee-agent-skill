@@ -14,6 +14,45 @@ class ToolSpec:
 
 
 TOOLS: dict[str, ToolSpec] = {
+    "info": ToolSpec(
+        "info", True, True, False, (), "Report harness identity, version, resources, and command families."
+    ),
+    "doctor": ToolSpec(
+        "doctor", True, True, False, (), "Check local harness resources without printing credential paths or tokens."
+    ),
+    "auth_check": ToolSpec(
+        "auth_check",
+        True,
+        True,
+        False,
+        ("--project",),
+        "Verify Earth Engine API initialization for an explicit Google Cloud project.",
+    ),
+    "observe": ToolSpec(
+        "observe",
+        True,
+        True,
+        False,
+        (),
+        "Summarize a natural-language GEE request and suggest next CLI steps without Earth Engine contact.",
+    ),
+    "catalog": ToolSpec(
+        "catalog", True, True, False, (), "Search, inspect, and recommend curated Earth Engine dataset cards."
+    ),
+    "recipe": ToolSpec(
+        "recipe", True, True, False, (), "List and inspect reusable workflow recipe cards."
+    ),
+    "rules": ToolSpec(
+        "rules", True, True, False, (), "List and inspect semantic validation ruleset cards."
+    ),
+    "plan_general": ToolSpec(
+        "plan_general",
+        True,
+        True,
+        False,
+        (),
+        "Create, review, and edit v0.3 general task plans from text or YAML.",
+    ),
     "search_docs": ToolSpec(
         "search_docs", True, True, False, (), "Search the local operator-aware docs index."
     ),

@@ -1,0 +1,28 @@
+id: hk_2024_16day_ndvi
+task: Compute 2024 16-day mean NDVI for Hong Kong and export CSV.
+template: hk_2024_16day_ndvi_csv
+query: Sentinel-2 NDVI 16-day time series export CSV Hong Kong 2024
+outputs:
+  plan: outputs/plans/hk_2024_16day_ndvi.md
+  script: outputs/scripts/hk_2024_16day_ndvi_csv.py
+context:
+  script_name: hk_2024_16day_ndvi_csv
+  year: 2024
+  date_start: '2024-01-01'
+  date_end: '2025-01-01'
+  aoi_name: Hong Kong
+  aoi_source: Home Affairs Department Hong Kong administrative district boundary GeoJSON
+  dataset_id: COPERNICUS/S2_SR_HARMONIZED
+  boundary_geojson: references/boundaries/hk_18_districts.geojson
+  scale: 10
+  crs: EPSG:4326
+  tile_scale: 4
+  cloudy_pixel_percentage: 80
+  max_pixels: 10000000000000
+  temporal_cadence_days: 16
+  preflight_months:
+    - 1
+    - 7
+  export_description: hk_2024_16day_ndvi
+  drive_folder: gee_exports
+  file_prefix: hk_2024_16day_ndvi

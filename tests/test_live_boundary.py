@@ -23,9 +23,10 @@ def test_live_smoke_missing_live_access_fails_with_structured_guidance(capsys):
     assert rc in {0, 2}
     payload = json.loads(capsys.readouterr().out)
     if rc == 2:
-        assert payload["error"]["category"] in {"AUTH_ERROR", "PROJECT_ERROR"}
+        assert payload["error"]["category"] in {"AUTH_ERROR", "PROJECT_ERROR", "NETWORK_ERROR"}
         assert payload["error"]["suggested_fix"]
-        assert payload["error"]["user_action_required"] is True
+        if payload["error"]["category"] != "NETWORK_ERROR":
+            assert payload["error"]["user_action_required"] is True
 
 
 def test_monitor_exports_writes_trace(monkeypatch, capsys):

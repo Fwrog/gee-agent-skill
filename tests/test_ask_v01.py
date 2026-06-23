@@ -31,7 +31,8 @@ def test_route_request_rejects_full_year_district_v02_scope():
     route = route_request("Compute 2024 monthly mean NDVI for Hong Kong districts and export CSV.")
     assert route["ok"] is False
     assert route["error"]["category"] == "UNSUPPORTED_TASK"
-    assert "v0.2" in route["error"]["message"]
+    assert "legacy golden-route matcher" in route["error"]["message"]
+    assert "v0.3 plan command" in route["error"]["message"]
 
 
 def test_route_request_reports_ambiguous_task():

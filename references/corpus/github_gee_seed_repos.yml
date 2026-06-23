@@ -1,0 +1,336 @@
+schema_version: gee-corpus-seed/v0.3
+created_at: 2026-06-23
+purpose: >
+  Seed inventory for building a pattern-only Google Earth Engine syntax and
+  workflow corpus. Do not vendor or copy third-party source code into this
+  repository. Use these repositories to derive small, attributed operator
+  patterns, validation rules, and task coverage gaps.
+discovery_methods:
+  - GitHub repository search API queries for google-earth-engine, earthengine-api, ee.ImageCollection, and Earth Engine organizations.
+  - Web search for Google Earth Engine GitHub examples across Sentinel, Landsat, flood mapping, LST, LandTrendr, and spectral-index tasks.
+  - Curated GEE community resource lists used only as discovery pointers.
+  - Maintainer and organization review of high-signal GEE educators and community projects, especially giswqs/opengeos and gee-community.
+  - Paper-linked repository search from remote-sensing and geoscience publications, treated as metadata-only until license, DOI, data dependency, and reproducibility review pass.
+selection_policy:
+  license_required_for_code_ingestion: true
+  default_ingestion_level: metadata_and_patterns_only
+  priority_curators:
+    - https://github.com/giswqs
+    - https://github.com/opengeos
+    - https://github.com/gee-community
+  paper_linked_repository_policy:
+    default_harvest_level: metadata_only_until_license_review
+    required_metadata:
+      - article_doi_or_publisher_url
+      - repository_url
+      - journal_or_venue
+      - license
+      - earth_engine_language
+      - private_asset_dependency_check
+      - reproducibility_scope
+    target_venues:
+      - IEEE Transactions on Geoscience and Remote Sensing
+      - ISPRS Journal of Photogrammetry and Remote Sensing
+      - International Journal of Applied Earth Observation and Geoinformation
+      - Remote Sensing of Environment
+      - Remote Sensing
+  excluded_without_review:
+    - repositories with unclear license when copying snippets would be required
+    - notebooks or scripts that embed credentials, private assets, or one-off local paths
+    - generated code dumps without explanatory context
+quality_signals:
+  - official Google or established community organization
+  - clear license
+  - maintained by a known GEE educator, package maintainer, or community organization
+  - linked from a peer-reviewed article with DOI or publisher page
+  - examples cover multiple Earth Engine operators or datasets
+  - recent maintenance or durable educational value
+  - task diversity across optical, SAR, LST, land cover, export, and time series workflows
+repositories:
+  - full_name: google/earthengine-api
+    url: https://github.com/google/earthengine-api
+    role: official_api_bindings_and_examples
+    language: JavaScript/Python
+    license: Apache-2.0
+    harvest_level: metadata_and_patterns_only
+    topics: [python_api, javascript_api, authentication, api_surface]
+  - full_name: google/earthengine-community
+    url: https://github.com/google/earthengine-community
+    role: official_community_tutorials
+    language: Jupyter Notebook
+    license: Apache-2.0
+    harvest_level: metadata_and_patterns_only
+    topics: [tutorials, workflows, python, javascript]
+  - full_name: google/Xee
+    url: https://github.com/google/Xee
+    role: xarray_extension_for_earth_engine
+    language: Python
+    license: Apache-2.0
+    harvest_level: metadata_and_patterns_only
+    topics: [xarray, data_cube, python]
+  - full_name: google/earthengine-catalog
+    url: https://github.com/google/earthengine-catalog
+    role: public_data_catalog_stac
+    language: Jsonnet
+    license: Apache-2.0
+    harvest_level: metadata_only
+    topics: [dataset_catalog, stac, metadata]
+  - full_name: google/earthengine-jupyter
+    url: https://github.com/google/earthengine-jupyter
+    role: jupyter_development_environment
+    language: Jupyter Notebook
+    license: Apache-2.0
+    harvest_level: metadata_and_patterns_only
+    topics: [jupyter, python, notebooks]
+  - full_name: gee-community/geemap
+    url: https://github.com/gee-community/geemap
+    role: python_interactive_mapping_and_gee_workflows
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [python, geemap, visualization, export, tutorials]
+  - full_name: gee-community/geetools
+    url: https://github.com/gee-community/geetools
+    role: python_earth_engine_utilities
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [python, utility_patterns, collections]
+  - full_name: giswqs/earthengine-py-notebooks
+    url: https://github.com/giswqs/earthengine-py-notebooks
+    role: large_python_notebook_example_collection
+    language: Jupyter Notebook
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [python, notebooks, tutorials, mapping]
+  - full_name: giswqs/qgis-earthengine-examples
+    url: https://github.com/giswqs/qgis-earthengine-examples
+    role: qgis_python_earth_engine_examples
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [python, qgis, examples]
+  - full_name: opengeos/Awesome-GEE
+    url: https://github.com/opengeos/Awesome-GEE
+    role: discovery_index
+    language: Markdown
+    license: CC0-1.0
+    harvest_level: links_only
+    topics: [curated_resources, discovery]
+  - full_name: samapriya/awesome-gee-community-datasets
+    url: https://github.com/samapriya/awesome-gee-community-datasets
+    role: community_dataset_discovery
+    language: HTML
+    license: CC-BY-4.0
+    harvest_level: metadata_only
+    topics: [community_datasets, catalog]
+  - full_name: awesome-spectral-indices/awesome-spectral-indices
+    url: https://github.com/awesome-spectral-indices/awesome-spectral-indices
+    role: spectral_index_definitions
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [spectral_indices, sentinel, landsat, modis]
+  - full_name: awesome-spectral-indices/spyndex
+    url: https://github.com/awesome-spectral-indices/spyndex
+    role: python_spectral_index_library
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [spectral_indices, python]
+  - full_name: awesome-spectral-indices/spectral
+    url: https://github.com/awesome-spectral-indices/spectral
+    role: earth_engine_spectral_index_js
+    language: JavaScript
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [spectral_indices, javascript, code_editor]
+  - full_name: davemlz/eemont
+    url: https://github.com/davemlz/eemont
+    role: python_extension_for_indices_and_cloud_masks
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [python, spectral_indices, cloud_masking]
+  - full_name: r-spatial/rgee
+    url: https://github.com/r-spatial/rgee
+    role: earth_engine_for_r
+    language: R
+    license: NOASSERTION
+    harvest_level: metadata_only
+    topics: [r, api_patterns, cross_language]
+  - full_name: csaybar/EEwPython
+    url: https://github.com/csaybar/EEwPython
+    role: python_learning_notebooks
+    language: Jupyter Notebook
+    license: unknown
+    harvest_level: metadata_only_until_license_review
+    topics: [python, notebooks, tutorials]
+  - full_name: fitoprincipe/geetools-code-editor
+    url: https://github.com/fitoprincipe/geetools-code-editor
+    role: code_editor_utility_patterns
+    language: JavaScript
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [javascript, code_editor, utilities]
+  - full_name: kr-stn/EarthEngine_scripts
+    url: https://github.com/kr-stn/EarthEngine_scripts
+    role: general_script_collection
+    language: JavaScript
+    license: unknown
+    harvest_level: metadata_only_until_license_review
+    topics: [javascript, snippets]
+  - full_name: kvos/CoastSat
+    url: https://github.com/kvos/CoastSat
+    role: shoreline_mapping_application
+    language: Jupyter Notebook/Python
+    license: GPL-3.0
+    harvest_level: metadata_and_patterns_only
+    topics: [coastline, landsat, sentinel2, time_series]
+  - full_name: eMapR/LT-GEE
+    url: https://github.com/eMapR/LT-GEE
+    role: landtrendr_change_detection
+    language: JavaScript
+    license: Apache-2.0
+    harvest_level: metadata_and_patterns_only
+    topics: [landtrendr, change_detection, landsat]
+  - full_name: eMapR/lt-gee-py
+    url: https://github.com/eMapR/lt-gee-py
+    role: python_landtrendr_patterns
+    language: Python
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [landtrendr, python, change_detection]
+  - full_name: eMapR/LT-ChangeDB
+    url: https://github.com/eMapR/LT-ChangeDB
+    role: landtrendr_change_database_workflows
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [landtrendr, change_detection]
+  - full_name: ESDS-Leipzig/cubo
+    url: https://github.com/ESDS-Leipzig/cubo
+    role: earth_engine_to_data_cube_workflows
+    language: Python
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [data_cube, xarray, sentinel2, landsat]
+  - full_name: bellingcat/sar-interference-tracker
+    url: https://github.com/bellingcat/sar-interference-tracker
+    role: sar_interference_detection
+    language: JavaScript
+    license: MIT
+    harvest_level: metadata_and_patterns_only
+    topics: [sar, sentinel1, radar, javascript]
+  - full_name: GeoRetina/chat2geo
+    url: https://github.com/GeoRetina/chat2geo
+    role: ai_assisted_geospatial_analysis_reference
+    language: TypeScript
+    license: MIT
+    harvest_level: metadata_only
+    topics: [ai_agent, geospatial, earth_engine]
+  - full_name: sofiaermida/Landsat_SMW_LST
+    url: https://github.com/sofiaermida/Landsat_SMW_LST
+    role: landsat_surface_temperature_workflow
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_and_patterns_only_after_license_review
+    topics: [landsat, lst, surface_temperature]
+  - full_name: lunasilvestre/ee_lst
+    url: https://github.com/lunasilvestre/ee_lst
+    role: lst_workflow_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [lst, landsat]
+  - full_name: leonsnill/lst_landsat
+    url: https://github.com/leonsnill/lst_landsat
+    role: landsat_lst_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [lst, landsat]
+  - full_name: mohigeo33/lst_timeseries
+    url: https://github.com/mohigeo33/lst_timeseries
+    role: lst_time_series_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [lst, time_series]
+  - full_name: palubad/LST-downscaling-to-10m-GEE
+    url: https://github.com/palubad/LST-downscaling-to-10m-GEE
+    role: lst_downscaling_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [lst, downscaling, sentinel2, landsat]
+  - full_name: USGS-R/landsat-lake-temp-pull
+    url: https://github.com/USGS-R/landsat-lake-temp-pull
+    role: landsat_temperature_extraction
+    language: R
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [landsat, temperature, extraction]
+  - full_name: PratyushTripathy/global_flood_mapper
+    url: https://github.com/PratyushTripathy/global_flood_mapper
+    role: flood_mapping_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [flood, sentinel1, water]
+  - full_name: thapawan/Flood-Inundations
+    url: https://github.com/thapawan/Flood-Inundations
+    role: flood_inundation_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [flood, inundation]
+  - full_name: ryoandrio/FLOODetect
+    url: https://github.com/ryoandrio/FLOODetect
+    role: flood_detection_reference
+    language: Python/JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [flood, detection]
+  - full_name: SERVIR/flood_mapping_intercomparison
+    url: https://github.com/SERVIR/flood_mapping_intercomparison
+    role: flood_mapping_method_comparison
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [flood, intercomparison, sentinel1]
+  - full_name: uihilab/MultiRS_Flood_Mapper_Tutorial
+    url: https://github.com/uihilab/MultiRS_Flood_Mapper_Tutorial
+    role: multi_sensor_flood_tutorial
+    language: Jupyter Notebook
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [flood, multi_sensor, tutorial]
+  - full_name: BzGEO/forest_cover_change
+    url: https://github.com/BzGEO/forest_cover_change
+    role: forest_change_reference
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [forest, change_detection]
+  - full_name: SimardJPL/GEE
+    url: https://github.com/SimardJPL/GEE
+    role: research_script_collection
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [research, examples]
+  - full_name: Waleedgeo/EarthEngineProjects
+    url: https://github.com/Waleedgeo/EarthEngineProjects
+    role: general_project_collection
+    language: JavaScript
+    license: review_required
+    harvest_level: metadata_only_until_license_review
+    topics: [examples, javascript]
+  - full_name: Vizzuality/trends.earth-CLI
+    url: https://github.com/Vizzuality/trends.earth-CLI
+    role: production_geospatial_cli_reference
+    language: Python
+    license: review_required
+    harvest_level: metadata_only
+    topics: [cli, land_degradation, production_patterns]

@@ -1,20 +1,61 @@
+# Python environments and caches
 .venv/
+venv/
+env/
 __pycache__/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.DS_Store
 *.pyc
+*.pyo
+*.pyd
+
+# Test and coverage output
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Build and package artifacts
 build/
 dist/
 *.egg-info/
+*.whl
+*.tar.gz
+
+# Local generated output
 tmp/
 outputs/
+preview/
+site/
+*.log
+
+# Internal agent scratch/review notes
+docs/agent_reviews/
+docs/reviews/
+
+# Local editor and OS metadata
+.vscode/
+.idea/
 
 # Never commit Google or Earth Engine credentials.
+.env
+.env.*
+!.env.example
 credentials.json
 *credentials*.json
 *service-account*.json
 *service_account*.json
+application_default_credentials.json
+client_secret*.json
+oauth*.json
+token.json
+*token*.json
+*private-key*.json
+*.key
 *.pem
 *.p12
 .config/earthengine/
 .config/gcloud/
-

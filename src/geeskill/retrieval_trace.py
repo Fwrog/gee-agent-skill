@@ -9,6 +9,10 @@ from .rag import SearchResult
 def _evidence_type(result: SearchResult) -> str:
     source = result.source_path.lower()
     title = result.title.lower()
+    if "recipes/" in source or "recipe" in title:
+        return "recipe_card"
+    if "rules/" in source or "rule" in title or "ruleset" in title:
+        return "validation_rule_card"
     if "datasets/" in source or "dataset" in title:
         return "dataset_card"
     if "failure" in source or "failure" in title or "error" in title or "risk" in title:
@@ -26,6 +30,10 @@ def _reason(query: str, result: SearchResult) -> str:
     evidence_type = _evidence_type(result)
     if evidence_type == "dataset_card":
         return "Selected to verify dataset id, bands, QA caveats, and collection-specific assumptions."
+    if evidence_type == "recipe_card":
+        return "Selected to match the request to a reusable workflow recipe and its required inputs."
+    if evidence_type == "validation_rule_card":
+        return "Selected to ground validation rules and live-execution safety gates."
     if evidence_type == "operator_relationship_chain":
         return "Selected to guide ordering of Earth Engine operators in generated workflow code."
     if evidence_type == "operator_syntax_note":
@@ -66,6 +74,8 @@ def build_retrieval_trace(query: str, results: list[SearchResult]) -> dict[str, 
         "evidence": evidence,
         "coverage": {
             "dataset_cards": sum(1 for item in evidence if item["evidence_type"] == "dataset_card"),
+            "recipe_cards": sum(1 for item in evidence if item["evidence_type"] == "recipe_card"),
+            "rule_cards": sum(1 for item in evidence if item["evidence_type"] == "validation_rule_card"),
             "operator_notes": sum(
                 1
                 for item in evidence
@@ -91,6 +101,8 @@ def build_retrieval_trace(query: str, results: list[SearchResult]) -> dict[str, 
 def _influence_from_type(evidence_type: str) -> str:
     return {
         "dataset_card": "Dataset selection, band checks, scaling, QA, and caveats.",
+        "recipe_card": "Task decomposition, required inputs, default dataset policy, and output schema.",
+        "validation_rule_card": "Static/semantic validation and live-execution safety gates.",
         "operator_syntax_note": "Method names, required arguments, and syntax constraints.",
         "operator_relationship_chain": "Operator ordering and workflow skeleton.",
         "common_workflow_pattern": "Reducer/export/aggregation design.",

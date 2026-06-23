@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from geeskill.rag import build_index, search
+from geeskill.retrieval_trace import build_retrieval_trace
 
 
 def test_rag_retrieves_sentinel2_docs():
@@ -40,3 +41,12 @@ def test_rag_propagates_file_metadata_to_section_chunks():
         assert metadata["source_type"] == "operator-chain"
         assert metadata["retrieved_at"] == "2026-06-21"
         assert metadata["dataset_id"] == "COPERNICUS/S2_SR_HARMONIZED"
+
+
+def test_retrieval_trace_reports_recipe_and_rule_coverage():
+    index = build_index(Path("references/knowledge_base"))
+    results = search(index, "NDWI GeoTIFF recipe export image rule", top_k=8)
+    trace = build_retrieval_trace("NDWI GeoTIFF recipe export image rule", results)
+    assert trace["coverage"]["recipe_cards"] >= 1
+    assert trace["coverage"]["rule_cards"] >= 1
+    assert trace["coverage"]["export_guidance"] >= 1

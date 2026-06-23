@@ -41,6 +41,8 @@ def task_to_context(task: dict[str, Any]) -> dict[str, Any]:
         "boundary_geojson",
         "smoke_month",
         "smoke_region",
+        "temporal_cadence_days",
+        "preflight_months",
     ):
         if key in task and key not in context:
             context[key] = task[key]

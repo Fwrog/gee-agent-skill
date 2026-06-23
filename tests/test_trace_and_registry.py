@@ -8,8 +8,12 @@ from geeskill.tool_registry import exposed_tools, installed_tools
 def test_tool_registry_separates_installed_and_exposed():
     installed = {item["name"]: item for item in installed_tools()}
     exposed = {item["name"]: item for item in exposed_tools()}
+    for name in ["info", "doctor", "observe", "catalog", "recipe", "rules", "plan_general"]:
+        assert name in exposed
+        assert exposed[name]["dangerous"] is False
     assert "render_template" in installed
     assert "render_template" not in exposed
+    assert "--project" in exposed["auth_check"]["requires_explicit_flags"]
     assert exposed["run_live"]["dangerous"] is True
     assert "--confirm-live" in exposed["run_live"]["requires_explicit_flags"]
 

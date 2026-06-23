@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gee-agent-skill"
-version = "0.2.0"
+version = "0.3.0"
 description = "Traceable Google Earth Engine research harness with local RAG, templates, validation, run traces, and CLI."
 readme = "README.md"
 requires-python = ">=3.10"
