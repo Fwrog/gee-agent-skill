@@ -4,12 +4,17 @@
 
 `gee-agent-skill` is an agent-native command-line harness for Google Earth Engine workflows. It helps Codex or another coding agent turn natural-language geospatial requests into reviewable plans, source-grounded dataset/operator choices, validated Earth Engine Python scripts, safe preflight checks, explicit user-confirmed exports, export monitoring, and reproducible traces.
 
-The project works on Windows and macOS when commands are run from the repository root inside an activated virtual environment.
+The project is documented for Windows PowerShell, macOS zsh, and Linux shells when commands are run from the repository root inside an activated virtual environment. Recent local verification was performed on macOS; Windows commands follow the same project-root and `.venv` contract.
 
 ## Table of Contents
 
 - [What this project does](#what-this-project-does)
+- [Agent-native interface](#agent-native-interface)
+- [Capability proof map](#capability-proof-map)
+- [Supported recipe families](#supported-recipe-families)
+- [Evaluation and research evidence](#evaluation-and-research-evidence)
 - [Release readiness](#release-readiness)
+- [Roadmap](#roadmap)
 - [Quick Start](#quick-start)
 - [Configuration checklist](#configuration-checklist)
 - [Installation](#installation)
@@ -46,11 +51,11 @@ At a glance:
 | --- | --- |
 | 🧭 Natural language | A user or agent writes a request such as `Compute 16-day NDVI for Hong Kong in 2024 and export CSV.` |
 | 📄 v0.3 plan | The CLI parses AOI, time range, metric, cadence, output type, dataset candidates, rules, and template choice into editable YAML. |
-| 🧩 Python render | A reviewed Jinja2 template becomes an Earth Engine Python script with stable constants and export selectors. |
+| 🧩 Python render | `gee-skill render <plan.yaml> --json` turns reviewed plans into Earth Engine Python scripts with stable constants and export selectors. |
 | ✅ Validation | Static and semantic checks block unresolved templates, missing imports, unsafe exports, wrong bands, and missing reducers before live use. |
-| 🌐 Live preflight | Earth Engine is contacted to verify auth/project, AOI, image counts, required bands, and small sanity statistics. |
-| 📤 Export | Only `run-plan --confirm-live` starts `ee.batch.Export.table.toDrive(...).start()`. |
-| 📊 Monitor | `monitor-exports` reports task id, description, state, timestamps, and errors. |
+| 🌐 Live preflight | `gee-skill preflight <plan.yaml> --project <id> --json` checks auth/project, AOI, image counts, required bands, and small sanity statistics. |
+| 📤 Export | Only `gee-skill run <plan.yaml> --project <id> --confirm-live --json` starts an Earth Engine export. |
+| 📊 Monitor | `gee-skill exports list/watch --project <id> --json` reports task id, description, state, timestamps, and errors. |
 
 The Hong Kong NDVI workflows are golden examples for the general harness, not the full product boundary:
 
@@ -62,18 +67,103 @@ The Hong Kong NDVI workflows are golden examples for the general harness, not th
 
 This project is not a credentials provider, a GUI replacement for Earth Engine, or a source of scientific conclusions without domain review.
 
+## Agent-native interface
+
+The harness is designed for coding agents, not only humans typing ad hoc commands. The stable command surface is:
+
+```text
+auth / catalog / aoi / recipe / plan / render / validate / preflight / run / exports / trace / eval
+```
+
+Core commands return deterministic JSON for agent orchestration:
+
+```bash
+gee-skill info --json
+gee-skill doctor --json
+gee-skill aoi resolve "Compute NDVI for Hong Kong in January 2024." --json
+gee-skill catalog search "Sentinel-2 NDVI" --json
+gee-skill catalog evidence --category operators --json
+gee-skill catalog evidence --category failures --json
+gee-skill recipe list --json
+gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
+gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --json
+gee-skill validate outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill trace inspect <run_id> --json
+gee-skill eval evals/benchmark_suite.yml --json
+```
+
+Compatibility commands such as `ask`, `review-plan`, `preflight-plan`, `run-plan`, and `monitor-exports` remain available for the verified golden examples.
+
+## Capability proof map
+
+This repository is meant to demonstrate a full agent-native Earth Engine harness:
+
+> I built an agent-native Google Earth Engine harness that turns natural-language geospatial tasks into reviewable, RAG-grounded, validated, and traceable Earth Engine workflows. The system includes a dataset/operator knowledge base, recipe registry, semantic validators, live preflight checks, export monitoring, and benchmarked golden examples.
+
+| Capability | How it is shown |
+| --- | --- |
+| 🤖 Agent engineering | Structured commands, explicit `gee-plan/v0.3` state, deterministic JSON, review-before-run, `--confirm-live`, and traceable run artifacts. |
+| 📚 RAG and knowledge engineering | Dataset cards, operator notes, recipe cards, failure cards, retrieval traces, and coverage checks in `evals/benchmark_suite.yml`. |
+| 🛰️ GEE / remote sensing | Dataset selection, band/QA checks, scale/CRS fields, server-side reducer/export patterns, `getInfo()` safety rules, empty-collection guards, and export task lifecycle monitoring. |
+| 🔬 Reproducibility and evaluation | Parse/plan tests, render/validate tests, mocked preflight failures, golden examples, local benchmark runner, and sanitized evidence bundles. |
+| 📦 Productization | Cross-platform setup docs, CLI reference, CI, packaging metadata, changelog, security policy, roadmap, issue templates, and wheel build checks. |
+
+## Supported recipe families
+
+The current registry is broader than the Hong Kong NDVI demo. Capability status is tracked in [Capability matrix](docs/capability_matrix.md).
+
+Recipes are registered in [references/recipes/registry.yaml](references/recipes/registry.yaml) and packaged under `src/geeskill/resources/recipes/` so installed wheels can still answer `gee-skill recipe list --json`.
+
+| Recipe family | Current role |
+| --- | --- |
+| Vegetation indices | NDVI/EVI planning, Sentinel-2 CSV render/validation paths, and golden HK examples. |
+| Water indices | NDWI/MNDWI planning, Sentinel-2 GeoTIFF render path, generic preflight gate, and band/export validation. |
+| Built-up indices | NDBI planning, Sentinel-2 CSV render path, generic preflight gate, and semantic band checks. |
+| Land surface temperature | Landsat LST CSV/Image render paths, generic preflight gate, validation, and MODIS LST catalog evidence. |
+| Land cover summaries | Dynamic World / ESA WorldCover evidence, Dynamic World CSV render/validation, and HK land-cover-aware golden example. |
+| Sentinel-1 flood/change | Before/after SAR planning, GeoTIFF render path, generic preflight gate, and validation rules. |
+| Zonal statistics | Table-export templates and reducer/export safety rules. |
+| Image/table export | Explicit selectors, region, scale, CRS, `maxPixels`, and confirmed live gates. |
+
+Non-golden recipe families can produce reviewable plans and validated scripts, and the generic v0.3 preflight gate now blocks placeholder AOI/export context before any export. They are still not live-export verified golden workflows.
+
+## Evaluation and research evidence
+
+The repository includes a small but real benchmark protocol, not only notebooks:
+
+- [Benchmark protocol](docs/benchmark_protocol.md) defines parse, plan, render, validation, dry-run, mocked/live boundaries, and reporting.
+- [Research positioning](docs/research_positioning.md) explains the project as a reproducible agent operations layer for Earth Engine.
+- [Paper outline](docs/paper.md) sketches a methods paper around plan-first, RAG-grounded GEE workflows.
+- [Portfolio audit](docs/reviews/portfolio-research-positioning-audit.md) separates proven capability, current gaps, and overclaim risks.
+- [Plan schema](schemas/gee-plan-v0.3.schema.json) documents the required editable `gee-plan/v0.3` fields.
+
+The default offline benchmark currently contains 22 cases. It includes non-HK planning cases for EVI, NDWI, NDBI, Landsat LST, Sentinel-1 flood mapping, Dynamic World land-cover summary, zonal statistics, standalone GeoTIFF image export, ambiguous requests, unknown dataset IDs, unsupported requests, RAG evidence coverage, mocked empty-collection preflight blocking, and golden render/validation cases:
+
+```bash
+gee-skill eval evals/benchmark_suite.yml --json
+```
+
 ## Release readiness
 
 The current publishability checklist is tracked in [Release readiness](docs/release_readiness.md). It records:
 
 - homepage visuals generated with imagegen and saved under `assets/images/`;
 - Browser and Computer Use boundaries for agent workflows;
-- CLI contract coverage for `info`, `doctor`, `catalog`, `recipe`, `rules`, and `plan`;
+- CLI contract coverage for `info`, `doctor`, `auth`, `aoi`, `catalog`, `recipe`, `plan`, `render`, `validate`, `preflight`, `run`, `exports`, `trace`, `corpus`, and `eval`;
 - the Hong Kong 2024 16-day NDVI example and its render/validation commands;
 - corpus policy for `giswqs`/OpenGeo, `gee-community`, and paper-linked GEE repositories;
 - validation commands and remaining limitations.
 
 ![GEE agent harness workflow](assets/images/gee-agent-harness-hero.png)
+
+## Roadmap
+
+The roadmap is tracked in [ROADMAP.md](ROADMAP.md). The near-term direction is to keep the Hong Kong NDVI workflows as golden regression examples while expanding the general harness:
+
+- add deeper recipe-specific preflight adapters for NDWI, NDBI, Landsat LST, Sentinel-1, and zonal workflows;
+- turn more dataset/operator/failure cards into executable registry metadata;
+- expand benchmark coverage from parse/render/validate into mocked preflight and optional live smoke tests;
+- add polished demo artifacts, release notes, and good-first-issue lanes for contributors.
 
 ## Quick Start
 
@@ -345,6 +435,8 @@ These commands do not contact Earth Engine:
 ```bash
 gee-skill tools
 gee-skill smoke-test --json
+gee-skill catalog evidence --category operators --json
+gee-skill catalog evidence --category failures --json
 gee-skill observe "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
 gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --out outputs/plans/hk_2024_16day_ndvi.yaml --json
 gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json
@@ -445,6 +537,8 @@ rows: 23
 
 This reader-facing demo shows the complete CSV shape produced by the v0.3 Hong Kong 2024 16-day NDVI workflow. It is included so readers can inspect the expected fields, cadence, value ranges, and image-count diagnostics without running Earth Engine first.
 
+A sanitized evidence bundle with observed task metadata and the CSV SHA-256 is available at [docs/evidence/v03_hk_2024_16day_ndvi](docs/evidence/v03_hk_2024_16day_ndvi/README.md).
+
 Summary:
 
 ```text
@@ -509,11 +603,14 @@ More refined examples can build on the same adapter pattern:
 
 The default workflow separates intent interpretation, review, preflight, and live execution.
 
-1. Plan: `gee-skill ask "<request>" --plan --json` writes `outputs/runs/<run_id>/task_plan.yaml` without contacting Earth Engine.
-2. Review: `gee-skill review-plan outputs/runs/<run_id>/task_plan.yaml` shows interpreted dates, AOI, datasets, masks, reducers, outputs, and limitations.
-3. Preflight: `gee-skill preflight-plan ... --project <id> --json` checks live data availability before export.
-4. Run: `gee-skill run-plan ... --project <id> --confirm-live --json` submits an export only after review and confirmation.
-5. Monitor: `gee-skill monitor-exports --project <id> --json` checks task states.
+1. Plan: `gee-skill plan from-text "<request>" --out <plan.yaml> --json` writes editable YAML without contacting Earth Engine.
+2. Review: `gee-skill plan review <plan.yaml> --json` shows interpreted dates, AOI, datasets, masks, reducers, outputs, and limitations.
+3. Render: `gee-skill render <plan.yaml> --script-out <script.py> --json` generates the Earth Engine Python script.
+4. Validate: `gee-skill validate <script.py> --json` blocks unsafe or inconsistent scripts.
+5. Preflight: `gee-skill preflight <plan.yaml> --project <id> --json` checks live data availability before export.
+6. Run: `gee-skill run <plan.yaml> --project <id> --confirm-live --json` submits an export only after review and confirmation.
+7. Monitor: `gee-skill exports list --project <id> --json` and `gee-skill exports watch --project <id> --task-id <id> --json` check task states.
+8. Trace: `gee-skill trace inspect <run_id> --json` inspects reproducibility artifacts.
 
 For the v0.3 editable-plan path, `plan from-text` and `plan from-yaml` are intentionally separate. The plan is the reviewable contract; the rendered `.py` file is the executable Earth Engine script generated from that contract.
 
@@ -523,6 +620,11 @@ gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export C
   --json
 
 gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml \
+  --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py \
+  --json
+
+# Equivalent canonical render command:
+gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml \
   --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py \
   --json
 ```
@@ -635,12 +737,21 @@ outputs/runs/                    Generated run traces
 More documentation:
 
 - [How to start](docs/how_to_start.md)
+- [CLI reference](docs/cli_reference.md)
+- [Recipe registry](docs/recipes.md)
+- [Capability matrix](docs/capability_matrix.md)
+- [Benchmark protocol](docs/benchmark_protocol.md)
+- [Research positioning](docs/research_positioning.md)
+- [Paper outline](docs/paper.md)
+- [Roadmap](ROADMAP.md)
 - [Release readiness](docs/release_readiness.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Harness trace model](docs/harness.md)
 - [v0.1 Hong Kong January NDVI workflow](docs/v01_hk_january_ndvi.md)
 - [v0.2 land-cover-aware NDVI workflow](docs/v02_landcover_aware_ndvi.md)
 - [v0.3 Hong Kong 2024 16-day NDVI workflow](docs/v03_hk_2024_16day_ndvi.md)
+- [v0.3 Hong Kong 2024 16-day NDVI case study](docs/case_studies/hk_ndvi_v03.md)
+- [v0.3 sanitized evidence bundle](docs/evidence/v03_hk_2024_16day_ndvi/README.md)
 - [Extending workflows](docs/extending.md)
 
 ## References and data sources

@@ -43,6 +43,18 @@ def test_error_payload_has_recovery_fields():
     assert "authenticate" in payload["suggested_fix"].lower()
 
 
+def test_error_taxonomy_includes_getinfo_and_preflight_gates():
+    getinfo_payload = error_payload("UNSAFE_GETINFO", "large getInfo() call")
+    assert getinfo_payload["category"] == "UNSAFE_GETINFO"
+    assert getinfo_payload["retryable"] is False
+    assert "server-side" in getinfo_payload["suggested_fix"]
+
+    preflight_payload = error_payload("PREFLIGHT_REQUIRED", "run preflight first")
+    assert preflight_payload["category"] == "PREFLIGHT_REQUIRED"
+    assert preflight_payload["retryable"] is True
+    assert "preflight" in preflight_payload["suggested_fix"].lower()
+
+
 def test_semantic_error_serializes_taxonomy_fields(tmp_path):
     script = tmp_path / "bad.py"
     script.write_text(
@@ -90,6 +102,31 @@ def run():
     assert "dataset-id-constant" in codes
     assert "scale-constant" in codes
     assert "main-guard-for-task-start" in codes
+
+
+def test_agent_script_contract_flags_getinfo_with_specific_category(tmp_path):
+    script = tmp_path / "unsafe_getinfo.py"
+    script.write_text(
+        """
+import ee
+
+START_DATE = '2024-01-01'
+END_DATE = '2024-02-01'
+DATASET_ID = 'COPERNICUS/S2_SR_HARMONIZED'
+SCALE = 10
+CRS = 'EPSG:4326'
+
+
+def main():
+    aoi = ee.Geometry.Point([0, 0]).buffer(1000)
+    collection = ee.ImageCollection(DATASET_ID).filterDate(START_DATE, END_DATE).filterBounds(aoi)
+    print(collection.size().getInfo())
+""",
+        encoding="utf-8",
+    )
+    findings = validate_semantics(script, ["agent_script_contract"])
+    getinfo = next(item for item in findings if item.code == "generated-script-getinfo")
+    assert getinfo.category == "UNSAFE_GETINFO"
 
 
 def test_agent_script_contract_accepts_table_export_without_maxpixels(tmp_path):

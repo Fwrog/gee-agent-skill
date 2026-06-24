@@ -5,7 +5,7 @@ from datetime import date
 from typing import Any
 
 from .ask import route_request
-from .catalog import recommend_datasets
+from .catalog import get_dataset, recommend_datasets, search_datasets
 from .errors import error_payload
 from .recipes import closest_recipes, default_recipe_for
 
@@ -38,6 +38,11 @@ MONTHS = {
 
 
 TASK_TYPES = {
+    "zonal statistics": "zonal_statistics",
+    "zonal statistic": "zonal_statistics",
+    "zonal": "zonal_statistics",
+    "image export": "export_image",
+    "export image": "export_image",
     "ndvi": "vegetation_index",
     "evi": "vegetation_index",
     "ndwi": "water_index",
@@ -65,6 +70,42 @@ DATASET_ALIASES = {
     "worldcover": "ESA/WorldCover/v200",
 }
 
+NAMED_PLACES = {
+    "tokyo": "Tokyo",
+    "singapore": "Singapore",
+    "london": "London",
+    "new york": "New York",
+    "los angeles": "Los Angeles",
+    "shenzhen": "Shenzhen",
+    "guangzhou": "Guangzhou",
+    "beijing": "Beijing",
+    "shanghai": "Shanghai",
+    "taiwan": "Taiwan",
+}
+
+OPTICAL_INDEX_BANDS = {
+    "NDVI": ("B8", "B4"),
+    "EVI": ("B8", "B4", "B2"),
+    "NDWI": ("B3", "B8"),
+    "MNDWI": ("B3", "B11"),
+    "NDBI": ("B11", "B8"),
+}
+
+OPTICAL_INDEX_OUTPUT_FIELDS = {
+    "NDVI": "mean_ndvi",
+    "EVI": "mean_evi",
+    "NDWI": "mean_ndwi",
+    "MNDWI": "mean_mndwi",
+    "NDBI": "mean_ndbi",
+}
+
+OPTICAL_INDEX_EXPRESSIONS = {
+    "EVI": {
+        "expression": "2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))",
+        "bands": {"NIR": "B8", "RED": "B4", "BLUE": "B2"},
+    }
+}
+
 
 def _normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text.strip().lower())
@@ -82,13 +123,22 @@ def _month_end(year: int, month: int) -> str:
 
 
 def _extract_metric(text: str) -> tuple[str | None, str | None]:
+    if "zonal statistics" in text or "zonal statistic" in text:
+        return "zonal_mean", "zonal_statistics"
+    if "export image" in text or "image export" in text:
+        return "image_export", "export_image"
     for metric, task_type in TASK_TYPES.items():
-        if metric in text:
+        if re.search(rf"\b{re.escape(metric)}\b", text):
             normalized_metric = {
                 "land surface temperature": "LST",
                 "flood": "flood_extent",
                 "land cover": "landcover",
                 "landcover": "landcover",
+                "zonal statistics": "zonal_mean",
+                "zonal statistic": "zonal_mean",
+                "zonal": "zonal_mean",
+                "image export": "image_export",
+                "export image": "image_export",
             }.get(metric, metric.upper())
             return normalized_metric, task_type
     return None, None
@@ -97,8 +147,11 @@ def _extract_metric(text: str) -> tuple[str | None, str | None]:
 def _extract_aoi(text: str) -> dict[str, Any] | None:
     if "hong kong" in text or "香港" in text:
         return {"type": "named_place", "name": "Hong Kong", "source": "named_place"}
-    if "supplied aoi" in text or "provided aoi" in text or "user aoi" in text:
+    if "supplied aoi" in text or "provided aoi" in text or "user aoi" in text or "this aoi" in text or "current aoi" in text:
         return {"type": "user_supplied", "name": "supplied AOI", "source": "user_supplied"}
+    for pattern, label in NAMED_PLACES.items():
+        if re.search(rf"\b{re.escape(pattern)}\b", text):
+            return {"type": "named_place", "name": label, "source": "named_place"}
     if "geojson" in text:
         return {"type": "geojson", "name": "supplied GeoJSON", "source": "user_supplied_geojson"}
     asset_match = re.search(r"(users/[a-z0-9_./-]+|projects/[a-z0-9_./-]+)", text)
@@ -192,7 +245,10 @@ def _extract_grouping(text: str) -> dict[str, Any]:
 def _extract_dataset(text: str) -> str | None:
     upper_id = re.search(r"\b[A-Z0-9]+/[A-Z0-9_./-]+\b", text.upper())
     if upper_id:
-        return upper_id.group(0)
+        candidate = upper_id.group(0)
+        if candidate.startswith(("PROJECTS/", "USERS/")):
+            return None
+        return candidate
     for alias, dataset_id in DATASET_ALIASES.items():
         if alias in text:
             return dataset_id
@@ -211,6 +267,8 @@ def parse_request_slots(request: str) -> dict[str, Any]:
     text = _normalize(request)
     metric, task_type = _extract_metric(text)
     output = _extract_output(text)
+    if output is None and metric and task_type:
+        output = {"type": "csv", "destination": "drive", "format": "CSV", "inferred": True}
     flood_windows = _extract_flood_windows(text)
     return {
         "raw_user_request": request,
@@ -293,6 +351,18 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
         }
 
     requested_dataset = slots["requested_dataset"]
+    if requested_dataset and not get_dataset(requested_dataset):
+        return {
+            "ok": False,
+            "status": "ambiguous",
+            "error": error_payload(
+                "UNKNOWN_DATASET_ID",
+                f"Dataset ID {requested_dataset!r} is not in the local dataset catalog.",
+            ),
+            "slots": slots,
+            "candidate_datasets": search_datasets(request, top_k=5),
+            "closest_recipes": closest_recipes(request),
+        }
     dataset_candidates = recommend_datasets(task_type=task_type, metric=metric)
     selected = [item for item in dataset_candidates if item["dataset_id"] == requested_dataset] if requested_dataset else dataset_candidates[:1]
     if not selected and requested_dataset:
@@ -302,6 +372,7 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
     golden_example = bool(slots["golden_route"].get("ok")) or _is_hk_2024_16day_ndvi(slots)
     plan_time_range = _planning_time_range(slots)
     plan_id = _slug(f"{task_type}-{metric}-{slots['aoi']['name']}-{plan_time_range['label']}")
+    validation_rulesets = _validation_rulesets_for(recipe, task_type, metric, output_type)
     plan = {
         "schema_version": "gee-plan/v0.3",
         "plan_id": plan_id,
@@ -326,6 +397,7 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
             "notes": "Review scale and CRS before live export; dataset native projections may differ.",
         },
         "output": slots["output"],
+        "output_schema": list((context or {}).get("output_schema") or recipe.get("output_schema") or []),
         "export": {
             "requires_confirmation": True,
             "live_execution_default": False,
@@ -344,7 +416,7 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
             ),
         },
         "validation": {
-            "rulesets": ["global_safety", recipe["validation_profile"]],
+            "rulesets": validation_rulesets,
             "must_pass_before_live": True,
         },
         "limitations": _limitations_for(task_type, metric, output_type),
@@ -356,6 +428,8 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
             "outputs": outputs,
             "temporal_cadence": slots["temporal_cadence"],
             "grouping": slots["grouping"],
+            "live_adapter_ready": _is_hk_2024_16day_ndvi(slots),
+            "context_review_required": bool((context or {}).get("review_required")),
             "notes": "This generic plan is editable and does not contact Earth Engine.",
         },
     }
@@ -426,7 +500,208 @@ def _execution_artifacts_for(
                 "plan": "outputs/plans/hk_2024_16day_ndvi.yaml",
             },
         )
+    metric = str(slots["metric"])
+    output_type = slots["output"]["type"]
+    task_type = str(slots["task_type"])
+    if task_type in {"vegetation_index", "water_index", "builtup_index"} and metric in OPTICAL_INDEX_BANDS:
+        return _optical_index_artifacts(slots, selected_datasets)
+    if task_type == "land_surface_temperature":
+        return _landsat_lst_artifacts(slots, selected_datasets)
+    if task_type == "landcover_summary":
+        return _dynamic_world_landcover_artifacts(slots, selected_datasets)
+    if task_type == "flood_mapping" and output_type == "geotiff":
+        return _sentinel1_flood_artifacts(slots, selected_datasets)
     return recipe["template"], None, {}
+
+
+def _dataset_id(selected_datasets: list[dict[str, Any]], fallback: str) -> str:
+    if selected_datasets:
+        return str(selected_datasets[0].get("dataset_id") or selected_datasets[0].get("id") or fallback)
+    return fallback
+
+
+def _aoi_asset(slots: dict[str, Any]) -> tuple[str, bool]:
+    aoi = slots["aoi"]
+    aoi_type = aoi.get("type")
+    if aoi_type == "ee_asset":
+        return str(aoi["source"]), False
+    if aoi_type == "named_place" and aoi.get("name") == "Hong Kong":
+        return "projects/<your-project>/assets/hong_kong_aoi", True
+    if aoi_type in {"user_supplied", "user_supplied_geojson", "geojson", "bbox"}:
+        return "projects/<your-project>/assets/supplied_aoi", True
+    return "projects/<your-project>/assets/reviewed_aoi", True
+
+
+def _artifact_base(slots: dict[str, Any]) -> str:
+    time_range = _planning_time_range(slots)
+    pieces = [
+        str(slots["task_type"]),
+        str(slots["metric"]).lower(),
+        str(slots["aoi"]["name"]),
+        str(time_range["label"]),
+        str(slots["output"]["type"]),
+    ]
+    return _slug("-".join(pieces))
+
+
+def _common_export_context(slots: dict[str, Any], selected_datasets: list[dict[str, Any]], fallback_dataset: str) -> dict[str, Any]:
+    time_range = _planning_time_range(slots)
+    aoi_asset, review_required = _aoi_asset(slots)
+    base = _artifact_base(slots)
+    return {
+        "script_name": base,
+        "dataset_id": _dataset_id(selected_datasets, fallback_dataset),
+        "date_start": time_range["date_start"],
+        "date_end": time_range["date_end"],
+        "aoi_name": slots["aoi"]["name"],
+        "aoi_source": slots["aoi"].get("source"),
+        "aoi_asset": aoi_asset,
+        "scale": _default_scale(selected_datasets),
+        "crs": "EPSG:4326",
+        "tile_scale": 4,
+        "max_pixels": 10000000000000,
+        "export_description": base,
+        "drive_folder": "gee_exports",
+        "file_prefix": base,
+        "review_required": review_required,
+    }
+
+
+def _optical_index_artifacts(
+    slots: dict[str, Any],
+    selected_datasets: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any], dict[str, str]]:
+    metric = str(slots["metric"])
+    base = _artifact_base(slots)
+    context = _common_export_context(slots, selected_datasets, "COPERNICUS/S2_SR_HARMONIZED")
+    context.update(
+        {
+            "index_name": metric,
+            "index_bands": list(OPTICAL_INDEX_BANDS[metric]),
+            "index_output_field": OPTICAL_INDEX_OUTPUT_FIELDS[metric],
+            "cloudy_pixel_percentage": 80,
+        }
+    )
+    if metric in OPTICAL_INDEX_EXPRESSIONS:
+        expression = OPTICAL_INDEX_EXPRESSIONS[metric]
+        context["index_expression"] = expression["expression"]
+        context["expression_bands"] = expression["bands"]
+    if slots["output"]["type"] == "geotiff":
+        context["output_schema"] = ["image", "region", "scale_m", "crs", "file_format", "export_description"]
+        template = "sentinel2_index_image"
+    else:
+        context["output_schema"] = [
+            "aoi_name",
+            "date_start",
+            "date_end",
+            "metric",
+            OPTICAL_INDEX_OUTPUT_FIELDS[metric],
+            "image_count",
+            "dataset_id",
+            "scale_m",
+            "crs",
+            "export_description",
+        ]
+        template = "sentinel2_index_table"
+    return template, context, {"script": f"outputs/scripts/{base}.py", "plan": f"outputs/plans/{base}.yaml"}
+
+
+def _landsat_lst_artifacts(
+    slots: dict[str, Any],
+    selected_datasets: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any], dict[str, str]]:
+    base = _artifact_base(slots)
+    context = _common_export_context(slots, selected_datasets, "LANDSAT/LC08/C02/T1_L2")
+    context["scale"] = 30
+    if slots["output"]["type"] == "geotiff":
+        context["output_schema"] = ["image", "region", "scale_m", "crs", "file_format", "export_description"]
+        template = "landsat_lst"
+    else:
+        context["output_schema"] = [
+            "aoi_name",
+            "date_start",
+            "date_end",
+            "mean_lst_c",
+            "image_count",
+            "dataset_id",
+            "scale_m",
+            "crs",
+            "export_description",
+        ]
+        template = "landsat_lst_table"
+    return template, context, {"script": f"outputs/scripts/{base}.py", "plan": f"outputs/plans/{base}.yaml"}
+
+
+def _dynamic_world_landcover_artifacts(
+    slots: dict[str, Any],
+    selected_datasets: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any], dict[str, str]]:
+    base = _artifact_base(slots)
+    context = _common_export_context(slots, selected_datasets, "GOOGLE/DYNAMICWORLD/V1")
+    context["scale"] = 10
+    context["output_schema"] = [
+        "aoi_name",
+        "date_start",
+        "date_end",
+        "class_id",
+        "class_label",
+        "area_m2",
+        "fraction",
+        "dataset_id",
+        "scale_m",
+        "crs",
+        "export_description",
+    ]
+    return "dynamic_world_landcover_summary", context, {"script": f"outputs/scripts/{base}.py", "plan": f"outputs/plans/{base}.yaml"}
+
+
+def _sentinel1_flood_artifacts(
+    slots: dict[str, Any],
+    selected_datasets: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any], dict[str, str]]:
+    base = _artifact_base(slots)
+    aoi_asset, review_required = _aoi_asset(slots)
+    before = slots["before_time_range"]
+    after = slots["after_time_range"]
+    context = {
+        "script_name": base,
+        "dataset_id": _dataset_id(selected_datasets, "COPERNICUS/S1_GRD"),
+        "before_start": before["date_start"],
+        "before_end": before["date_end"],
+        "after_start": after["date_start"],
+        "after_end": after["date_end"],
+        "aoi_name": slots["aoi"]["name"],
+        "aoi_source": slots["aoi"].get("source"),
+        "aoi_asset": aoi_asset,
+        "polarization": "VH",
+        "orbit_pass": "DESCENDING",
+        "scale": 10,
+        "crs": "EPSG:4326",
+        "max_pixels": 10000000000000,
+        "export_description": base,
+        "drive_folder": "gee_exports",
+        "file_prefix": base,
+        "output_schema": ["image", "region", "scale_m", "crs", "file_format", "export_description"],
+        "review_required": review_required,
+    }
+    return "sentinel1_flood_before_after", context, {"script": f"outputs/scripts/{base}.py", "plan": f"outputs/plans/{base}.yaml"}
+
+
+def _validation_rulesets_for(recipe: dict[str, Any], task_type: str, metric: str, output_type: str) -> list[str]:
+    rules = ["global_safety"]
+    for candidate in (
+        recipe.get("validation_profile"),
+        "export_image_geotiff" if output_type == "geotiff" else None,
+        "export_table_csv" if output_type in {"csv", "table"} else None,
+        "water_index_ndwi" if metric in {"NDWI", "MNDWI"} else None,
+        "builtup_index_ndbi" if metric == "NDBI" else None,
+        "vegetation_index_ndvi" if metric == "NDVI" and task_type == "vegetation_index" else None,
+        "landsat_lst" if task_type == "land_surface_temperature" else None,
+        "sentinel1_flood_before_after" if task_type == "flood_mapping" else None,
+    ):
+        if candidate and candidate not in rules:
+            rules.append(str(candidate))
+    return rules
 
 
 def _operators_for(task_type: str, metric: str, output_type: str) -> list[str]:

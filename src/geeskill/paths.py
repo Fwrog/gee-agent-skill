@@ -36,6 +36,13 @@ def default_templates_dir(root: Path | None = None) -> Path:
     return package_resources_dir() / "templates"
 
 
+def default_recipe_registry_path(root: Path | None = None) -> Path:
+    source_path = (root or project_root()) / "references" / "recipes" / "registry.yaml"
+    if source_path.exists():
+        return source_path
+    return package_resources_dir() / "recipes" / "registry.yaml"
+
+
 def default_context_path(name: str) -> Path:
     source_path = project_root() / "evals" / "contexts" / name
     if source_path.exists():

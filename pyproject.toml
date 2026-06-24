@@ -11,10 +11,28 @@ requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "gee-agent-skill maintainers" }]
+keywords = ["google-earth-engine", "geospatial", "remote-sensing", "agent", "rag", "cli", "codex"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: GIS",
+  "Topic :: Software Development :: Code Generators",
+]
 dependencies = [
   "Jinja2>=3.1",
   "PyYAML>=6.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Fwrog/gee-agent-skill"
+Repository = "https://github.com/Fwrog/gee-agent-skill"
+Issues = "https://github.com/Fwrog/gee-agent-skill/issues"
 
 [project.optional-dependencies]
 earthengine = [
@@ -39,6 +57,8 @@ geeskill = [
   "resources/boundaries/*.geojson",
   "resources/tasks/*.yaml",
   "resources/templates/*.j2",
+  "resources/templates/recipes/*.j2",
+  "resources/recipes/*.yaml",
 ]
 
 [tool.pytest.ini_options]

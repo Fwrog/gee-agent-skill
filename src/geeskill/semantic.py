@@ -32,6 +32,9 @@ RULESETS = {
     "dynamic_world_landcover_ndvi": SemanticRuleSet(
         "dynamic_world_landcover_ndvi", "Dynamic World land-cover-aware Sentinel-2 NDVI diagnostics."
     ),
+    "dynamic_world_landcover": SemanticRuleSet(
+        "dynamic_world_landcover", "Dynamic World land-cover summary workflow."
+    ),
     "export_image_geotiff": SemanticRuleSet("export_image_geotiff", "Export.image.toDrive GeoTIFF export."),
 }
 
@@ -45,8 +48,14 @@ def infer_semantic_rulesets(text: str, explicit: str | None = None) -> list[str]
         rules.append("agent_script_contract")
     if "normalizeddifference" in lower or "expression(" in lower:
         rules.append("optical_index")
-    if "copernicus/s2_sr_harmonized" in lower and "ndvi" in lower:
+    if (
+        "copernicus/s2_sr_harmonized" in lower
+        and "ndvi" in lower
+        and ("reduceregions" in lower or "build_16day_statistics" in lower or "hk_january" in lower)
+    ):
         rules.append("sentinel2_ndvi_monthly_zonal")
+        rules.append("vegetation_index_ndvi")
+    elif "ndvi" in lower:
         rules.append("vegetation_index_ndvi")
     if "ndwi" in lower or "mndwi" in lower:
         rules.append("water_index_ndwi")
@@ -60,8 +69,8 @@ def infer_semantic_rulesets(text: str, explicit: str | None = None) -> list[str]
         rules.append("export_table_csv")
     if "export.image.todrive" in lower or "ee.batch.export.image.todrive" in lower:
         rules.append("export_image_geotiff")
-    if "google/dynamicworld/v1" in lower and "ndvi" in lower:
-        rules.append("dynamic_world_landcover_ndvi")
+    if "google/dynamicworld/v1" in lower:
+        rules.append("dynamic_world_landcover_ndvi" if "ndvi" in lower else "dynamic_world_landcover")
     return rules
 
 
@@ -93,6 +102,8 @@ def validate_semantics(path: Path, rulesets: list[str] | None = None) -> list[Fi
             findings.extend(_export_image_geotiff(text, lower))
         elif ruleset == "dynamic_world_landcover_ndvi":
             findings.extend(_dynamic_world_landcover_ndvi(text, lower))
+        elif ruleset == "dynamic_world_landcover":
+            findings.extend(_dynamic_world_landcover(text, lower))
         else:
             findings.append(Finding("warning", "unknown-semantic-ruleset", f"Unknown ruleset: {ruleset}", ruleset=ruleset))
     if selected and not any(item.severity == "error" for item in findings):
@@ -156,11 +167,18 @@ def _agent_script_contract(text: str, lower: str) -> list[Finding]:
             )
         )
     if "filterdate" in lower:
+        has_standard_window = ("START_DATE" in text or "DATE_START" in text) and (
+            "END_DATE" in text or "DATE_END" in text
+        )
+        has_before_after_windows = all(
+            constant in text
+            for constant in ("BEFORE_START", "BEFORE_END", "AFTER_START", "AFTER_END")
+        )
         findings += _require(
-            ("START_DATE" in text or "DATE_START" in text) and ("END_DATE" in text or "DATE_END" in text),
+            has_standard_window or has_before_after_windows,
             ruleset,
             "date-window-constants",
-            "Generated scripts with filterDate should expose date-window constants.",
+            "Generated scripts with filterDate should expose reviewed date-window constants.",
             "VALIDATION_ERROR",
         )
     if "ee.imagecollection(" in lower:
@@ -219,7 +237,7 @@ def _agent_script_contract(text: str, lower: str) -> list[Finding]:
                 "generated-script-getinfo",
                 "Generated scripts should avoid getInfo() outside bounded preflight/debug probes.",
                 hint="Prefer server-side reducers, metadata properties, exports, or harness preflight.",
-                category="CLIENT_SERVER_MISUSE",
+                category="UNSAFE_GETINFO",
                 rule_id=f"{ruleset}.generated-script-getinfo",
                 ruleset=ruleset,
                 retryable=False,
@@ -269,7 +287,7 @@ def _optical_index(text: str, lower: str) -> list[Finding]:
                 "unsafe-large-getinfo",
                 "Optical workflow contains getInfo(), which is unsafe for large collections.",
                 hint="Export server-side objects or write metadata properties instead.",
-                category="CLIENT_SERVER_MISUSE",
+                category="UNSAFE_GETINFO",
                 rule_id=f"{ruleset}.unsafe-large-getinfo",
                 ruleset=ruleset,
                 retryable=False,
@@ -368,7 +386,7 @@ def _sentinel2_ndvi(text: str, lower: str) -> list[Finding]:
                 "unsafe-large-getinfo",
                 "Sentinel-2 workflow contains getInfo(), which is unsafe for large collections.",
                 hint="Export server-side objects or write metadata properties instead.",
-                category="CLIENT_SERVER_MISUSE",
+                category="UNSAFE_GETINFO",
                 rule_id=f"{ruleset}.unsafe-large-getinfo",
                 ruleset=ruleset,
                 retryable=False,
@@ -497,7 +515,7 @@ def _dynamic_world_landcover_ndvi(text: str, lower: str) -> list[Finding]:
         ruleset,
         "preflight-required-marker",
         "Live export must be run through a preflight-aware command.",
-        "EXPORT_REFUSED_BY_PREFLIGHT",
+        "PREFLIGHT_REQUIRED",
         retryable=True,
     )
     findings += _require(
@@ -505,6 +523,62 @@ def _dynamic_world_landcover_ndvi(text: str, lower: str) -> list[Finding]:
         ruleset,
         "explicit-selectors",
         "Land-cover-aware CSV export must use explicit selectors.",
+        "EXPORT_TASK_ERROR",
+    )
+    return findings
+
+
+def _dynamic_world_landcover(text: str, lower: str) -> list[Finding]:
+    ruleset = "dynamic_world_landcover"
+    findings: list[Finding] = []
+    findings += _require(
+        "google/dynamicworld/v1" in lower,
+        ruleset,
+        "dynamic-world-dataset",
+        "Dynamic World land-cover summary must use GOOGLE/DYNAMICWORLD/V1.",
+        "DATASET_NOT_FOUND",
+    )
+    findings += _require(
+        '"label"' in text or "'label'" in text,
+        ruleset,
+        "dynamic-world-label",
+        "Dynamic World summary must use the label band.",
+        "NO_LANDCOVER_LABEL",
+    )
+    findings += _require(
+        "filterdate" in lower,
+        ruleset,
+        "dynamic-world-date-filter",
+        "Dynamic World summary must use filterDate.",
+        "VALIDATION_ERROR",
+    )
+    findings += _require(
+        "filterbounds" in lower,
+        ruleset,
+        "dynamic-world-region-filter",
+        "Dynamic World summary must use filterBounds.",
+        "GEOMETRY_ERROR",
+        retryable=True,
+    )
+    findings += _require(
+        "ee.image.pixelarea" in lower and "area_m2" in lower,
+        ruleset,
+        "dynamic-world-area-summary",
+        "Dynamic World summary should report area_m2 by class.",
+        "VALIDATION_ERROR",
+    )
+    findings += _require(
+        "fraction" in lower,
+        ruleset,
+        "dynamic-world-fraction",
+        "Dynamic World summary should report class fractions.",
+        "VALIDATION_ERROR",
+    )
+    findings += _require(
+        "selectors=" in lower,
+        ruleset,
+        "explicit-selectors",
+        "Dynamic World CSV export must use explicit selectors.",
         "EXPORT_TASK_ERROR",
     )
     return findings

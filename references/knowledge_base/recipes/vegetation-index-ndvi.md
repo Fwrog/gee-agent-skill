@@ -1,50 +1,68 @@
-# Recipe Card: Vegetation Index NDVI
+# Recipe Card: vegetation-index-ndvi
 
 source_id: recipe-vegetation-index-ndvi
 source_type: curated-recipe-card
 primary_status: curated
-source_url: https://developers.google.com/earth-engine/apidocs/ee-image-normalizeddifference
-last_checked: 2026-06-23
 recipe_id: vegetation-index-ndvi
 task_type: vegetation_index
-dataset_id: COPERNICUS/S2_SR_HARMONIZED
-method_name: ee.Image.normalizedDifference
-operator_chain: AOI -> filterDate -> filterBounds -> cloud mask -> normalizedDifference -> composite -> reducer/export
+description: Compute NDVI from optical surface reflectance and export an image or table.
+required_inputs: aoi, time_range, output
+optional_inputs: grouping, temporal_cadence, cloud_policy, dataset_id
+candidate_datasets: COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2
+default_dataset_policy: Prefer Sentinel-2 SR for 10m regional NDVI unless Landsat continuity is requested.
+template: sentinel2_ndvi_composite
+preflight_profile: optical_index
+validation_profile: vegetation_index_ndvi
+output_schema: aoi_name, date_start, date_end, mean_ndvi, dataset_id, scale_m, crs
+live_risk_level: medium
+last_checked: 2026-06-24
 risk_level: medium
+
+## Use
+
+Compute NDVI from optical surface reflectance and export an image or table.
 
 ## Required Inputs
 
-- AOI: named place, GeoJSON, EE asset, or bounding box.
-- Time range: month, season, year, or explicit date range.
-- Output: CSV/table, GeoTIFF/image, or preview.
+- aoi
+- time_range
+- output
 
-## Default Policy
+## Optional Inputs
 
-Use Sentinel-2 SR Harmonized for 10 m regional NDVI unless the request asks for Landsat continuity. NDVI uses NIR and red bands. For Sentinel-2 this means `B8` and `B4`; for Landsat Collection 2 this means `SR_B5` and `SR_B4`.
+- grouping
+- temporal_cadence
+- cloud_policy
+- dataset_id
 
-## Example: Hong Kong 2024 16-Day NDVI
+## Dataset Policy
 
-User intent:
+Prefer Sentinel-2 SR for 10m regional NDVI unless Landsat continuity is requested.
 
-```text
-Compute 16-day NDVI for Hong Kong in 2024 and export CSV.
-```
+Candidate datasets: COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2.
 
-The plan should set:
+## Template and Safety
 
-- `task_type: vegetation_index`
-- `indices_or_variables: [NDVI]`
-- `aoi.name: Hong Kong`
-- `time_range.date_start: 2024-01-01`
-- `time_range.date_end: 2025-01-01`
-- `execution.temporal_cadence: 16-day`
-- `execution.template: hk_2024_16day_ndvi_csv`
-- `validation.rulesets: [global_safety, vegetation_index_ndvi]`
+- Template: `sentinel2_ndvi_composite`
+- Preflight profile: `optical_index`
+- Validation profile: `vegetation_index_ndvi`
+- Live risk level: `medium`
 
-The rendered script should export one CSV row per 16-day period. Required output fields are `aoi_name`, `year`, `period_index`, `date_start`, `date_end`, `temporal_cadence_days`, `mean_ndvi`, `image_count_before_cloud_filter`, `image_count_after_cloud_filter`, `dataset_id`, `scale_m`, `crs`, `aoi_source`, and `export_description`.
+## Output Schema
 
-## Failure Cases
+- aoi_name
+- date_start
+- date_end
+- mean_ndvi
+- dataset_id
+- scale_m
+- crs
 
-known_failure: EMPTY_COLLECTION
+## Examples
 
-Cloud masks, small AOIs, winter vegetation, and strict date windows can produce empty or low-valid-pixel composites. Preflight must check collection count, expected bands, derived NDVI band, and a tiny sanity statistic before export.
+- Compute 16-day NDVI for Hong Kong in 2024 and export CSV.
+
+## Limitations
+
+- Optical index outputs require cloud, shadow, and water-context review before scientific interpretation.
+- Golden Hong Kong examples prove the harness loop, not vegetation-monitoring validity.

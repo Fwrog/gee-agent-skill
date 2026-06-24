@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any
 
 
@@ -148,6 +149,84 @@ DATASETS: tuple[DatasetCard, ...] = (
         license_attribution="ESA WorldCover license terms apply.",
         last_checked="2026-06-21",
     ),
+    DatasetCard(
+        dataset_id="MODIS/061/MOD11A2",
+        title="MOD11A2.061 Terra Land Surface Temperature and Emissivity 8-Day Global 1km",
+        provider="NASA LP DAAC / USGS EROS Center",
+        gee_url="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2",
+        temporal_coverage="2000-02-18-present; 8-day cadence",
+        spatial_resolution="1000m",
+        bands=("LST_Day_1km", "LST_Night_1km", "QC_Day", "QC_Night", "Emis_31", "Emis_32"),
+        qa_bands=("QC_Day", "QC_Night", "Clear_sky_days", "Clear_sky_nights"),
+        common_uses=("land surface temperature", "thermal climatology", "regional heat diagnostics"),
+        recommended_tasks=("land_surface_temperature", "zonal_statistics", "export_image"),
+        known_limitations=(
+            "LST bands require scale factor conversion.",
+            "The 8-day product averages daily inputs and does not filter by specific QA bits before averaging.",
+        ),
+        scale_notes="Use 1000m unless intentionally resampling or aggregating.",
+        projection_notes="Document coarse MODIS resolution when combining with Sentinel or Landsat products.",
+        license_attribution="NASA LP DAAC / USGS MODIS data terms apply.",
+        last_checked="2026-06-24",
+    ),
+    DatasetCard(
+        dataset_id="ECMWF/ERA5_LAND/DAILY_AGGR",
+        title="ERA5-Land Daily Aggregated - ECMWF Climate Reanalysis",
+        provider="ECMWF / Copernicus Climate Data Store",
+        gee_url="https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+        temporal_coverage="1950-present with near-real-time lag; check catalog availability",
+        spatial_resolution="11132m",
+        bands=("temperature_2m", "total_precipitation_sum", "surface_pressure", "u_component_of_wind_10m", "v_component_of_wind_10m"),
+        qa_bands=(),
+        common_uses=("climate covariates", "temperature and precipitation summaries", "hydrometeorological context"),
+        recommended_tasks=("zonal_statistics", "change_detection", "export_table", "export_image"),
+        known_limitations=(
+            "Coarse reanalysis pixels are not a substitute for local station observations.",
+            "Some evaporation variables have known swapped-value issues in the source data.",
+            "Some precipitation and flow aggregates can contain small negative or excessive values.",
+        ),
+        scale_notes="Use coarse regional scales near 11132m; avoid mixing with 10m optical outputs without aggregation.",
+        projection_notes="Document reanalysis grid assumptions and aggregation windows.",
+        license_attribution="ECMWF/Copernicus attribution and citation requirements apply.",
+        last_checked="2026-06-24",
+    ),
+    DatasetCard(
+        dataset_id="JRC/GSW1_4/GlobalSurfaceWater",
+        title="JRC Global Surface Water Mapping Layers v1.4",
+        provider="EC JRC / Google",
+        gee_url="https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater",
+        temporal_coverage="1984-03-16 to 2022-01-01 static mapping layers",
+        spatial_resolution="30m",
+        bands=("occurrence", "change_abs", "change_norm", "seasonality", "recurrence", "transition", "max_extent"),
+        qa_bands=("max_extent",),
+        common_uses=("surface water occurrence", "water change context", "water masks"),
+        recommended_tasks=("water_index", "change_detection", "flood_mapping", "zonal_statistics"),
+        known_limitations=(
+            "Historical mapping layers are not time-matched to arbitrary current flood windows.",
+            "The occurrence band mask can mirror partial occurrence values and needs careful interpretation.",
+        ),
+        scale_notes="Use 30m for summaries unless coarsening for large regions.",
+        projection_notes="Use as reference/context; document when combining with current Sentinel observations.",
+        license_attribution="Copernicus Programme attribution required; cite EC JRC/Google where used.",
+        last_checked="2026-06-24",
+    ),
+    DatasetCard(
+        dataset_id="USGS/SRTMGL1_003",
+        title="NASA SRTM Digital Elevation 30m",
+        provider="NASA / USGS / JPL-Caltech",
+        gee_url="https://developers.google.com/earth-engine/datasets/catalog/USGS_SRTMGL1_003",
+        temporal_coverage="2000-02-11 to 2000-02-22 static DEM",
+        spatial_resolution="30m",
+        bands=("elevation",),
+        qa_bands=(),
+        common_uses=("terrain covariates", "slope", "elevation masks", "topographic context"),
+        recommended_tasks=("zonal_statistics", "export_image", "change_detection"),
+        known_limitations=("Static terrain layer; not a time-varying surface observation.",),
+        scale_notes="Use 30m for terrain-derived products such as slope unless intentionally aggregating.",
+        projection_notes="Use explicit scale when reducing or exporting terrain covariates.",
+        license_attribution="NASA/JPL SRTM citation and use terms apply.",
+        last_checked="2026-06-24",
+    ),
 )
 
 
@@ -211,3 +290,71 @@ def recommend_datasets(task_type: str | None = None, metric: str | None = None) 
     if not recommendations and metric_name == "lst":
         recommendations.extend([card for card in DATASETS if card.dataset_id.startswith("LANDSAT/")])
     return [card.to_dict() for card in recommendations]
+
+
+KNOWLEDGE_CARD_PREFIXES: dict[str, tuple[str, ...]] = {
+    "datasets": ("datasets/",),
+    "operators": ("operators/", "operator-chains/", "core/", "cloud-masking.md", "reducers-zonal-statistics.md"),
+    "recipes": ("recipes/",),
+    "failures": ("failure-cases/",),
+    "research": ("research/", "corpus/"),
+}
+
+
+def _card_category(source_path: str) -> str:
+    for category, prefixes in KNOWLEDGE_CARD_PREFIXES.items():
+        if any(source_path == prefix or source_path.startswith(prefix) for prefix in prefixes):
+            return category
+    return "general"
+
+
+KNOWN_FAILURE_RE = re.compile(r"^known_failure:\s*(.+?)\s*$", re.IGNORECASE | re.MULTILINE)
+
+
+def _add_known_failure(entry: dict[str, Any], value: str) -> None:
+    for item in (part.strip() for part in value.split(",")):
+        if item and item not in entry["known_failures"]:
+            entry["known_failures"].append(item)
+
+
+def list_knowledge_cards(index: dict[str, Any], category: str = "all", top_k: int = 50) -> list[dict[str, Any]]:
+    """Return one structured entry per indexed knowledge-base source file."""
+    if category not in {"all", *KNOWLEDGE_CARD_PREFIXES.keys(), "general"}:
+        raise ValueError(
+            "Unsupported knowledge category. Use one of: all, datasets, operators, recipes, failures, research, general."
+        )
+    grouped: dict[str, dict[str, Any]] = {}
+    for doc in index.get("documents", []):
+        source_path = str(doc.get("source_path") or "")
+        if not source_path:
+            continue
+        card_category = _card_category(source_path)
+        if category != "all" and category != card_category:
+            continue
+        metadata = dict(doc.get("metadata") or {})
+        entry = grouped.setdefault(
+            source_path,
+            {
+                "source_path": source_path,
+                "category": card_category,
+                "title": doc.get("title") or source_path,
+                "source_id": metadata.get("source_id"),
+                "source_type": metadata.get("source_type"),
+                "primary_status": metadata.get("primary_status"),
+                "risk_level": metadata.get("risk_level"),
+                "last_checked": metadata.get("last_checked") or metadata.get("retrieved_at"),
+                "source_url": metadata.get("source_url"),
+                "known_failures": [],
+                "chunk_count": 0,
+            },
+        )
+        entry["chunk_count"] += 1
+        for key, value in metadata.items():
+            if key == "known_failure" or key.endswith("_known_failure"):
+                _add_known_failure(entry, value)
+        for value in KNOWN_FAILURE_RE.findall(str(doc.get("text") or "")):
+            _add_known_failure(entry, value)
+        for key in ("source_id", "source_type", "primary_status", "risk_level", "source_url"):
+            if not entry.get(key) and metadata.get(key):
+                entry[key] = metadata[key]
+    return sorted(grouped.values(), key=lambda item: (item["category"], item["source_path"]))[:top_k]

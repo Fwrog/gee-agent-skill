@@ -32,9 +32,12 @@ preview/
 site/
 *.log
 
-# Internal agent scratch/review notes
+# Internal agent scratch notes
 docs/agent_reviews/
-docs/reviews/
+docs/reviews/scratch/
+docs/reviews/tmp/
+docs/reviews/*-scratch.md
+docs/reviews/*-tmp.md
 
 # Local editor and OS metadata
 .vscode/

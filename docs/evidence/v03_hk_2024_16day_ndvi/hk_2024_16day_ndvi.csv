@@ -1,0 +1,24 @@
+aoi_name,year,period_index,date_start,date_end,temporal_cadence_days,mean_ndvi,image_count_before_cloud_filter,image_count_after_cloud_filter,dataset_id,scale_m,crs,aoi_source,export_description
+Hong Kong,2024,1,2024-01-01,2024-01-17,16,0.06137939316458223,34,34,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,2,2024-01-17,2024-02-02,16,0.021682486591865075,34,15,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,3,2024-02-02,2024-02-18,16,-0.008787025242330054,30,16,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,4,2024-02-18,2024-03-05,16,0.018605165810100164,36,5,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,5,2024-03-05,2024-03-21,16,0.3583391891617482,30,2,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,6,2024-03-21,2024-04-06,16,0.09820961451352254,34,17,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,7,2024-04-06,2024-04-22,16,0.15836690001841133,30,10,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,8,2024-04-22,2024-05-08,16,-0.0664235578099966,30,2,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,9,2024-05-08,2024-05-24,16,0.17030485358920375,39,4,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,10,2024-05-24,2024-06-09,16,0.25214183736529805,30,6,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,11,2024-06-09,2024-06-25,16,0.1821216212020888,34,6,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,12,2024-06-25,2024-07-11,16,0.10028333128041216,32,22,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,13,2024-07-11,2024-07-27,16,0.25195509572253405,30,19,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,14,2024-07-27,2024-08-12,16,0.08885762249481123,36,20,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,15,2024-08-12,2024-08-28,16,0.11989745428671472,30,12,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,16,2024-08-28,2024-09-13,16,0.15124974656199455,34,20,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,17,2024-09-13,2024-09-29,16,0.14508491985008928,30,21,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,18,2024-09-29,2024-10-15,16,0.1376690685869499,30,28,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,19,2024-10-15,2024-10-31,16,0.100211664616846,35,32,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,20,2024-10-31,2024-11-16,16,0.005387772561937038,33,16,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,21,2024-11-16,2024-12-02,16,0.014769201455417689,37,14,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,22,2024-12-02,2024-12-18,16,0.07812940745081513,40,26,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
+Hong Kong,2024,23,2024-12-18,2025-01-01,16,0.07055101818908434,34,24,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi

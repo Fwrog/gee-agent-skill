@@ -74,18 +74,7 @@ The paths should look like:
 
 ## Dry-run example
 
-Dry-runs do not contact Earth Engine:
-
-```bash
-gee-skill tools
-gee-skill smoke-test --json
-gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --plan --json
-gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --dry-run --json
-```
-
-The `--plan` command writes a saved plan under `outputs/runs/<run_id>/task_plan.yaml`. The `--dry-run` command renders and validates the script without submitting an export.
-
-For the v0.3 editable-plan workflow:
+Dry-runs and plan/render commands do not contact Earth Engine. Start with the v0.3 editable-plan workflow:
 
 ```bash
 gee-skill observe "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
@@ -100,6 +89,22 @@ gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml \
   --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py \
   --json
 ```
+
+Local smoke checks are also safe without credentials:
+
+```bash
+gee-skill tools
+gee-skill smoke-test --json
+```
+
+Compatibility examples for the older golden `ask` path:
+
+```bash
+gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --plan --json
+gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --dry-run --json
+```
+
+The compatibility `--plan` command writes a saved plan under `outputs/runs/<run_id>/task_plan.yaml`. The v0.3 path above writes `outputs/plans/hk_2024_16day_ndvi.yaml`.
 
 ## Live preflight
 
@@ -125,7 +130,17 @@ python -c 'import os, ee; ee.Initialize(project=os.environ["EE_PROJECT"]); print
 
 On macOS zsh, `python -c "import ee; print('ee import ok')"` can pass before OAuth credentials exist. If initialization asks you to run `earthengine authenticate`, complete the localhost OAuth flow, set the project, and rerun the final Python check. The final check should print `1`.
 
-Then preflight the saved plan.
+Then preflight the saved v0.3 plan:
+
+```bash
+gee-skill preflight-plan outputs/plans/hk_2024_16day_ndvi.yaml \
+  --project "$EE_PROJECT" \
+  --json
+```
+
+A passing v0.3 preflight reports `expected_export_rows: 23` and checks January and July anchor months.
+
+Compatibility preflight commands for `outputs/runs/<run_id>/task_plan.yaml`:
 
 Windows PowerShell:
 
@@ -145,19 +160,33 @@ gee-skill preflight-plan outputs/runs/<run_id>/task_plan.yaml \
 
 Preflight should run before every live export. It checks live data availability and workflow assumptions before an export task is created.
 
-For the v0.3 16-day NDVI plan:
-
-```bash
-gee-skill preflight-plan outputs/plans/hk_2024_16day_ndvi.yaml \
-  --project "$EE_PROJECT" \
-  --json
-```
-
-A passing v0.3 preflight reports `expected_export_rows: 23` and checks January and July anchor months.
-
 ## Live export
 
 After reviewing the plan and passing preflight, submit the export.
+
+For the v0.3 16-day NDVI plan:
+
+```bash
+gee-skill run-plan outputs/plans/hk_2024_16day_ndvi.yaml \
+  --project "$EE_PROJECT" \
+  --confirm-live \
+  --run-id hk-2024-16day-ndvi-v03-live-export-check \
+  --json
+```
+
+Monitor exports:
+
+```bash
+gee-skill monitor-exports --project "$EE_PROJECT" --json
+```
+
+PowerShell monitor command:
+
+```powershell
+gee-skill monitor-exports --project $env:EE_PROJECT --json
+```
+
+Compatibility run commands for `outputs/runs/<run_id>/task_plan.yaml`:
 
 Windows PowerShell:
 
@@ -175,28 +204,6 @@ gee-skill run-plan outputs/runs/<run_id>/task_plan.yaml \
   --project "$EE_PROJECT" \
   --confirm-live \
   --json
-```
-
-Monitor exports:
-
-```bash
-gee-skill monitor-exports --project "$EE_PROJECT" --json
-```
-
-For the v0.3 16-day NDVI plan:
-
-```bash
-gee-skill run-plan outputs/plans/hk_2024_16day_ndvi.yaml \
-  --project "$EE_PROJECT" \
-  --confirm-live \
-  --run-id hk-2024-16day-ndvi-v03-live-export-check \
-  --json
-```
-
-PowerShell:
-
-```powershell
-gee-skill monitor-exports --project $env:EE_PROJECT --json
 ```
 
 ## Where outputs are written

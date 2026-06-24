@@ -22,17 +22,26 @@ This is an agent-native GEE harness, not a GUI controller. Prefer `gee-skill` co
    `gee-skill plan from-text "<request>" --json`.
 5. If the request is underspecified, return the exact `AMBIGUOUS_TASK` missing fields to the user.
 6. Search or show distilled evidence:
-   `gee-skill catalog recommend --task-type <type> --metric <metric> --json` and `gee-skill search-docs "<dataset operator failure query>" --json`.
+   `gee-skill catalog recommend --task-type <type> --metric <metric> --json`, `gee-skill catalog evidence --category <datasets|operators|recipes|failures|research> --json`, and `gee-skill search-docs "<dataset operator failure query>" --json`.
 7. Review or edit the saved plan before execution:
    `gee-skill plan review <plan.yaml> --json` and `gee-skill plan set <plan.yaml> <key> <value> --json`.
-8. Prefer `--plan` and `--dry-run` commands before live export.
-9. Render and validate only approved templates or task YAML workflows.
-10. Run preflight before any live export.
-11. Execute live only with a project and explicit confirmation:
-   `--project <project-id> --confirm-live`.
-12. Monitor exports:
-   `gee-skill exports list --project <project-id> --json` or the compatibility command `gee-skill monitor-exports --project <project-id> --json`.
-13. Inspect run trace artifacts before presenting results.
+8. Resolve or summarize AOIs before live work when the AOI is unclear:
+   `gee-skill aoi resolve "<request>" --json` or `gee-skill aoi summarize <geojson-or-plan> --json`.
+9. Prefer plan, render, validate, and dry-run commands before live export.
+10. Render and validate only approved templates or task YAML workflows:
+   `gee-skill render <plan.yaml> --script-out <script.py> --json` and `gee-skill validate <script.py> --json`.
+11. Run preflight before any live export:
+   `gee-skill preflight <plan.yaml> --project <project-id> --json`.
+12. If preflight returns `V03_CONTEXT_REVIEW_REQUIRED`, ask for or set reviewed AOI/export context in the plan; do not treat it as an auth problem and do not run export.
+13. Execute live only with a project and explicit confirmation:
+   `gee-skill run <plan.yaml> --project <project-id> --confirm-live --json`.
+14. Monitor exports:
+   `gee-skill exports list --project <project-id> --json`, `gee-skill exports watch --project <project-id> --task-id <id> --json`, or the compatibility command `gee-skill monitor-exports --project <project-id> --json`.
+15. Inspect run trace artifacts before presenting results:
+   `gee-skill trace inspect <run_id> --json`.
+16. Use `gee-skill corpus coverage --task-type <type> --metric <metric> --output <format> --json` when checking whether a task has dataset, operator, recipe, failure, and export evidence coverage. Rule evidence may also appear in traces, but the core exportable-task coverage categories are dataset/operator/recipe/failure/export.
+17. Use `gee-skill eval evals/benchmark_suite.yml --json` for offline benchmark evidence.
+18. Treat `UNSAFE_GETINFO` and `PREFLIGHT_REQUIRED` as first-class safety categories when explaining validation/preflight failures.
 
 ## Golden Examples
 
@@ -44,7 +53,7 @@ These are verified regression paths, not the full scope of the project:
    `gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --plan --json`.
 3. v0.3 HK 2024 16-day NDVI CSV:
    `gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --out outputs/plans/hk_2024_16day_ndvi.yaml --json`,
-   then `gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json`.
+   then `gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json`.
 
 ## Do Not Use
 
@@ -70,11 +79,14 @@ These are verified regression paths, not the full scope of the project:
 
 Prefer task YAML with `id`, `task`, `template`, `query`, optional `outputs`, and `context`. Context should name AOI, dates, dataset id, metric, cloud policy, reducer, scale, CRS, and export target.
 
+For v0.3 plans, prefer editable `gee-plan/v0.3` YAML with the fields documented in `schemas/gee-plan-v0.3.schema.json`. Recipe definitions come from `references/recipes/registry.yaml` with a packaged fallback under `src/geeskill/resources/recipes/`.
+
 ## Outputs
 
 Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 
 - `task.yaml`
+- `task_plan.yaml` for compatibility commands that materialize reviewable task plans
 - `retrieval_trace.json`
 - `plan.md`
 - `generated_script.py`
@@ -93,6 +105,11 @@ Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 - Read [docs/harness.md](docs/harness.md) for run traces and tool registry behavior.
 - Read [docs/live_smoke.md](docs/live_smoke.md) for private live smoke-test commands.
 - Read [docs/how_to_start.md](docs/how_to_start.md) for the recommended user path.
+- Read [docs/cli_reference.md](docs/cli_reference.md) for canonical commands and compatibility aliases.
+- Read [docs/recipes.md](docs/recipes.md) for recipe readiness levels and registered workflow families.
+- Read [docs/capability_matrix.md](docs/capability_matrix.md) before claiming a workflow is implemented, preflight-ready, or live-verified.
+- Read [docs/benchmark_protocol.md](docs/benchmark_protocol.md) before making evaluation claims.
+- Read [docs/research_positioning.md](docs/research_positioning.md) before writing portfolio or paper-facing summaries.
 - Read [docs/release_readiness.md](docs/release_readiness.md) for the current publishability checklist, homepage asset inventory, and remaining limitations.
 - Read [docs/concepts.md](docs/concepts.md) for plan-first, RAG, preflight, and trace concepts.
 - Read [docs/v01_hk_january_ndvi.md](docs/v01_hk_january_ndvi.md) for the v0.1 release target.

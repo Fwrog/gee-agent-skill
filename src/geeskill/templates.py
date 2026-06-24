@@ -28,6 +28,41 @@ TEMPLATE_SCHEMAS: dict[str, dict[str, Any]] = {
         ],
         "positive_numbers": ["scale", "tile_scale", "max_pixels"],
     },
+    "sentinel2_index_image": {
+        "required": [
+            "script_name",
+            "dataset_id",
+            "date_start",
+            "date_end",
+            "aoi_asset",
+            "index_name",
+            "index_bands",
+            "scale",
+            "crs",
+            "export_description",
+            "drive_folder",
+        ],
+        "positive_numbers": ["scale", "tile_scale", "max_pixels"],
+    },
+    "sentinel2_index_table": {
+        "required": [
+            "script_name",
+            "dataset_id",
+            "date_start",
+            "date_end",
+            "aoi_name",
+            "aoi_asset",
+            "index_name",
+            "index_bands",
+            "index_output_field",
+            "scale",
+            "crs",
+            "export_description",
+            "drive_folder",
+            "output_schema",
+        ],
+        "positive_numbers": ["scale", "tile_scale", "max_pixels"],
+    },
     "landsat_lst": {
         "required": [
             "script_name",
@@ -39,6 +74,22 @@ TEMPLATE_SCHEMAS: dict[str, dict[str, Any]] = {
             "crs",
             "export_description",
             "drive_folder",
+        ],
+        "positive_numbers": ["scale", "tile_scale", "max_pixels"],
+    },
+    "landsat_lst_table": {
+        "required": [
+            "script_name",
+            "dataset_id",
+            "date_start",
+            "date_end",
+            "aoi_name",
+            "aoi_asset",
+            "scale",
+            "crs",
+            "export_description",
+            "drive_folder",
+            "output_schema",
         ],
         "positive_numbers": ["scale", "tile_scale", "max_pixels"],
     },
@@ -55,6 +106,22 @@ TEMPLATE_SCHEMAS: dict[str, dict[str, Any]] = {
             "drive_folder",
         ],
         "positive_numbers": ["scale", "tile_scale"],
+    },
+    "dynamic_world_landcover_summary": {
+        "required": [
+            "script_name",
+            "dataset_id",
+            "date_start",
+            "date_end",
+            "aoi_name",
+            "aoi_asset",
+            "scale",
+            "crs",
+            "export_description",
+            "drive_folder",
+            "output_schema",
+        ],
+        "positive_numbers": ["scale", "tile_scale", "max_pixels"],
     },
     "hk_district_monthly_ndvi": {
         "required": [
@@ -208,8 +275,10 @@ def validate_context(template_name: str, context: dict[str, Any]) -> None:
 
 
 def _safe_template_path(template_dir: Path, template_name: str) -> str:
-    if "/" in template_name or "\\" in template_name or ".." in template_name:
-        raise TemplateContextError("Template name must not contain path separators.")
+    if "\\" in template_name:
+        raise TemplateContextError("Template name must use POSIX-style paths.")
+    if template_name.startswith("/") or any(part in {"", ".", ".."} for part in template_name.split("/")):
+        raise TemplateContextError("Template path must stay under the approved template directory.")
     filename = f"{template_name}.py.j2"
     path = (template_dir / filename).resolve()
     root = template_dir.resolve()
@@ -234,3 +303,17 @@ def render_template(template_dir: Path, template_name: str, context: dict[str, A
     if "{{" in rendered or "{%" in rendered:
         raise TemplateContextError("Rendered script still contains unresolved Jinja tokens.")
     return rendered
+
+
+TEMPLATE_SCHEMAS.update(
+    {
+        "recipes/vegetation_index": TEMPLATE_SCHEMAS["sentinel2_ndvi_composite"],
+        "recipes/water_index": TEMPLATE_SCHEMAS["sentinel2_index_image"],
+        "recipes/builtup_index": TEMPLATE_SCHEMAS["sentinel2_index_table"],
+        "recipes/landsat_lst": TEMPLATE_SCHEMAS["landsat_lst_table"],
+        "recipes/sentinel1_change": TEMPLATE_SCHEMAS["sentinel1_flood_before_after"],
+        "recipes/zonal_statistics": TEMPLATE_SCHEMAS["zonal_statistics"],
+        "recipes/export_image": TEMPLATE_SCHEMAS["sentinel2_index_image"],
+        "recipes/export_table": TEMPLATE_SCHEMAS["sentinel2_index_table"],
+    }
+)

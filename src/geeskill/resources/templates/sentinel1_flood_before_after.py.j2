@@ -70,6 +70,7 @@ def create_export_task() -> ee.batch.Task:
         region=aoi,
         scale=SCALE,
         crs=CRS,
+        fileFormat="GeoTIFF",
         maxPixels=MAX_PIXELS,
     )
 
@@ -89,4 +90,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

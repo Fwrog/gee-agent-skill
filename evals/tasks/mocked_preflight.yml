@@ -1,0 +1,9 @@
+id: mocked_preflight_tasks
+description: Mocked/pre-live checks that must block unsafe or unreviewed plans without starting exports.
+tasks:
+  - request: Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF.
+    expected_error_code: V03_CONTEXT_REVIEW_REQUIRED
+    expected_decision: block_export
+  - request: Compute NDBI for Hong Kong in 2024 and export CSV.
+    expected_error_code: V03_CONTEXT_REVIEW_REQUIRED
+    expected_decision: block_export

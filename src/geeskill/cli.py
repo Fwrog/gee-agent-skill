@@ -16,12 +16,13 @@ import yaml
 
 from . import __version__
 from .ask import route_request
-from .catalog import get_dataset, list_datasets, recommend_datasets, search_datasets
+from .catalog import get_dataset, list_datasets, list_knowledge_cards, recommend_datasets, search_datasets
 from .earthengine import EarthEngineUnavailable, execute_script, monitor_tasks, render_map_preview
 from .errors import classify_exception, error_payload
 from .evaluation import run_benchmark_suite
+from .generic_preflight import GenericV03PreflightConfig, run_generic_v03_preflight
 from .hk_ndvi_preflight import HKNDVIPreflightConfig, run_hk_ndvi_preflight
-from .intents import build_general_plan_from_text
+from .intents import build_general_plan_from_text, parse_request_slots
 from .paths import (
     default_boundary_path,
     default_context_path,
@@ -30,7 +31,7 @@ from .paths import (
     default_templates_dir,
     project_root,
 )
-from .plans import build_task_plan, load_task_plan, plan_review_text, write_task_plan
+from .plans import build_task_plan, load_task_plan, plan_review_text, validate_v03_plan_schema, write_task_plan
 from .planner import build_plan
 from .rag import load_index, results_to_dicts, search
 from .recipes import get_recipe, list_recipes
@@ -40,10 +41,24 @@ from .run_trace import RunTrace, dry_run_report
 from .task import load_task, task_to_context
 from .templates import TemplateContextError, load_context, render_template
 from .tool_registry import exposed_tools, installed_tools, require_flags
-from .validation import report_to_json, validate_script
+from .validation import validate_script
 
 
-def _print_error(message: str) -> int:
+def _print_error(
+    message: str,
+    *,
+    as_json: bool = False,
+    code: str = "USAGE_ERROR",
+    hint: str = "Review the command arguments and rerun with the required values.",
+    command: str | None = None,
+) -> int:
+    if as_json:
+        payload = _envelope_error(code, message, hint)
+        if command:
+            payload["command"] = command
+            payload["schema_version"] = "gee-cli/v0.3"
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 2
     print(f"error: {message}", file=sys.stderr)
     return 2
 
@@ -56,6 +71,16 @@ def _envelope_error(code: str, message: str, hint: str) -> dict:
     return {"ok": False, "error": {"code": code, "message": message, "hint": hint}}
 
 
+def _command_envelope(command: str, data: Any, schema_version: str = "gee-cli/v0.3") -> dict:
+    return {"ok": True, "command": command, "schema_version": schema_version, "data": data}
+
+
+def _with_data(payload: dict[str, Any], data: dict[str, Any] | None = None) -> dict[str, Any]:
+    if "data" not in payload:
+        payload["data"] = data if data is not None else {key: value for key, value in payload.items() if key not in {"ok", "error"}}
+    return payload
+
+
 def _print_envelope(payload: dict, *, as_json: bool = True) -> int:
     print(json.dumps(payload, indent=2, ensure_ascii=False) if as_json else payload)
     return 0 if payload.get("ok") else 1
@@ -64,11 +89,28 @@ def _print_envelope(payload: dict, *, as_json: bool = True) -> int:
 def _print_harness_error(exc: Exception, as_json: bool = False) -> int:
     payload = classify_exception(exc).to_dict()
     if as_json:
-        print(json.dumps({"ok": False, "error": payload}, indent=2, ensure_ascii=False))
+        print(json.dumps({"ok": False, "schema_version": "gee-cli/v0.3", "error": payload}, indent=2, ensure_ascii=False))
     else:
         print(f"error: [{payload['category']}] {payload['message']}", file=sys.stderr)
         print(f"hint: {payload['suggested_fix']}", file=sys.stderr)
     return 2
+
+
+def _file_not_found_payload(path: Path, command: str) -> dict:
+    return {
+        "ok": False,
+        "command": command,
+        "schema_version": "gee-cli/v0.3",
+        "error": {
+            "code": "FILE_NOT_FOUND",
+            "message": f"File not found: {path}",
+            "hint": "Check the path, render the plan first, or run from the repository root.",
+        },
+    }
+
+
+def _script_execution_ok(result: dict[str, Any]) -> bool:
+    return bool(result.get("ok", result.get("system_exit_code", 0) == 0))
 
 
 PROJECT_ENV_VARS = ("EE_PROJECT", "GOOGLE_CLOUD_PROJECT", "GOOGLE_CLOUD_QUOTA_PROJECT", "CLOUDSDK_CORE_PROJECT")
@@ -90,6 +132,14 @@ V03_HK_2024_16DAY_NDVI_SELECTORS = [
     "aoi_source",
     "export_description",
 ]
+V03_GENERIC_PREFLIGHT_TEMPLATES = {
+    "sentinel2_index_image",
+    "sentinel2_index_table",
+    "sentinel2_ndvi_composite",
+    "landsat_lst",
+    "landsat_lst_table",
+    "sentinel1_flood_before_after",
+}
 
 
 def _gcloud_project() -> dict[str, Any]:
@@ -150,11 +200,21 @@ def cmd_info(args: argparse.Namespace) -> int:
         "default_index": str(default_index_path(root)),
         "default_templates_dir": str(default_templates_dir(root)),
         "commands": {
+            "auth": ["check"],
+            "aoi": ["resolve", "validate", "summarize"],
             "observe": ["natural-language feedback"],
-            "catalog": ["search", "show", "recommend"],
+            "catalog": ["search", "show", "recommend", "evidence"],
             "recipe": ["list", "show"],
             "rules": ["list", "show"],
             "plan": ["from-text", "from-yaml", "review", "set"],
+            "render": ["plan-to-script"],
+            "validate": ["script"],
+            "preflight": ["plan"],
+            "run": ["script", "plan"],
+            "exports": ["list", "watch"],
+            "trace": ["list", "inspect"],
+            "corpus": ["coverage"],
+            "eval": ["suite"],
         },
         "golden_examples": [
             "HK Jan 2024 NDVI CSV",
@@ -307,6 +367,23 @@ def cmd_catalog_recommend(args: argparse.Namespace) -> int:
     return _print_envelope(_envelope_ok(data), as_json=args.json)
 
 
+def cmd_catalog_evidence(args: argparse.Namespace) -> int:
+    try:
+        index = load_index(Path(args.index))
+        cards = list_knowledge_cards(index, category=args.category, top_k=args.top_k)
+    except Exception as exc:
+        return _print_envelope(
+            _envelope_error("CATALOG_EVIDENCE_FAILED", str(exc), "Rebuild references/index/gee_docs_index.json or choose a supported category."),
+            as_json=True,
+        )
+    data = {
+        "category": args.category,
+        "count": len(cards),
+        "cards": cards,
+    }
+    return _print_envelope(_command_envelope("catalog evidence", data), as_json=args.json)
+
+
 def cmd_recipe_list(args: argparse.Namespace) -> int:
     data = list_recipes()
     return _print_envelope(_envelope_ok(data), as_json=args.json)
@@ -348,8 +425,19 @@ def cmd_plan_from_text(args: argparse.Namespace) -> int:
         payload["data"] = {
             "missing_fields": result.get("missing_fields", []),
             "slots": result.get("slots", {}),
+            "candidate_datasets": result.get("candidate_datasets", []),
             "closest_recipes": result.get("closest_recipes", []),
         }
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 1
+    schema_errors = validate_v03_plan_schema(result["plan"])
+    if schema_errors:
+        payload = _envelope_error(
+            "PLAN_SCHEMA_ERROR",
+            "Generated gee-plan/v0.3 failed schema checks.",
+            "Fix the planner output before rendering or running this plan.",
+        )
+        payload["data"] = {"schema_errors": schema_errors, "plan": result["plan"]}
         print(json.dumps(payload, indent=2, ensure_ascii=False))
         return 1
     if args.out:
@@ -514,6 +602,16 @@ def cmd_plan_from_yaml(args: argparse.Namespace) -> int:
 
 
 def _cmd_plan_from_v03_yaml(args: argparse.Namespace, plan: dict) -> int:
+    schema_errors = validate_v03_plan_schema(plan)
+    if schema_errors:
+        payload = _envelope_error(
+            "PLAN_SCHEMA_ERROR",
+            "gee-plan/v0.3 failed schema checks.",
+            "Review the plan YAML against schemas/gee-plan-v0.3.schema.json before rendering or running.",
+        )
+        payload["data"] = {"schema_errors": schema_errors, "plan": plan}
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 1
     execution = dict(plan.get("execution") or {})
     template = execution.get("template")
     context = execution.get("context")
@@ -558,6 +656,10 @@ def cmd_plan_set(args: argparse.Namespace) -> int:
             if not isinstance(cursor, dict):
                 raise ValueError(f"Cannot set nested key through non-object: {part}")
         cursor[parts[-1]] = args.value
+        if plan.get("schema_version") == "gee-plan/v0.3":
+            schema_errors = validate_v03_plan_schema(plan)
+            if schema_errors:
+                raise ValueError("Updated plan failed schema checks: " + "; ".join(schema_errors))
         write_task_plan(Path(args.path), plan)
     except Exception as exc:
         payload = _envelope_error("PLAN_SET_FAILED", str(exc), "Use an existing plan path and a dotted key such as execution.context.drive_folder.")
@@ -567,11 +669,250 @@ def cmd_plan_set(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_render(args: argparse.Namespace) -> int:
+    return cmd_plan_from_yaml(
+        argparse.Namespace(
+            path=args.plan,
+            templates_dir=args.templates_dir,
+            script_out=args.script_out,
+            json=args.json,
+        )
+    )
+
+
+def cmd_preflight(args: argparse.Namespace) -> int:
+    return cmd_preflight_plan(
+        argparse.Namespace(
+            task_plan=args.plan,
+            project=args.project,
+            run_id=args.run_id,
+            json=args.json,
+            command_name="preflight",
+        )
+    )
+
+
+def _geojson_summary(path: Path) -> dict[str, Any]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    features = payload.get("features") if isinstance(payload, dict) else None
+    coordinates: list[float] = []
+
+    def visit(value: Any) -> None:
+        if isinstance(value, list):
+            if len(value) >= 2 and all(isinstance(item, (int, float)) for item in value[:2]):
+                coordinates.extend([float(value[0]), float(value[1])])
+                return
+            for item in value:
+                visit(item)
+
+    if isinstance(payload, dict):
+        visit(payload.get("geometry") or payload.get("coordinates") or payload)
+    xs = coordinates[0::2]
+    ys = coordinates[1::2]
+    bbox = [min(xs), min(ys), max(xs), max(ys)] if xs and ys else None
+    feature_count = None
+    if isinstance(payload, dict):
+        if isinstance(features, list):
+            feature_count = len(features)
+        elif payload.get("type") == "Feature":
+            feature_count = 1
+    return {
+        "source": str(path),
+        "source_type": "geojson",
+        "feature_count": feature_count,
+        "bbox": bbox,
+        "valid": bool(bbox),
+        "notes": "Offline geometry summary only; live area/pixel checks belong in preflight.",
+    }
+
+
+def _aoi_from_plan(path: Path) -> dict[str, Any]:
+    plan = _load_yaml_mapping(path, label="AOI source plan")
+    if _is_v03_plan(plan):
+        return {
+            "source": str(path),
+            "source_type": "gee-plan/v0.3",
+            "aoi": plan.get("aoi"),
+            "time_range": plan.get("time_range"),
+            "validation": {"valid": bool(plan.get("aoi")), "messages": [] if plan.get("aoi") else ["Plan has no AOI field."]},
+        }
+    task_plan, task, _review, schema = _load_plan_for_command(path)
+    context = dict(task.get("context") or {})
+    return {
+        "source": str(path),
+        "source_type": schema,
+        "aoi": {
+            "type": "boundary_geojson" if context.get("boundary_geojson") else "unknown",
+            "name": context.get("aoi_name") or context.get("district") or "AOI from task context",
+            "source": context.get("boundary_geojson"),
+        },
+        "validation": {"valid": bool(context.get("boundary_geojson") or context.get("aoi_name") or context.get("district"))},
+        "task_plan": task_plan.get("task_id") or task_plan.get("plan_id"),
+    }
+
+
+def _summarize_aoi_source(source: str) -> dict[str, Any]:
+    path = Path(source)
+    if path.exists():
+        if path.suffix.lower() in {".json", ".geojson"}:
+            return _geojson_summary(path)
+        if path.suffix.lower() in {".yaml", ".yml"}:
+            return _aoi_from_plan(path)
+    slots = parse_request_slots(source)
+    aoi = slots.get("aoi")
+    return {
+        "source": source,
+        "source_type": "natural_language",
+        "aoi": aoi,
+        "validation": {
+            "valid": bool(aoi),
+            "messages": [] if aoi else ["No AOI recognized. Provide a named place, supplied AOI, GeoJSON, EE asset, or bbox[...] text."],
+        },
+    }
+
+
+def cmd_aoi_resolve(args: argparse.Namespace) -> int:
+    data = _summarize_aoi_source(args.source)
+    ok = bool((data.get("validation") or {}).get("valid"))
+    payload = _command_envelope("aoi resolve", data)
+    payload["ok"] = ok
+    if not ok:
+        payload["error"] = {
+            "code": "AMBIGUOUS_AOI",
+            "message": "No usable AOI was recognized.",
+            "hint": "Use a supported named place, GeoJSON path, Earth Engine asset id, bbox[...] value, or generated plan path.",
+        }
+    print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else json.dumps(data, indent=2, ensure_ascii=False))
+    return 0 if ok else 1
+
+
+def cmd_aoi_validate(args: argparse.Namespace) -> int:
+    return cmd_aoi_resolve(args)
+
+
+def cmd_aoi_summarize(args: argparse.Namespace) -> int:
+    return cmd_aoi_resolve(args)
+
+
+TRACE_EXPECTED_FILES = (
+    "environment.json",
+    "task.yaml",
+    "retrieval_trace.json",
+    "plan.md",
+    "validation_report.json",
+    "dry_run_report.json",
+    "final_report.md",
+)
+
+
+def _run_trace_dir(run_id: str) -> Path:
+    path = Path(run_id)
+    if path.exists():
+        return path
+    return project_root() / "outputs" / "runs" / run_id
+
+
+def _inspect_trace(run_id: str) -> dict[str, Any]:
+    run_dir = _run_trace_dir(run_id)
+    files = []
+    for name in TRACE_EXPECTED_FILES:
+        path = run_dir / name
+        files.append({"path": str(path), "name": name, "exists": path.exists(), "bytes": path.stat().st_size if path.exists() else 0})
+    extra_files = []
+    if run_dir.exists():
+        extra_files = sorted(item.name for item in run_dir.iterdir() if item.is_file() and item.name not in TRACE_EXPECTED_FILES)
+    missing = [item["name"] for item in files if not item["exists"]]
+    return {
+        "run_id": run_id,
+        "run_dir": str(run_dir),
+        "exists": run_dir.exists(),
+        "complete_core_trace": run_dir.exists() and not missing,
+        "missing_core_files": missing,
+        "core_files": files,
+        "extra_files": extra_files,
+    }
+
+
+def cmd_trace_inspect(args: argparse.Namespace) -> int:
+    data = _inspect_trace(args.run_id)
+    payload = _command_envelope("trace inspect", data)
+    payload["ok"] = bool(data["exists"])
+    if not data["exists"]:
+        payload["error"] = {
+            "code": "TRACE_NOT_FOUND",
+            "message": f"Run trace {args.run_id!r} was not found.",
+            "hint": "Pass a run id under outputs/runs/ or a direct trace directory path.",
+        }
+    print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else json.dumps(data, indent=2, ensure_ascii=False))
+    return 0 if data["exists"] else 1
+
+
+def cmd_trace_list(args: argparse.Namespace) -> int:
+    runs_dir = project_root() / "outputs" / "runs"
+    traces = []
+    if runs_dir.exists():
+        for path in sorted(runs_dir.iterdir(), key=lambda item: item.name, reverse=True):
+            if path.is_dir():
+                traces.append(_inspect_trace(str(path)))
+    data = {"runs_dir": str(runs_dir), "traces": traces[: args.limit], "count": len(traces)}
+    print(json.dumps(_command_envelope("trace list", data), indent=2, ensure_ascii=False) if args.json else json.dumps(data, indent=2, ensure_ascii=False))
+    return 0
+
+
+def _coverage_contract(task_type: str | None, output: str | None) -> dict[str, int]:
+    contract = {
+        "dataset_evidence": 1,
+        "recipe_evidence": 1,
+        "operator_evidence": 1,
+        "failure_evidence": 1,
+    }
+    if output and output.lower() in {"csv", "table", "geotiff", "image"}:
+        contract["export_evidence"] = 1
+    return contract
+
+
+def cmd_corpus_coverage(args: argparse.Namespace) -> int:
+    terms = [args.query or "", args.task_type or "", args.metric or "", args.output or ""]
+    query = " ".join(item for item in terms if item).strip() or "Earth Engine dataset operator failure export"
+    try:
+        index = load_index(Path(args.index))
+        results = _operator_aware_results(index, query, top_k=args.top_k)
+        trace = build_retrieval_trace(query, results)
+    except Exception as exc:
+        payload = _envelope_error("CORPUS_COVERAGE_FAILED", str(exc), "Rebuild the docs index or inspect references/knowledge_base.")
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 1
+    coverage = dict(trace.get("coverage") or {})
+    contract = _coverage_contract(args.task_type, args.output)
+    missing = {key: required for key, required in contract.items() if int(coverage.get(key, 0)) < required}
+    data = {
+        "query": query,
+        "task_type": args.task_type,
+        "metric": args.metric,
+        "output": args.output,
+        "coverage": coverage,
+        "required_coverage": contract,
+        "missing_coverage": missing,
+        "evidence": trace.get("evidence", [])[: args.top_k],
+    }
+    payload = _command_envelope("corpus coverage", data)
+    payload["ok"] = not missing
+    if missing:
+        payload["error"] = {
+            "code": "EVIDENCE_COVERAGE_INCOMPLETE",
+            "message": "Retrieved evidence does not satisfy the task evidence contract.",
+            "hint": "Add or improve dataset, recipe, operator, rule, failure, or export cards before treating this task as grounded.",
+        }
+    print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else json.dumps(data, indent=2, ensure_ascii=False))
+    return 0 if not missing else 1
+
+
 def cmd_tools(args: argparse.Namespace) -> int:
-    payload = {
+    data = {
         "installed_tools": installed_tools(),
         "exposed_tools": exposed_tools(),
     }
+    payload = _command_envelope("tools", data)
     print(json.dumps(payload, indent=2, ensure_ascii=False))
     return 0
 
@@ -583,7 +924,8 @@ def cmd_search_docs(args: argparse.Namespace) -> int:
     except Exception as exc:
         return _print_error(str(exc))
     if args.json:
-        print(json.dumps({"query": args.query, "results": results_to_dicts(results)}, indent=2))
+        payload = _command_envelope("search-docs", {"query": args.query, "results": results_to_dicts(results)})
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
     else:
         if not results:
             print("No matching local documentation chunks found.")
@@ -862,6 +1204,75 @@ def _unsupported_v03_preflight_report(args: argparse.Namespace, plan: dict[str, 
     }
 
 
+def _generic_v03_preflight_config(
+    args: argparse.Namespace,
+    plan: dict[str, Any],
+    context: dict[str, Any],
+) -> GenericV03PreflightConfig:
+    execution = dict(plan.get("execution") or {})
+    template = str(execution.get("template") or "")
+    preflight = dict(plan.get("preflight") or {})
+    export = dict(plan.get("export") or {})
+    output = dict(plan.get("output") or {})
+    profile = str(preflight.get("profile") or "generic")
+    dataset_id = str(context.get("dataset_id") or _first_selected_dataset_id(plan) or "")
+    date_start = str(context.get("date_start") or dict(plan.get("time_range") or {}).get("date_start") or "")
+    date_end = str(context.get("date_end") or dict(plan.get("time_range") or {}).get("date_end") or "")
+    required_bands: tuple[str, ...] = ()
+    qa_bands: tuple[str, ...] = ()
+    index_bands = tuple(str(item) for item in context.get("index_bands") or ())
+    if template in {"sentinel2_index_image", "sentinel2_index_table", "sentinel2_ndvi_composite"}:
+        required_bands = index_bands or ("B8", "B4")
+        qa_bands = ("SCL",)
+    elif template in {"landsat_lst", "landsat_lst_table"}:
+        required_bands = ("ST_B10",)
+        qa_bands = ("QA_PIXEL",)
+    elif template == "sentinel1_flood_before_after":
+        polarization = str(context.get("polarization") or "VH")
+        required_bands = (polarization,)
+        date_start = str(context.get("before_start") or date_start)
+        date_end = str(context.get("after_end") or date_end)
+    return GenericV03PreflightConfig(
+        project=args.project,
+        schema_version=plan.get("schema_version"),
+        plan_id=plan.get("plan_id"),
+        profile=profile,
+        template=template,
+        dataset_id=dataset_id,
+        date_start=date_start,
+        date_end=date_end,
+        aoi_asset=str(context.get("aoi_asset") or ""),
+        aoi_name=context.get("aoi_name") or dict(plan.get("aoi") or {}).get("name"),
+        scale=int(context.get("scale") or dict(plan.get("scale_crs_projection") or {}).get("scale_m") or 30),
+        crs=str(context.get("crs") or dict(plan.get("scale_crs_projection") or {}).get("crs") or "EPSG:4326"),
+        max_pixels=int(context.get("max_pixels") or 10000000000000),
+        required_bands=required_bands,
+        qa_bands=qa_bands,
+        index_name=context.get("index_name"),
+        index_bands=index_bands,
+        cloud_property="CLOUDY_PIXEL_PERCENTAGE" if template.startswith("sentinel2_") else None,
+        cloudy_pixel_percentage=int(context.get("cloudy_pixel_percentage", 80)) if template.startswith("sentinel2_") else None,
+        before_start=context.get("before_start"),
+        before_end=context.get("before_end"),
+        after_start=context.get("after_start"),
+        after_end=context.get("after_end"),
+        polarization=context.get("polarization"),
+        orbit_pass=context.get("orbit_pass"),
+        export_description=context.get("export_description"),
+        drive_folder=context.get("drive_folder"),
+        file_prefix=context.get("file_prefix"),
+        output_format=export.get("format") or output.get("format"),
+        extra={"context_review_required": context.get("review_required")},
+    )
+
+
+def _first_selected_dataset_id(plan: dict[str, Any]) -> str | None:
+    selected = plan.get("selected_datasets") or []
+    if selected and isinstance(selected[0], dict):
+        return selected[0].get("dataset_id") or selected[0].get("id")
+    return None
+
+
 def _v03_failed_month_report(args: argparse.Namespace, context: dict[str, Any], month: int, exc: Exception) -> dict[str, Any]:
     payload = classify_exception(exc).to_dict()
     return {
@@ -917,6 +1328,8 @@ def _preflight_from_v03_plan(args: argparse.Namespace, plan: dict[str, Any], con
     execution = dict(plan.get("execution") or {})
     template = execution.get("template")
     if template != V03_HK_2024_16DAY_NDVI_TEMPLATE:
+        if template in V03_GENERIC_PREFLIGHT_TEMPLATES:
+            return run_generic_v03_preflight(_generic_v03_preflight_config(args, plan, context))
         return _unsupported_v03_preflight_report(args, plan, context)
 
     warnings: list[dict[str, Any] | str] = []
@@ -1083,7 +1496,13 @@ def cmd_review_plan(args: argparse.Namespace) -> int:
 
 def cmd_preflight_plan(args: argparse.Namespace) -> int:
     if not args.project:
-        return _print_error("preflight-plan requires --project <google-cloud-project-id>.")
+        return _print_error(
+            "preflight-plan requires --project <google-cloud-project-id>.",
+            as_json=args.json,
+            code="PROJECT_ERROR",
+            hint="Pass --project with a Google Cloud project that has Earth Engine access.",
+            command="preflight-plan",
+        )
     try:
         task_plan, task, plan_text, schema = _load_plan_for_command(Path(args.task_plan))
         preflight = (
@@ -1094,7 +1513,22 @@ def cmd_preflight_plan(args: argparse.Namespace) -> int:
         trace = _write_plan_command_trace(args, task_plan, task, plan_text=plan_text, preflight=preflight)
     except Exception as exc:
         return _print_harness_error(exc, as_json=args.json)
-    payload = {"ok": bool(preflight.get("ok")), "schema_version": schema, "run_trace": str(trace.run_dir), "preflight": preflight}
+    command_name = getattr(args, "command_name", "preflight-plan")
+    payload = {
+        "ok": bool(preflight.get("ok")),
+        "command": command_name,
+        "schema_version": schema,
+        "run_trace": str(trace.run_dir),
+        "preflight": preflight,
+    }
+    _with_data(
+        payload,
+        {
+            "plan_schema_version": schema,
+            "run_trace": str(trace.run_dir),
+            "preflight": preflight,
+        },
+    )
     if args.json:
         print(json.dumps(payload, indent=2, ensure_ascii=False))
     else:
@@ -1104,9 +1538,21 @@ def cmd_preflight_plan(args: argparse.Namespace) -> int:
 
 def cmd_run_plan(args: argparse.Namespace) -> int:
     if not args.project:
-        return _print_error("run-plan requires --project <google-cloud-project-id>.")
+        return _print_error(
+            "run-plan requires --project <google-cloud-project-id>.",
+            as_json=args.json,
+            code="PROJECT_ERROR",
+            hint="Pass --project with a Google Cloud project that has Earth Engine access.",
+            command="run-plan",
+        )
     if not args.confirm_live:
-        return _print_error("run-plan requires --confirm-live.")
+        return _print_error(
+            "run-plan requires --confirm-live.",
+            as_json=args.json,
+            code="CONFIRM_LIVE_REQUIRED",
+            hint="Review validation and preflight output, then rerun with --confirm-live only when you intend to submit an export.",
+            command="run-plan",
+        )
     try:
         task_plan, task, plan_text, schema = _load_plan_for_command(Path(args.task_plan))
         context = dict(task["context"])
@@ -1136,11 +1582,21 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
             )
             payload = {
                 "ok": False,
+                "command": "run-plan",
                 "schema_version": schema,
                 "run_trace": str(trace.run_dir),
                 "script": str(script_path),
                 "validation": validation,
             }
+            _with_data(
+                payload,
+                {
+                    "plan_schema_version": schema,
+                    "run_trace": str(trace.run_dir),
+                    "script": str(script_path),
+                    "validation": validation,
+                },
+            )
             print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else "Validation failed; refusing live execution.")
             return 1
         preflight = (
@@ -1170,12 +1626,23 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
             )
             payload = {
                 "ok": False,
+                "command": "run-plan",
                 "schema_version": schema,
                 "run_trace": str(trace.run_dir),
                 "script": str(script_path),
                 "preflight": preflight,
                 "error": preflight.get("critical_error") or live["error"],
             }
+            _with_data(
+                payload,
+                {
+                    "plan_schema_version": schema,
+                    "run_trace": str(trace.run_dir),
+                    "script": str(script_path),
+                    "preflight": preflight,
+                    "live_run": live,
+                },
+            )
             print(json.dumps(payload, indent=2, ensure_ascii=False))
             return 1
         result = execute_script(script_path, project=args.project, authenticate=args.authenticate)
@@ -1183,14 +1650,22 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
         export_description = context.get("export_description")
         matching_tasks = [item for item in tasks if item.get("description") == export_description]
         failed = [item for item in matching_tasks if item.get("state") == "FAILED"]
+        task_observed = bool(matching_tasks)
         live = {
-            "ok": not failed,
+            "ok": bool(_script_execution_ok(result) and task_observed and not failed),
             **result,
+            "script_executed": _script_execution_ok(result),
+            "export_task_observed": task_observed,
             "export_description": export_description,
             "tasks": tasks,
             "matching_tasks": matching_tasks,
         }
-        if failed:
+        if not task_observed:
+            live["error"] = error_payload(
+                "EXPORT_TASK_NOT_OBSERVED",
+                f"Export task {export_description!r} was not observed after script execution.",
+            )
+        elif failed:
             live["error"] = error_payload(
                 "EXPORT_TASK_FAILED",
                 f"Export task {export_description!r} reached FAILED state immediately.",
@@ -1209,12 +1684,23 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
         )
         payload = {
             "ok": bool(live["ok"]),
+            "command": "run-plan",
             "schema_version": schema,
             "run_trace": str(trace.run_dir),
             "script": str(script_path),
             "preflight": preflight,
             "live_run": live,
         }
+        _with_data(
+            payload,
+            {
+                "plan_schema_version": schema,
+                "run_trace": str(trace.run_dir),
+                "script": str(script_path),
+                "preflight": preflight,
+                "live_run": live,
+            },
+        )
         print(json.dumps(payload, indent=2, ensure_ascii=False))
         return 0 if live["ok"] else 1
     except Exception as exc:
@@ -1224,9 +1710,9 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
 def cmd_ask(args: argparse.Namespace) -> int:
     modes = [bool(args.plan), bool(args.dry_run), bool(args.confirm_live)]
     if sum(1 for item in modes if item) > 1:
-        return _print_error("Choose only one of --plan, --dry-run, or --confirm-live.")
+        return _print_error("Choose only one of --plan, --dry-run, or --confirm-live.", as_json=args.json, command="ask")
     if not any(modes):
-        return _print_error("Use --plan, --dry-run, or --confirm-live.")
+        return _print_error("Use --plan, --dry-run, or --confirm-live.", as_json=args.json, command="ask")
     route = route_request(
         args.request,
         export_folder=args.export_folder,
@@ -1328,14 +1814,22 @@ def cmd_ask(args: argparse.Namespace) -> int:
         export_description = context["export_description"]
         matching_tasks = [task for task in tasks if task.get("description") == export_description]
         failed = [task for task in matching_tasks if task.get("state") == "FAILED"]
+        task_observed = bool(matching_tasks)
         live = {
-            "ok": not failed,
+            "ok": bool(_script_execution_ok(result) and task_observed and not failed),
             **result,
+            "script_executed": _script_execution_ok(result),
+            "export_task_observed": task_observed,
             "export_description": export_description,
             "tasks": tasks,
             "matching_tasks": matching_tasks,
         }
-        if failed:
+        if not task_observed:
+            live["error"] = error_payload(
+                "EXPORT_TASK_NOT_OBSERVED",
+                f"Export task {export_description!r} was not observed after script execution.",
+            )
+        elif failed:
             live["error"] = error_payload(
                 "EXPORT_TASK_FAILED",
                 f"Export task {export_description!r} reached FAILED state immediately.",
@@ -1430,9 +1924,27 @@ def cmd_plan(args: argparse.Namespace) -> int:
 
 def cmd_validate(args: argparse.Namespace) -> int:
     rules = [item.strip() for item in args.semantic_rules.split(",") if item.strip()] if args.semantic_rules else None
-    report = validate_script(Path(args.script), semantic_rulesets=rules)
+    script_path = Path(args.script)
+    if not script_path.exists():
+        payload = _file_not_found_payload(script_path, "validate")
+        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else f"error: {payload['error']['message']}", file=sys.stdout if args.json else sys.stderr)
+        return 1
+    report = validate_script(script_path, semantic_rulesets=rules)
     if args.json:
-        print(report_to_json(report))
+        print(
+            json.dumps(
+                _command_envelope(
+                    "validate",
+                    {
+                        "script": str(args.script),
+                        "validation": report.to_dict(),
+                    },
+                )
+                | {"ok": report.ok},
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
     else:
         for finding in report.findings:
             location = f":{finding.line}" if finding.line else ""
@@ -1469,7 +1981,9 @@ def cmd_smoke_test(args: argparse.Namespace) -> int:
             "validation": report.to_dict(),
         }
         if args.json:
-            print(json.dumps(payload, indent=2))
+            output = _command_envelope("smoke-test", payload)
+            output["ok"] = bool(report.ok)
+            print(json.dumps(output, indent=2, ensure_ascii=False))
         else:
             print(f"retrieval_results={len(results)}")
             print(f"rendered_script={tmp}")
@@ -1504,14 +2018,47 @@ def _write_run_trace(script: Path, report: dict, live_payload: dict | None = Non
 
 def cmd_run(args: argparse.Namespace) -> int:
     script = Path(args.script)
+    if script.suffix.lower() in {".yaml", ".yml"}:
+        return cmd_run_plan(
+            argparse.Namespace(
+                task_plan=args.script,
+                project=args.project,
+                confirm_live=args.confirm_live,
+                authenticate=args.authenticate,
+                export_folder=args.export_folder,
+                index=args.index,
+                top_k=args.top_k,
+                templates_dir=args.templates_dir,
+                run_id=args.run_id,
+                json=args.json,
+            )
+        )
+    if not script.exists():
+        payload = _file_not_found_payload(script, "run")
+        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else f"error: {payload['error']['message']}", file=sys.stdout if args.json else sys.stderr)
+        return 1
     report = validate_script(script).to_dict()
     if not report["ok"]:
         _write_run_trace(script, report, run_id=args.run_id)
-        print(json.dumps(report, indent=2, ensure_ascii=False) if args.json else "Validation failed; refusing to run.")
+        if args.json:
+            payload = _command_envelope("run", {"script": str(script), "validation": report})
+            payload["ok"] = False
+            payload["error"] = {
+                "code": "VALIDATION_FAILED",
+                "message": "Validation failed; refusing to run.",
+                "hint": "Inspect data.validation.findings, edit the script or plan, then validate again.",
+            }
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print("Validation failed; refusing to run.")
         return 1
     if args.dry_run:
         trace = _write_run_trace(script, report, run_id=args.run_id)
-        payload = {"dry_run": True, "script": str(script), "validation": report, "run_trace": str(trace.run_dir)}
+        payload = _command_envelope(
+            "run",
+            {"dry_run": True, "script": str(script), "validation": report, "run_trace": str(trace.run_dir)},
+        )
+        payload.update(payload["data"])
         print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else f"Dry run OK: {script}")
         return 0
     provided = set()
@@ -1522,7 +2069,13 @@ def cmd_run(args: argparse.Namespace) -> int:
     try:
         require_flags("run_live", provided)
     except ValueError as exc:
-        return _print_error(str(exc))
+        return _print_error(
+            str(exc),
+            as_json=args.json,
+            code="CONFIRM_LIVE_REQUIRED" if "--confirm-live" in str(exc) else "PROJECT_ERROR",
+            hint="Live execution requires both --project and --confirm-live after review, validation, and preflight.",
+            command="run",
+        )
     try:
         result = execute_script(script, project=args.project, authenticate=args.authenticate)
         tasks = monitor_tasks(project=args.project, authenticate=False, timeout_seconds=0)
@@ -1541,10 +2094,20 @@ def cmd_run(args: argparse.Namespace) -> int:
     except (EarthEngineUnavailable, Exception) as exc:
         trace = _write_run_trace(script, report, live_payload={"ok": False, "error": classify_exception(exc).to_dict()}, run_id=args.run_id)
         if args.json:
-            print(json.dumps({"ok": False, "run_trace": str(trace.run_dir), "error": classify_exception(exc).to_dict()}, indent=2, ensure_ascii=False))
+            data = {"run_trace": str(trace.run_dir), "script": str(script)}
+            payload = _command_envelope("run", data)
+            payload["ok"] = False
+            payload["error"] = classify_exception(exc).to_dict()
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
             return 2
         return _print_harness_error(exc)
-    print(json.dumps(result, indent=2, ensure_ascii=False) if args.json else f"Executed: {script}")
+    if args.json:
+        payload = _command_envelope("run", {"script": str(script), "live_run": result, "run_trace": result.get("run_trace")})
+        payload["ok"] = bool(_script_execution_ok(result))
+        payload.update(result)
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+    else:
+        print(f"Executed: {script}")
     return 0
 
 
@@ -1561,7 +2124,13 @@ def _task_summary(task: dict) -> dict:
 
 def cmd_monitor_exports(args: argparse.Namespace) -> int:
     if not args.project:
-        return _print_error("Monitoring live exports requires --project <google-cloud-project-id>.")
+        return _print_error(
+            "Monitoring live exports requires --project <google-cloud-project-id>.",
+            as_json=args.json,
+            code="PROJECT_ERROR",
+            hint="Pass --project with a Google Cloud project that has Earth Engine access.",
+            command="monitor-exports",
+        )
     try:
         tasks = monitor_tasks(
             project=args.project,
@@ -1590,6 +2159,9 @@ def cmd_monitor_exports(args: argparse.Namespace) -> int:
             )
         return _print_harness_error(exc, as_json=args.json)
     summaries = [_task_summary(task) for task in tasks]
+    task_id = getattr(args, "task_id", None)
+    if task_id:
+        summaries = [task for task in summaries if task.get("id") == task_id]
     if args.run_id:
         trace = RunTrace.create(run_id=args.run_id)
         trace.write_yaml(
@@ -1609,7 +2181,11 @@ def cmd_monitor_exports(args: argparse.Namespace) -> int:
             {"Project": args.project, "Task Count": len(summaries), "Tasks": summaries},
         )
     if args.json:
-        print(json.dumps({"tasks": summaries, "count": len(summaries)}, indent=2, ensure_ascii=False))
+        payload = {"tasks": summaries, "count": len(summaries)}
+        if getattr(args, "envelope", False):
+            print(json.dumps(_command_envelope("exports watch" if task_id else "exports list", payload), indent=2, ensure_ascii=False))
+        else:
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
     else:
         if not summaries:
             print("No Earth Engine tasks found.")
@@ -1758,9 +2334,21 @@ def cmd_live_smoke_test(args: argparse.Namespace) -> int:
         "--export-folder": args.export_folder,
     }.items():
         if not value:
-            return _print_error(f"live-smoke-test requires {flag}.")
+            return _print_error(
+                f"live-smoke-test requires {flag}.",
+                as_json=args.json,
+                code="USAGE_ERROR",
+                hint="Provide all private live-smoke flags only when intentionally running a live smoke export.",
+                command="live-smoke-test",
+            )
     if not args.confirm_live:
-        return _print_error("live-smoke-test requires --confirm-live.")
+        return _print_error(
+            "live-smoke-test requires --confirm-live.",
+            as_json=args.json,
+            code="CONFIRM_LIVE_REQUIRED",
+            hint="Review validation and preflight output, then rerun with --confirm-live only when you intend to submit the smoke export.",
+            command="live-smoke-test",
+        )
     task = load_task(default_task_path("hk_january_ndvi_smoke"))
     context = task_to_context(task)
     context["smoke_month"] = args.smoke_month
@@ -1823,13 +2411,41 @@ def cmd_live_smoke_test(args: argparse.Namespace) -> int:
             )
             return 1
         result = execute_script(script_path, project=args.project, authenticate=args.authenticate)
-        tasks = monitor_tasks(project=args.project, authenticate=False, timeout_seconds=0)
-        live = {"ok": True, **result, "tasks": [_task_summary(task) for task in tasks]}
+        tasks = [_task_summary(task) for task in monitor_tasks(project=args.project, authenticate=False, timeout_seconds=0)]
+        export_description = context["export_description"]
+        matching_tasks = [task for task in tasks if task.get("description") == export_description]
+        failed = [task for task in matching_tasks if task.get("state") == "FAILED"]
+        task_observed = bool(matching_tasks)
+        live = {
+            "ok": bool(_script_execution_ok(result) and task_observed and not failed),
+            **result,
+            "script_executed": _script_execution_ok(result),
+            "export_task_observed": task_observed,
+            "export_description": export_description,
+            "tasks": tasks,
+            "matching_tasks": matching_tasks,
+        }
+        if not task_observed:
+            live["error"] = error_payload(
+                "EXPORT_TASK_NOT_OBSERVED",
+                f"Export task {export_description!r} was not observed after script execution.",
+            )
+        elif failed:
+            live["error"] = error_payload(
+                "EXPORT_TASK_FAILED",
+                f"Export task {export_description!r} reached FAILED state immediately.",
+            )
         trace.write_json("live_run_report.json", live)
         trace.write_json("export_tasks.json", live["tasks"])
-        trace.write_final_report("Live Smoke Test", {"Status": "Live export task requested.", "Live Run": live})
-        print(json.dumps({"ok": True, "run_trace": str(trace.run_dir), "live_run": live}, indent=2, ensure_ascii=False))
-        return 0
+        trace.write_final_report(
+            "Live Smoke Test",
+            {
+                "Status": "Live export task observed." if live["ok"] else "Live export task was not confirmed.",
+                "Live Run": live,
+            },
+        )
+        print(json.dumps({"ok": bool(live["ok"]), "run_trace": str(trace.run_dir), "live_run": live}, indent=2, ensure_ascii=False))
+        return 0 if live["ok"] else 1
     except Exception as exc:
         payload = classify_exception(exc).to_dict()
         trace.write_json("live_run_report.json", {"ok": False, "error": payload})
@@ -1851,10 +2467,27 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
     return 0 if result["ok"] else 1
 
 
+def cmd_eval(args: argparse.Namespace) -> int:
+    try:
+        result = run_benchmark_suite(Path(args.suite))
+    except Exception as exc:
+        payload = _envelope_error("EVAL_FAILED", str(exc), "Check the benchmark suite path and task definitions.")
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return 1
+    if args.out:
+        out = Path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    payload = _command_envelope("eval", result)
+    payload["ok"] = bool(result.get("ok"))
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    return 0 if result["ok"] else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     root = project_root()
     parser = argparse.ArgumentParser(prog="gee-skill")
-    parser.add_argument("--version", action="version", version="gee-agent-skill 0.2.0")
+    parser.add_argument("--version", action="version", version=f"gee-agent-skill {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     info_parser = sub.add_parser("info", help="Show agent-facing harness metadata.")
@@ -1873,6 +2506,21 @@ def build_parser() -> argparse.ArgumentParser:
     auth_check.add_argument("--json", action="store_true")
     auth_check.set_defaults(func=cmd_auth_check)
 
+    aoi_parser = sub.add_parser("aoi", help="Resolve, validate, or summarize AOI inputs without live export.")
+    aoi_sub = aoi_parser.add_subparsers(dest="aoi_command", required=True)
+    aoi_resolve = aoi_sub.add_parser("resolve", help="Resolve an AOI from natural language, GeoJSON, or plan YAML.")
+    aoi_resolve.add_argument("source")
+    aoi_resolve.add_argument("--json", action="store_true")
+    aoi_resolve.set_defaults(func=cmd_aoi_resolve)
+    aoi_validate = aoi_sub.add_parser("validate", help="Validate an AOI source enough for plan review.")
+    aoi_validate.add_argument("source")
+    aoi_validate.add_argument("--json", action="store_true")
+    aoi_validate.set_defaults(func=cmd_aoi_validate)
+    aoi_summarize = aoi_sub.add_parser("summarize", help="Summarize an AOI source.")
+    aoi_summarize.add_argument("source")
+    aoi_summarize.add_argument("--json", action="store_true")
+    aoi_summarize.set_defaults(func=cmd_aoi_summarize)
+
     catalog_parser = sub.add_parser("catalog", help="Inspect and recommend distilled Earth Engine dataset cards.")
     catalog_sub = catalog_parser.add_subparsers(dest="catalog_command", required=True)
     catalog_search = catalog_sub.add_parser("search", help="Search dataset cards.")
@@ -1889,6 +2537,12 @@ def build_parser() -> argparse.ArgumentParser:
     catalog_recommend.add_argument("--metric")
     catalog_recommend.add_argument("--json", action="store_true")
     catalog_recommend.set_defaults(func=cmd_catalog_recommend)
+    catalog_evidence = catalog_sub.add_parser("evidence", help="List indexed dataset/operator/recipe/failure knowledge cards.")
+    catalog_evidence.add_argument("--category", choices=["all", "datasets", "operators", "recipes", "failures", "research", "general"], default="all")
+    catalog_evidence.add_argument("--top-k", type=int, default=50)
+    catalog_evidence.add_argument("--index", default=str(default_index_path(root)))
+    catalog_evidence.add_argument("--json", action="store_true")
+    catalog_evidence.set_defaults(func=cmd_catalog_evidence)
 
     recipe_parser = sub.add_parser("recipe", help="Inspect GEE workflow recipes.")
     recipe_sub = recipe_parser.add_subparsers(dest="recipe_command", required=True)
@@ -1911,6 +2565,7 @@ def build_parser() -> argparse.ArgumentParser:
     rules_show.set_defaults(func=cmd_rules_show)
 
     tools_parser = sub.add_parser("tools", help="List installed and exposed harness tools.")
+    tools_parser.add_argument("--json", action="store_true")
     tools_parser.set_defaults(func=cmd_tools)
 
     observe_parser = sub.add_parser("observe", help="Explain a natural-language GEE request and suggest next CLI steps.")
@@ -1954,6 +2609,13 @@ def build_parser() -> argparse.ArgumentParser:
     plan_parser.add_argument("--run-id")
     plan_parser.set_defaults(func=cmd_plan)
 
+    render_parser = sub.add_parser("render", help="Render a reviewable plan into an Earth Engine Python script.")
+    render_parser.add_argument("plan")
+    render_parser.add_argument("--templates-dir", default=str(default_templates_dir(root)))
+    render_parser.add_argument("--script-out")
+    render_parser.add_argument("--json", action="store_true")
+    render_parser.set_defaults(func=cmd_render)
+
     review_plan = sub.add_parser("review-plan", help="Review a saved task_plan.yaml without Earth Engine contact.")
     review_plan.add_argument("task_plan")
     review_plan.add_argument("--json", action="store_true")
@@ -1961,14 +2623,21 @@ def build_parser() -> argparse.ArgumentParser:
 
     preflight_plan = sub.add_parser("preflight-plan", help="Run safe live checks for a saved task_plan.yaml.")
     preflight_plan.add_argument("task_plan")
-    preflight_plan.add_argument("--project", required=True)
+    preflight_plan.add_argument("--project")
     preflight_plan.add_argument("--run-id")
     preflight_plan.add_argument("--json", action="store_true")
     preflight_plan.set_defaults(func=cmd_preflight_plan)
 
+    preflight_generic = sub.add_parser("preflight", help="Run safe live checks for a saved plan YAML without starting an export.")
+    preflight_generic.add_argument("plan")
+    preflight_generic.add_argument("--project")
+    preflight_generic.add_argument("--run-id")
+    preflight_generic.add_argument("--json", action="store_true")
+    preflight_generic.set_defaults(func=cmd_preflight)
+
     run_plan = sub.add_parser("run-plan", help="Render, validate, preflight, and run a confirmed task_plan.yaml.")
     run_plan.add_argument("task_plan")
-    run_plan.add_argument("--project", required=True)
+    run_plan.add_argument("--project")
     run_plan.add_argument("--confirm-live", action="store_true")
     run_plan.add_argument("--authenticate", action="store_true")
     run_plan.add_argument("--export-folder")
@@ -2001,6 +2670,10 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--display-map", action="store_true")
     run_parser.add_argument("--map-object", default="build_composite")
     run_parser.add_argument("--map-out", default="outputs/maps/gee_preview.html")
+    run_parser.add_argument("--export-folder")
+    run_parser.add_argument("--index", default=str(default_index_path(root)))
+    run_parser.add_argument("--top-k", type=int, default=8)
+    run_parser.add_argument("--templates-dir", default=str(default_templates_dir(root)))
     run_parser.add_argument("--run-id")
     run_parser.add_argument("--json", action="store_true")
     run_parser.set_defaults(func=cmd_run)
@@ -2023,7 +2696,7 @@ def build_parser() -> argparse.ArgumentParser:
     exports_list.add_argument("--poll-seconds", type=int, default=15)
     exports_list.add_argument("--run-id")
     exports_list.add_argument("--json", action="store_true")
-    exports_list.set_defaults(func=cmd_monitor_exports)
+    exports_list.set_defaults(func=cmd_monitor_exports, envelope=True, task_id=None)
     exports_watch = exports_sub.add_parser("watch", help="Watch Earth Engine export tasks.")
     exports_watch.add_argument("--project", required=True)
     exports_watch.add_argument("--task-id")
@@ -2032,7 +2705,30 @@ def build_parser() -> argparse.ArgumentParser:
     exports_watch.add_argument("--poll-seconds", type=int, default=15)
     exports_watch.add_argument("--run-id")
     exports_watch.add_argument("--json", action="store_true")
-    exports_watch.set_defaults(func=cmd_monitor_exports)
+    exports_watch.set_defaults(func=cmd_monitor_exports, envelope=True)
+
+    trace_parser = sub.add_parser("trace", help="Inspect run trace artifacts.")
+    trace_sub = trace_parser.add_subparsers(dest="trace_command", required=True)
+    trace_list = trace_sub.add_parser("list", help="List local run traces.")
+    trace_list.add_argument("--limit", type=int, default=20)
+    trace_list.add_argument("--json", action="store_true")
+    trace_list.set_defaults(func=cmd_trace_list)
+    trace_inspect = trace_sub.add_parser("inspect", help="Inspect one run trace by run id or directory path.")
+    trace_inspect.add_argument("run_id")
+    trace_inspect.add_argument("--json", action="store_true")
+    trace_inspect.set_defaults(func=cmd_trace_inspect)
+
+    corpus_parser = sub.add_parser("corpus", help="Inspect RAG evidence coverage.")
+    corpus_sub = corpus_parser.add_subparsers(dest="corpus_command", required=True)
+    corpus_coverage = corpus_sub.add_parser("coverage", help="Check evidence coverage for a task family.")
+    corpus_coverage.add_argument("--task-type")
+    corpus_coverage.add_argument("--metric")
+    corpus_coverage.add_argument("--output")
+    corpus_coverage.add_argument("--query")
+    corpus_coverage.add_argument("--index", default=str(default_index_path(root)))
+    corpus_coverage.add_argument("--top-k", type=int, default=8)
+    corpus_coverage.add_argument("--json", action="store_true")
+    corpus_coverage.set_defaults(func=cmd_corpus_coverage)
 
     preflight = sub.add_parser("preflight-hk-ndvi", help="Preflight Hong Kong Sentinel-2 NDVI before export.")
     preflight.add_argument("--project", required=True)
@@ -2062,12 +2758,19 @@ def build_parser() -> argparse.ArgumentParser:
     live_smoke.add_argument("--templates-dir", default=str(default_templates_dir(root)))
     live_smoke.add_argument("--boundary-geojson")
     live_smoke.add_argument("--run-id")
+    live_smoke.add_argument("--json", action="store_true")
     live_smoke.set_defaults(func=cmd_live_smoke_test)
 
     eval_parser = sub.add_parser("evaluate", help="Run offline benchmark suite.")
     eval_parser.add_argument("suite")
     eval_parser.add_argument("--out")
     eval_parser.set_defaults(func=cmd_evaluate)
+
+    eval_alias = sub.add_parser("eval", help="Run offline benchmark suite with agent-facing JSON envelope.")
+    eval_alias.add_argument("suite")
+    eval_alias.add_argument("--out")
+    eval_alias.add_argument("--json", action="store_true")
+    eval_alias.set_defaults(func=cmd_eval)
     return parser
 
 

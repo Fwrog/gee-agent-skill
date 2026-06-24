@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Fwrog/gee-agent-skill/schemas/gee-plan-v0.3.schema.json",
+  "title": "gee-plan/v0.3",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "plan_id",
+    "raw_user_request",
+    "intent",
+    "task_type",
+    "aoi",
+    "time_range",
+    "candidate_datasets",
+    "selected_datasets",
+    "indices_or_variables",
+    "operators",
+    "masking",
+    "reducers",
+    "scale_crs_projection",
+    "output",
+    "export",
+    "preflight",
+    "validation",
+    "limitations",
+    "review_questions",
+    "execution"
+  ],
+  "properties": {
+    "schema_version": { "const": "gee-plan/v0.3" },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "raw_user_request": { "type": "string", "minLength": 1 },
+    "intent": {
+      "type": "object",
+      "required": ["metric", "recipe_id", "golden_example"],
+      "properties": {
+        "metric": { "type": "string", "minLength": 1 },
+        "recipe_id": { "type": "string", "minLength": 1 },
+        "golden_example": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "vegetation_index",
+        "water_index",
+        "builtup_index",
+        "land_surface_temperature",
+        "landcover_summary",
+        "landcover_stratified_statistics",
+        "zonal_statistics",
+        "change_detection",
+        "flood_mapping",
+        "export_image",
+        "export_table"
+      ]
+    },
+    "aoi": {
+      "type": "object",
+      "required": ["type", "name", "source"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "coordinates": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "time_range": {
+      "type": "object",
+      "required": ["label", "date_start", "date_end"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "date_start": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "date_end": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "year": { "type": "integer" },
+        "month": { "type": "integer", "minimum": 1, "maximum": 12 },
+        "season": { "type": "string" },
+        "before": { "type": "object" },
+        "after": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "candidate_datasets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/datasetChoice" }
+    },
+    "selected_datasets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/datasetChoice" }
+    },
+    "indices_or_variables": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "operators": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "masking": {
+      "type": "object",
+      "required": ["required", "policy"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "policy": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "reducers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "scale_crs_projection": {
+      "type": "object",
+      "required": ["scale_m", "crs", "notes"],
+      "properties": {
+        "scale_m": { "type": "number", "exclusiveMinimum": 0 },
+        "crs": { "type": "string", "minLength": 1 },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "output": {
+      "type": "object",
+      "required": ["type", "destination"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "destination": { "type": "string", "minLength": 1 },
+        "format": { "type": ["string", "null"] },
+        "inferred": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "output_schema": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "export": {
+      "type": "object",
+      "required": ["requires_confirmation", "live_execution_default", "destination", "format"],
+      "properties": {
+        "requires_confirmation": { "type": "boolean" },
+        "live_execution_default": { "type": "boolean" },
+        "destination": { "type": "string", "minLength": 1 },
+        "format": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "preflight": {
+      "type": "object",
+      "required": ["profile", "checks"],
+      "properties": {
+        "profile": { "type": "string", "minLength": 1 },
+        "checks": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": true
+    },
+    "validation": {
+      "type": "object",
+      "required": ["rulesets", "must_pass_before_live"],
+      "properties": {
+        "rulesets": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "must_pass_before_live": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "review_questions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["template", "template_ready", "context", "outputs", "live_adapter_ready", "context_review_required"],
+      "properties": {
+        "template": { "type": ["string", "null"] },
+        "template_ready": { "type": "boolean" },
+        "context": { "type": ["object", "null"] },
+        "outputs": { "type": "object" },
+        "temporal_cadence": { "type": ["string", "null"] },
+        "grouping": { "type": "object" },
+        "live_adapter_ready": { "type": "boolean" },
+        "context_review_required": { "type": "boolean" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "before_time_range": { "type": "object" },
+    "after_time_range": { "type": "object" }
+  },
+  "$defs": {
+    "datasetChoice": {
+      "type": "object",
+      "required": ["dataset_id"],
+      "properties": {
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "provider": { "type": "string" },
+        "gee_url": { "type": "string" },
+        "bands": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "qa_bands": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

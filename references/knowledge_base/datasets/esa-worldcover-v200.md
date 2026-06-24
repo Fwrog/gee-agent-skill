@@ -1,28 +1,49 @@
-# Dataset Card: ESA WorldCover v200
+# Dataset Card: ESA WorldCover 10m v200
 
 source_id: dataset-esa-worldcover-v200
-source_type: official-data-catalog
-publisher: Google Earth Engine
-source_url: https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200
-last_checked: 2026-06-21
-primary_status: optional-reference
+source_type: official-dataset-card
+primary_status: canonical
 dataset_id: ESA/WorldCover/v200
-temporal_coverage: Static 2021 global map
-spatial_resolution: 10 m
+title: ESA WorldCover 10m v200
+provider: ESA
+gee_url: https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200
+source_url: https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200
+temporal_coverage: 2021 static product
+spatial_resolution: 10m
+bands: Map
+qa_bands: none
+common_uses: static land-cover reference, sanity-check land-cover masks
+recommended_tasks: landcover_summary, landcover_stratified_statistics
+scale_notes: Use 10m for class summaries unless coarsening for large AOIs.
+projection_notes: Document when using static land cover with non-2021 imagery.
+license_attribution: ESA WorldCover license terms apply.
+last_checked: 2026-06-21
 risk_level: medium
 
 ## Use
 
-ESA WorldCover v200 can be used as a static sanity-check reference for land-cover interpretation. It is not time-matched to January 2024 and should not silently replace Dynamic World for a time-matched workflow.
+Use `ESA/WorldCover/v200` for static land-cover reference, sanity-check land-cover masks.
 
-## Workflow Notes
+## Bands
 
-- Document that ESA WorldCover is static.
-- Use it for cross-checking broad class plausibility, not for temporal class changes.
-- Do not use land-cover pixels as administrative boundaries.
+Core bands: Map.
 
-## Failure Cases
+QA or mask bands: none.
 
-known_failure: STATIC_REFERENCE_MISMATCH
+## Recommended Tasks
 
-Static land-cover data can disagree with time-matched Dynamic World labels. Treat differences as diagnostic evidence, not automatic truth.
+- landcover_summary
+- landcover_stratified_statistics
+
+## Scale and Projection Notes
+
+- Use 10m for class summaries unless coarsening for large AOIs.
+- Document when using static land cover with non-2021 imagery.
+
+## Known Limitations
+
+- Static 2021 map is not time-matched to arbitrary analysis windows.
+
+## Attribution
+
+ESA WorldCover license terms apply.

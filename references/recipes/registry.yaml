@@ -1,0 +1,179 @@
+schema_version: gee-recipes/v0.3
+recipes:
+  - recipe_id: vegetation-index-ndvi
+    task_type: vegetation_index
+    description: Compute NDVI from optical surface reflectance and export an image or table.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [grouping, temporal_cadence, cloud_policy, dataset_id]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2]
+    default_dataset_policy: Prefer Sentinel-2 SR for 10m regional NDVI unless Landsat continuity is requested.
+    template: sentinel2_ndvi_composite
+    preflight_profile: optical_index
+    validation_profile: vegetation_index_ndvi
+    output_schema: [aoi_name, date_start, date_end, mean_ndvi, dataset_id, scale_m, crs]
+    live_risk_level: medium
+    examples:
+      - Compute 16-day NDVI for Hong Kong in 2024 and export CSV.
+    limitations:
+      - Optical index outputs require cloud, shadow, and water-context review before scientific interpretation.
+      - Golden Hong Kong examples prove the harness loop, not vegetation-monitoring validity.
+  - recipe_id: vegetation-index-evi
+    task_type: vegetation_index
+    description: Compute EVI from optical reflectance bands with explicit coefficients.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [dataset_id, cloud_policy, scale]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2]
+    default_dataset_policy: Prefer Sentinel-2 for current 10m analyses; use Landsat for long historical continuity.
+    template: sentinel2_index_table
+    preflight_profile: optical_index
+    validation_profile: optical_index
+    output_schema: [aoi_name, date_start, date_end, mean_evi, dataset_id, scale_m, crs]
+    live_risk_level: medium
+    examples:
+      - Compute EVI for a supplied AOI in March 2024 and export CSV.
+    limitations:
+      - EVI coefficient and band scaling choices must be reviewed for each sensor.
+  - recipe_id: water-index-ndwi
+    task_type: water_index
+    description: Compute NDWI or MNDWI from optical imagery for water diagnostics.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [dataset_id, index_variant, cloud_policy]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2]
+    default_dataset_policy: Prefer Sentinel-2 SR for 10m NDWI/MNDWI unless Landsat is requested.
+    template: sentinel2_index_image
+    preflight_profile: optical_index
+    validation_profile: water_index_ndwi
+    output_schema: [aoi_name, date_start, date_end, mean_ndwi, dataset_id, scale_m, crs]
+    live_risk_level: medium
+    examples:
+      - Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF.
+    limitations:
+      - NDWI is sensitive to built surfaces, shadows, clouds, and turbidity; thresholding requires local review.
+  - recipe_id: builtup-index-ndbi
+    task_type: builtup_index
+    description: Compute NDBI from SWIR and NIR bands for built-up diagnostics.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [dataset_id, cloud_policy]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2]
+    default_dataset_policy: Prefer Sentinel-2 SR for 10m NDBI when the AOI/time range has coverage.
+    template: sentinel2_index_table
+    preflight_profile: optical_index
+    validation_profile: builtup_index_ndbi
+    output_schema: [aoi_name, date_start, date_end, mean_ndbi, dataset_id, scale_m, crs]
+    live_risk_level: medium
+    examples:
+      - Compute NDBI for Hong Kong in 2024 and export CSV.
+    limitations:
+      - NDBI can confuse bare soil and built surfaces; land-cover context should be reviewed.
+  - recipe_id: landcover-summary-dynamic-world
+    task_type: landcover_summary
+    description: Summarize Dynamic World land-cover probabilities or top labels over an AOI.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [probability_threshold, class_groups, reducer]
+    candidate_datasets: [GOOGLE/DYNAMICWORLD/V1, ESA/WorldCover/v200]
+    default_dataset_policy: Prefer Dynamic World for Sentinel-2-era dynamic summaries; use ESA WorldCover as static reference.
+    template: dynamic_world_landcover_summary
+    preflight_profile: landcover_stratified
+    validation_profile: dynamic_world_landcover
+    output_schema: [aoi_name, date_start, date_end, class_label, area_m2, fraction]
+    live_risk_level: medium
+    examples:
+      - Summarize Dynamic World land cover for a GeoJSON AOI.
+    limitations:
+      - Dynamic World probabilities need class-threshold and temporal aggregation review.
+  - recipe_id: landcover-stratified-ndvi
+    task_type: landcover_stratified_statistics
+    description: Compute NDVI diagnostics by Dynamic World land-cover class.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [probability_threshold, class_groups, dataset_id]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, GOOGLE/DYNAMICWORLD/V1, ESA/WorldCover/v200]
+    default_dataset_policy: Use Dynamic World for time-matched masks and ESA WorldCover only as static reference.
+    template: hk_january_2024_ndvi_by_landcover_csv
+    preflight_profile: landcover_stratified
+    validation_profile: dynamic_world_landcover_ndvi
+    output_schema: [all_surface_mean_ndvi, non_water_mean_ndvi, vegetation_mean_ndvi, class_fractions]
+    live_risk_level: medium
+    examples:
+      - Compute January 2024 Hong Kong NDVI by land-cover class and export CSV.
+    limitations:
+      - Current live-verified path is the Hong Kong golden example; other AOIs need recipe-specific verification.
+  - recipe_id: landsat-lst
+    task_type: land_surface_temperature
+    description: Compute Landsat Collection 2 land surface temperature with QA_PIXEL masking.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [dataset_id, temperature_unit, cloud_policy]
+    candidate_datasets: [LANDSAT/LC08/C02/T1_L2, LANDSAT/LC09/C02/T1_L2]
+    default_dataset_policy: Use Landsat Collection 2 Level 2 ST_B10 with documented scale and offset.
+    template: landsat_lst_table
+    preflight_profile: landsat_lst
+    validation_profile: landsat_lst
+    output_schema: [aoi_name, date_start, date_end, mean_lst_c, dataset_id, scale_m, crs]
+    live_risk_level: medium
+    examples:
+      - Compute Landsat LST for Hong Kong in summer 2024 and export CSV.
+    limitations:
+      - LST requires QA masking, scale/offset correctness, and thermal-domain interpretation review.
+  - recipe_id: sentinel1-flood-before-after
+    task_type: flood_mapping
+    description: Compare Sentinel-1 before/after SAR windows for flood or water-change mapping.
+    required_inputs: [aoi, before_time_range, after_time_range, output]
+    optional_inputs: [polarization, orbit_pass, threshold]
+    candidate_datasets: [COPERNICUS/S1_GRD]
+    default_dataset_policy: Use Sentinel-1 GRD with matched instrument mode, polarization, and orbit filters.
+    template: sentinel1_flood_before_after
+    preflight_profile: sentinel1_change
+    validation_profile: sentinel1_flood_before_after
+    output_schema: [aoi_name, before_start, before_end, after_start, after_end, flood_area, dataset_id]
+    live_risk_level: medium
+    examples:
+      - Map Sentinel-1 flood extent for a supplied AOI before and after a storm.
+    limitations:
+      - Flood thresholds and before/after windows require event-specific domain review.
+  - recipe_id: zonal-statistics-table
+    task_type: zonal_statistics
+    description: Reduce an image or index product over supplied zones and export a table.
+    required_inputs: [image_or_index, zones, time_range, output]
+    optional_inputs: [reducer, scale, selectors]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2]
+    default_dataset_policy: Select dataset from the index or image recipe, then reduce over explicit zones.
+    template: zonal_statistics
+    preflight_profile: zonal_statistics
+    validation_profile: export_table_csv
+    output_schema: [zone_id, metric, value, dataset_id, scale_m, crs]
+    live_risk_level: medium
+    examples:
+      - Compute zonal statistics for a supplied GeoJSON and export CSV.
+    limitations:
+      - Zone geometry complexity and reducer scale can dominate quota and runtime behavior.
+  - recipe_id: image-export-geotiff
+    task_type: export_image
+    description: Export a validated Earth Engine image product to Drive as GeoTIFF.
+    required_inputs: [image_or_index, aoi, time_range, output]
+    optional_inputs: [scale, crs, max_pixels]
+    candidate_datasets: [COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, COPERNICUS/S1_GRD]
+    default_dataset_policy: Use the source dataset selected by the upstream image recipe.
+    template: recipes/export_image
+    preflight_profile: export_image
+    validation_profile: export_image_geotiff
+    output_schema: [image, region, scale_m, crs, file_format, export_description]
+    live_risk_level: high
+    examples:
+      - Export March 2024 NDWI for a supplied AOI as GeoTIFF.
+    limitations:
+      - Image exports are quota-sensitive and require reviewed region, projection, scale, and maxPixels.
+  - recipe_id: table-export-csv
+    task_type: export_table
+    description: Export a validated feature collection to Drive as CSV with explicit selectors.
+    required_inputs: [feature_collection, output_schema, export]
+    optional_inputs: [drive_folder, file_prefix]
+    candidate_datasets: []
+    default_dataset_policy: Use table output from the upstream reducer recipe.
+    template: recipes/export_table
+    preflight_profile: export_table
+    validation_profile: export_table_csv
+    output_schema: [selectors, file_format, export_description, drive_folder]
+    live_risk_level: high
+    examples:
+      - Export zonal statistics as CSV.
+    limitations:
+      - CSV exports need stable selectors and monitored task state before claiming success.

@@ -23,3 +23,25 @@ jobs:
         run: python -m pytest
       - name: Build package
         run: python -m build --sdist --wheel
+      - name: Wheel install smoke
+        run: |
+          python -m venv /tmp/gee-agent-skill-wheel-smoke
+          /tmp/gee-agent-skill-wheel-smoke/bin/python -m pip install --upgrade pip
+          /tmp/gee-agent-skill-wheel-smoke/bin/python -m pip install dist/*.whl
+          /tmp/gee-agent-skill-wheel-smoke/bin/gee-skill info --json
+          /tmp/gee-agent-skill-wheel-smoke/bin/gee-skill recipe list --json
+          cd /tmp
+          /tmp/gee-agent-skill-wheel-smoke/bin/gee-skill plan from-text "Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF." --out /tmp/ndwi_plan.yaml --json
+          /tmp/gee-agent-skill-wheel-smoke/bin/gee-skill render /tmp/ndwi_plan.yaml --script-out /tmp/ndwi.py --json
+          /tmp/gee-agent-skill-wheel-smoke/bin/gee-skill validate /tmp/ndwi.py --json
+          set +e
+          /tmp/gee-agent-skill-wheel-smoke/bin/gee-skill preflight /tmp/ndwi_plan.yaml --project placeholder-project --json > /tmp/ndwi_preflight.json
+          rc=$?
+          set -e
+          test "$rc" -eq 1
+          /tmp/gee-agent-skill-wheel-smoke/bin/python - <<'PY'
+          import json
+          payload = json.load(open("/tmp/ndwi_preflight.json"))
+          assert payload["ok"] is False
+          assert payload["preflight"]["critical_error"]["category"] == "V03_CONTEXT_REVIEW_REQUIRED"
+          PY

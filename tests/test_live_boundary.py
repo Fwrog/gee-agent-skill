@@ -29,6 +29,28 @@ def test_live_smoke_missing_live_access_fails_with_structured_guidance(capsys):
             assert payload["error"]["user_action_required"] is True
 
 
+def test_live_smoke_requires_confirm_live_with_json(capsys):
+    rc = main(
+        [
+            "live-smoke-test",
+            "--project",
+            "example-project",
+            "--smoke-month",
+            "1",
+            "--smoke-region",
+            "Central and Western",
+            "--export-folder",
+            "gee_exports",
+            "--json",
+        ]
+    )
+    assert rc == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["ok"] is False
+    assert payload["command"] == "live-smoke-test"
+    assert payload["error"]["code"] == "CONFIRM_LIVE_REQUIRED"
+
+
 def test_monitor_exports_writes_trace(monkeypatch, capsys):
     def fake_monitor_tasks(project, authenticate=False, timeout_seconds=0, poll_seconds=10):
         return [

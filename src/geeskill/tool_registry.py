@@ -37,7 +37,12 @@ TOOLS: dict[str, ToolSpec] = {
         "Summarize a natural-language GEE request and suggest next CLI steps without Earth Engine contact.",
     ),
     "catalog": ToolSpec(
-        "catalog", True, True, False, (), "Search, inspect, and recommend curated Earth Engine dataset cards."
+        "catalog",
+        True,
+        True,
+        False,
+        (),
+        "Search dataset cards and inspect indexed dataset/operator/recipe/failure evidence cards.",
     ),
     "recipe": ToolSpec(
         "recipe", True, True, False, (), "List and inspect reusable workflow recipe cards."
@@ -52,6 +57,22 @@ TOOLS: dict[str, ToolSpec] = {
         False,
         (),
         "Create, review, and edit v0.3 general task plans from text or YAML.",
+    ),
+    "aoi": ToolSpec(
+        "aoi",
+        True,
+        True,
+        False,
+        (),
+        "Resolve, validate, and summarize AOI inputs before plan review or preflight.",
+    ),
+    "render_plan": ToolSpec(
+        "render_plan",
+        True,
+        True,
+        False,
+        (),
+        "Render a reviewable plan into an Earth Engine Python script.",
     ),
     "search_docs": ToolSpec(
         "search_docs", True, True, False, (), "Search the local operator-aware docs index."
@@ -69,6 +90,14 @@ TOOLS: dict[str, ToolSpec] = {
         False,
         ("--project",),
         "Run safe live probes for a saved task plan before export.",
+    ),
+    "preflight": ToolSpec(
+        "preflight",
+        True,
+        True,
+        False,
+        ("--project",),
+        "Canonical plan preflight command; contacts Earth Engine but never starts an export.",
     ),
     "ask": ToolSpec(
         "ask",
@@ -118,6 +147,38 @@ TOOLS: dict[str, ToolSpec] = {
         True,
         ("--project",),
         "Inspect Earth Engine batch export task states.",
+    ),
+    "exports": ToolSpec(
+        "exports",
+        True,
+        True,
+        True,
+        ("--project",),
+        "Canonical export task listing and watching command group.",
+    ),
+    "trace": ToolSpec(
+        "trace",
+        True,
+        True,
+        False,
+        (),
+        "Inspect local run trace artifacts without contacting Earth Engine.",
+    ),
+    "corpus_coverage": ToolSpec(
+        "corpus_coverage",
+        True,
+        True,
+        False,
+        (),
+        "Report task-specific RAG evidence coverage across dataset, recipe, operator, rule, failure, and export cards.",
+    ),
+    "eval": ToolSpec(
+        "eval",
+        True,
+        True,
+        False,
+        (),
+        "Canonical benchmark command with an agent-facing JSON envelope.",
     ),
     "write_run_trace": ToolSpec(
         "write_run_trace", True, False, False, (), "Persist reproducibility artifacts."

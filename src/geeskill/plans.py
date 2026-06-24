@@ -5,6 +5,218 @@ from typing import Any
 
 import yaml
 
+V03_PLAN_REQUIRED_FIELDS = (
+    "schema_version",
+    "plan_id",
+    "raw_user_request",
+    "intent",
+    "task_type",
+    "aoi",
+    "time_range",
+    "candidate_datasets",
+    "selected_datasets",
+    "indices_or_variables",
+    "operators",
+    "masking",
+    "reducers",
+    "scale_crs_projection",
+    "output",
+    "export",
+    "preflight",
+    "validation",
+    "limitations",
+    "review_questions",
+    "execution",
+)
+
+V03_SUPPORTED_TASK_TYPES = {
+    "vegetation_index",
+    "water_index",
+    "builtup_index",
+    "land_surface_temperature",
+    "landcover_summary",
+    "landcover_stratified_statistics",
+    "zonal_statistics",
+    "change_detection",
+    "flood_mapping",
+    "export_image",
+    "export_table",
+}
+
+V03_ALLOWED_ROOT_FIELDS = set(V03_PLAN_REQUIRED_FIELDS) | {"output_schema", "before_time_range", "after_time_range"}
+
+V03_SUPPORTED_PREFLIGHT_PROFILES = {
+    "optical_index",
+    "landcover_stratified",
+    "landsat_lst",
+    "sentinel1_change",
+    "zonal_statistics",
+    "export_image",
+    "export_table",
+}
+
+
+def _is_nonempty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _require_object(plan: dict[str, Any], field: str, errors: list[str]) -> dict[str, Any]:
+    value = plan.get(field)
+    if not isinstance(value, dict):
+        errors.append(f"{field} must be an object")
+        return {}
+    return value
+
+
+def _require_list(plan: dict[str, Any], field: str, errors: list[str], *, min_items: int = 0) -> list[Any]:
+    value = plan.get(field)
+    if not isinstance(value, list):
+        errors.append(f"{field} must be a list")
+        return []
+    if len(value) < min_items:
+        errors.append(f"{field} must contain at least {min_items} item(s)")
+    return value
+
+
+def _require_keys(mapping: dict[str, Any], field: str, keys: tuple[str, ...], errors: list[str]) -> None:
+    missing = [key for key in keys if key not in mapping]
+    if missing:
+        errors.append(f"{field} missing required keys: {', '.join(missing)}")
+
+
+def validate_v03_plan_schema(plan: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if plan.get("schema_version") != "gee-plan/v0.3":
+        errors.append("schema_version must be gee-plan/v0.3")
+    missing = [field for field in V03_PLAN_REQUIRED_FIELDS if field not in plan]
+    if missing:
+        errors.append(f"missing required fields: {', '.join(missing)}")
+    task_type = plan.get("task_type")
+    if task_type and task_type not in V03_SUPPORTED_TASK_TYPES:
+        errors.append(f"unsupported task_type: {task_type}")
+    extra = sorted(set(plan) - V03_ALLOWED_ROOT_FIELDS)
+    if extra:
+        errors.append(f"unsupported root fields: {', '.join(extra)}")
+
+    intent = _require_object(plan, "intent", errors)
+    if intent:
+        _require_keys(intent, "intent", ("metric", "recipe_id", "golden_example"), errors)
+        if "metric" in intent and not _is_nonempty_string(intent["metric"]):
+            errors.append("intent.metric must be a non-empty string")
+        if "recipe_id" in intent and not _is_nonempty_string(intent["recipe_id"]):
+            errors.append("intent.recipe_id must be a non-empty string")
+        if "golden_example" in intent and not isinstance(intent["golden_example"], bool):
+            errors.append("intent.golden_example must be a boolean")
+
+    aoi = _require_object(plan, "aoi", errors)
+    if aoi:
+        _require_keys(aoi, "aoi", ("type", "name", "source"), errors)
+        for key in ("type", "name", "source"):
+            if key in aoi and not _is_nonempty_string(aoi[key]):
+                errors.append(f"aoi.{key} must be a non-empty string")
+
+    time_range = _require_object(plan, "time_range", errors)
+    if time_range:
+        _require_keys(time_range, "time_range", ("label", "date_start", "date_end"), errors)
+        for key in ("label", "date_start", "date_end"):
+            if key in time_range and not _is_nonempty_string(time_range[key]):
+                errors.append(f"time_range.{key} must be a non-empty string")
+
+    candidate = _require_list(plan, "candidate_datasets", errors)
+    selected = _require_list(plan, "selected_datasets", errors, min_items=1)
+    for field, values in (("candidate_datasets", candidate), ("selected_datasets", selected)):
+        for index, item in enumerate(values):
+            if not isinstance(item, dict):
+                errors.append(f"{field}[{index}] must be an object")
+                continue
+            if not _is_nonempty_string(item.get("dataset_id")):
+                errors.append(f"{field}[{index}].dataset_id must be a non-empty string")
+
+    for field in ("indices_or_variables", "operators"):
+        values = _require_list(plan, field, errors, min_items=1)
+        for index, item in enumerate(values):
+            if not _is_nonempty_string(item):
+                errors.append(f"{field}[{index}] must be a non-empty string")
+
+    masking = _require_object(plan, "masking", errors)
+    if masking:
+        _require_keys(masking, "masking", ("required", "policy"), errors)
+        if "required" in masking and not isinstance(masking["required"], bool):
+            errors.append("masking.required must be a boolean")
+        if "policy" in masking and not _is_nonempty_string(masking["policy"]):
+            errors.append("masking.policy must be a non-empty string")
+
+    _require_list(plan, "reducers", errors)
+
+    scale_crs = _require_object(plan, "scale_crs_projection", errors)
+    if scale_crs:
+        _require_keys(scale_crs, "scale_crs_projection", ("scale_m", "crs", "notes"), errors)
+        if "scale_m" in scale_crs and not isinstance(scale_crs["scale_m"], (int, float)):
+            errors.append("scale_crs_projection.scale_m must be numeric")
+        elif "scale_m" in scale_crs and float(scale_crs["scale_m"]) <= 0:
+            errors.append("scale_crs_projection.scale_m must be greater than zero")
+        if "crs" in scale_crs and not _is_nonempty_string(scale_crs["crs"]):
+            errors.append("scale_crs_projection.crs must be a non-empty string")
+
+    output = _require_object(plan, "output", errors)
+    if output:
+        _require_keys(output, "output", ("type", "destination"), errors)
+        for key in ("type", "destination"):
+            if key in output and not _is_nonempty_string(output[key]):
+                errors.append(f"output.{key} must be a non-empty string")
+
+    export = _require_object(plan, "export", errors)
+    if export:
+        _require_keys(export, "export", ("requires_confirmation", "live_execution_default", "destination", "format"), errors)
+        for key in ("requires_confirmation", "live_execution_default"):
+            if key in export and not isinstance(export[key], bool):
+                errors.append(f"export.{key} must be a boolean")
+        if "destination" in export and not _is_nonempty_string(export["destination"]):
+            errors.append("export.destination must be a non-empty string")
+
+    preflight = _require_object(plan, "preflight", errors)
+    if preflight:
+        _require_keys(preflight, "preflight", ("profile", "checks"), errors)
+        profile = preflight.get("profile")
+        if not _is_nonempty_string(profile):
+            errors.append("preflight.profile must be a non-empty string")
+        elif profile not in V03_SUPPORTED_PREFLIGHT_PROFILES:
+            errors.append(f"unsupported preflight.profile: {profile}")
+        checks = preflight.get("checks")
+        if not isinstance(checks, (list, tuple)) or not checks:
+            errors.append("preflight.checks must be a non-empty list")
+
+    validation = _require_object(plan, "validation", errors)
+    if validation:
+        _require_keys(validation, "validation", ("rulesets", "must_pass_before_live"), errors)
+        rulesets = validation.get("rulesets")
+        if not isinstance(rulesets, list) or not rulesets:
+            errors.append("validation.rulesets must be a non-empty list")
+        if "must_pass_before_live" in validation and not isinstance(validation["must_pass_before_live"], bool):
+            errors.append("validation.must_pass_before_live must be a boolean")
+
+    _require_list(plan, "limitations", errors)
+    _require_list(plan, "review_questions", errors)
+
+    execution = _require_object(plan, "execution", errors)
+    if execution:
+        _require_keys(execution, "execution", ("template", "template_ready", "context", "outputs", "live_adapter_ready", "context_review_required"), errors)
+        if "template_ready" in execution and not isinstance(execution["template_ready"], bool):
+            errors.append("execution.template_ready must be a boolean")
+        if "live_adapter_ready" in execution and not isinstance(execution["live_adapter_ready"], bool):
+            errors.append("execution.live_adapter_ready must be a boolean")
+        if "context_review_required" in execution and not isinstance(execution["context_review_required"], bool):
+            errors.append("execution.context_review_required must be a boolean")
+        if execution.get("template_ready"):
+            if not _is_nonempty_string(execution.get("template")):
+                errors.append("execution.template must be a non-empty string when template_ready is true")
+            if not isinstance(execution.get("context"), dict):
+                errors.append("execution.context must be an object when template_ready is true")
+            outputs = execution.get("outputs")
+            if not isinstance(outputs, dict) or not _is_nonempty_string(outputs.get("script")):
+                errors.append("execution.outputs.script must be set when template_ready is true")
+    return errors
+
 
 def build_task_plan(task: dict[str, Any]) -> dict[str, Any]:
     context = dict(task.get("context") or {})

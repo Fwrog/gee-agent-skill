@@ -19,6 +19,7 @@ Earth Engine objects are server-side proxies. Python code constructs a computati
 
 ## Failure Cases
 
+known_failure: UNSAFE_GETINFO
 known_failure: CLIENT_SERVER_MISUSE
 
 Large client-side materialization can time out, exceed memory, or block reproducibility. Recovery: move computation server-side, export results, or reduce the object before fetching.

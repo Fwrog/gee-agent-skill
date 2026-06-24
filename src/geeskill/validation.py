@@ -190,6 +190,32 @@ def _validate_dates(assignments: dict[str, str], findings: list[Finding]) -> Non
                     )
                 )
             return
+    before_after = ["BEFORE_START", "BEFORE_END", "AFTER_START", "AFTER_END"]
+    if all(key in assignments for key in before_after):
+        for start_key, end_key in (("BEFORE_START", "BEFORE_END"), ("AFTER_START", "AFTER_END")):
+            start_text = assignments[start_key]
+            end_text = assignments[end_key]
+            if not ISO_DATE_RE.match(start_text) or not ISO_DATE_RE.match(end_text):
+                findings.append(
+                    _finding(
+                        "error",
+                        "date-format",
+                        f"{start_key}/{end_key} must use YYYY-MM-DD ISO dates.",
+                        category="VALIDATION_ERROR",
+                    )
+                )
+                return
+            if date.fromisoformat(end_text) <= date.fromisoformat(start_text):
+                findings.append(
+                    _finding(
+                        "error",
+                        "date-order",
+                        f"{end_key} must be after {start_key}.",
+                        category="VALIDATION_ERROR",
+                    )
+                )
+                return
+        return
     findings.append(
         _finding(
             "warning",
@@ -264,7 +290,9 @@ def validate_script(path: Path, semantic_rulesets: list[str] | None = None) -> V
                 category="GEOMETRY_ERROR",
             )
         )
-    if "cloud" not in text.lower() and "qa_pixel" not in text.lower() and "scl" not in text.lower():
+    lower = text.lower()
+    is_sar_workflow = "copernicus/s1_grd" in lower or "sentinel-1" in lower or "sentinel1" in lower
+    if not is_sar_workflow and "cloud" not in lower and "qa_pixel" not in lower and "scl" not in lower:
         findings.append(
             _finding(
                 "warning",
@@ -294,7 +322,6 @@ def validate_script(path: Path, semantic_rulesets: list[str] | None = None) -> V
         findings.append(_finding("warning", "missing-export", "No Earth Engine export call detected."))
     if "description=" not in text:
         findings.append(_finding("warning", "missing-export-description", "No export description detected.", category="EXPORT_TASK_ERROR"))
-    lower = text.lower()
     if ("export.image.todrive" in lower or "ee.batch.export.image.todrive" in lower) and "maxPixels" not in text and "max_pixels" not in text and "MAX_PIXELS" not in text:
         findings.append(
             _finding(
@@ -313,7 +340,7 @@ def validate_script(path: Path, semantic_rulesets: list[str] | None = None) -> V
                 "Avoid unnecessary getInfo() calls in production scripts.",
                 line=line,
                 hint="Prefer server-side operations and export server-side objects.",
-                category="CLIENT_SERVER_MISUSE",
+                category="UNSAFE_GETINFO",
             )
         )
     assignments = _string_assignments(tree)

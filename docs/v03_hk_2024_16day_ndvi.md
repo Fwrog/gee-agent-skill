@@ -91,6 +91,8 @@ Drive folder: gee_exports
 file prefix: hk_2024_16day_ndvi
 ```
 
+Sanitized evidence for the observed task metadata and exported demo CSV is available in [docs/evidence/v03_hk_2024_16day_ndvi](evidence/v03_hk_2024_16day_ndvi/README.md).
+
 ## CSV Schema
 
 The CSV export selectors are:

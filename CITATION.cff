@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as an agent-native Google Earth Engine harness."
+title: "gee-agent-skill: An Agent-Native Harness for Traceable Google Earth Engine Workflows"
+version: "0.3.0"
+type: software
+authors:
+  - name: "gee-agent-skill maintainers"
+repository-code: "https://github.com/Fwrog/gee-agent-skill"
+url: "https://github.com/Fwrog/gee-agent-skill"
+abstract: "gee-agent-skill is a command-line harness for turning Google Earth Engine workflow requests into reviewable plans, source-grounded dataset and operator choices, validated Earth Engine Python scripts, safe preflight checks, explicit user-confirmed exports, export monitoring, and reproducible traces. Hong Kong NDVI workflows are maintained as golden regression examples for the broader harness."
+keywords:
+  - "Google Earth Engine"
+  - "coding agents"
+  - "geospatial workflows"
+  - "remote sensing"
+  - "reproducibility"
+license: "MIT"

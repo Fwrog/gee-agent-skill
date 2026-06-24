@@ -1,8 +1,174 @@
 import json
+import hashlib
 from pathlib import Path
 
 from geeskill.cli import main
+from geeskill.catalog import list_datasets
+from geeskill.plans import validate_v03_plan_schema
+from geeskill.recipes import load_recipe_registry
+from geeskill.templates import render_template
 from geeskill.tool_registry import exposed_tools, installed_tools
+
+
+def test_recipe_registry_is_file_backed_yaml():
+    registry = load_recipe_registry()
+    assert registry["schema_version"] == "gee-recipes/v0.3"
+    assert registry["path"].endswith("registry.yaml")
+    recipes = [item.to_dict() for item in registry["recipes"]]
+    assert len(recipes) >= 10
+    assert {item["recipe_id"] for item in recipes} >= {
+        "vegetation-index-ndvi",
+        "water-index-ndwi",
+        "builtup-index-ndbi",
+        "landsat-lst",
+        "sentinel1-flood-before-after",
+        "zonal-statistics-table",
+        "image-export-geotiff",
+        "table-export-csv",
+    }
+    assert all("limitations" in item for item in recipes)
+    assert all(item["template"] for item in recipes)
+
+
+def test_recipe_registry_cards_are_rag_visible_markdown():
+    registry = load_recipe_registry()
+    recipes = [item.to_dict() for item in registry["recipes"]]
+    cards = list(Path("references/knowledge_base/recipes").glob("*.md"))
+    combined = {path.name: path.read_text(encoding="utf-8") for path in cards}
+    for recipe in recipes:
+        matches = [text for text in combined.values() if f"recipe_id: {recipe['recipe_id']}" in text]
+        assert len(matches) == 1, recipe["recipe_id"]
+        text = matches[0]
+        for field in [
+            "task_type",
+            "required_inputs",
+            "candidate_datasets",
+            "template",
+            "preflight_profile",
+            "validation_profile",
+            "output_schema",
+            "live_risk_level",
+            "limitations",
+        ]:
+            assert f"{field}:" in text or f"## {field.replace('_', ' ').title()}" in text, (recipe["recipe_id"], field)
+
+
+def test_structured_dataset_cards_are_rag_visible_markdown():
+    required_fields = {
+        "dataset_id",
+        "title",
+        "provider",
+        "gee_url",
+        "temporal_coverage",
+        "spatial_resolution",
+        "bands",
+        "qa_bands",
+        "common_uses",
+        "recommended_tasks",
+        "scale_notes",
+        "projection_notes",
+        "license_attribution",
+        "last_checked",
+    }
+    cards = list(Path("references/knowledge_base/datasets").glob("*.md"))
+    combined = {path.name: path.read_text(encoding="utf-8") for path in cards}
+    for dataset in list_datasets():
+        matches = [text for text in combined.values() if f"dataset_id: {dataset['dataset_id']}" in text]
+        assert len(matches) == 1, dataset["dataset_id"]
+        text = matches[0]
+        for field in required_fields:
+            assert f"{field}:" in text, (dataset["dataset_id"], field)
+
+
+def test_v03_plan_schema_validator_reports_missing_fields():
+    errors = validate_v03_plan_schema({"schema_version": "gee-plan/v0.3", "plan_id": "bad"})
+    assert errors
+    assert any("missing required fields" in error for error in errors)
+
+
+def test_v03_plan_schema_validator_reports_nested_contract_errors():
+    plan = {
+        "schema_version": "gee-plan/v0.3",
+        "plan_id": "bad-nested",
+        "raw_user_request": "Compute NDVI.",
+        "intent": {"metric": "NDVI", "recipe_id": "", "golden_example": "no"},
+        "task_type": "vegetation_index",
+        "aoi": {"type": "named_place", "name": "Hong Kong"},
+        "time_range": {"label": "2024", "date_start": "2024-01-01"},
+        "candidate_datasets": [{"title": "Missing id"}],
+        "selected_datasets": [],
+        "indices_or_variables": [],
+        "operators": [],
+        "masking": {"required": "yes", "policy": ""},
+        "reducers": [],
+        "scale_crs_projection": {"scale_m": 0, "crs": "", "notes": ""},
+        "output": {"type": "csv"},
+        "export": {"requires_confirmation": True, "live_execution_default": False, "destination": "drive", "format": "CSV"},
+        "preflight": {"profile": "unknown_profile", "checks": []},
+        "validation": {"rulesets": [], "must_pass_before_live": True},
+        "limitations": [],
+        "review_questions": [],
+        "execution": {"template": None, "template_ready": True, "context": None, "outputs": {}, "live_adapter_ready": False, "context_review_required": True},
+    }
+    errors = validate_v03_plan_schema(plan)
+    assert any("intent.recipe_id" in error for error in errors)
+    assert any("aoi missing required keys" in error for error in errors)
+    assert any("selected_datasets must contain" in error for error in errors)
+    assert any("unsupported preflight.profile" in error for error in errors)
+    assert any("execution.template must be" in error for error in errors)
+
+
+def test_recipe_template_wrapper_renders_existing_template(tmp_path):
+    rendered = render_template(
+        Path("assets/templates"),
+        "recipes/water_index",
+        {
+            "script_name": "ndwi_wrapper_check",
+            "dataset_id": "COPERNICUS/S2_SR_HARMONIZED",
+            "date_start": "2024-03-01",
+            "date_end": "2024-04-01",
+            "aoi_asset": "projects/example/assets/reviewed_aoi",
+            "index_name": "NDWI",
+            "index_bands": ["B3", "B8"],
+            "scale": 10,
+            "crs": "EPSG:4326",
+            "export_description": "ndwi_wrapper_check",
+            "drive_folder": "gee_exports",
+            "tile_scale": 4,
+            "max_pixels": 10000000000000,
+            "cloudy_pixel_percentage": 80,
+            "file_prefix": "ndwi_wrapper_check",
+        },
+    )
+    assert "ee.batch.Export.image.toDrive" in rendered
+    assert "COPERNICUS/S2_SR_HARMONIZED" in rendered
+
+
+def test_golden_examples_are_available_for_regression_checks():
+    golden_tasks = [
+        Path("examples/golden/hk_2024_01_ndvi_v01/task.yaml"),
+        Path("examples/golden/hk_2024_01_ndvi_landcover_v02/task.yaml"),
+        Path("examples/golden/hk_2024_16day_ndvi/task.yaml"),
+    ]
+    for task_path in golden_tasks:
+        assert task_path.exists(), task_path
+
+
+def test_v03_public_evidence_bundle_is_sanitized_and_hash_locked():
+    evidence_dir = Path("docs/evidence/v03_hk_2024_16day_ndvi")
+    readme = (evidence_dir / "README.md").read_text(encoding="utf-8")
+    csv_bytes = (evidence_dir / "hk_2024_16day_ndvi.csv").read_bytes()
+    digest = hashlib.sha256(csv_bytes).hexdigest()
+    assert digest == "f1a8502b64026f621ed8dd96af9dae80f2abe32494796b2af88d15a8f5d80475"
+    forbidden_terms = [
+        "refresh_token",
+        "private_key",
+        "service_account",
+        "client_secret",
+        "application_default_credentials",
+    ]
+    for term in forbidden_terms:
+        assert term not in readme
 
 
 def test_tool_registry_separates_installed_and_exposed():

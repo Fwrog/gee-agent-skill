@@ -1,6 +1,6 @@
 # Release Readiness
 
-Last updated: 2026-06-23
+Last updated: 2026-06-25
 
 This document records the current evidence for making `gee-agent-skill` a publishable, agent-native Google Earth Engine CLI harness rather than only a Hong Kong NDVI demo.
 
@@ -12,11 +12,15 @@ The repository is ready for local review as a v0.3 general harness candidate:
 - v0.1 and v0.2 Hong Kong workflows remain golden regression examples;
 - v0.3 adds the Hong Kong 2024 16-day NDVI CSV example;
 - the knowledge base is file-backed Markdown/YAML plus generated JSON indexes;
+- the recipe registry is file-backed YAML with a packaged wheel fallback;
 - live Earth Engine execution remains gated by `--project` and `--confirm-live`;
 - v0.3 live export now has a template-specific plan adapter for the Hong Kong 2024 16-day NDVI CSV workflow;
+- non-golden NDWI, NDBI, Landsat LST, and Sentinel-1 examples are plan/render/validate-ready and have generic preflight gates that block placeholder context before export;
+- EVI and Dynamic World land-cover summary examples are now plan/render/validate-ready through v0.3 templates;
+- dataset, operator, recipe, failure, and research knowledge cards are inspectable through `catalog evidence` JSON;
 - beginner setup docs distinguish Windows PowerShell and macOS/Linux shells.
 
-It is not yet a universal GEE automation claim. New task families still need recipe-specific templates, live preflight coverage, and domain review.
+It is not yet a universal GEE automation claim. New task families still need deeper recipe-specific live preflight coverage, domain review, and live verification before being promoted to golden examples.
 
 ## Homepage And Visual Assets
 
@@ -65,16 +69,28 @@ Current v0.3 surfaces:
 ```bash
 gee-skill info --json
 gee-skill doctor --json
+gee-skill auth check --project <project-id> --json
+gee-skill aoi resolve "Compute NDVI for Hong Kong in January 2024." --json
 gee-skill catalog search "Sentinel-2 NDVI" --json
+gee-skill catalog evidence --category operators --json
+gee-skill catalog evidence --category failures --json
 gee-skill catalog show COPERNICUS/S2_SR_HARMONIZED --json
 gee-skill catalog recommend --task-type vegetation_index --metric NDVI --json
 gee-skill recipe list --json
 gee-skill recipe show vegetation-index-ndvi --json
 gee-skill rules list --json
 gee-skill rules show export_table_csv --json
+gee-skill corpus coverage --task-type vegetation_index --metric NDVI --output CSV --json
 gee-skill observe "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
 gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --out outputs/plans/hk_2024_16day_ndvi.yaml --json
-gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill validate outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill preflight outputs/plans/hk_2024_16day_ndvi.yaml --project <project-id> --json
+gee-skill run outputs/plans/hk_2024_16day_ndvi.yaml --project <project-id> --confirm-live --json
+gee-skill exports list --project <project-id> --json
+gee-skill exports watch --project <project-id> --task-id <task-id> --json
+gee-skill trace inspect <run_id> --json
+gee-skill eval evals/benchmark_suite.yml --json
 ```
 
 Compatibility commands for v0.1/v0.2 remain part of the golden path:
@@ -122,6 +138,8 @@ Live v0.3 verification evidence:
 - Task id observed through `monitor-exports`: `6VQOYD567CL4HVSEON6GOMMC`.
 - Task state immediately after submission: `READY`, then `RUNNING`.
 
+Sanitized public evidence is committed under [docs/evidence/v03_hk_2024_16day_ndvi](evidence/v03_hk_2024_16day_ndvi/README.md). It includes observed task metadata, expected export metadata, the full demo CSV, and its SHA-256 hash without project id, credential paths, OAuth tokens, or service account material.
+
 CSV sanity check from the first exported file:
 
 ```text
@@ -149,6 +167,7 @@ The database remains source-controlled and auditable:
 - ruleset cards under `references/knowledge_base/rules/`;
 - corpus policy, discovery inventories, and pattern notes under `references/knowledge_base/corpus/`;
 - generated indexes under `references/index/` and `src/geeskill/resources/index/`.
+- structured card inventory through `gee-skill catalog evidence --category <datasets|operators|recipes|failures|research> --json`.
 
 Corpus expansion policy:
 
@@ -165,7 +184,7 @@ Repository-local ignore rules are configured for publish-time cleanup:
 - Python environments and caches: `.venv/`, `__pycache__/`, `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/`, `.ipynb_checkpoints/`;
 - build and package artifacts: `build/`, `dist/`, `*.egg-info/`, wheels, and source archives;
 - generated local outputs: `outputs/`, `tmp/`, `preview/`, `site/`, and logs;
-- internal agent scratch and historical review notes: `docs/agent_reviews/` and `docs/reviews/`;
+- internal agent scratch notes: `docs/agent_reviews/`, `docs/reviews/scratch/`, `docs/reviews/tmp/`, `docs/reviews/*-scratch.md`, and `docs/reviews/*-tmp.md`;
 - local editor and OS metadata: `.DS_Store`, `.vscode/`, `.idea/`;
 - credentials and secrets: `.env`, Earth Engine credentials, Google application-default credentials, OAuth/client-secret/token JSON, private keys, PEM, and P12 files.
 
@@ -173,13 +192,13 @@ Source-controlled JSON/YAML cards under `references/`, `evals/`, and `src/geeski
 
 Pre-release cleanup keeps the reader-facing documentation tree focused:
 
-- historical internal review notes under `docs/agent_reviews/` and `docs/reviews/` were removed from the publishable docs tree;
-- current release evidence lives in this file, `README.md`, `SKILL.md`, and `references/knowledge_base/**`;
+- historical internal review notes under `docs/agent_reviews/` and scratch/tmp review paths are excluded from the publishable docs tree;
+- current release evidence lives in this file, `README.md`, `SKILL.md`, `docs/reviews/portfolio-research-positioning-audit.md`, `docs/reviews/general-agent-native-gee-release-audit.md`, and `references/knowledge_base/**`;
 - local `.DS_Store`, cache, build, package, and generated output artifacts are ignored and should not be committed.
 
-## Validation Gate
+## Offline Publish Gate
 
-Run before claiming a publishable v0.3 state:
+Run before claiming a publishable v0.3 repository snapshot. These checks should not require private Google credentials and should pass from a clean checkout with an activated development environment:
 
 ```bash
 python -m pytest
@@ -188,25 +207,59 @@ gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and expor
 gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --dry-run --json
 gee-skill observe "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
 gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --out outputs/plans/hk_2024_16day_ndvi.yaml --json
-gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill validate outputs/scripts/hk_2024_16day_ndvi_csv.py --json
+gee-skill plan from-text "Compute EVI for a supplied AOI in March 2024 and export CSV." --out outputs/plans/evi_demo.yaml --json
+gee-skill render outputs/plans/evi_demo.yaml --script-out outputs/scripts/evi_demo.py --json
+gee-skill validate outputs/scripts/evi_demo.py --json
+gee-skill plan from-text "Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF." --out outputs/plans/ndwi_demo.yaml --json
+gee-skill render outputs/plans/ndwi_demo.yaml --script-out outputs/scripts/ndwi_demo.py --json
+gee-skill validate outputs/scripts/ndwi_demo.py --json
+gee-skill preflight outputs/plans/ndwi_demo.yaml --project placeholder-project --json
+gee-skill eval evals/benchmark_suite.yml --json
 python -m build --sdist --wheel
 ```
 
+For the NDWI placeholder preflight check, the expected result is `ok: false` with `V03_CONTEXT_REVIEW_REQUIRED`. That proves the generic adapter blocks unreviewed AOI context without requiring Earth Engine credentials or starting an export.
+
+## Optional Private Live Gate
+
+Run only when the user has authenticated Earth Engine locally and explicitly wants live verification:
+
+```bash
+gee-skill auth check --project "$EE_PROJECT" --json
+gee-skill preflight outputs/plans/hk_2024_16day_ndvi.yaml --project "$EE_PROJECT" --json
+gee-skill run outputs/plans/hk_2024_16day_ndvi.yaml --project "$EE_PROJECT" --confirm-live --json
+gee-skill exports list --project "$EE_PROJECT" --json
+```
+
+Live checks are not required for public CI and must not be used to imply that credentials are included in the repository.
+
 Recent local evidence:
 
-- `python -m pytest -q`: passed.
+- `python -m pytest`: 117 passed.
 - `gee-skill smoke-test --json`: passed.
+- `gee-skill doctor --json`, `recipe list --json`, `catalog search "Sentinel-2 NDVI" --json`: passed.
+- `gee-skill plan from-text "Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF." --json`: passed.
+- `gee-skill eval evals/benchmark_suite.yml --json`: passed with 22 benchmark tasks and no failures.
+- `gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --script-out /tmp/hk_2024_16day_ndvi_check.py --json`: passed.
+- `gee-skill validate /tmp/hk_2024_16day_ndvi_check.py --json`: passed.
 - v0.2 plan and dry-run commands: passed.
-- v0.3 parser/rules regressions cover NDWI GeoTIFF, NDBI CSV, Landsat LST CSV, Sentinel-1 before/after flood GeoTIFF, ambiguous flood windows, and unsupported-task recovery with closest recipes.
+- v0.3 parser/render/validation regressions cover EVI CSV, NDWI GeoTIFF, NDBI CSV, Landsat LST CSV, Sentinel-1 before/after flood GeoTIFF, Dynamic World land-cover summary, zonal statistics CSV, standalone image GeoTIFF export, missing AOI/time-range ambiguity, unknown dataset blocking, and unsupported-task recovery with closest recipes.
+- `gee-skill catalog evidence --category operators --json` and `gee-skill catalog evidence --category failures --json`: passed and expose `UNSAFE_GETINFO` plus `PREFLIGHT_REQUIRED` through structured cards.
+- v0.3 generic preflight tests confirm non-golden recipes block placeholder AOI assets with `V03_CONTEXT_REVIEW_REQUIRED` and dispatch reviewed plans to the generic adapter rather than submitting exports.
 - v0.3 live adapter tests cover review, preflight, retryable network preflight failure, preflight-blocked no-export behavior, and single-execute success behavior.
-- `python -m build --sdist --wheel`: passed after allowing isolated build dependency download.
+- `python -m build --sdist --wheel`: passed after registry/schema/template packaging changes.
+- Built wheel installed into `/private/tmp/gee-agent-skill-wheel-smoke-20260625`; `gee-skill info --json`, `recipe list --json`, `catalog evidence --category failures --json`, `plan from-text ... --json`, `render ... --json`, and `validate ... --json` passed from `/private/tmp` using package resources. Placeholder-context `preflight ... --json` correctly exited nonzero with `V03_CONTEXT_REVIEW_REQUIRED`.
+- Rebuilt packages after deleting stale `build/`, `dist/`, and `src/gee_agent_skill.egg-info/`; final wheel contents no longer include duplicate `entry_points 2.txt` or `dependency_links 2.txt` metadata artifacts.
+- Credential scan for project id, OAuth access-token pattern, private keys, refresh-token fields, client secrets, and Earth Engine credential paths returned no matches outside ignored generated/env directories.
 - `git diff --check`: passed.
 
 Browser visual QA evidence:
 
 - Rendered `README.md` to a local GFM-like HTML preview and inspected it with the in-app Browser.
 - Confirmed the README has one H1, the dark social-preview lead image loads, and all README images resolve.
-- Confirmed the table of contents includes Quick Start, Configuration checklist, Installation, Earth Engine authentication, v0.1/v0.2 examples, plan-first workflow, Common mistakes, references, and security.
+- Confirmed the table of contents includes Quick Start, Configuration checklist, Installation, Earth Engine authentication, Run the demo, plan-first workflow, Common mistakes, references, and security.
 - Confirmed the Configuration checklist renders the repository-root check, directory-path warning, `.venv` activation checks, `which/where earthengine`, PowerShell `$env:EE_PROJECT`, macOS/Linux `export EE_PROJECT`, and live `--confirm-live` boundary.
 - Confirmed the 2024 Hong Kong 16-day NDVI commands render in the plan-first section.
 - Rendered `docs/release_readiness.md` and confirmed it includes the homepage asset inventory, Browser/Computer Use boundaries, v0.3 CLI contract, 16-day example, validation gate, and remaining limitations.

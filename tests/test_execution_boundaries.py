@@ -1,4 +1,7 @@
+import json
 from pathlib import Path
+
+import pytest
 
 from geeskill.cli import main
 from geeskill.earthengine import execute_script
@@ -25,6 +28,44 @@ def test_run_live_requires_explicit_project(tmp_path, capsys):
     rc = main(["run", str(script)])
     assert rc == 2
     assert "requires --project" in capsys.readouterr().err
+
+
+def test_run_live_gate_failure_is_json_when_requested(tmp_path, capsys):
+    script = _valid_script(tmp_path)
+    rc = main(["run", str(script), "--confirm-live", "--json"])
+    assert rc == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["ok"] is False
+    assert payload["command"] == "run"
+    assert payload["schema_version"] == "gee-cli/v0.3"
+    assert payload["error"]["code"] == "PROJECT_ERROR"
+    assert payload["error"]["hint"]
+
+
+def test_run_live_confirm_gate_failure_is_json_when_requested(tmp_path, capsys):
+    script = _valid_script(tmp_path)
+    rc = main(["run", str(script), "--project", "example-project", "--json"])
+    assert rc == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["ok"] is False
+    assert payload["command"] == "run"
+    assert payload["error"]["code"] == "CONFIRM_LIVE_REQUIRED"
+
+
+def test_validate_missing_script_is_json(capsys):
+    rc = main(["validate", "/tmp/does-not-exist-gee-skill.py", "--json"])
+    assert rc == 1
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["ok"] is False
+    assert payload["command"] == "validate"
+    assert payload["error"]["code"] == "FILE_NOT_FOUND"
+
+
+def test_version_reports_package_version(capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["--version"])
+    assert exc.value.code == 0
+    assert "gee-agent-skill 0.3.0" in capsys.readouterr().out
 
 
 def test_execute_script_treats_system_exit_zero_as_success(tmp_path, monkeypatch):

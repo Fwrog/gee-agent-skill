@@ -1,0 +1,16 @@
+id: parse_only_tasks
+description: Natural-language parsing tasks that should not contact Earth Engine.
+tasks:
+  - request: Compute NDVI for Hong Kong in January 2024 and export CSV.
+    expected_task_type: vegetation_index
+    expected_metric: NDVI
+    expected_aoi: Hong Kong
+    expected_output: CSV
+  - request: Compute NDWI for this AOI in March 2024 and export GeoTIFF.
+    expected_task_type: water_index
+    expected_metric: NDWI
+    expected_missing_fields: [aoi]
+  - request: Estimate Landsat LST for Hong Kong in July 2024.
+    expected_task_type: land_surface_temperature
+    expected_metric: LST
+    expected_missing_fields: [output]

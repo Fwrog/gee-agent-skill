@@ -5,6 +5,113 @@ tasks:
     query: Sentinel-2 NDVI reduceRegions export CSV
     top_k: 5
     expected_source_contains: sentinel2
+  - id: unit_retrieval_modis_lst
+    kind: retrieval
+    query: MODIS land surface temperature LST QC_Day scale
+    top_k: 5
+    expected_source_contains: modis
+  - id: coverage_exportable_ndwi
+    kind: corpus_coverage
+    query: NDWI Sentinel-2 GeoTIFF export image required bands cloud mask failure
+    top_k: 10
+    required_coverage:
+      dataset_evidence: 1
+      operator_evidence: 1
+      recipe_evidence: 1
+      failure_evidence: 1
+      export_evidence: 1
+  - id: plan_ndwi_geotiff_supplied_aoi
+    kind: plan_from_text
+    request: Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF.
+    expected_status: planned
+    expected_task_type: water_index
+    expected_recipe: water-index-ndwi
+    expected_metric: NDWI
+    expected_template_ready: true
+  - id: plan_evi_csv_supplied_aoi
+    kind: plan_from_text
+    request: Compute EVI for a supplied AOI in March 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: vegetation_index
+    expected_recipe: vegetation-index-evi
+    expected_metric: EVI
+    expected_template_ready: true
+  - id: plan_ndbi_csv_hong_kong
+    kind: plan_from_text
+    request: Compute NDBI for Hong Kong in 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: builtup_index
+    expected_recipe: builtup-index-ndbi
+    expected_metric: NDBI
+  - id: plan_landsat_lst_csv
+    kind: plan_from_text
+    request: Compute Landsat LST for Hong Kong in summer 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: land_surface_temperature
+    expected_recipe: landsat-lst
+    expected_metric: LST
+  - id: plan_sentinel1_flood_geotiff
+    kind: plan_from_text
+    request: Map Sentinel-1 flood extent for a supplied AOI before June 2024 and after July 2024 and export GeoTIFF.
+    expected_status: planned
+    expected_task_type: flood_mapping
+    expected_recipe: sentinel1-flood-before-after
+    expected_metric: flood_extent
+  - id: plan_dynamic_world_landcover_summary
+    kind: plan_from_text
+    request: Summarize Dynamic World land cover for a supplied GeoJSON AOI in 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: landcover_summary
+    expected_recipe: landcover-summary-dynamic-world
+    expected_metric: landcover
+    expected_template_ready: true
+  - id: plan_zonal_statistics_csv
+    kind: plan_from_text
+    request: Compute zonal statistics for supplied GeoJSON zones in March 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: zonal_statistics
+    expected_recipe: zonal-statistics-table
+    expected_metric: zonal_mean
+    expected_template_ready: false
+  - id: plan_standalone_image_export_geotiff
+    kind: plan_from_text
+    request: Export image for a supplied AOI in March 2024 as GeoTIFF.
+    expected_status: planned
+    expected_task_type: export_image
+    expected_recipe: image-export-geotiff
+    expected_metric: image_export
+    expected_template_ready: false
+  - id: ambiguous_missing_aoi
+    kind: plan_from_text
+    request: Compute NDWI in March 2024 and export GeoTIFF.
+    expected_status: ambiguous
+    expected_error_code: AMBIGUOUS_TASK
+    expected_missing_fields:
+      - aoi
+  - id: ambiguous_missing_time_range
+    kind: plan_from_text
+    request: Compute NDWI for Hong Kong and export CSV.
+    expected_status: ambiguous
+    expected_error_code: AMBIGUOUS_TASK
+    expected_missing_fields:
+      - time_range
+  - id: bad_dataset_id_blocks_planning
+    kind: plan_from_text
+    request: Compute NDVI for Hong Kong in 2024 using NASA/MADE_UP/DATASET and export CSV.
+    expected_status: ambiguous
+    expected_error_code: UNKNOWN_DATASET_ID
+  - id: unsupported_crop_yield
+    kind: plan_from_text
+    request: Estimate crop yield for Hong Kong in 2024 and export CSV.
+    expected_status: unsupported
+    expected_error_code: UNSUPPORTED_TASK
+  - id: mocked_preflight_ndwi_blocks_placeholder_context
+    kind: mocked_preflight_block
+    request: Compute NDWI for a supplied AOI in March 2024 and export GeoTIFF.
+    expected_error_code: V03_CONTEXT_REVIEW_REQUIRED
+  - id: mocked_preflight_empty_collection_blocks_export
+    kind: mocked_generic_empty_collection
+    expected_error_code: EMPTY_IMAGE_COLLECTION
   - id: combo_hk_monthly_render_validate
     kind: render_validate
     template: hk_district_monthly_ndvi

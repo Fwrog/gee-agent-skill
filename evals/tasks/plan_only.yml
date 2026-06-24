@@ -1,0 +1,11 @@
+id: plan_only_tasks
+description: Plan-generation cases that should produce editable gee-plan/v0.3 YAML or deterministic ambiguity errors.
+tasks:
+  - request: Compute NDBI for Hong Kong in 2024 and export CSV.
+    expected_recipe: builtup-index-ndbi
+    expected_template: sentinel2_index_table
+  - request: Map Sentinel-1 flood extent for a supplied AOI before June 2024 and after July 2024 and export GeoTIFF.
+    expected_recipe: sentinel1-flood-before-after
+    expected_template: sentinel1_flood_before_after
+  - request: Estimate crop yield for Hong Kong in 2024 and export CSV.
+    expected_error_code: UNSUPPORTED_TASK

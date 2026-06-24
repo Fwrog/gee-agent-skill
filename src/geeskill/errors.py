@@ -47,6 +47,18 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "suggested_fix": "Inspect the boundary source schema and use the curated Hong Kong district GeoJSON or a valid user boundary.",
         "user_action_required": True,
     },
+    "V03_CONTEXT_REVIEW_REQUIRED": {
+        "likely_cause": "The v0.3 plan still contains placeholder or unreviewed execution context.",
+        "retryable": False,
+        "suggested_fix": "Review the plan YAML, replace placeholder AOI/assets/export fields with real values, then rerun preflight.",
+        "user_action_required": True,
+    },
+    "V03_PREFLIGHT_UNSUPPORTED": {
+        "likely_cause": "The selected v0.3 template does not yet have a live preflight adapter.",
+        "retryable": False,
+        "suggested_fix": "Keep the workflow at plan/render/validate or add a recipe-specific preflight adapter before live export.",
+        "user_action_required": True,
+    },
     "AOI_SCHEMA_ERROR": {
         "likely_cause": "The AOI source exists but does not expose the expected properties or geometry schema.",
         "retryable": False,
@@ -87,6 +99,18 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "likely_cause": "NDVI was not produced because source bands are missing or the mapped collection is empty.",
         "retryable": False,
         "suggested_fix": "Confirm Sentinel-2 B8/B4 bands exist and the add_ndvi mapping runs on a non-empty collection.",
+        "user_action_required": True,
+    },
+    "NO_REQUIRED_BAND": {
+        "likely_cause": "The selected image collection does not expose one or more bands required by the recipe.",
+        "retryable": False,
+        "suggested_fix": "Review dataset choice, band names, and recipe template before live export.",
+        "user_action_required": True,
+    },
+    "NO_QA_BAND": {
+        "likely_cause": "The selected image collection does not expose the QA or mask band expected by the preflight profile.",
+        "retryable": False,
+        "suggested_fix": "Choose a dataset with the required QA band or update the masking/preflight profile.",
         "user_action_required": True,
     },
     "NO_LANDCOVER_LABEL": {
@@ -137,10 +161,22 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "suggested_fix": "Inspect task status/error_message, destination permissions, selectors, and quotas.",
         "user_action_required": True,
     },
+    "NO_EXPORT_TARGET": {
+        "likely_cause": "The plan does not contain enough export destination metadata.",
+        "retryable": False,
+        "suggested_fix": "Set export description, Drive folder or destination, and file prefix before live preflight/run.",
+        "user_action_required": True,
+    },
     "EXPORT_TASK_FAILED": {
         "likely_cause": "A submitted Earth Engine export task reached FAILED state.",
         "retryable": True,
         "suggested_fix": "Inspect export_tasks.json, fix the root workflow/data issue, then submit a new task.",
+        "user_action_required": True,
+    },
+    "EXPORT_TASK_NOT_OBSERVED": {
+        "likely_cause": "The script ran, but the expected Earth Engine export task was not visible in the task list.",
+        "retryable": True,
+        "suggested_fix": "Check the export description, Earth Engine Tasks page, and Drive destination before claiming submission success or rerunning.",
         "user_action_required": True,
     },
     "AMBIGUOUS_TASK": {
@@ -155,16 +191,34 @@ ERROR_HINTS: dict[str, dict[str, Any]] = {
         "suggested_fix": "Use a supported recipe such as NDVI, NDWI, NDBI, Landsat LST, Sentinel-1 flood mapping, CSV export, or GeoTIFF export.",
         "user_action_required": True,
     },
+    "UNKNOWN_DATASET_ID": {
+        "likely_cause": "The request names a dataset that is not in the reviewed local dataset catalog.",
+        "retryable": False,
+        "suggested_fix": "Use a cataloged dataset ID or add a reviewed dataset card before planning live work.",
+        "user_action_required": True,
+    },
     "QUOTA_OR_TIMEOUT": {
         "likely_cause": "Request exceeded memory, time, pixel, concurrent task, or queue limits.",
         "retryable": True,
         "suggested_fix": "Reduce AOI/date range, coarsen scale, split exports, or retry after tasks finish.",
         "user_action_required": True,
     },
+    "UNSAFE_GETINFO": {
+        "likely_cause": "Generated production code attempts to materialize Earth Engine server objects locally with getInfo().",
+        "retryable": False,
+        "suggested_fix": "Keep large computations server-side and use exports or bounded harness preflight probes instead of getInfo().",
+        "user_action_required": True,
+    },
     "CLIENT_SERVER_MISUSE": {
         "likely_cause": "Client-side calls such as getInfo() are used where server-side operations are safer.",
         "retryable": False,
         "suggested_fix": "Replace blocking client fetches with server-side reducers, properties, or exports.",
+        "user_action_required": True,
+    },
+    "PREFLIGHT_REQUIRED": {
+        "likely_cause": "A live Earth Engine export path was requested before validation and preflight gates were completed.",
+        "retryable": True,
+        "suggested_fix": "Run plan review, validation, and preflight first; submit live export only with --confirm-live after those checks pass.",
         "user_action_required": True,
     },
     "VALIDATION_ERROR": {
@@ -190,9 +244,12 @@ class HarnessError(Exception):
 
     def to_dict(self) -> dict[str, Any]:
         base = ERROR_HINTS.get(self.category, ERROR_HINTS["UNKNOWN_ERROR"])
+        suggested_fix = base["suggested_fix"]
         return {
+            "code": self.category,
             "category": self.category,
             "message": self.message,
+            "hint": suggested_fix,
             "original": self.original,
             **base,
         }
@@ -237,8 +294,10 @@ def classify_exception(exc: Exception) -> HarnessError:
         category = "QUOTA_OR_TIMEOUT"
     elif "task" in lower or "export" in lower:
         category = "EXPORT_TASK_ERROR"
+    elif "preflight" in lower and ("required" in lower or "before" in lower):
+        category = "PREFLIGHT_REQUIRED"
     elif "getinfo" in lower:
-        category = "CLIENT_SERVER_MISUSE"
+        category = "UNSAFE_GETINFO"
     else:
         category = "UNKNOWN_ERROR"
     return HarnessError(category=category, message=text, original=type(exc).__name__)

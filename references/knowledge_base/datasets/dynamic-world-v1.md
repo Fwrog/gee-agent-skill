@@ -1,30 +1,49 @@
 # Dataset Card: Dynamic World V1
 
 source_id: dataset-dynamic-world-v1
-source_type: official-data-catalog
-publisher: Google Earth Engine
-source_url: https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1
-last_checked: 2026-06-21
+source_type: official-dataset-card
 primary_status: canonical
 dataset_id: GOOGLE/DYNAMICWORLD/V1
-temporal_coverage: Near-real-time Sentinel-2 era observations
-spatial_resolution: 10 m
-classes: water, trees, grass, flooded_vegetation, crops, shrub_and_scrub, built, bare, snow_and_ice
+title: Dynamic World V1
+provider: Google / World Resources Institute
+gee_url: https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1
+source_url: https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1
+temporal_coverage: 2015-present; check catalog for current ingestion status
+spatial_resolution: 10m
+bands: label, water, trees, grass, flooded_vegetation, crops, shrub_and_scrub, built, bare, snow_and_ice
+qa_bands: none
+common_uses: land-cover summary, land-cover-stratified statistics, interpretation diagnostics
+recommended_tasks: landcover_summary, landcover_stratified_statistics
+scale_notes: Use 10m with class probability thresholds documented in output metadata.
+projection_notes: Use as masks/strata, not as an administrative boundary.
+license_attribution: Dynamic World terms apply.
+last_checked: 2026-06-21
 risk_level: medium
 
 ## Use
 
-Dynamic World V1 provides per-class probabilities and a `label` band for Sentinel-2-aligned land-cover interpretation. For NDVI diagnostics, use it as masks, strata, and interpretation groups; do not use it as an administrative boundary.
+Use `GOOGLE/DYNAMICWORLD/V1` for land-cover summary, land-cover-stratified statistics, interpretation diagnostics.
 
-## Workflow Notes
+## Bands
 
-- Filter by the same date range and AOI as the Sentinel-2 NDVI workflow.
-- Check image count, `label`, and all expected probability bands before export.
-- Use a documented probability threshold such as 0.35 and export the threshold.
-- Sparse classes should return null statistics plus warnings, not fabricated values.
+Core bands: label, water, trees, grass, flooded_vegetation, crops, shrub_and_scrub, built, bare, snow_and_ice.
 
-## Failure Cases
+QA or mask bands: none.
 
-known_failure: EMPTY_DYNAMIC_WORLD_COLLECTION
+## Recommended Tasks
 
-No Dynamic World images or missing probability bands should block export before `task.start()`.
+- landcover_summary
+- landcover_stratified_statistics
+
+## Scale and Projection Notes
+
+- Use 10m with class probability thresholds documented in output metadata.
+- Use as masks/strata, not as an administrative boundary.
+
+## Known Limitations
+
+- Probabilistic classes need confidence thresholds and null-tolerant outputs.
+
+## Attribution
+
+Dynamic World terms apply.

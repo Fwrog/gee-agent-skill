@@ -1,0 +1,16 @@
+id: coverage_tasks
+description: Retrieval coverage contracts for exportable Earth Engine workflows.
+tasks:
+  - query: Sentinel-2 NDWI GeoTIFF export image required bands QA mask failure
+    required_coverage:
+      dataset_evidence: 1
+      operator_evidence: 1
+      recipe_evidence: 1
+      failure_evidence: 1
+      export_evidence: 1
+  - query: Landsat LST QA_PIXEL scale offset export table timeout failure
+    required_coverage:
+      dataset_evidence: 1
+      operator_evidence: 1
+      failure_evidence: 1
+      export_evidence: 1
