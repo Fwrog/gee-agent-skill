@@ -1,6 +1,6 @@
 # Paper Draft Notes
 
-Last updated: 2026-06-24
+Last updated: 2026-06-25
 
 Working title:
 
@@ -10,52 +10,79 @@ An Agent-Native Harness for Traceable Google Earth Engine Workflows
 
 ## Abstract Sketch
 
-Coding agents can generate Earth Engine scripts quickly, but uncontrolled generation creates risks: unclear dataset choices, missing validation, accidental exports, credential leakage, and weak reproducibility. `gee-agent-skill` addresses this by routing requests through a command-line harness with source-grounded planning, template rendering, validation, preflight, explicit live-export confirmation, monitoring, and trace artifacts. Hong Kong NDVI workflows are used as golden regression examples to evaluate the harness contract rather than as standalone scientific claims.
+Coding agents can draft Google Earth Engine scripts from natural language, but unrestricted code generation creates practical risks: hallucinated datasets, invalid operators, missing masks, unsafe client-side calls, accidental live exports, weak task monitoring, and poor reproducibility. `gee-agent-skill` addresses this by exposing Earth Engine workflows through an agent-native CLI harness. The system converts requests into editable plans, retrieves local dataset/operator/failure evidence, renders approved Python templates, validates scripts, performs live preflight checks, gates export behind explicit confirmation, monitors Earth Engine tasks, and writes trace artifacts. Hong Kong NDVI workflows are used as golden examples and regression evidence; the paper contribution is the harness design and evaluation protocol, not a new vegetation-index method.
 
-## Problem
+## Problem Statement
 
-Earth Engine workflows often combine natural-language intent, dataset selection, operator details, quotas, authentication, and export tasks. Agent-generated code can skip review steps or blur dry-run and live-execution boundaries. A harness can make those boundaries explicit and observable.
+LLM-generated Earth Engine code often fails for reasons that are domain-specific rather than syntactic:
 
-## System
+- dataset and band identifiers must match the Earth Engine catalog;
+- optical, SAR, thermal, and land-cover workflows require different masks and scale assumptions;
+- reducers and exports need explicit geometry, scale, CRS, selectors, and `maxPixels`;
+- `getInfo()` and other client-side calls can block or break large workflows;
+- export tasks are asynchronous and need monitoring;
+- live execution requires authenticated user credentials and a Google Cloud Project;
+- generated code needs an audit trail before researchers can trust or revise it.
 
-The system contains:
+## System Overview
 
-- CLI JSON contract for agent calls;
+The proposed system is:
+
+```text
+natural language -> plan -> RAG evidence -> render -> validate -> preflight -> confirmed export -> monitor -> trace
+```
+
+Components:
+
+- deterministic CLI JSON contract for agent calls;
 - `gee-plan/v0.3` editable plan schema;
 - dataset catalog and recipe registry;
-- local RAG evidence over dataset, operator, rules, and failure cards;
-- Jinja2 script templates;
+- local RAG evidence over dataset, operator, recipe, rule, and failure cards;
+- Jinja2 Earth Engine Python templates;
 - static and semantic validation;
 - dry-run reports;
 - live preflight checks;
 - explicit `--project` and `--confirm-live` export gate;
-- export monitoring and run traces.
+- export monitoring;
+- run traces and sanitized golden evidence bundles;
+- benchmark suite for parse, plan, render, validation, evidence coverage, safety blocks, and golden workflows.
+
+## Contributions
+
+1. A general, agent-native GEE harness with structured commands and traceable state.
+2. A distilled knowledge base for datasets, operators, recipes, and failure modes.
+3. A reviewable plan schema that separates user intent from executable code.
+4. Semantic validation and preflight gates for safer Earth Engine exports.
+5. Golden live examples that demonstrate end-to-end export and monitoring boundaries.
+6. A compact benchmark suite that tests supported, ambiguous, unsupported, and safety-critical task cases.
 
 ## Case Studies
 
 ### Case Study 1: Whole-AOI Hong Kong NDVI
 
-The v0.1 workflow computes January 2024 mean NDVI for Hong Kong and exports one CSV row. It verifies the minimal natural-language to dry-run/live-gated export path.
+The v0.1 workflow computes January 2024 mean NDVI for Hong Kong and exports one CSV. It verifies the minimal path from natural-language request to reviewable plan, validation, preflight, confirmed export, and monitoring.
 
 ### Case Study 2: Land-Cover-Aware Hong Kong NDVI
 
-The v0.2 workflow adds Dynamic World masks and land-cover strata. It verifies that the harness can distinguish administrative boundaries from interpretation layers.
+The v0.2 workflow adds Dynamic World interpretation strata. It verifies that the harness can preserve the distinction between administrative AOI, land-cover masks, all-surface means, non-water means, and vegetation-like class summaries.
 
 ### Case Study 3: 16-Day Hong Kong NDVI
 
-The v0.3 workflow converts a year-long 16-day NDVI request into an editable plan, rendered script, validation target, live preflight adapter, confirmed export, and task monitoring path.
-
-See `docs/case_studies/hk_ndvi_v03.md` and `docs/evidence/v03_hk_2024_16day_ndvi/`.
+The v0.3 workflow turns a year-long 16-day NDVI request into `gee-plan/v0.3`, renders an Earth Engine Python script, validates it, runs live preflight, submits one confirmed export, monitors the task, and records trace artifacts.
 
 ## Evaluation Plan
 
-Evaluate the harness on:
+Report:
 
-- supported golden examples;
-- partially supported vegetation, water, built-up, LST, and flood task prompts;
-- ambiguous prompts that should request missing fields;
-- unsupported prompts that should return closest recipes rather than unsafe scripts;
-- credential hygiene checks over run traces.
+- `python -m pytest` result;
+- benchmark pass/fail count for `evals/benchmark_suite.yml`;
+- smoke-test result;
+- render/validate outcomes for HK 16-day NDVI, EVI, NDWI, and other non-golden templates;
+- mocked preflight blockers such as `V03_CONTEXT_REVIEW_REQUIRED`;
+- live preflight/export completion only for workflows listed as live completed in `docs/capability_matrix.md`;
+- wheel build and wheel-smoke results;
+- secret scan result;
+- overclaim audit result.
 
 Metrics should follow `docs/benchmark_protocol.md`.
 
@@ -63,18 +90,29 @@ Metrics should follow `docs/benchmark_protocol.md`.
 
 - Do not claim autonomous science.
 - Do not claim universal Earth Engine task support.
+- Do not claim production-ready coverage for every GEE dataset or operator.
+- Do not claim non-golden workflows are live-export verified.
 - Do not claim the Hong Kong NDVI CSV is vegetation-only.
-- Do not claim credentials or Google Cloud projects are provided.
-- Do not treat export submission as scientific validation.
+- Do not claim credentials, Google accounts, or Google Cloud projects are provided.
+- Do not treat export submission or completion as scientific validation.
 
 ## Reproducibility Package
 
-Reader-facing reproduction should include:
+A reviewer-facing package should include:
 
 - repository commit;
 - Python version and OS;
+- install command from repository root;
 - offline command list;
 - generated plan and script paths;
-- validation reports;
+- validation and dry-run reports;
 - optional live preflight/export evidence when the reviewer has their own Earth Engine access;
-- explicit statement that credentials are excluded.
+- sanitized golden artifacts under `examples/golden/`;
+- explicit statement that credentials, OAuth tokens, refresh tokens, service account JSON, private keys, and local credential paths are excluded.
+
+## Limitations
+
+- The parser is deterministic and pattern-oriented, not full natural-language understanding.
+- Live validation is narrow and limited to golden examples.
+- Non-golden workflows are valuable for plan/render/validate and safety-gate evidence, but require recipe-specific preflight and domain review before live claims.
+- Scientific interpretation requires independent remote-sensing review beyond the harness.

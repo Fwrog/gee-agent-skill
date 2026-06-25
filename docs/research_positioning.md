@@ -1,79 +1,99 @@
 # Research Positioning
 
-Last updated: 2026-06-24
+Last updated: 2026-06-25
 
 ## Core Claim
 
-`gee-agent-skill` explores how coding agents can operate Google Earth Engine through a reviewable, traceable, and safety-gated command-line harness.
+`gee-agent-skill` is an agent-native Google Earth Engine harness that turns natural-language geospatial tasks into reviewable, RAG-grounded, validated, and traceable Earth Engine workflows.
 
-The project should not be framed as a new remote-sensing method. Its contribution is an operations and reproducibility layer:
+The project is not a new NDVI method or a universal Earth Engine autopilot. Its contribution is an operations and reproducibility layer for agent-assisted geospatial computing:
 
 ```text
-natural-language request -> plan -> evidence -> template -> validation -> preflight -> confirmed export -> monitor -> trace
+natural language -> plan -> RAG evidence -> render -> validate -> preflight -> confirmed export -> monitor -> trace
 ```
 
-## Research Questions
+## Problem
 
-1. Can agent-generated Earth Engine work be converted into a reviewable plan before code execution?
-2. Can local dataset/operator evidence reduce unsupported or unsafe Earth Engine script generation?
-3. Can dry-run, preflight, and live-export boundaries reduce accidental task submission?
-4. Can run traces make agent-assisted geospatial workflows auditable enough for review and iteration?
-5. Can golden examples serve as regression tests for an expanding library of Earth Engine workflows?
+LLMs can produce Earth Engine code quickly, but uncontrolled generation is risky in geospatial workflows:
 
-## Contribution Boundary
+- dataset IDs may be hallucinated or outdated;
+- band names, QA masks, scale, projection, reducers, and export selectors may be wrong;
+- client-side calls such as unsafe `getInfo()` can block or fail at scale;
+- empty image collections and missing bands may only fail after a live request;
+- dry-run, preflight, and live export boundaries are often blurred;
+- task state, export metadata, and source evidence are hard to audit after the fact.
 
-In scope:
+For researchers and students, the hardest part is not only Python syntax. It is connecting data semantics, Earth Engine execution rules, validation, quota-sensitive exports, and reproducibility.
 
-- agent-native CLI contracts;
-- plan schemas for geospatial task review;
-- local RAG evidence and source attribution;
-- validation and preflight gates;
-- trace artifacts for reproducibility;
-- benchmark protocols for supported and unsupported task handling.
+## Solution
 
-Out of scope for current claims:
+The harness makes agent execution explicit:
 
-- new NDVI science;
-- a GUI replacement for Earth Engine;
-- autonomous bulk export;
-- credential management;
-- universal GEE task coverage;
-- policy-grade analysis of Hong Kong vegetation.
+- CLI commands return deterministic JSON for agent orchestration.
+- Natural-language prompts are converted into editable `gee-plan/v0.3` YAML.
+- Dataset, operator, recipe, and failure cards provide local RAG evidence.
+- Approved templates render Earth Engine Python scripts.
+- Static and semantic validators check unsafe patterns before live use.
+- Preflight checks authentication, AOI, collection size, required bands, and export metadata.
+- Live export requires `--project` and explicit `--confirm-live`.
+- Export monitoring records task status.
+- Run traces preserve plan, evidence, validation, preflight, export metadata, and final notes without credentials.
 
-## Why Hong Kong NDVI
+## Contributions
 
-Hong Kong NDVI is a compact regression target because it exercises common Earth Engine concerns:
+1. **General GEE agent harness**: a CLI command surface for `auth / catalog / aoi / recipe / plan / render / validate / preflight / run / exports / trace / eval`.
+2. **Dataset/operator/failure knowledge base**: distilled cards for datasets, operators, recipes, safety rules, and known failure modes.
+3. **Reviewable plan schema**: `gee-plan/v0.3` makes user intent, AOI, time range, datasets, operators, outputs, and execution context inspectable before code execution.
+4. **Semantic validation and preflight**: validators and preflight gates reduce unsafe exports, missing-band failures, empty-collection failures, and placeholder-context execution.
+5. **Golden live examples**: Hong Kong NDVI workflows serve as compact regression evidence for live preflight, confirmed export, monitoring, and trace behavior.
+6. **Benchmark suite**: local benchmark cases test supported planning, ambiguous prompts, unsupported requests, render/validation paths, RAG evidence coverage, and mocked safety blocks.
 
-- a real administrative AOI;
-- optical imagery and cloud filtering;
-- index computation;
-- reducers over a geometry;
-- table exports;
-- land-cover interpretation boundaries;
-- live task monitoring.
+## Target Audience
 
-The examples are intentionally small. Their job is to make the harness observable and testable, not to define the full ambition of the project.
+- geospatial researchers who need auditable Earth Engine workflows;
+- urban informatics researchers using remote-sensing indicators as reproducible evidence;
+- AI agent tool builders designing safe CLI contracts for external systems;
+- remote-sensing students learning how dataset choice, masking, scale, reducers, exports, and authentication interact.
+
+## Golden Examples
+
+Hong Kong NDVI is intentionally demoted to evidence, not promoted as the project scope:
+
+- v0.1: January 2024 whole-AOI NDVI CSV;
+- v0.2: January 2024 land-cover-aware NDVI CSV;
+- v0.3: 2024 16-day NDVI CSV.
+
+These examples exercise AOI handling, Sentinel-2 imagery, cloud filtering, index computation, reducers, table export, preflight, task monitoring, and trace hygiene. They do not prove universal GEE task automation or final scientific interpretation.
 
 ## Evaluation Framing
 
-An honest evaluation should report:
+Credible evaluation should report:
 
-- plan-field accuracy for supported prompts;
-- validator pass/fail behavior for rendered scripts;
-- dry-run no-credential behavior;
-- preflight failure handling;
-- export gating with `--confirm-live`;
-- trace completeness and credential hygiene;
-- robustness on unsupported or ambiguous prompts.
+- plan-field correctness for supported prompt families;
+- evidence coverage for dataset/operator/recipe/failure/export categories;
+- render and validation outcomes for approved templates;
+- dry-run behavior without Earth Engine credentials;
+- mocked preflight blockers for missing AOI or placeholder export context;
+- optional live preflight and export completion only for explicitly verified golden examples;
+- trace completeness and credential hygiene.
 
-Do not report NDVI values as scientific findings unless a separate remote-sensing validation design is added.
+Do not use export completion as a proxy for scientific validity. A task can complete and still require domain review, independent validation, or methodological revision.
+
+## Limitations
+
+- The deterministic parser is not full natural-language understanding.
+- Live verification is limited to golden examples listed in `docs/capability_matrix.md`.
+- Non-golden EVI, NDWI, NDBI, Landsat LST, Sentinel-1, Dynamic World, zonal statistics, GeoTIFF, and generic table paths should be described at their actual status: plan-only, render/validate, mocked preflight, or planned.
+- Scientific interpretation requires domain review, uncertainty analysis, and source-data validation beyond the harness.
+- Users must provide their own Earth Engine account, Google Cloud Project, local OAuth authentication, quota, and export destination.
+- The local knowledge base improves grounding but does not replace official Earth Engine documentation or current dataset catalog checks.
 
 ## Paper Direction
 
-A paper or technical report could be titled:
+A defensible paper or technical report title is:
 
 ```text
 An Agent-Native Harness for Traceable Google Earth Engine Workflows
 ```
 
-The most defensible scope is a systems paper or reproducibility report, with Hong Kong NDVI as an evaluated case study and benchmark seed.
+The strongest scope is a systems and reproducibility report. The Hong Kong workflows are evaluated golden cases, while the broader contribution is the CLI contract, knowledge base, plan schema, validators, preflight gates, export monitoring, trace artifacts, and benchmark protocol.

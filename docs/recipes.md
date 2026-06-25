@@ -44,7 +44,7 @@ See [Capability matrix](capability_matrix.md) for current status by workflow.
 gee-skill recipe list --json
 gee-skill recipe show vegetation-index-ndvi --json
 gee-skill catalog recommend --task-type water_index --metric NDWI --json
-gee-skill catalog evidence --category recipes --json
+gee-skill catalog evidence --category recipe --json
 ```
 
 ## Adding A Recipe

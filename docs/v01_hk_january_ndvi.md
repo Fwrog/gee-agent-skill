@@ -6,7 +6,7 @@ The v0.1 release target is a small end-to-end live workflow:
 Compute January 2024 mean NDVI for Hong Kong and export CSV.
 ```
 
-It proves the main product path without requiring full district-level production output:
+It demonstrates the main harness path without requiring a district-level production output:
 
 ```text
 natural language -> RAG -> plan -> template -> validation -> preflight -> live export -> monitor -> trace
@@ -14,7 +14,7 @@ natural language -> RAG -> plan -> template -> validation -> preflight -> live e
 
 ## Why Whole Hong Kong
 
-The previous district workflow exposed a live data failure, `Image.reduceRegions: Image has no bands.` The root cause was workflow/data preflight, not authentication. v0.1 avoids blocking on district naming by using the curated Hong Kong district GeoJSON as a whole-Hong-Kong AOI and exporting one CSV row. Full 2024 monthly district-level NDVI is planned for v0.2.
+The previous district workflow exposed a live data failure, `Image.reduceRegions: Image has no bands.` The root cause was workflow/data preflight, not authentication. v0.1 avoids blocking on district naming by using the curated Hong Kong district GeoJSON as a whole-Hong-Kong AOI and exporting one CSV row. District-level and more detailed ecological products are future workflow extensions, not part of this v0.1 claim.
 
 ## Offline Dry Run
 

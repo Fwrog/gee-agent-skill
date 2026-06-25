@@ -2,52 +2,57 @@
 
 Last updated: 2026-06-25
 
-This matrix describes the repository as an agent-native Google Earth Engine harness. Hong Kong NDVI workflows are golden examples and regression evidence, not the full product boundary.
+This matrix is the public overclaim guard for `gee-agent-skill`. It separates the general harness from the Hong Kong NDVI golden examples and distinguishes planning, rendering, validation, preflight, and live export evidence.
 
-## Status Legend
+## Status Key
 
-| Status | Meaning |
+| Value | Meaning |
 | --- | --- |
-| Supported | Implemented and covered by tests or documented reproduction commands. |
-| Golden | Supported path used as regression evidence for the harness contract. |
-| Partial | Some parser, recipe, catalog, or validation coverage exists, but end-to-end live export is not verified. |
-| Planned | Described as future work; do not claim support. |
+| Yes | Implemented and covered by tests, committed examples, or documented reproduction commands. |
+| Golden | Verified golden example used as regression evidence for the harness contract. |
+| Partial | Implemented for a narrower path, generic adapter, or non-final template; review is required before stronger claims. |
+| Blocks | Safety gate intentionally stops execution, usually because AOI/export context is still a placeholder. |
+| No | Not implemented or not verified for that workflow. |
+| Planned | Roadmap item only; do not claim current support. |
 
-## Harness Capabilities
+## Workflow Status
 
-| Capability | Status | Evidence | Boundary |
+| Workflow / Surface | Implemented | Plan-only | Render / validate | Mocked preflight | Live preflight | Live export submitted | Live export completed | Planned |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| HK Jan 2024 NDVI CSV | Golden | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| HK Jan 2024 land-cover-aware NDVI CSV | Golden | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| HK 2024 16-day NDVI CSV | Golden | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| EVI CSV | Partial | Yes | Yes | Partial | No | No | No | Recipe-specific live preflight |
+| NDWI GeoTIFF | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Recipe-specific live preflight |
+| NDBI CSV | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Recipe-specific live preflight |
+| Landsat LST CSV / image | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Recipe-specific live preflight |
+| Sentinel-1 flood/change GeoTIFF | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Recipe-specific live preflight |
+| Dynamic World summary CSV | Partial | Yes | Yes | No | No | No | No | Live preflight adapter |
+| Generic zonal statistics CSV | Partial | Yes | No | No | No | No | No | Template/context completion |
+| Image GeoTIFF export utility | Partial | Yes | Partial | No | No | No | No | Safer generic image adapter |
+| Table CSV export utility | Partial | Yes | Partial | No | No | No | No | Broader table adapter coverage |
+
+## Harness Capability Status
+
+| Capability | Status | Current evidence | Boundary |
 | --- | --- | --- | --- |
-| CLI JSON contract | Supported | `gee-skill info --json`, `doctor --json`, catalog, recipe, rules, plan commands | JSON shape is for agent use; schema may still evolve before a stable public API. |
-| Natural-language planning | Supported | `gee-skill plan from-text ... --json` | Deterministic support is strongest for known task patterns. |
-| Editable plan schema | Supported | `gee-plan/v0.3` plans | Plans must be reviewed before live use. |
-| Local RAG evidence | Supported | dataset, operator, recipe, rules, and failure cards; `catalog evidence --category ... --json` | Official Earth Engine docs remain canonical. |
-| Retrieval coverage checks | Supported | `gee-skill eval evals/benchmark_suite.yml --json` | Coverage proves local evidence availability, not that every retrieved source is sufficient for publication. |
-| Template rendering | Supported | `gee-skill plan from-yaml ... --script-out ... --json` | Only approved templates should be rendered. |
-| Static and semantic validation | Supported | `gee-skill validate ... --json`, pytest coverage | Validation reduces risk but does not prove scientific correctness. |
-| Dry runs without credentials | Supported | `gee-skill smoke-test --json`, dry-run commands | Dry run must not contact Earth Engine. |
-| Generic preflight blocking | Supported | placeholder AOI/export context tests and mocked empty-collection benchmark | This proves safety blocking, not live export readiness for every recipe. |
-| Live preflight | Supported for golden adapters | `preflight-hk-ndvi`, `preflight-plan` for v0.3 HK 16-day NDVI | Preflight contacts Earth Engine but must not start exports. |
-| Confirmed live export | Supported for golden adapters | `run-plan --project <id> --confirm-live` | Requires user-owned Earth Engine access, OAuth, project id, quota review, and explicit confirmation. |
-| Export monitoring | Supported | `monitor-exports --project <id> --json` | Monitoring reports task state; it does not validate scientific outputs. |
-| Run traces | Supported | `outputs/runs/<run_id>/` contract | Traces must not contain credentials or local secret paths. |
+| Agent-facing CLI contract | Implemented | `gee-skill info --json`, `doctor --json`, `recipe list --json`, catalog, plan, render, validate, preflight, run, exports, trace, eval commands | JSON shape may still evolve before a stable public API. |
+| Natural-language planning | Implemented | `gee-skill plan from-text ... --json`; 22-case benchmark suite | Deterministic parser covers known task patterns, not open-ended natural language. |
+| Editable `gee-plan/v0.3` schema | Implemented | `schemas/gee-plan-v0.3.schema.json` and runtime schema checks | Plans require review before live work. |
+| Dataset/operator/failure evidence | Implemented | `gee-skill catalog evidence --category dataset|operator|failure --json` | Local cards are distilled guidance; official Earth Engine docs remain canonical. |
+| Recipe registry | Implemented | `gee-skill recipe list --json`; source and packaged registry files | Registry presence does not imply live export verification. |
+| Static and semantic validation | Implemented | `gee-skill validate <script.py> --json`; pytest coverage | Validation reduces risk but does not prove scientific correctness. |
+| Dry-run without credentials | Implemented | `gee-skill smoke-test --json`; v0.2 dry-run; v0.3 render/validate | Dry-run must not contact Earth Engine. |
+| Mocked preflight blockers | Implemented | Placeholder AOI and empty-collection tests | Blocking behavior is safety evidence, not live readiness. |
+| Live preflight | Golden only | HK v0.1/v0.2/v0.3 evidence | Non-golden workflows need recipe-specific live adapters and domain review. |
+| Live export submission | Golden only | HK golden examples with explicit `--confirm-live` | Requires user-owned account, OAuth, project, quota review, and confirmation. |
+| Export completion evidence | Golden only | Sanitized task metadata and CSV evidence for verified examples | Completion is workflow evidence, not scientific validation. |
+| Export monitoring | Implemented | `gee-skill exports list/watch --project <id> --json`; compatibility `monitor-exports` | Monitoring reports task state and errors; it does not inspect Google Drive contents. |
+| Trace inspection | Implemented | `gee-skill trace list/inspect --json`; `outputs/runs/<run_id>/` contract | Traces must not include credentials or local secret paths. |
+| Benchmarking | Implemented | `gee-skill eval evals/benchmark_suite.yml --json` | Current benchmark is small and local; it is not AutoGEEval-scale coverage. |
 
-## Workflow Coverage
+## Evidence Boundary
 
-| Workflow | Status | Current Evidence | Not A Claim Of |
-| --- | --- | --- | --- |
-| HK January 2024 whole-AOI NDVI CSV | Golden | `examples/hk_2024_01_ndvi_v01/task.yaml`, `docs/v01_hk_january_ndvi.md` | Vegetation-only or district-level scientific product. |
-| HK January 2024 land-cover-aware NDVI CSV | Golden | `examples/hk_2024_01_ndvi_landcover_v02/task.yaml`, `docs/v02_landcover_aware_ndvi.md` | Perfect land-cover classification or policy-ready vegetation assessment. |
-| HK 2024 16-day NDVI CSV | Golden | `examples/hk_2024_16day_ndvi/task.yaml`, `docs/v03_hk_2024_16day_ndvi.md` | Universal time-series product or optimized remote-sensing methodology. |
-| EVI CSV workflow | Partial | v0.3 parser, Sentinel-2 expression render path, semantic validation, and benchmark coverage | Live export verification. |
-| NDWI GeoTIFF workflow | Partial | v0.3 parser, template render, semantic validation, generic preflight gate, and context-review block tests | Live export verification. |
-| NDBI CSV workflow | Partial | v0.3 parser, template render, semantic validation, generic preflight gate, and context-review block tests | Live export verification. |
-| Landsat LST CSV workflow | Partial | v0.3 parser, template render, semantic validation, generic preflight gate, and context-review block tests | Live export verification. |
-| Sentinel-1 before/after flood GeoTIFF workflow | Partial | v0.3 parser, template render, semantic validation, generic preflight gate, and context-review block tests | Live export verification or disaster-response readiness. |
-| Dynamic World land-cover summary | Partial | v0.3 parser, dataset/recipe cards, template render, semantic rules, and benchmark coverage | Live export verification or final classification methodology. |
-| Zonal statistics CSV workflow | Partial | v0.3 parser, recipe card, table-export template, and benchmark coverage | Fully inferred image-expression planning or live export verification. |
-| Standalone image GeoTIFF export | Partial | v0.3 parser, export-image recipe card, semantic rules, and unknown-dataset guard | A universal image-export adapter for arbitrary Earth Engine expressions. |
-| District monthly HK NDVI | Planned | `examples/hk_2024_monthly_ndvi/task.yaml` | Verified v0.3 live path. |
+Live-verified means a workflow has passed live Earth Engine preflight, submitted at most one explicitly confirmed export in the verified run, and produced observed export-task completion evidence. Render/validate means the harness can create and check a script locally; it does not mean the workflow was run in Earth Engine. Planned means the idea appears in the roadmap or registry direction only.
 
-## Security Boundary
-
-The repository does not provide Google accounts, Earth Engine credentials, Google Cloud projects, OAuth tokens, service account JSON, private keys, or credential paths. Live commands require local user-controlled authentication and must keep `--confirm-live` as an explicit gate.
+The repository does not provide Google accounts, Google Cloud projects, OAuth tokens, service account JSON, private keys, credential paths, or quota. Live commands must remain opt-in and user-owned.

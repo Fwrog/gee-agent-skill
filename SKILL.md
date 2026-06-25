@@ -16,32 +16,36 @@ This is an agent-native GEE harness, not a GUI controller. Prefer `gee-skill` co
 0. Before setup or troubleshooting, confirm the user is in the repository root. Ask them to run `pwd`/`ls pyproject.toml` on macOS/Linux or `Get-Location`/`dir pyproject.toml` in Windows PowerShell when the directory is unclear.
 1. Before telling users to install anything, tell them to `cd` into the repository checkout. Do not present `pip install -e ".[earthengine]"` as a standalone command from an unspecified directory.
 2. Distinguish Windows PowerShell from macOS/Linux zsh or bash in every OS-specific instruction. PowerShell uses `$env:EE_PROJECT`; macOS/Linux shells use `export EE_PROJECT=...`.
-3. Inspect capabilities:
-   `gee-skill info --json`, `gee-skill doctor --json`, `gee-skill recipe list --json`, `gee-skill rules list --json`.
+3. Inspect capabilities and current public boundaries:
+   `gee-skill info --json`, `gee-skill doctor --json`, `gee-skill recipe list --json`, `gee-skill rules list --json`, and `docs/capability_matrix.md`.
 4. Create a reviewable plan from user intent:
    `gee-skill plan from-text "<request>" --json`.
 5. If the request is underspecified, return the exact `AMBIGUOUS_TASK` missing fields to the user.
-6. Search or show distilled evidence:
-   `gee-skill catalog recommend --task-type <type> --metric <metric> --json`, `gee-skill catalog evidence --category <datasets|operators|recipes|failures|research> --json`, and `gee-skill search-docs "<dataset operator failure query>" --json`.
-7. Review or edit the saved plan before execution:
+6. Choose recipes by registry evidence, not by model memory alone:
+   `gee-skill recipe list --json`, then `gee-skill recipe show <recipe-id> --json`.
+7. Retrieve distilled evidence:
+   `gee-skill catalog recommend --task-type <type> --metric <metric> --json`, `gee-skill catalog evidence --category <dataset|operator|recipe|failure|research> --json`, and `gee-skill search-docs "<dataset operator failure query>" --json`.
+   The plural category aliases (`datasets`, `operators`, `recipes`, `failures`) are accepted, but prefer the singular forms in new documentation.
+8. Review or edit the saved plan before execution:
    `gee-skill plan review <plan.yaml> --json` and `gee-skill plan set <plan.yaml> <key> <value> --json`.
-8. Resolve or summarize AOIs before live work when the AOI is unclear:
+9. Resolve or summarize AOIs before live work when the AOI is unclear:
    `gee-skill aoi resolve "<request>" --json` or `gee-skill aoi summarize <geojson-or-plan> --json`.
-9. Prefer plan, render, validate, and dry-run commands before live export.
-10. Render and validate only approved templates or task YAML workflows:
+10. Prefer plan, render, validate, and dry-run commands before live export.
+11. Render and validate only approved templates or task YAML workflows:
    `gee-skill render <plan.yaml> --script-out <script.py> --json` and `gee-skill validate <script.py> --json`.
-11. Run preflight before any live export:
+12. Run preflight before any live export:
    `gee-skill preflight <plan.yaml> --project <project-id> --json`.
-12. If preflight returns `V03_CONTEXT_REVIEW_REQUIRED`, ask for or set reviewed AOI/export context in the plan; do not treat it as an auth problem and do not run export.
-13. Execute live only with a project and explicit confirmation:
+13. If preflight returns `V03_CONTEXT_REVIEW_REQUIRED`, ask for or set reviewed AOI/export context in the plan; do not treat it as an auth problem and do not run export.
+14. Execute live only with a project and explicit confirmation:
    `gee-skill run <plan.yaml> --project <project-id> --confirm-live --json`.
-14. Monitor exports:
+15. Monitor exports:
    `gee-skill exports list --project <project-id> --json`, `gee-skill exports watch --project <project-id> --task-id <id> --json`, or the compatibility command `gee-skill monitor-exports --project <project-id> --json`.
-15. Inspect run trace artifacts before presenting results:
+16. Inspect run trace artifacts before presenting results:
    `gee-skill trace inspect <run_id> --json`.
-16. Use `gee-skill corpus coverage --task-type <type> --metric <metric> --output <format> --json` when checking whether a task has dataset, operator, recipe, failure, and export evidence coverage. Rule evidence may also appear in traces, but the core exportable-task coverage categories are dataset/operator/recipe/failure/export.
-17. Use `gee-skill eval evals/benchmark_suite.yml --json` for offline benchmark evidence.
-18. Treat `UNSAFE_GETINFO` and `PREFLIGHT_REQUIRED` as first-class safety categories when explaining validation/preflight failures.
+17. Use `gee-skill corpus coverage --task-type <type> --metric <metric> --output <format> --json` when checking whether a task has dataset, operator, recipe, failure, and export evidence coverage. Rule evidence may also appear in traces, but the core exportable-task coverage categories are dataset/operator/recipe/failure/export.
+18. Use `gee-skill eval evals/benchmark_suite.yml --json` for offline benchmark evidence.
+19. Treat `UNSAFE_GETINFO` and `PREFLIGHT_REQUIRED` as first-class safety categories when explaining validation/preflight failures.
+20. Avoid overclaiming: say `live verified` only for workflows marked live export completed in `docs/capability_matrix.md`; say `render/validate verified`, `dry-run verified`, `mocked preflight blocked`, `planned`, or `experimental` for all other cases.
 
 ## Golden Examples
 

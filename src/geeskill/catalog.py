@@ -300,6 +300,30 @@ KNOWLEDGE_CARD_PREFIXES: dict[str, tuple[str, ...]] = {
     "research": ("research/", "corpus/"),
 }
 
+KNOWLEDGE_CATEGORY_ALIASES: dict[str, str] = {
+    "dataset": "datasets",
+    "datasets": "datasets",
+    "operator": "operators",
+    "operators": "operators",
+    "recipe": "recipes",
+    "recipes": "recipes",
+    "failure": "failures",
+    "failures": "failures",
+    "research": "research",
+    "general": "general",
+    "all": "all",
+}
+
+
+def normalize_knowledge_category(category: str) -> str:
+    normalized = KNOWLEDGE_CATEGORY_ALIASES.get(category)
+    if not normalized:
+        raise ValueError(
+            "Unsupported knowledge category. Use one of: all, dataset/datasets, operator/operators, "
+            "recipe/recipes, failure/failures, research, general."
+        )
+    return normalized
+
 
 def _card_category(source_path: str) -> str:
     for category, prefixes in KNOWLEDGE_CARD_PREFIXES.items():
@@ -319,10 +343,7 @@ def _add_known_failure(entry: dict[str, Any], value: str) -> None:
 
 def list_knowledge_cards(index: dict[str, Any], category: str = "all", top_k: int = 50) -> list[dict[str, Any]]:
     """Return one structured entry per indexed knowledge-base source file."""
-    if category not in {"all", *KNOWLEDGE_CARD_PREFIXES.keys(), "general"}:
-        raise ValueError(
-            "Unsupported knowledge category. Use one of: all, datasets, operators, recipes, failures, research, general."
-        )
+    category = normalize_knowledge_category(category)
     grouped: dict[str, dict[str, Any]] = {}
     for doc in index.get("documents", []):
         source_path = str(doc.get("source_path") or "")

@@ -25,14 +25,14 @@ gee-skill info --json
 gee-skill doctor --json
 gee-skill recipe list --json
 gee-skill catalog search "Sentinel-2 NDVI" --json
-gee-skill catalog evidence --category operators --json
-gee-skill catalog evidence --category failures --json
+gee-skill catalog evidence --category operator --json
+gee-skill catalog evidence --category failure --json
 gee-skill corpus coverage --task-type vegetation_index --metric NDVI --output CSV --json
 ```
 
 These commands do not submit Earth Engine exports.
 
-`catalog evidence` lists indexed knowledge cards by category (`datasets`, `operators`, `recipes`, `failures`, `research`, or `all`) so an agent can inspect the local knowledge base without scraping the docs tree.
+`catalog evidence` lists indexed knowledge cards by category (`dataset`, `operator`, `recipe`, `failure`, `research`, or `all`) so an agent can inspect the local knowledge base without scraping the docs tree. The older plural aliases (`datasets`, `operators`, `recipes`, `failures`) are still accepted.
 
 ## AOI Commands
 

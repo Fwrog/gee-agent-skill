@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "schema_version": "gee-preflight/v0.2-redacted",
+  "workflow": "hk_2024_01_ndvi_landcover_v02",
+  "project": "[REDACTED_PROJECT_ID]",
+  "checks": {
+    "earth_engine_initialized": true,
+    "aoi_loaded": true,
+    "sentinel2_collection_non_empty": true,
+    "dynamic_world_collection_non_empty": true,
+    "required_optical_bands_present": ["B4", "B8", "SCL"],
+    "required_landcover_bands_present": ["label", "water", "trees", "grass", "built", "bare"],
+    "ndvi_band_created": true,
+    "landcover_masks_created": true,
+    "export_destination_checked": true
+  },
+  "export": {
+    "description": "hk_2024_01_ndvi_landcover_v02",
+    "drive_folder": "gee_exports",
+    "file_prefix": "hk_2024_01_ndvi_landcover_v02",
+    "format": "CSV"
+  },
+  "credentials_included": false,
+  "credential_paths_included": false
+}

@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "schema_version": "gee-validation/v0.1-redacted",
+  "workflow": "hk_2024_01_ndvi_v01",
+  "checks": {
+    "template_rendered": true,
+    "imports_present": true,
+    "earth_engine_initialize_present": true,
+    "ndvi_expression_present": true,
+    "export_table_to_drive_present": true,
+    "scale_declared": true,
+    "crs_declared": true,
+    "max_pixels_declared": true,
+    "unsafe_getinfo_in_export_path": false
+  },
+  "warnings": [
+    "Whole-AOI NDVI is not vegetation-only."
+  ],
+  "credentials_included": false
+}

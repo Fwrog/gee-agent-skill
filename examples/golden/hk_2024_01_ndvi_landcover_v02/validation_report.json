@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "schema_version": "gee-validation/v0.2-redacted",
+  "workflow": "hk_2024_01_ndvi_landcover_v02",
+  "checks": {
+    "template_rendered": true,
+    "imports_present": true,
+    "earth_engine_initialize_present": true,
+    "sentinel2_dataset_present": true,
+    "dynamic_world_dataset_present": true,
+    "ndvi_expression_present": true,
+    "probability_threshold_declared": true,
+    "export_table_to_drive_present": true,
+    "selectors_declared": true,
+    "scale_declared": true,
+    "crs_declared": true,
+    "unsafe_getinfo_in_export_path": false
+  },
+  "warnings": [
+    "Dynamic World classes are probabilistic interpretation strata.",
+    "Sparse land-cover classes can produce null values."
+  ],
+  "credentials_included": false
+}

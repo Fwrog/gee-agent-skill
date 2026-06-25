@@ -16,7 +16,7 @@ import yaml
 
 from . import __version__
 from .ask import route_request
-from .catalog import get_dataset, list_datasets, list_knowledge_cards, recommend_datasets, search_datasets
+from .catalog import get_dataset, list_datasets, list_knowledge_cards, normalize_knowledge_category, recommend_datasets, search_datasets
 from .earthengine import EarthEngineUnavailable, execute_script, monitor_tasks, render_map_preview
 from .errors import classify_exception, error_payload
 from .evaluation import run_benchmark_suite
@@ -370,7 +370,8 @@ def cmd_catalog_recommend(args: argparse.Namespace) -> int:
 def cmd_catalog_evidence(args: argparse.Namespace) -> int:
     try:
         index = load_index(Path(args.index))
-        cards = list_knowledge_cards(index, category=args.category, top_k=args.top_k)
+        normalized_category = normalize_knowledge_category(args.category)
+        cards = list_knowledge_cards(index, category=normalized_category, top_k=args.top_k)
     except Exception as exc:
         return _print_envelope(
             _envelope_error("CATALOG_EVIDENCE_FAILED", str(exc), "Rebuild references/index/gee_docs_index.json or choose a supported category."),
@@ -378,6 +379,7 @@ def cmd_catalog_evidence(args: argparse.Namespace) -> int:
         )
     data = {
         "category": args.category,
+        "normalized_category": normalized_category,
         "count": len(cards),
         "cards": cards,
     }
@@ -2538,7 +2540,23 @@ def build_parser() -> argparse.ArgumentParser:
     catalog_recommend.add_argument("--json", action="store_true")
     catalog_recommend.set_defaults(func=cmd_catalog_recommend)
     catalog_evidence = catalog_sub.add_parser("evidence", help="List indexed dataset/operator/recipe/failure knowledge cards.")
-    catalog_evidence.add_argument("--category", choices=["all", "datasets", "operators", "recipes", "failures", "research", "general"], default="all")
+    catalog_evidence.add_argument(
+        "--category",
+        choices=[
+            "all",
+            "dataset",
+            "datasets",
+            "operator",
+            "operators",
+            "recipe",
+            "recipes",
+            "failure",
+            "failures",
+            "research",
+            "general",
+        ],
+        default="all",
+    )
     catalog_evidence.add_argument("--top-k", type=int, default=50)
     catalog_evidence.add_argument("--index", default=str(default_index_path(root)))
     catalog_evidence.add_argument("--json", action="store_true")

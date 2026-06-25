@@ -1,6 +1,6 @@
 # v0.3 Hong Kong 2024 16-Day NDVI
 
-This is the v0.3 golden example for a non-January, non-demo Google Earth Engine workflow:
+This is the current v0.3 golden example for a year-long Google Earth Engine workflow:
 
 ```text
 Compute 16-day NDVI for Hong Kong in 2024 and export CSV.

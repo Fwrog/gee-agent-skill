@@ -1,0 +1,38 @@
+schema_version: gee-task-plan/v0.1-redacted
+task_id: hk_2024_01_ndvi_v01
+golden_example: true
+user_request: Compute January 2024 mean NDVI for Hong Kong and export CSV.
+workflow:
+  version: v0.1
+  template: hk_january_2024_ndvi_csv
+  status: live_export_completed
+context:
+  aoi_name: Hong Kong
+  aoi_source: references/boundaries/hk_18_districts.geojson
+  date_start: '2024-01-01'
+  date_end: '2024-02-01'
+  dataset_id: COPERNICUS/S2_SR_HARMONIZED
+  metric: NDVI
+  reducer: mean
+  scale_m: 10
+  crs: EPSG:4326
+  cloudy_pixel_percentage: 80
+  tile_scale: 4
+  max_pixels: 100000000
+export:
+  type: table
+  format: CSV
+  destination: Google Drive
+  drive_folder: gee_exports
+  description: hk_2024_01_ndvi_v01
+  file_prefix: hk_2024_01_ndvi_v01
+redactions:
+  project_id: '[REDACTED_PROJECT_ID]'
+  local_repo_path: '[REDACTED_REPO_PATH]'
+  task_id: '[REDACTED_TASK_ID]'
+credential_policy:
+  credentials_included: false
+  credential_paths_included: false
+limitations:
+  - Whole-AOI mean includes water, built-up, bare, and vegetation pixels.
+  - Export completion is workflow evidence, not scientific validation.

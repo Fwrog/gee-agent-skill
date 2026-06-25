@@ -313,11 +313,24 @@ def test_catalog_recipe_rules_envelopes(capsys):
     client_server_card = next(item for item in payload["data"]["cards"] if item["source_path"] == "core/client-server-deferred-execution.md")
     assert "UNSAFE_GETINFO" in client_server_card["known_failures"]
 
+    rc = cli.main(["catalog", "evidence", "--category", "operator", "--json"])
+    assert rc == 0
+    payload = _payload(capsys)
+    assert payload["data"]["category"] == "operator"
+    assert payload["data"]["normalized_category"] == "operators"
+    assert {item["category"] for item in payload["data"]["cards"]} == {"operators"}
+
     rc = cli.main(["catalog", "evidence", "--category", "failures", "--json"])
     assert rc == 0
     payload = _payload(capsys)
     assert payload["data"]["cards"]
     assert any("PREFLIGHT_REQUIRED" in item["known_failures"] for item in payload["data"]["cards"])
+
+    rc = cli.main(["catalog", "evidence", "--category", "failure", "--json"])
+    assert rc == 0
+    payload = _payload(capsys)
+    assert payload["data"]["normalized_category"] == "failures"
+    assert payload["data"]["cards"]
 
     rc = cli.main(["recipe", "show", "water-index-ndwi", "--json"])
     assert rc == 0

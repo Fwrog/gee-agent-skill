@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "schema_version": "gee-preflight/v0.1-redacted",
+  "workflow": "hk_2024_01_ndvi_v01",
+  "project": "[REDACTED_PROJECT_ID]",
+  "checks": {
+    "earth_engine_initialized": true,
+    "aoi_loaded": true,
+    "collection_non_empty": true,
+    "required_bands_present": ["B4", "B8", "SCL"],
+    "ndvi_band_created": true,
+    "export_destination_checked": true
+  },
+  "export": {
+    "description": "hk_2024_01_ndvi_v01",
+    "drive_folder": "gee_exports",
+    "file_prefix": "hk_2024_01_ndvi_v01",
+    "format": "CSV"
+  },
+  "credentials_included": false,
+  "credential_paths_included": false
+}

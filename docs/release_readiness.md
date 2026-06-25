@@ -72,8 +72,8 @@ gee-skill doctor --json
 gee-skill auth check --project <project-id> --json
 gee-skill aoi resolve "Compute NDVI for Hong Kong in January 2024." --json
 gee-skill catalog search "Sentinel-2 NDVI" --json
-gee-skill catalog evidence --category operators --json
-gee-skill catalog evidence --category failures --json
+gee-skill catalog evidence --category operator --json
+gee-skill catalog evidence --category failure --json
 gee-skill catalog show COPERNICUS/S2_SR_HARMONIZED --json
 gee-skill catalog recommend --task-type vegetation_index --metric NDVI --json
 gee-skill recipe list --json
@@ -167,7 +167,7 @@ The database remains source-controlled and auditable:
 - ruleset cards under `references/knowledge_base/rules/`;
 - corpus policy, discovery inventories, and pattern notes under `references/knowledge_base/corpus/`;
 - generated indexes under `references/index/` and `src/geeskill/resources/index/`.
-- structured card inventory through `gee-skill catalog evidence --category <datasets|operators|recipes|failures|research> --json`.
+- structured card inventory through `gee-skill catalog evidence --category <dataset|operator|recipe|failure|research> --json`; plural aliases remain accepted.
 
 Corpus expansion policy:
 
@@ -246,11 +246,11 @@ Recent local evidence:
 - `gee-skill validate /tmp/hk_2024_16day_ndvi_check.py --json`: passed.
 - v0.2 plan and dry-run commands: passed.
 - v0.3 parser/render/validation regressions cover EVI CSV, NDWI GeoTIFF, NDBI CSV, Landsat LST CSV, Sentinel-1 before/after flood GeoTIFF, Dynamic World land-cover summary, zonal statistics CSV, standalone image GeoTIFF export, missing AOI/time-range ambiguity, unknown dataset blocking, and unsupported-task recovery with closest recipes.
-- `gee-skill catalog evidence --category operators --json` and `gee-skill catalog evidence --category failures --json`: passed and expose `UNSAFE_GETINFO` plus `PREFLIGHT_REQUIRED` through structured cards.
+- `gee-skill catalog evidence --category operator --json` and `gee-skill catalog evidence --category failure --json`: passed and expose `UNSAFE_GETINFO` plus `PREFLIGHT_REQUIRED` through structured cards.
 - v0.3 generic preflight tests confirm non-golden recipes block placeholder AOI assets with `V03_CONTEXT_REVIEW_REQUIRED` and dispatch reviewed plans to the generic adapter rather than submitting exports.
 - v0.3 live adapter tests cover review, preflight, retryable network preflight failure, preflight-blocked no-export behavior, and single-execute success behavior.
 - `python -m build --sdist --wheel`: passed after registry/schema/template packaging changes.
-- Built wheel installed into `/private/tmp/gee-agent-skill-wheel-smoke-20260625`; `gee-skill info --json`, `recipe list --json`, `catalog evidence --category failures --json`, `plan from-text ... --json`, `render ... --json`, and `validate ... --json` passed from `/private/tmp` using package resources. Placeholder-context `preflight ... --json` correctly exited nonzero with `V03_CONTEXT_REVIEW_REQUIRED`.
+- Built wheel installed into `/private/tmp/gee-agent-skill-wheel-smoke-20260625`; `gee-skill info --json`, `recipe list --json`, `catalog evidence --category failure --json`, `plan from-text ... --json`, `render ... --json`, and `validate ... --json` passed from `/private/tmp` using package resources. Placeholder-context `preflight ... --json` correctly exited nonzero with `V03_CONTEXT_REVIEW_REQUIRED`.
 - Rebuilt packages after deleting stale `build/`, `dist/`, and `src/gee_agent_skill.egg-info/`; final wheel contents no longer include duplicate `entry_points 2.txt` or `dependency_links 2.txt` metadata artifacts.
 - Credential scan for project id, OAuth access-token pattern, private keys, refresh-token fields, client secrets, and Earth Engine credential paths returned no matches outside ignored generated/env directories.
 - `git diff --check`: passed.

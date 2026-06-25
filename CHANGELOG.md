@@ -4,6 +4,16 @@ All notable changes to `gee-agent-skill` are documented here.
 
 ## Unreleased
 
+### Release polish
+
+- Added capability matrix columns that separate implemented, plan-only, render/validate, mocked preflight, live preflight, submitted export, completed export, and planned status.
+- Added sanitized golden evidence bundles for the v0.1 and v0.2 Hong Kong NDVI workflows.
+- Added a Codex transcript showing the agent-native review-before-run workflow.
+- Added v0.3.0-alpha release notes and overclaim-audit documentation.
+- Clarified that single-category `catalog evidence --category dataset|operator|recipe|failure` is the preferred public command form; plural aliases remain accepted.
+
+## 0.3.0-alpha - 2026-06-25
+
 ### Added
 
 - Productization docs that frame the project as an agent-native Google Earth Engine harness.
@@ -31,7 +41,21 @@ All notable changes to `gee-agent-skill` are documented here.
 - Export submission is workflow evidence, not scientific validation.
 - Dry-run and planning commands do not require credentials; live commands require user-owned Earth Engine access, local OAuth, a project id, preflight, and explicit `--confirm-live`.
 
-## 0.3.0
+### Verified scope
+
+- `python -m pytest`: 117 passed in the current release-prep context.
+- `gee-skill eval evals/benchmark_suite.yml --json`: 22/22 cases passed in the current release-prep context.
+- Smoke-test, v0.2 plan/dry-run, v0.3 HK 16-day NDVI plan/render/validate, EVI plan/render/validate, NDWI plan/render/validate, build, wheel smoke, credential scan, and `git diff --check` passed in the current release-prep context.
+- Live-export completion is claimed only for golden examples documented in `docs/capability_matrix.md`.
+
+### Limitations
+
+- Non-golden workflows must not be described as live verified.
+- The deterministic parser is not full natural-language understanding.
+- Scientific interpretation requires domain review.
+- Users must bring their own Earth Engine account, Google Cloud Project, OAuth authentication, quota, and export destination.
+
+## 0.3.0 development baseline
 
 ### Added
 

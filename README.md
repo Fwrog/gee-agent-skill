@@ -6,12 +6,39 @@
 
 The project is documented for Windows PowerShell, macOS zsh, and Linux shells when commands are run from the repository root inside an activated virtual environment. Recent local verification was performed on macOS; Windows commands follow the same project-root and `.venv` contract.
 
+## Project Snapshot
+
+Architecture flow: `natural language → plan → RAG evidence → render → validate → preflight → export → monitor → trace`.
+
+Minimal no-credential check:
+
+```bash
+gee-skill smoke-test --json
+gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
+```
+
+Minimal live-safe workflow after local Earth Engine authentication:
+
+```bash
+gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." \
+  --out outputs/plans/hk_2024_16day_ndvi.yaml \
+  --json
+gee-skill preflight outputs/plans/hk_2024_16day_ndvi.yaml --project "$EE_PROJECT" --json
+gee-skill run outputs/plans/hk_2024_16day_ndvi.yaml --project "$EE_PROJECT" --confirm-live --json
+gee-skill exports list --project "$EE_PROJECT" --json
+```
+
+Verified golden examples are HK Jan 2024 NDVI CSV, HK Jan 2024 land-cover-aware NDVI CSV, and HK 2024 16-day NDVI CSV. Other recipe families may plan/render/validate, but they are not live-export verified unless the [Capability matrix](docs/capability_matrix.md) says so.
+
+Credential warning: this repository never provides Google accounts, Google Cloud projects, OAuth tokens, service account JSON, private keys, or credential paths. Live commands require user-owned Earth Engine access and explicit `--confirm-live`.
+
 ## Table of Contents
 
+- [Project Snapshot](#project-snapshot)
 - [What this project does](#what-this-project-does)
 - [Agent-native interface](#agent-native-interface)
 - [Capability proof map](#capability-proof-map)
-- [Supported recipe families](#supported-recipe-families)
+- [Recipe families](#recipe-families)
 - [Evaluation and research evidence](#evaluation-and-research-evidence)
 - [Release readiness](#release-readiness)
 - [Roadmap](#roadmap)
@@ -82,8 +109,8 @@ gee-skill info --json
 gee-skill doctor --json
 gee-skill aoi resolve "Compute NDVI for Hong Kong in January 2024." --json
 gee-skill catalog search "Sentinel-2 NDVI" --json
-gee-skill catalog evidence --category operators --json
-gee-skill catalog evidence --category failures --json
+gee-skill catalog evidence --category operator --json
+gee-skill catalog evidence --category failure --json
 gee-skill recipe list --json
 gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
 gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --json
@@ -96,9 +123,9 @@ Compatibility commands such as `ask`, `review-plan`, `preflight-plan`, `run-plan
 
 ## Capability proof map
 
-This repository is meant to demonstrate a full agent-native Earth Engine harness:
+This repository demonstrates the core architecture of an agent-native Earth Engine harness:
 
-> I built an agent-native Google Earth Engine harness that turns natural-language geospatial tasks into reviewable, RAG-grounded, validated, and traceable Earth Engine workflows. The system includes a dataset/operator knowledge base, recipe registry, semantic validators, live preflight checks, export monitoring, and benchmarked golden examples.
+> I built an agent-native Google Earth Engine harness that turns natural-language geospatial tasks into reviewable, RAG-grounded, validated, and traceable Earth Engine workflows. The system includes a dataset/operator knowledge base, recipe registry, semantic validators, golden live preflight checks, export monitoring, and benchmarked golden examples.
 
 | Capability | How it is shown |
 | --- | --- |
@@ -108,7 +135,7 @@ This repository is meant to demonstrate a full agent-native Earth Engine harness
 | 🔬 Reproducibility and evaluation | Parse/plan tests, render/validate tests, mocked preflight failures, golden examples, local benchmark runner, and sanitized evidence bundles. |
 | 📦 Productization | Cross-platform setup docs, CLI reference, CI, packaging metadata, changelog, security policy, roadmap, issue templates, and wheel build checks. |
 
-## Supported recipe families
+## Recipe families
 
 The current registry is broader than the Hong Kong NDVI demo. Capability status is tracked in [Capability matrix](docs/capability_matrix.md).
 
@@ -435,8 +462,8 @@ These commands do not contact Earth Engine:
 ```bash
 gee-skill tools
 gee-skill smoke-test --json
-gee-skill catalog evidence --category operators --json
-gee-skill catalog evidence --category failures --json
+gee-skill catalog evidence --category operator --json
+gee-skill catalog evidence --category failure --json
 gee-skill observe "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --json
 gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --out outputs/plans/hk_2024_16day_ndvi.yaml --json
 gee-skill plan from-yaml outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json

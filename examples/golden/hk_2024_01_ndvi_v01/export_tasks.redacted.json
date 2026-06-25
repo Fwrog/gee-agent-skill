@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "schema_version": "gee-export-tasks/v0.1-redacted",
+  "workflow": "hk_2024_01_ndvi_v01",
+  "tasks": [
+    {
+      "id": "[REDACTED_TASK_ID]",
+      "description": "hk_2024_01_ndvi_v01",
+      "type": "EXPORT_FEATURES",
+      "state": "COMPLETED",
+      "destination": "Google Drive",
+      "drive_folder": "gee_exports",
+      "file_prefix": "hk_2024_01_ndvi_v01"
+    }
+  ],
+  "project": "[REDACTED_PROJECT_ID]",
+  "credentials_included": false
+}

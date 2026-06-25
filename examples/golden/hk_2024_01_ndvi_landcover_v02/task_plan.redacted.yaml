@@ -1,0 +1,59 @@
+schema_version: gee-task-plan/v0.2-redacted
+task_id: hk_2024_01_ndvi_landcover_v02
+golden_example: true
+user_request: Compute January 2024 Hong Kong NDVI by land-cover class and export CSV.
+workflow:
+  version: v0.2
+  template: hk_january_2024_ndvi_by_landcover_csv
+  status: live_export_completed
+context:
+  aoi_name: Hong Kong
+  aoi_source: references/boundaries/hk_18_districts.geojson
+  date_start: '2024-01-01'
+  date_end: '2024-02-01'
+  optical_dataset_id: COPERNICUS/S2_SR_HARMONIZED
+  landcover_dataset_id: GOOGLE/DYNAMICWORLD/V1
+  static_reference_dataset_id: ESA/WorldCover/v200
+  metric: NDVI
+  reducer: mean
+  landcover_strategy: dynamic_world_time_matched_probability_masks
+  dynamic_world_probability_threshold: 0.35
+  scale_m: 10
+  crs: EPSG:4326
+  cloudy_pixel_percentage: 80
+  tile_scale: 4
+  max_pixels: 100000000
+output_schema:
+  - all_surface_mean_ndvi
+  - non_water_mean_ndvi
+  - land_only_mean_ndvi
+  - vegetation_mean_ndvi
+  - trees_mean_ndvi
+  - grass_mean_ndvi
+  - shrub_and_scrub_mean_ndvi
+  - built_mean_ndvi
+  - bare_mean_ndvi
+  - water_fraction
+  - built_fraction
+  - vegetation_fraction
+  - s2_image_count_before_cloud_filter
+  - s2_image_count_after_cloud_filter
+  - dynamic_world_image_count
+export:
+  type: table
+  format: CSV
+  destination: Google Drive
+  drive_folder: gee_exports
+  description: hk_2024_01_ndvi_landcover_v02
+  file_prefix: hk_2024_01_ndvi_landcover_v02
+redactions:
+  project_id: '[REDACTED_PROJECT_ID]'
+  local_repo_path: '[REDACTED_REPO_PATH]'
+  task_id: '[REDACTED_TASK_ID]'
+credential_policy:
+  credentials_included: false
+  credential_paths_included: false
+limitations:
+  - Dynamic World is probabilistic and may produce sparse or null class statistics.
+  - Land-cover classes are interpretation strata, not administrative boundaries.
+  - Export completion is workflow evidence, not scientific validation.
