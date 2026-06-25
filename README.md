@@ -2,6 +2,12 @@
 
 ![GEE agent harness social preview](assets/images/gee-agent-social-preview-dark.png)
 
+<p align="center">
+  <a href="./README.md">English</a> ·
+  <a href="./README.zh-CN.md">简体中文</a> ·
+  <a href="https://github.com/Fwrog/gee-agent-skill">GitHub</a>
+</p>
+
 `gee-agent-skill` is an agent-native command-line harness for Google Earth Engine workflows. It helps Codex or another coding agent turn natural-language geospatial requests into reviewable plans, source-grounded dataset/operator choices, validated Earth Engine Python scripts, safe preflight checks, explicit user-confirmed exports, export monitoring, and reproducible traces.
 
 The project is documented for Windows PowerShell, macOS zsh, and Linux shells when commands are run from the repository root inside an activated virtual environment. Recent local verification was performed on macOS; Windows commands follow the same project-root and `.venv` contract.
@@ -28,19 +34,17 @@ gee-skill run outputs/plans/hk_2024_16day_ndvi.yaml --project "$EE_PROJECT" --co
 gee-skill exports list --project "$EE_PROJECT" --json
 ```
 
-Verified golden examples are HK Jan 2024 NDVI CSV, HK Jan 2024 land-cover-aware NDVI CSV, and HK 2024 16-day NDVI CSV. Other recipe families may plan/render/validate, but they are not live-export verified unless the [Capability matrix](docs/capability_matrix.md) says so.
-
-Credential warning: this repository never provides Google accounts, Google Cloud projects, OAuth tokens, service account JSON, private keys, or credential paths. Live commands require user-owned Earth Engine access and explicit `--confirm-live`.
+Current demo: HK 2024 16-day NDVI CSV. See the [Capability matrix](docs/capability_matrix.md) for workflow status across recipe families. Live commands use your own Earth Engine project and require explicit `--confirm-live`.
 
 ## Table of Contents
 
 - [Project Snapshot](#project-snapshot)
 - [What this project does](#what-this-project-does)
 - [Agent-native interface](#agent-native-interface)
-- [Capability proof map](#capability-proof-map)
+- [Capabilities](#capabilities)
 - [Recipe families](#recipe-families)
 - [Evaluation and research evidence](#evaluation-and-research-evidence)
-- [Release readiness](#release-readiness)
+- [Complex validation TODO](#complex-validation-todo)
 - [Roadmap](#roadmap)
 - [Quick Start](#quick-start)
 - [Configuration checklist](#configuration-checklist)
@@ -84,19 +88,13 @@ At a glance:
 | 📤 Export | Only `gee-skill run <plan.yaml> --project <id> --confirm-live --json` starts an Earth Engine export. |
 | 📊 Monitor | `gee-skill exports list/watch --project <id> --json` reports task id, description, state, timestamps, and errors. |
 
-The Hong Kong NDVI workflows are golden examples for the general harness, not the full product boundary:
-
-1. v0.1: January 2024 mean NDVI for Hong Kong.
-2. v0.2: January 2024 Hong Kong NDVI by land-cover class.
-3. v0.3: 2024 16-day Hong Kong NDVI CSV workflow.
+The demo in this README uses the Hong Kong 2024 16-day NDVI CSV workflow as a compact example of the full loop.
 
 ![Hong Kong 2024 16-day NDVI workflow](assets/images/hk-2024-16day-ndvi-workflow.png)
 
-This project is not a credentials provider, a GUI replacement for Earth Engine, or a source of scientific conclusions without domain review.
-
 ## Agent-native interface
 
-The harness is designed for coding agents, not only humans typing ad hoc commands. The stable command surface is:
+The harness is designed for coding agents and direct CLI users. The stable command surface is:
 
 ```text
 auth / catalog / aoi / recipe / plan / render / validate / preflight / run / exports / trace / eval
@@ -119,20 +117,18 @@ gee-skill trace inspect <run_id> --json
 gee-skill eval evals/benchmark_suite.yml --json
 ```
 
-Compatibility commands such as `ask`, `review-plan`, `preflight-plan`, `run-plan`, and `monitor-exports` remain available for the verified golden examples.
+Compatibility commands such as `ask`, `review-plan`, `preflight-plan`, `run-plan`, and `monitor-exports` remain available for existing example workflows.
 
-## Capability proof map
+## Capabilities
 
-This repository demonstrates the core architecture of an agent-native Earth Engine harness:
-
-> I built an agent-native Google Earth Engine harness that turns natural-language geospatial tasks into reviewable, RAG-grounded, validated, and traceable Earth Engine workflows. The system includes a dataset/operator knowledge base, recipe registry, semantic validators, golden live preflight checks, export monitoring, and benchmarked golden examples.
+This repository demonstrates the core architecture of an agent-native Earth Engine harness.
 
 | Capability | How it is shown |
 | --- | --- |
 | 🤖 Agent engineering | Structured commands, explicit `gee-plan/v0.3` state, deterministic JSON, review-before-run, `--confirm-live`, and traceable run artifacts. |
 | 📚 RAG and knowledge engineering | Dataset cards, operator notes, recipe cards, failure cards, retrieval traces, and coverage checks in `evals/benchmark_suite.yml`. |
 | 🛰️ GEE / remote sensing | Dataset selection, band/QA checks, scale/CRS fields, server-side reducer/export patterns, `getInfo()` safety rules, empty-collection guards, and export task lifecycle monitoring. |
-| 🔬 Reproducibility and evaluation | Parse/plan tests, render/validate tests, mocked preflight failures, golden examples, local benchmark runner, and sanitized evidence bundles. |
+| 🔬 Reproducibility and evaluation | Parse/plan tests, render/validate tests, mocked preflight failures, example workflows, local benchmark runner, and sanitized evidence bundles. |
 | 📦 Productization | Cross-platform setup docs, CLI reference, CI, packaging metadata, changelog, security policy, roadmap, issue templates, and wheel build checks. |
 
 ## Recipe families
@@ -143,49 +139,65 @@ Recipes are registered in [references/recipes/registry.yaml](references/recipes/
 
 | Recipe family | Current role |
 | --- | --- |
-| Vegetation indices | NDVI/EVI planning, Sentinel-2 CSV render/validation paths, and golden HK examples. |
+| Vegetation indices | NDVI/EVI planning, Sentinel-2 CSV render/validation paths, and Hong Kong demo examples. |
 | Water indices | NDWI/MNDWI planning, Sentinel-2 GeoTIFF render path, generic preflight gate, and band/export validation. |
 | Built-up indices | NDBI planning, Sentinel-2 CSV render path, generic preflight gate, and semantic band checks. |
 | Land surface temperature | Landsat LST CSV/Image render paths, generic preflight gate, validation, and MODIS LST catalog evidence. |
-| Land cover summaries | Dynamic World / ESA WorldCover evidence, Dynamic World CSV render/validation, and HK land-cover-aware golden example. |
+| Land cover summaries | Dynamic World / ESA WorldCover evidence, Dynamic World CSV render/validation, and the Hong Kong land-cover-aware demo. |
 | Sentinel-1 flood/change | Before/after SAR planning, GeoTIFF render path, generic preflight gate, and validation rules. |
 | Zonal statistics | Table-export templates and reducer/export safety rules. |
 | Image/table export | Explicit selectors, region, scale, CRS, `maxPixels`, and confirmed live gates. |
 
-Non-golden recipe families can produce reviewable plans and validated scripts, and the generic v0.3 preflight gate now blocks placeholder AOI/export context before any export. They are still not live-export verified golden workflows.
+Capability levels differ by recipe family. Some paths are plan/render/validate only, while the current demo path also has live preflight and export evidence; see the [Capability matrix](docs/capability_matrix.md) for details.
 
 ## Evaluation and research evidence
 
-The repository includes a small but real benchmark protocol, not only notebooks:
+The repository includes a compact benchmark protocol for local regression checks:
 
 - [Benchmark protocol](docs/benchmark_protocol.md) defines parse, plan, render, validation, dry-run, mocked/live boundaries, and reporting.
 - [Research positioning](docs/research_positioning.md) explains the project as a reproducible agent operations layer for Earth Engine.
 - [Paper outline](docs/paper.md) sketches a methods paper around plan-first, RAG-grounded GEE workflows.
-- [Portfolio audit](docs/reviews/portfolio-research-positioning-audit.md) separates proven capability, current gaps, and overclaim risks.
 - [Plan schema](schemas/gee-plan-v0.3.schema.json) documents the required editable `gee-plan/v0.3` fields.
 
-The default offline benchmark currently contains 22 cases. It includes non-HK planning cases for EVI, NDWI, NDBI, Landsat LST, Sentinel-1 flood mapping, Dynamic World land-cover summary, zonal statistics, standalone GeoTIFF image export, ambiguous requests, unknown dataset IDs, unsupported requests, RAG evidence coverage, mocked empty-collection preflight blocking, and golden render/validation cases:
+The default offline benchmark currently contains 22 cases. It includes non-HK planning cases for EVI, NDWI, NDBI, Landsat LST, Sentinel-1 flood mapping, Dynamic World land-cover summary, zonal statistics, standalone GeoTIFF image export, ambiguous requests, unknown dataset IDs, unsupported requests, RAG evidence coverage, mocked empty-collection preflight blocking, and example render/validation cases:
 
 ```bash
 gee-skill eval evals/benchmark_suite.yml --json
 ```
 
-## Release readiness
+## Complex validation TODO
 
-The current publishability checklist is tracked in [Release readiness](docs/release_readiness.md). It records:
+The next validation step is to move more complex workflows through the same evidence ladder used by the current demo. These are TODOs, not completed workflow claims.
 
-- homepage visuals generated with imagegen and saved under `assets/images/`;
-- Browser and Computer Use boundaries for agent workflows;
-- CLI contract coverage for `info`, `doctor`, `auth`, `aoi`, `catalog`, `recipe`, `plan`, `render`, `validate`, `preflight`, `run`, `exports`, `trace`, `corpus`, and `eval`;
-- the Hong Kong 2024 16-day NDVI example and its render/validation commands;
-- corpus policy for `giswqs`/OpenGeo, `gee-community`, and paper-linked GEE repositories;
-- validation commands and remaining limitations.
+| TODO | More complex task | What it should verify | Current status | Promotion gate |
+| --- | --- | --- | --- | --- |
+| [ ] | Land-only and vegetation-only 16-day NDVI for Hong Kong | Water/land masks, land-cover strata, and all-surface vs vegetation-only interpretation boundaries | Planned from v0.3 demo output | Add recipe-specific preflight, export selectors, CSV sanity checks, and domain notes |
+| [ ] | District-level 16-day NDVI time series | Multi-zone `reduceRegions`, stable district identifiers, larger table export, and null-class handling | Planned | Pass render/validate, mocked empty-zone/empty-collection tests, then one confirmed live export |
+| [ ] | Multi-index optical workflow: NDVI + EVI + NDWI | Shared AOI/date parsing, multiple band formulas, consistent cloud masking, one trace | Plan/render/validate pieces exist separately | Add composite recipe, semantic checks for all formulas, and benchmark cases |
+| [ ] | Landsat LST urban heat CSV / GeoTIFF | QA_PIXEL masking, ST_B10 scale/offset, thermal units, coarser scale warnings | Render/validate only | Add LST-specific live preflight and compare image-count/temperature sanity ranges |
+| [ ] | Sentinel-1 flood/change before-after GeoTIFF | SAR filtering, polarization/orbit review, before/after window checks, image export safety | Render/validate with generic preflight gate | Add Sentinel-1 preflight and event-specific threshold review |
+| [ ] | Dynamic World land-cover summary | Probabilistic class aggregation, confidence thresholds, area/fraction outputs | Render/validate only | Add land-cover preflight and class-fraction sanity checks |
+| [ ] | Generic zonal statistics over supplied GeoJSON | User-supplied zones, reducer scale, selector stability, large-table export behavior | Plan-only / partial template coverage | Complete template context, validators, mocked geometry failure tests |
+| [ ] | Paired image + table export | Coordinated GeoTIFF and CSV outputs from one reviewed plan | Planned | Add multi-export trace, quota warnings, and one-export-at-a-time safeguards |
+
+Release-quality promotion checklist for any new workflow:
+
+- [ ] parser recognizes the task without fabricating AOI, dates, dataset, or output;
+- [ ] recipe card names required inputs, datasets, masks, reducers, scale, CRS, output schema, and limitations;
+- [ ] `catalog evidence` returns dataset, operator, recipe, failure, and export guidance;
+- [ ] rendered script passes static and semantic validation;
+- [ ] mocked preflight blocks placeholder AOI/export context and empty collections;
+- [ ] live preflight passes with a user-owned project and records non-secret diagnostics;
+- [ ] live export is submitted at most once with `--confirm-live`;
+- [ ] export task reaches `COMPLETED` and the output has documented sanity checks;
+- [ ] trace artifacts contain plan, evidence, validation, preflight, export metadata, and no credentials;
+- [ ] README/capability matrix is updated with the workflow's actual status.
 
 ![GEE agent harness workflow](assets/images/gee-agent-harness-hero.png)
 
 ## Roadmap
 
-The roadmap is tracked in [ROADMAP.md](ROADMAP.md). The near-term direction is to keep the Hong Kong NDVI workflows as golden regression examples while expanding the general harness:
+The roadmap is tracked in [ROADMAP.md](ROADMAP.md). The near-term direction is to expand the harness beyond the current demo:
 
 - add deeper recipe-specific preflight adapters for NDWI, NDBI, Landsat LST, Sentinel-1, and zonal workflows;
 - turn more dataset/operator/failure cards into executable registry metadata;
@@ -357,9 +369,7 @@ Live Earth Engine commands require:
 2. a Google Cloud Project with Earth Engine API access;
 3. local OAuth authentication.
 
-本仓库不提供 Google 账号。需要用户自行注册 Earth Engine、配置 Google Cloud project，并在本地认证。不要提交 credentials.
-
-Never commit service account JSON files, OAuth tokens, local credential files, refresh tokens, or credential paths.
+Use your own account and project, keep OAuth credentials local, and do not commit credential files.
 
 ### Earth Engine authentication: Windows PowerShell
 
@@ -578,41 +588,53 @@ low-image-count periods: 5, 8
 null mean_ndvi rows: 0
 ```
 
-Full demo CSV:
+Full demo table:
 
-```csv
-aoi_name,year,period_index,date_start,date_end,temporal_cadence_days,mean_ndvi,image_count_before_cloud_filter,image_count_after_cloud_filter,dataset_id,scale_m,crs,aoi_source,export_description
-Hong Kong,2024,1,2024-01-01,2024-01-17,16,0.06137939316458223,34,34,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,2,2024-01-17,2024-02-02,16,0.021682486591865075,34,15,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,3,2024-02-02,2024-02-18,16,-0.008787025242330054,30,16,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,4,2024-02-18,2024-03-05,16,0.018605165810100164,36,5,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,5,2024-03-05,2024-03-21,16,0.3583391891617482,30,2,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,6,2024-03-21,2024-04-06,16,0.09820961451352254,34,17,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,7,2024-04-06,2024-04-22,16,0.15836690001841133,30,10,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,8,2024-04-22,2024-05-08,16,-0.0664235578099966,30,2,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,9,2024-05-08,2024-05-24,16,0.17030485358920375,39,4,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,10,2024-05-24,2024-06-09,16,0.25214183736529805,30,6,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,11,2024-06-09,2024-06-25,16,0.1821216212020888,34,6,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,12,2024-06-25,2024-07-11,16,0.10028333128041216,32,22,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,13,2024-07-11,2024-07-27,16,0.25195509572253405,30,19,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,14,2024-07-27,2024-08-12,16,0.08885762249481123,36,20,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,15,2024-08-12,2024-08-28,16,0.11989745428671472,30,12,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,16,2024-08-28,2024-09-13,16,0.15124974656199455,34,20,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,17,2024-09-13,2024-09-29,16,0.14508491985008928,30,21,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,18,2024-09-29,2024-10-15,16,0.1376690685869499,30,28,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,19,2024-10-15,2024-10-31,16,0.100211664616846,35,32,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,20,2024-10-31,2024-11-16,16,0.005387772561937038,33,16,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,21,2024-11-16,2024-12-02,16,0.014769201455417689,37,14,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,22,2024-12-02,2024-12-18,16,0.07812940745081513,40,26,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-Hong Kong,2024,23,2024-12-18,2025-01-01,16,0.07055101818908434,34,24,COPERNICUS/S2_SR_HARMONIZED,10,EPSG:4326,Home Affairs Department Hong Kong administrative district boundary GeoJSON,hk_2024_16day_ndvi
-```
+The original CSV has 14 columns. To keep the README readable on GitHub, constant CSV fields are shown once, and the 23 period-specific rows are shown in the table below.
 
-Why this demo can look low:
+| CSV field | Value |
+| --- | --- |
+| `aoi_name` | `Hong Kong` |
+| `year` | `2024` |
+| `temporal_cadence_days` | `16` |
+| `dataset_id` | `COPERNICUS/S2_SR_HARMONIZED` |
+| `scale_m` | `10` |
+| `crs` | `EPSG:4326` |
+| `aoi_source` | `Home Affairs Department Hong Kong administrative district boundary GeoJSON` |
+| `export_description` | `hk_2024_16day_ndvi` |
 
-- It is a whole-AOI all-surface mean NDVI example, not a land-only or vegetation-only ecological indicator.
+| Period | Start | End | Mean NDVI | Images before cloud filter | Images after cloud filter |
+| ---: | --- | --- | ---: | ---: | ---: |
+| 1 | 2024-01-01 | 2024-01-17 | 0.06137939316458223 | 34 | 34 |
+| 2 | 2024-01-17 | 2024-02-02 | 0.021682486591865075 | 34 | 15 |
+| 3 | 2024-02-02 | 2024-02-18 | -0.008787025242330054 | 30 | 16 |
+| 4 | 2024-02-18 | 2024-03-05 | 0.018605165810100164 | 36 | 5 |
+| 5 | 2024-03-05 | 2024-03-21 | 0.3583391891617482 | 30 | 2 |
+| 6 | 2024-03-21 | 2024-04-06 | 0.09820961451352254 | 34 | 17 |
+| 7 | 2024-04-06 | 2024-04-22 | 0.15836690001841133 | 30 | 10 |
+| 8 | 2024-04-22 | 2024-05-08 | -0.0664235578099966 | 30 | 2 |
+| 9 | 2024-05-08 | 2024-05-24 | 0.17030485358920375 | 39 | 4 |
+| 10 | 2024-05-24 | 2024-06-09 | 0.25214183736529805 | 30 | 6 |
+| 11 | 2024-06-09 | 2024-06-25 | 0.1821216212020888 | 34 | 6 |
+| 12 | 2024-06-25 | 2024-07-11 | 0.10028333128041216 | 32 | 22 |
+| 13 | 2024-07-11 | 2024-07-27 | 0.25195509572253405 | 30 | 19 |
+| 14 | 2024-07-27 | 2024-08-12 | 0.08885762249481123 | 36 | 20 |
+| 15 | 2024-08-12 | 2024-08-28 | 0.11989745428671472 | 30 | 12 |
+| 16 | 2024-08-28 | 2024-09-13 | 0.15124974656199455 | 34 | 20 |
+| 17 | 2024-09-13 | 2024-09-29 | 0.14508491985008928 | 30 | 21 |
+| 18 | 2024-09-29 | 2024-10-15 | 0.1376690685869499 | 30 | 28 |
+| 19 | 2024-10-15 | 2024-10-31 | 0.100211664616846 | 35 | 32 |
+| 20 | 2024-10-31 | 2024-11-16 | 0.005387772561937038 | 33 | 16 |
+| 21 | 2024-11-16 | 2024-12-02 | 0.014769201455417689 | 37 | 14 |
+| 22 | 2024-12-02 | 2024-12-18 | 0.07812940745081513 | 40 | 26 |
+| 23 | 2024-12-18 | 2025-01-01 | 0.07055101818908434 | 34 | 24 |
+
+How to read this demo:
+
+- It is a whole-AOI all-surface mean NDVI example.
 - The curated Hong Kong administrative geometry includes water and dense built-up areas, so period means can be near zero or occasionally negative.
-- Periods 5 and 8 have only two images after cloud filtering, so they should be read as lower-confidence demo rows.
-- The purpose of this example is to prove the v0.3 agent loop, not to optimize a remote-sensing product:
+- Periods 5 and 8 have only two images after cloud filtering and are useful confidence-check rows.
+- The example shows the v0.3 agent loop:
 
 ```text
 natural language -> gee-plan/v0.3 YAML -> rendered .py -> validation -> live preflight -> Earth Engine export task -> Drive CSV
@@ -771,11 +793,8 @@ More documentation:
 - [Research positioning](docs/research_positioning.md)
 - [Paper outline](docs/paper.md)
 - [Roadmap](ROADMAP.md)
-- [Release readiness](docs/release_readiness.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Harness trace model](docs/harness.md)
-- [v0.1 Hong Kong January NDVI workflow](docs/v01_hk_january_ndvi.md)
-- [v0.2 land-cover-aware NDVI workflow](docs/v02_landcover_aware_ndvi.md)
 - [v0.3 Hong Kong 2024 16-day NDVI workflow](docs/v03_hk_2024_16day_ndvi.md)
 - [v0.3 Hong Kong 2024 16-day NDVI case study](docs/case_studies/hk_ndvi_v03.md)
 - [v0.3 sanitized evidence bundle](docs/evidence/v03_hk_2024_16day_ndvi/README.md)
@@ -796,7 +815,7 @@ The local knowledge base also contains distilled notes under `references/knowled
 
 ## Security and credentials
 
-本仓库不提供 Google 账号。需要用户自行注册 Earth Engine、配置 Google Cloud project，并在本地认证。不要提交 credentials.
+Live Earth Engine runs require your own Earth Engine account, Google Cloud Project, and local OAuth authentication. Keep authentication local and out of version control.
 
 Never commit service account JSON files, OAuth tokens, local credential files, refresh tokens, credential paths, private keys, or client secrets.
 
