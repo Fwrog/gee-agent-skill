@@ -9,7 +9,7 @@ description: Build traceable, auditable, evaluation-driven Google Earth Engine P
 
 Use this skill for reproducible Google Earth Engine workflows that need a CLI-first, source-grounded, validated, traceable, and failure-aware path from user intent to plan, script, preflight, export, and run trace.
 
-This is an agent-native GEE harness, not a GUI controller. Prefer `gee-skill` commands and the official Earth Engine Python API. Use Browser only for docs inspection, local previews, or visual QA. Use Computer Use only when no CLI/API/plugin surface can complete the task, and follow action-time confirmation rules for risky UI actions.
+This is an agent-native GEE harness, not a GUI controller. Prefer `gee-skill` commands and the official Earth Engine Python API. Use Browser only for docs inspection, local previews, or visual QA. Use Google Drive for file handoff and readback. Use Data Analytics for report/chart/data-quality validation after data exists. Use Computer Use only when no CLI/API/plugin surface can complete the task, and follow action-time confirmation rules for risky UI actions.
 
 ## Standard Flow
 
@@ -46,6 +46,8 @@ This is an agent-native GEE harness, not a GUI controller. Prefer `gee-skill` co
 18. Use `gee-skill eval evals/benchmark_suite.yml --json` for offline benchmark evidence.
 19. Treat `UNSAFE_GETINFO` and `PREFLIGHT_REQUIRED` as first-class safety categories when explaining validation/preflight failures.
 20. Avoid overclaiming: say `live verified` only for workflows marked live export completed in `docs/capability_matrix.md`; say `render/validate verified`, `dry-run verified`, `mocked preflight blocked`, `planned`, or `experimental` for all other cases.
+21. When a concrete task reveals a reusable lesson, classify it before editing public knowledge: dataset card, rule card, failure case, workflow card, or private-only note. Public cards must include source, `last_checked`, scope, limitations, and what they cannot claim.
+22. For NDVI demo reasonableness, use a validation ladder rather than a single truth source: MODIS VI products for coarse temporal checks, Landsat for independent sensor checks, JRC water for all-surface interpretation, Dynamic World for time-matched strata, and ESA WorldCover for static class sanity.
 
 ## Golden Examples
 
@@ -55,9 +57,7 @@ These are verified regression paths, not the full scope of the project:
    `gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." --dry-run --json`.
 2. v0.2 HK Jan 2024 land-cover-aware NDVI CSV:
    `gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --plan --json`.
-3. v0.3 HK 2024 16-day NDVI CSV:
-   `gee-skill plan from-text "Compute 16-day NDVI for Hong Kong in 2024 and export CSV." --out outputs/plans/hk_2024_16day_ndvi.yaml --json`,
-   then `gee-skill render outputs/plans/hk_2024_16day_ndvi.yaml --script-out outputs/scripts/hk_2024_16day_ndvi_csv.py --json`.
+More complex academic demos are intentionally not public golden examples. Keep them outside the repository and promote only generic lessons after privacy review.
 
 ## Do Not Use
 
@@ -106,6 +106,10 @@ Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 ## Resource Map
 
 - Read [docs/agent_goal.md](docs/agent_goal.md) for the reusable agent goal and tool boundaries.
+- Read [docs/demo_gallery.md](docs/demo_gallery.md) for the current public golden examples and their claim boundaries.
+- Read [docs/tool_permissions.md](docs/tool_permissions.md) for Browser, Google Drive, Data Analytics, Computer Use, and imagegen boundaries.
+- Read [docs/closed_loop.md](docs/closed_loop.md) for the generic knowledge promotion workflow.
+- Read [docs/remote_sensing_validation.md](docs/remote_sensing_validation.md) for public NDVI demo validation products and limits.
 - Read [docs/harness.md](docs/harness.md) for run traces and tool registry behavior.
 - Read [docs/live_smoke.md](docs/live_smoke.md) for private live smoke-test commands.
 - Read [docs/how_to_start.md](docs/how_to_start.md) for the recommended user path.
@@ -118,7 +122,6 @@ Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 - Read [docs/concepts.md](docs/concepts.md) for plan-first, RAG, preflight, and trace concepts.
 - Read [docs/v01_hk_january_ndvi.md](docs/v01_hk_january_ndvi.md) for the v0.1 release target.
 - Read [docs/v02_landcover_aware_ndvi.md](docs/v02_landcover_aware_ndvi.md) for the v0.2 land-cover-aware workflow.
-- Read [docs/v03_hk_2024_16day_ndvi.md](docs/v03_hk_2024_16day_ndvi.md) for the v0.3 16-day NDVI golden workflow.
 - Read [docs/troubleshooting.md](docs/troubleshooting.md) for common failures and boundary mismatch guidance.
 - Read [docs/error_taxonomy.md](docs/error_taxonomy.md) for failure categories and recovery hints.
 - Read [docs/extending.md](docs/extending.md) before adding workflow recipes, dataset cards, or semantic validators.

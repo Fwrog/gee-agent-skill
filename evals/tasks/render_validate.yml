@@ -1,9 +1,6 @@
 id: render_validate_tasks
 description: Rendered-script validation cases for golden and non-golden recipe templates.
 tasks:
-  - template: hk_2024_16day_ndvi_csv
-    context: evals/contexts/hk_2024_16day_ndvi.json
-    expected_validation_ok: true
   - template: hk_january_2024_ndvi_csv
     context: evals/contexts/hk_2024_01_ndvi_v01.json
     expected_validation_ok: true

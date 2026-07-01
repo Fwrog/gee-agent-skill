@@ -51,7 +51,7 @@ def infer_semantic_rulesets(text: str, explicit: str | None = None) -> list[str]
     if (
         "copernicus/s2_sr_harmonized" in lower
         and "ndvi" in lower
-        and ("reduceregions" in lower or "build_16day_statistics" in lower or "hk_january" in lower)
+        and ("reduceregions" in lower or "hk_january" in lower)
     ):
         rules.append("sentinel2_ndvi_monthly_zonal")
         rules.append("vegetation_index_ndvi")

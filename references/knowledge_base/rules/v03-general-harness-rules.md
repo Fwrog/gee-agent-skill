@@ -3,8 +3,8 @@
 source_id: rules-v03-general-harness
 source_type: curated-ruleset-card
 primary_status: curated
-source_url: docs/agent_goal.md
-last_checked: 2026-06-23
+source_url: docs/agent_goal.md; https://developers.google.com/earth-engine/guides/exporting; https://developers.google.com/earth-engine/apidocs/export-image-todrive; https://developers.google.com/earth-engine/apidocs/export-table-todrive
+last_checked: 2026-07-01
 ruleset_id: agent_script_contract, global_safety, optical_index, vegetation_index_ndvi, water_index_ndwi, builtup_index_ndbi, landsat_lst, sentinel1_flood_before_after, export_table_csv, export_image_geotiff, dynamic_world_landcover
 method_name: geeskill.validation.validate_script, geeskill.semantic.validate_semantics
 operator_chain: parse plan -> render script -> static validation -> semantic validation -> preflight -> confirmed export
@@ -23,6 +23,8 @@ Corpus sampling from official and high-quality community examples showed recurri
 - Expose dates, dataset IDs, scale, CRS, and export description as constants.
 - For CSV table exports, expose selectors so the schema is reviewable.
 - For image exports, expose `maxPixels` or an equivalent max pixel budget.
+- For image exports, cast or verify all exported bands have one numeric dtype before `Export.image.toDrive`.
+- For live exports, smoke-test CRS/projection choices before scaling to multi-year or large-AOI batches.
 - Put `task.start()` behind a guarded `main()` entrypoint.
 - Treat `getInfo()` as a warning unless used in bounded preflight/debug probes.
 
@@ -33,6 +35,8 @@ The 8-source local corpus exam also promotes style signals into review expectati
 - Use server-side date sequences or mapped collections for repeated cadences such as 16-day periods.
 - Make scale, CRS/projection, `tileScale`, and `maxPixels` explicit when they affect cost or interpretation.
 - Keep export contracts reviewable through descriptions, selectors, region, file format, and schema properties.
+- Record live task id, description, output folder, source assets, CRS, scale, and terminal state before claiming completion.
+- Validate boundary dataset field names and sample values before filtering by administrative names; if the boundary is a public substitute, block authoritative county-scale wording.
 - Separate Browser/Computer Use observation from CLI/API execution and live task submission.
 
 ## Task Rules

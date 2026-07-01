@@ -50,3 +50,29 @@ def test_retrieval_trace_reports_recipe_and_rule_coverage():
     assert trace["coverage"]["recipe_cards"] >= 1
     assert trace["coverage"]["rule_cards"] >= 1
     assert trace["coverage"]["export_guidance"] >= 1
+
+
+def test_rag_retrieves_adaptive_browser_learning_loop():
+    index = build_index(Path("references/knowledge_base"))
+    results = search(index, "browser backed knowledge loop private research source fidelity", top_k=6)
+    assert results
+    joined = " ".join(item.source_path for item in results)
+    assert "adaptive-browser-backed-knowledge-loop" in joined
+    assert "source-fidelity-and-private-research-boundaries" in joined
+
+
+def test_rag_retrieves_live_export_contract_failures():
+    index = build_index(Path("references/knowledge_base"))
+    results = search(index, "Earth Engine live export image dtype CRS boundary schema Drive CSV fetch", top_k=8)
+    assert results
+    joined = " ".join(item.source_path for item in results)
+    assert "gee-live-export-contract-failures" in joined
+
+
+def test_rag_retrieves_ndvi_demo_validation_ladder():
+    index = build_index(Path("references/knowledge_base"))
+    results = search(index, "NDVI validation MODIS Terra Aqua Landsat Dynamic World water strata", top_k=8)
+    assert results
+    joined = " ".join(item.source_path for item in results)
+    assert "ndvi-demo-validation-ladder" in joined
+    assert "modis-mod13q1-vegetation-indices" in joined or "modis-myd13q1-vegetation-indices" in joined

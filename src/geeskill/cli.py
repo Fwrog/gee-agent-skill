@@ -7,8 +7,6 @@ import os
 import shutil
 import subprocess
 import sys
-import time
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -115,23 +113,6 @@ def _script_execution_ok(result: dict[str, Any]) -> bool:
 
 PROJECT_ENV_VARS = ("EE_PROJECT", "GOOGLE_CLOUD_PROJECT", "GOOGLE_CLOUD_QUOTA_PROJECT", "CLOUDSDK_CORE_PROJECT")
 
-V03_HK_2024_16DAY_NDVI_TEMPLATE = "hk_2024_16day_ndvi_csv"
-V03_HK_2024_16DAY_NDVI_SELECTORS = [
-    "aoi_name",
-    "year",
-    "period_index",
-    "date_start",
-    "date_end",
-    "temporal_cadence_days",
-    "mean_ndvi",
-    "image_count_before_cloud_filter",
-    "image_count_after_cloud_filter",
-    "dataset_id",
-    "scale_m",
-    "crs",
-    "aoi_source",
-    "export_description",
-]
 V03_GENERIC_PREFLIGHT_TEMPLATES = {
     "sentinel2_index_image",
     "sentinel2_index_table",
@@ -219,7 +200,6 @@ def cmd_info(args: argparse.Namespace) -> int:
         "golden_examples": [
             "HK Jan 2024 NDVI CSV",
             "HK Jan 2024 land-cover-aware NDVI CSV",
-            "HK 2024 16-day NDVI plan",
         ],
     }
     print(json.dumps(_envelope_ok(data), indent=2, ensure_ascii=False) if args.json else data["identity"])
@@ -1080,8 +1060,6 @@ def _v03_output_schema(plan: dict[str, Any]) -> list[str]:
     context_schema = context.get("output_schema")
     if isinstance(context_schema, list):
         return [str(item) for item in context_schema]
-    if execution.get("template") == V03_HK_2024_16DAY_NDVI_TEMPLATE:
-        return list(V03_HK_2024_16DAY_NDVI_SELECTORS)
     return []
 
 
@@ -1164,23 +1142,6 @@ def _set_execution_context(plan: dict[str, Any], context: dict[str, Any]) -> Non
     execution = plan.setdefault("execution", {})
     if isinstance(execution, dict):
         execution["context"] = context
-
-
-def _parse_iso_date(value: Any) -> date:
-    year, month, day = (int(part) for part in str(value).split("-"))
-    return date(year, month, day)
-
-
-def _expected_period_rows(start_date: Any, end_date: Any, cadence_days: Any) -> int:
-    start = _parse_iso_date(start_date)
-    end = _parse_iso_date(end_date)
-    cadence = int(cadence_days)
-    days = (end - start).days
-    if days <= 0:
-        raise ValueError("date_end must be after date_start.")
-    if cadence <= 0:
-        raise ValueError("temporal cadence must be positive.")
-    return (days + cadence - 1) // cadence
 
 
 def _unsupported_v03_preflight_report(args: argparse.Namespace, plan: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
@@ -1275,144 +1236,12 @@ def _first_selected_dataset_id(plan: dict[str, Any]) -> str | None:
     return None
 
 
-def _v03_failed_month_report(args: argparse.Namespace, context: dict[str, Any], month: int, exc: Exception) -> dict[str, Any]:
-    payload = classify_exception(exc).to_dict()
-    return {
-        "ok": False,
-        "decision": "block_export",
-        "project": args.project,
-        "year": context.get("year"),
-        "month": int(month),
-        "scope": "hong-kong",
-        "aoi_name": context.get("aoi_name", "Hong Kong"),
-        "dataset_id": context.get("dataset_id", "COPERNICUS/S2_SR_HARMONIZED"),
-        "critical_error": payload,
-        "errors": [payload],
-        "warnings": [],
-        "checks": {},
-    }
-
-
-def _run_v03_month_preflight_with_retry(
-    args: argparse.Namespace,
-    context: dict[str, Any],
-    month: int,
-    config: HKNDVIPreflightConfig,
-) -> dict[str, Any]:
-    attempts = []
-    report: dict[str, Any] | None = None
-    for attempt in (1, 2):
-        try:
-            report = run_hk_ndvi_preflight(config)
-        except Exception as exc:
-            report = _v03_failed_month_report(args, context, month, exc)
-        attempts.append(
-            {
-                "attempt": attempt,
-                "ok": bool(report.get("ok")),
-                "critical_error": report.get("critical_error"),
-            }
-        )
-        if report.get("ok"):
-            break
-        critical_error = report.get("critical_error") or {}
-        if not critical_error.get("retryable") or attempt == 2:
-            break
-        time.sleep(2)
-    if report is None:
-        raise RuntimeError("Internal error: v0.3 preflight did not produce a report.")
-    if len(attempts) > 1:
-        report["retry_attempts"] = attempts
-    return report
-
-
 def _preflight_from_v03_plan(args: argparse.Namespace, plan: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
     execution = dict(plan.get("execution") or {})
     template = execution.get("template")
-    if template != V03_HK_2024_16DAY_NDVI_TEMPLATE:
-        if template in V03_GENERIC_PREFLIGHT_TEMPLATES:
-            return run_generic_v03_preflight(_generic_v03_preflight_config(args, plan, context))
-        return _unsupported_v03_preflight_report(args, plan, context)
-
-    warnings: list[dict[str, Any] | str] = []
-    try:
-        expected_rows = _expected_period_rows(
-            context.get("date_start"),
-            context.get("date_end"),
-            context.get("temporal_cadence_days", 16),
-        )
-    except Exception as exc:
-        expected_rows = None
-        warnings.append(
-            {
-                "category": "EXPECTED_ROWS_UNKNOWN",
-                "message": str(exc),
-                "suggested_fix": "Review date_start, date_end, and temporal_cadence_days in the v0.3 plan context.",
-            }
-        )
-
-    preflight_months = context.get("preflight_months") or [1, 7]
-    reports = []
-    errors = []
-    checks = []
-    for month in preflight_months:
-        try:
-            config = _preflight_config_from_values(
-                project=args.project,
-                year=int(context["year"]),
-                month=int(month),
-                scope="hong-kong",
-                district=None,
-                boundary_geojson=str(context.get("boundary_geojson") or default_boundary_path()),
-                dataset_id=str(context.get("dataset_id", "COPERNICUS/S2_SR_HARMONIZED")),
-                scale=int(context.get("scale", 10)),
-                crs=str(context.get("crs", "EPSG:4326")),
-                cloudy_pixel_percentage=int(context.get("cloudy_pixel_percentage", 80)),
-                tile_scale=int(context.get("tile_scale", 4)),
-            )
-        except Exception as exc:
-            report = _v03_failed_month_report(args, context, int(month), exc)
-        else:
-            report = _run_v03_month_preflight_with_retry(args, context, int(month), config)
-        reports.append(report)
-        month_ok = bool(report.get("ok"))
-        checks.append({"month": int(month), "ok": month_ok})
-        warnings.extend(report.get("warnings") or [])
-        if not month_ok:
-            errors.append(
-                report.get("critical_error")
-                or error_payload(
-                    "V03_PREFLIGHT_MONTH_FAILED",
-                    f"Anchor-month preflight failed for month {int(month)}.",
-                )
-            )
-
-    ok = not errors
-    return {
-        "ok": ok,
-        "decision": "allow_export" if ok else "block_export",
-        "schema_version": plan.get("schema_version"),
-        "plan_id": plan.get("plan_id"),
-        "profile": "hk_2024_16day_ndvi_anchor_months",
-        "template": template,
-        "project": args.project,
-        "aoi_name": context.get("aoi_name", "Hong Kong"),
-        "aoi_source": context.get("aoi_source"),
-        "dataset_id": context.get("dataset_id"),
-        "date_start": context.get("date_start"),
-        "date_end": context.get("date_end"),
-        "temporal_cadence_days": int(context.get("temporal_cadence_days", 16)),
-        "preflight_months": [int(month) for month in preflight_months],
-        "monthly_reports": reports,
-        "expected_export_rows": expected_rows,
-        "export_description": context.get("export_description"),
-        "drive_folder": context.get("drive_folder"),
-        "file_prefix": context.get("file_prefix"),
-        "critical_error": errors[0] if errors else None,
-        "errors": errors,
-        "warnings": warnings,
-        "checks": {"anchor_months": checks},
-    }
+    if template in V03_GENERIC_PREFLIGHT_TEMPLATES:
+        return run_generic_v03_preflight(_generic_v03_preflight_config(args, plan, context))
+    return _unsupported_v03_preflight_report(args, plan, context)
 
 
 def _task_from_task_plan(task_plan: dict) -> dict:

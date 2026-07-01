@@ -1,0 +1,53 @@
+# Dataset Card: MOD13Q1.061 Terra Vegetation Indices 16-Day Global 250m
+
+source_id: dataset-modis-mod13q1-vegetation-indices
+source_type: official-dataset-card
+primary_status: canonical
+dataset_id: MODIS/061/MOD13Q1
+title: MOD13Q1.061 Terra Vegetation Indices 16-Day Global 250m
+provider: NASA LP DAAC / USGS EROS Center
+gee_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
+source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
+temporal_coverage: 2000-present 16-day composites; check catalog for current ingestion status
+spatial_resolution: 250m
+bands: NDVI, EVI, DetailedQA, sur_refl_b01, sur_refl_b02, sur_refl_b03, sur_refl_b07, ViewZenith, SolarZenith, RelativeAzimuth, DayOfYear, SummaryQA
+qa_bands: DetailedQA, SummaryQA
+common_uses: vegetation-index sanity checks, coarse NDVI/EVI temporal context, cross-sensor validation
+recommended_tasks: vegetation_index, zonal_statistics, change_detection
+scale_notes: Use 250m or coarser summaries and compare trends or zonal means rather than fine-scale edges.
+projection_notes: Document scale/resolution mismatch when comparing with Sentinel-2 or Landsat outputs.
+license_attribution: NASA LP DAAC / USGS MODIS data terms apply.
+last_checked: 2026-07-01
+risk_level: medium
+
+## Use
+
+Use `MODIS/061/MOD13Q1` as a coarse Terra MODIS reference for NDVI/EVI sanity checks, especially when a Sentinel-2 demo reports 16-day or monthly vegetation-index summaries.
+
+## Bands
+
+Core bands: NDVI, EVI, DetailedQA, sur_refl_b01, sur_refl_b02, sur_refl_b03, sur_refl_b07, ViewZenith, SolarZenith, RelativeAzimuth, DayOfYear, SummaryQA.
+
+QA or mask bands: DetailedQA, SummaryQA.
+
+## Recommended Tasks
+
+- vegetation_index
+- zonal_statistics
+- change_detection
+
+## Scale and Projection Notes
+
+- Apply the documented `0.0001` scale factor to NDVI and EVI.
+- Use 250m or coarser summaries for cross-sensor comparison.
+- Compare temporal pattern, sign, range, and broad zonal means rather than 10m Sentinel-2 edges.
+
+## Known Limitations
+
+- The 250m composite is not a 10m validation truth source.
+- Composite windows, QA screening, BRDF/view geometry, and mixed pixels can shift values relative to Sentinel-2.
+- Use this product to support method reasonableness, not final scientific validation by itself.
+
+## Attribution
+
+NASA LP DAAC / USGS MODIS data terms apply.

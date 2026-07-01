@@ -369,7 +369,7 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
         selected = [{"dataset_id": requested_dataset, "selection_reason": "user_requested_unverified"}]
 
     template, context, outputs = _execution_artifacts_for(slots, recipe, selected)
-    golden_example = bool(slots["golden_route"].get("ok")) or _is_hk_2024_16day_ndvi(slots)
+    golden_example = bool(slots["golden_route"].get("ok"))
     plan_time_range = _planning_time_range(slots)
     plan_id = _slug(f"{task_type}-{metric}-{slots['aoi']['name']}-{plan_time_range['label']}")
     validation_rulesets = _validation_rulesets_for(recipe, task_type, metric, output_type)
@@ -428,7 +428,7 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
             "outputs": outputs,
             "temporal_cadence": slots["temporal_cadence"],
             "grouping": slots["grouping"],
-            "live_adapter_ready": _is_hk_2024_16day_ndvi(slots),
+            "live_adapter_ready": False,
             "context_review_required": bool((context or {}).get("review_required")),
             "notes": "This generic plan is editable and does not contact Earth Engine.",
         },
@@ -453,53 +453,11 @@ def _planning_time_range(slots: dict[str, Any]) -> dict[str, Any]:
     return slots["time_range"]
 
 
-def _is_hk_2024_16day_ndvi(slots: dict[str, Any]) -> bool:
-    return (
-        slots.get("metric") == "NDVI"
-        and slots.get("task_type") == "vegetation_index"
-        and (slots.get("aoi") or {}).get("name") == "Hong Kong"
-        and (slots.get("time_range") or {}).get("date_start") == "2024-01-01"
-        and (slots.get("time_range") or {}).get("date_end") == "2025-01-01"
-        and slots.get("temporal_cadence") == "16-day"
-        and (slots.get("output") or {}).get("type") == "csv"
-    )
-
-
 def _execution_artifacts_for(
     slots: dict[str, Any],
     recipe: dict[str, Any],
     selected_datasets: list[dict[str, Any]],
 ) -> tuple[str | None, dict[str, Any] | None, dict[str, str]]:
-    if _is_hk_2024_16day_ndvi(slots):
-        dataset_id = selected_datasets[0]["dataset_id"] if selected_datasets else "COPERNICUS/S2_SR_HARMONIZED"
-        context = {
-            "script_name": "hk_2024_16day_ndvi_csv",
-            "year": 2024,
-            "date_start": "2024-01-01",
-            "date_end": "2025-01-01",
-            "aoi_name": "Hong Kong",
-            "aoi_source": "Home Affairs Department Hong Kong administrative district boundary GeoJSON",
-            "boundary_geojson": "references/boundaries/hk_18_districts.geojson",
-            "dataset_id": dataset_id,
-            "scale": 10,
-            "crs": "EPSG:4326",
-            "tile_scale": 4,
-            "cloudy_pixel_percentage": 80,
-            "max_pixels": 10000000000000,
-            "temporal_cadence_days": 16,
-            "preflight_months": [1, 7],
-            "export_description": "hk_2024_16day_ndvi",
-            "drive_folder": "gee_exports",
-            "file_prefix": "hk_2024_16day_ndvi",
-        }
-        return (
-            "hk_2024_16day_ndvi_csv",
-            context,
-            {
-                "script": "outputs/scripts/hk_2024_16day_ndvi_csv.py",
-                "plan": "outputs/plans/hk_2024_16day_ndvi.yaml",
-            },
-        )
     metric = str(slots["metric"])
     output_type = slots["output"]["type"]
     task_type = str(slots["task_type"])

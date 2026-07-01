@@ -45,7 +45,7 @@ Components:
 - explicit `--project` and `--confirm-live` export gate;
 - export monitoring;
 - run traces and sanitized golden evidence bundles;
-- benchmark suite for parse, plan, render, validation, evidence coverage, safety blocks, and golden workflows.
+- benchmark suite for parse, plan, render, validation, evidence coverage, safety blocks, and public golden workflows.
 
 ## Contributions
 
@@ -66,9 +66,9 @@ The v0.1 workflow computes January 2024 mean NDVI for Hong Kong and exports one 
 
 The v0.2 workflow adds Dynamic World interpretation strata. It verifies that the harness can preserve the distinction between administrative AOI, land-cover masks, all-surface means, non-water means, and vegetation-like class summaries.
 
-### Case Study 3: 16-Day Hong Kong NDVI
+### Private Academic Workflows
 
-The v0.3 workflow turns a year-long 16-day NDVI request into `gee-plan/v0.3`, renders an Earth Engine Python script, validates it, runs live preflight, submits one confirmed export, monitors the task, and records trace artifacts.
+More complex academic demos are intentionally excluded from the public paper notes. Reusable lessons from those workflows should appear only as generic dataset, rule, failure, or workflow cards after privacy review.
 
 ## Evaluation Plan
 
@@ -77,7 +77,7 @@ Report:
 - `python -m pytest` result;
 - benchmark pass/fail count for `evals/benchmark_suite.yml`;
 - smoke-test result;
-- render/validate outcomes for HK 16-day NDVI, EVI, NDWI, and other non-golden templates;
+- render/validate outcomes for EVI, NDWI, and other non-golden templates;
 - mocked preflight blockers such as `V03_CONTEXT_REVIEW_REQUIRED`;
 - live preflight/export completion only for workflows listed as live completed in `docs/capability_matrix.md`;
 - wheel build and wheel-smoke results;

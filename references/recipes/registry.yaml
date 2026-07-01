@@ -13,10 +13,10 @@ recipes:
     output_schema: [aoi_name, date_start, date_end, mean_ndvi, dataset_id, scale_m, crs]
     live_risk_level: medium
     examples:
-      - Compute 16-day NDVI for Hong Kong in 2024 and export CSV.
+      - Compute NDVI for a supplied AOI in March 2024 and export CSV.
     limitations:
       - Optical index outputs require cloud, shadow, and water-context review before scientific interpretation.
-      - Golden Hong Kong examples prove the harness loop, not vegetation-monitoring validity.
+      - Public golden examples prove the harness loop, not vegetation-monitoring validity.
   - recipe_id: vegetation-index-evi
     task_type: vegetation_index
     description: Compute EVI from optical reflectance bands with explicit coefficients.

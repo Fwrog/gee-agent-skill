@@ -8,28 +8,26 @@ import yaml
 import geeskill.cli as cli
 from geeskill.intents import build_general_plan_from_text
 from geeskill.semantic import validate_semantics
-from geeskill.templates import load_context, render_template
-from geeskill.validation import validate_script
 
 
-HK_2024_16DAY_REQUEST = "Compute 16-day NDVI for Hong Kong in 2024 and export CSV."
+REVIEWED_NDWI_REQUEST = "Compute NDWI for projects/example/assets/reviewed_aoi in March 2024 and export GeoTIFF."
 
 
 def _payload(capsys):
     return json.loads(capsys.readouterr().out)
 
 
-def _write_v03_hk_plan(tmp_path, capsys):
-    plan_path = tmp_path / "hk_2024_16day_ndvi.yaml"
-    script_path = tmp_path / "hk_2024_16day_ndvi_csv.py"
-    rc = cli.main(["plan", "from-text", HK_2024_16DAY_REQUEST, "--out", str(plan_path), "--json"])
+def _write_reviewed_v03_ndwi_plan(tmp_path, capsys):
+    plan_path = tmp_path / "reviewed_ndwi.yaml"
+    script_path = tmp_path / "reviewed_ndwi.py"
+    rc = cli.main(["plan", "from-text", REVIEWED_NDWI_REQUEST, "--out", str(plan_path), "--json"])
     assert rc == 0
     capsys.readouterr()
     plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
     plan["execution"]["outputs"]["script"] = str(script_path)
-    plan["execution"]["context"]["export_description"] = "test_hk_2024_16day_ndvi"
+    plan["execution"]["context"]["export_description"] = "test_reviewed_ndwi_geotiff"
     plan["execution"]["context"]["drive_folder"] = "test_gee_exports"
-    plan["execution"]["context"]["file_prefix"] = "test_hk_2024_16day_ndvi"
+    plan["execution"]["context"]["file_prefix"] = "test_reviewed_ndwi_geotiff"
     plan_path.write_text(yaml.safe_dump(plan, sort_keys=False, allow_unicode=True), encoding="utf-8")
     return plan_path
 
@@ -76,13 +74,13 @@ def test_plan_from_text_recognizes_this_aoi_and_named_city(capsys):
 
 
 def test_observe_summarizes_natural_language_request(capsys):
-    rc = cli.main(["observe", "Compute 16-day NDVI for Hong Kong in 2024 and export CSV.", "--json"])
+    rc = cli.main(["observe", REVIEWED_NDWI_REQUEST, "--json"])
     assert rc == 0
     payload = _payload(capsys)
     assert payload["ok"] is True
     summary = payload["data"]["summary"]
-    assert summary["task_type"] == "vegetation_index"
-    assert summary["metric"] == "NDVI"
+    assert summary["task_type"] == "water_index"
+    assert summary["metric"] == "NDWI"
     assert summary["template_ready"] is True
     commands = [step["command"] for step in payload["data"]["next_steps"]]
     assert any("plan from-text" in command for command in commands)
@@ -141,16 +139,17 @@ def test_auth_check_can_use_discovered_project(monkeypatch, capsys):
     assert calls == [{"project": "discovered-project"}]
 
 
-def test_plan_from_text_accepts_hk_2024_16day_ndvi():
-    result = build_general_plan_from_text("Compute 16-day NDVI for Hong Kong in 2024 and export CSV.")
+def test_plan_from_text_accepts_16day_ndvi_as_reviewable_generic_plan():
+    result = build_general_plan_from_text("Compute 16-day NDVI for a supplied AOI in 2024 and export CSV.")
     assert result["ok"] is True
     plan = result["plan"]
     assert plan["task_type"] == "vegetation_index"
-    assert plan["intent"]["golden_example"] is True
-    assert plan["execution"]["template"] == "hk_2024_16day_ndvi_csv"
-    assert plan["execution"]["context"]["temporal_cadence_days"] == 16
+    assert plan["intent"]["golden_example"] is False
+    assert plan["execution"]["template"] == "sentinel2_index_table"
     assert plan["execution"]["temporal_cadence"] == "16-day"
-    assert plan["aoi"]["name"] == "Hong Kong"
+    assert plan["execution"]["live_adapter_ready"] is False
+    assert plan["execution"]["context_review_required"] is True
+    assert plan["aoi"]["name"] == "supplied AOI"
     assert plan["time_range"]["date_start"] == "2024-01-01"
     assert plan["time_range"]["date_end"] == "2025-01-01"
 
@@ -325,6 +324,18 @@ def test_catalog_recipe_rules_envelopes(capsys):
     payload = _payload(capsys)
     assert payload["data"]["cards"]
     assert any("PREFLIGHT_REQUIRED" in item["known_failures"] for item in payload["data"]["cards"])
+    live_export_card = next(
+        item
+        for item in payload["data"]["cards"]
+        if item["source_path"] == "failure-cases/gee-live-export-contract-failures.md"
+    )
+    assert {
+        "UNSUPPORTED_EXPORT_CRS",
+        "EXPORT_BAND_DTYPE_MISMATCH",
+        "DEPRECATED_ASSET_REPLACEMENT",
+        "BOUNDARY_SCHEMA_MISMATCH",
+        "LARGE_DRIVE_FETCH_UNSTABLE",
+    } <= set(live_export_card["known_failures"])
 
     rc = cli.main(["catalog", "evidence", "--category", "failure", "--json"])
     assert rc == 0
@@ -338,6 +349,50 @@ def test_catalog_recipe_rules_envelopes(capsys):
     assert payload["ok"] is True
     assert payload["data"]["task_type"] == "water_index"
 
+
+def test_catalog_finds_public_multisource_context(capsys):
+    rc = cli.main(
+        [
+            "catalog",
+            "search",
+            "VIIRS GHSL WorldPop MODIS land cover accessibility boundary",
+            "--top-k",
+            "20",
+            "--json",
+        ]
+    )
+    assert rc == 0
+    payload = _payload(capsys)
+    assert payload["ok"] is True
+    dataset_ids = {item["dataset_id"] for item in payload["data"]["results"]}
+    assert {
+        "MODIS/061/MCD12Q1",
+        "NOAA/VIIRS/DNB/ANNUAL_V21",
+        "NOAA/VIIRS/DNB/ANNUAL_V22",
+        "JRC/GHSL/P2023A/GHS_BUILT_S",
+        "WorldPop/GP/100m/pop",
+        "WM/geoLab/geoBoundaries/600/ADM2",
+        "Oxford/MAP/accessibility_to_cities_2015_v1_0",
+    } <= dataset_ids
+
+    rc = cli.main(["catalog", "evidence", "--category", "failures", "--json"])
+    assert rc == 0
+    payload = _payload(capsys)
+    source_card = next(
+        item
+        for item in payload["data"]["cards"]
+        if item["source_path"] == "failure-cases/source-fidelity-and-private-research-boundaries.md"
+    )
+    assert "PROXY_DATASET_OVERCLAIM" in source_card["known_failures"]
+    assert "PRIVATE_RESEARCH_LEAK" in source_card["known_failures"]
+    live_export_card = next(
+        item
+        for item in payload["data"]["cards"]
+        if item["source_path"] == "failure-cases/gee-live-export-contract-failures.md"
+    )
+    assert "EXPORT_BAND_DTYPE_MISMATCH" in live_export_card["known_failures"]
+    assert "BOUNDARY_SCHEMA_MISMATCH" in live_export_card["known_failures"]
+
     rc = cli.main(["rules", "show", "export_image_geotiff", "--json"])
     assert rc == 0
     payload = _payload(capsys)
@@ -349,6 +404,31 @@ def test_catalog_recipe_rules_envelopes(capsys):
     payload = _payload(capsys)
     assert payload["ok"] is True
     assert payload["data"]["ruleset_id"] == "landsat_lst"
+
+
+def test_catalog_finds_ndvi_validation_context(capsys):
+    rc = cli.main(
+        [
+            "catalog",
+            "search",
+            "NDVI validation MODIS Terra Aqua Landsat Dynamic World surface water",
+            "--top-k",
+            "20",
+            "--json",
+        ]
+    )
+    assert rc == 0
+    payload = _payload(capsys)
+    assert payload["ok"] is True
+    dataset_ids = {item["dataset_id"] for item in payload["data"]["results"]}
+    assert {
+        "MODIS/061/MOD13Q1",
+        "MODIS/061/MYD13Q1",
+        "LANDSAT/LC08/C02/T1_L2",
+        "LANDSAT/LC09/C02/T1_L2",
+        "GOOGLE/DYNAMICWORLD/V1",
+        "JRC/GSW1_4/GlobalSurfaceWater",
+    } <= dataset_ids
 
 
 def test_canonical_aoi_and_corpus_commands(capsys):
@@ -369,7 +449,7 @@ def test_canonical_aoi_and_corpus_commands(capsys):
 
 
 def test_canonical_render_and_preflight_aliases(monkeypatch, tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
     script_path = tmp_path / "rendered.py"
 
     rc = cli.main(["render", str(plan_path), "--script-out", str(script_path), "--json"])
@@ -381,15 +461,17 @@ def test_canonical_render_and_preflight_aliases(monkeypatch, tmp_path, capsys):
 
     monkeypatch.setattr(
         cli,
-        "run_hk_ndvi_preflight",
+        "run_generic_v03_preflight",
         lambda config: {
             "ok": True,
             "decision": "allow_export",
+            "schema_version": config.schema_version,
+            "plan_id": config.plan_id,
+            "profile": config.profile,
+            "template": config.template,
             "project": config.project,
-            "year": config.year,
-            "month": config.month,
-            "scope": config.scope,
-            "aoi_name": "Hong Kong",
+            "aoi_name": config.aoi_name,
+            "aoi_asset": config.aoi_asset,
             "dataset_id": config.dataset_id,
             "critical_error": None,
             "errors": [],
@@ -618,7 +700,7 @@ def export():
 
 def test_plan_from_text_can_write_editable_yaml(tmp_path, capsys):
     out = tmp_path / "plan.yaml"
-    rc = cli.main(["plan", "from-text", "Compute 16-day NDVI for Hong Kong in 2024 and export CSV.", "--out", str(out), "--json"])
+    rc = cli.main(["plan", "from-text", REVIEWED_NDWI_REQUEST, "--out", str(out), "--json"])
     assert rc == 0
     assert out.exists()
     capsys.readouterr()
@@ -629,45 +711,20 @@ def test_plan_from_text_can_write_editable_yaml(tmp_path, capsys):
     assert "schema_version: gee-plan/v0.3" in out.read_text(encoding="utf-8")
 
 
-def test_hk_2024_16day_template_renders_and_validates(tmp_path):
-    context = load_context(Path("evals/contexts/hk_2024_16day_ndvi.json"))
-    rendered = render_template(Path("assets/templates"), "hk_2024_16day_ndvi_csv", context)
-    assert "CADENCE_DAYS = 16" in rendered
-    assert "EXPORT_SELECTORS" in rendered
-    assert "build_16day_statistics" in rendered
-    script = tmp_path / "hk_2024_16day_ndvi.py"
-    script.write_text(rendered, encoding="utf-8")
-    report = validate_script(script).to_dict()
-    assert report["ok"] is True
-    assert "agent_script_contract" in report["semantic_rulesets"]
-
-
-def test_plan_from_yaml_renders_v03_hk_16day_plan(tmp_path, capsys):
-    plan_path = tmp_path / "hk_16day_plan.yaml"
-    script_path = tmp_path / "hk_16day.py"
-    rc = cli.main(
-        [
-            "plan",
-            "from-text",
-            "Compute 16-day NDVI for Hong Kong in 2024 and export CSV.",
-            "--out",
-            str(plan_path),
-            "--json",
-        ]
-    )
-    assert rc == 0
-    capsys.readouterr()
+def test_plan_from_yaml_renders_v03_generic_plan(tmp_path, capsys):
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
+    script_path = tmp_path / "reviewed_ndwi_rendered.py"
     rc = cli.main(["plan", "from-yaml", str(plan_path), "--script-out", str(script_path), "--json"])
     assert rc == 0
     payload = _payload(capsys)
     assert payload["ok"] is True
     assert payload["data"]["script"] == str(script_path)
     assert payload["data"]["validation"]["ok"] is True
-    assert "CADENCE_DAYS = 16" in script_path.read_text(encoding="utf-8")
+    assert "Export.image.toDrive" in script_path.read_text(encoding="utf-8")
 
 
 def test_plan_review_accepts_v03_plan_without_task_id(tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
 
     rc = cli.main(["plan", "review", str(plan_path), "--json"])
 
@@ -675,13 +732,13 @@ def test_plan_review_accepts_v03_plan_without_task_id(tmp_path, capsys):
     payload = _payload(capsys)
     assert payload["ok"] is True
     assert payload["schema_version"] == "gee-plan/v0.3"
-    assert payload["plan"]["plan_id"] == "vegetation-index-ndvi-hong-kong-2024"
-    assert payload["task"]["template"] == "hk_2024_16day_ndvi_csv"
+    assert payload["plan"]["task_type"] == "water_index"
+    assert payload["task"]["template"] == "sentinel2_index_image"
     assert "Live execution requires explicit confirmation" in payload["review"]
 
 
-def test_preflight_plan_runs_v03_anchor_month_adapter(monkeypatch, tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+def test_preflight_plan_runs_generic_v03_adapter(monkeypatch, tmp_path, capsys):
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
     calls = []
 
     def fake_preflight(config):
@@ -689,19 +746,22 @@ def test_preflight_plan_runs_v03_anchor_month_adapter(monkeypatch, tmp_path, cap
         return {
             "ok": True,
             "decision": "allow_export",
+            "schema_version": config.schema_version,
+            "plan_id": config.plan_id,
+            "profile": config.profile,
+            "template": config.template,
             "project": config.project,
-            "year": config.year,
-            "month": config.month,
-            "scope": config.scope,
-            "aoi_name": "Hong Kong",
+            "aoi_name": config.aoi_name,
+            "aoi_asset": config.aoi_asset,
             "dataset_id": config.dataset_id,
+            "required_bands": list(config.required_bands),
             "critical_error": None,
             "errors": [],
             "warnings": [],
             "checks": {"fake": {"ok": True}},
         }
 
-    monkeypatch.setattr(cli, "run_hk_ndvi_preflight", fake_preflight)
+    monkeypatch.setattr(cli, "run_generic_v03_preflight", fake_preflight)
 
     rc = cli.main(["preflight-plan", str(plan_path), "--project", "example-project", "--json"])
 
@@ -711,55 +771,14 @@ def test_preflight_plan_runs_v03_anchor_month_adapter(monkeypatch, tmp_path, cap
     report = payload["preflight"]
     assert report["schema_version"] == "gee-plan/v0.3"
     assert report["decision"] == "allow_export"
-    assert report["preflight_months"] == [1, 7]
-    assert report["expected_export_rows"] == 23
-    assert [config.month for config in calls] == [1, 7]
-    assert {config.project for config in calls} == {"example-project"}
-
-
-def test_preflight_plan_retries_retryable_v03_anchor_failure(monkeypatch, tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
-    calls = []
-
-    def fake_preflight(config):
-        calls.append(config.month)
-        if config.month == 1 and calls.count(1) == 1:
-            raise cli.EarthEngineUnavailable(
-                "Earth Engine initialization failed. Original error: HTTPSConnectionPool("
-                "host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token"
-            )
-        return {
-            "ok": True,
-            "decision": "allow_export",
-            "project": config.project,
-            "year": config.year,
-            "month": config.month,
-            "scope": config.scope,
-            "aoi_name": "Hong Kong",
-            "dataset_id": config.dataset_id,
-            "critical_error": None,
-            "errors": [],
-            "warnings": [],
-            "checks": {"fake": {"ok": True}},
-        }
-
-    monkeypatch.setattr(cli, "run_hk_ndvi_preflight", fake_preflight)
-    monkeypatch.setattr(cli.time, "sleep", lambda seconds: None)
-
-    rc = cli.main(["preflight-plan", str(plan_path), "--project", "example-project", "--json"])
-
-    assert rc == 0
-    payload = _payload(capsys)
-    assert payload["ok"] is True
-    assert calls == [1, 1, 7]
-    january = payload["preflight"]["monthly_reports"][0]
-    assert january["ok"] is True
-    assert january["retry_attempts"][0]["ok"] is False
-    assert january["retry_attempts"][1]["ok"] is True
+    assert report["template"] == "sentinel2_index_image"
+    assert report["required_bands"] == ["B3", "B8"]
+    assert len(calls) == 1
+    assert calls[0].project == "example-project"
 
 
 def test_run_plan_v03_refuses_export_when_preflight_blocks(monkeypatch, tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
     execute_calls = []
 
     monkeypatch.setattr(
@@ -798,7 +817,7 @@ def test_run_plan_v03_refuses_export_when_preflight_blocks(monkeypatch, tmp_path
 
 
 def test_run_plan_v03_missing_confirm_live_is_json(tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
 
     rc = cli.main(["run", str(plan_path), "--project", "example-project", "--json"])
 
@@ -810,7 +829,7 @@ def test_run_plan_v03_missing_confirm_live_is_json(tmp_path, capsys):
 
 
 def test_run_plan_v03_success_executes_script_once(monkeypatch, tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
     execute_calls = []
 
     monkeypatch.setattr(
@@ -841,7 +860,7 @@ def test_run_plan_v03_success_executes_script_once(monkeypatch, tmp_path, capsys
         lambda project, authenticate=False, timeout_seconds=0: [
             {
                 "id": "task-1",
-                "description": "test_hk_2024_16day_ndvi",
+                "description": "test_reviewed_ndwi_geotiff",
                 "state": "READY",
                 "creation_timestamp_ms": 1,
                 "update_timestamp_ms": 1,
@@ -864,15 +883,15 @@ def test_run_plan_v03_success_executes_script_once(monkeypatch, tmp_path, capsys
     payload = _payload(capsys)
     assert payload["ok"] is True
     assert payload["schema_version"] == "gee-plan/v0.3"
-    assert payload["live_run"]["export_description"] == "test_hk_2024_16day_ndvi"
-    assert payload["data"]["live_run"]["export_description"] == "test_hk_2024_16day_ndvi"
+    assert payload["live_run"]["export_description"] == "test_reviewed_ndwi_geotiff"
+    assert payload["data"]["live_run"]["export_description"] == "test_reviewed_ndwi_geotiff"
     assert payload["live_run"]["matching_tasks"][0]["id"] == "task-1"
     assert len(execute_calls) == 1
     assert execute_calls[0]["project"] == "example-project"
 
 
 def test_run_plan_v03_does_not_claim_success_without_observed_export_task(monkeypatch, tmp_path, capsys):
-    plan_path = _write_v03_hk_plan(tmp_path, capsys)
+    plan_path = _write_reviewed_v03_ndwi_plan(tmp_path, capsys)
 
     monkeypatch.setattr(
         cli,

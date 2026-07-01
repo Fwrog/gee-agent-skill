@@ -32,6 +32,17 @@ preview/
 site/
 *.log
 
+# Private research workspaces and paper drafts
+*_GEE_private/
+*_private/
+private_*/
+private_research/
+paper_private/
+local_research/
+research_private/
+*.docx
+~$*.docx
+
 # Internal agent scratch notes
 docs/agent_reviews/
 docs/reviews/scratch/

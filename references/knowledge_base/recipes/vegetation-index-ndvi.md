@@ -60,9 +60,9 @@ Candidate datasets: COPERNICUS/S2_SR_HARMONIZED, LANDSAT/LC08/C02/T1_L2, LANDSAT
 
 ## Examples
 
-- Compute 16-day NDVI for Hong Kong in 2024 and export CSV.
+- Compute NDVI for a supplied AOI in March 2024 and export CSV.
 
 ## Limitations
 
 - Optical index outputs require cloud, shadow, and water-context review before scientific interpretation.
-- Golden Hong Kong examples prove the harness loop, not vegetation-monitoring validity.
+- Public golden examples prove the harness loop, not vegetation-monitoring validity.

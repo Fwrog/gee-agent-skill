@@ -270,17 +270,17 @@ Fix:
 
 ```bash
 gee-skill auth check --project "$EE_PROJECT" --json
-gee-skill preflight-plan outputs/plans/hk_2024_16day_ndvi.yaml --project "$EE_PROJECT" --json
+gee-skill preflight-plan outputs/plans/ndwi_supplied_aoi.yaml --project "$EE_PROJECT" --json
 ```
 
 PowerShell:
 
 ```powershell
 gee-skill auth check --project $env:EE_PROJECT --json
-gee-skill preflight-plan outputs\plans\hk_2024_16day_ndvi.yaml --project $env:EE_PROJECT --json
+gee-skill preflight-plan outputs\plans\ndwi_supplied_aoi.yaml --project $env:EE_PROJECT --json
 ```
 
-The v0.3 preflight adapter retries one retryable anchor-month failure. If the same network error repeats, wait briefly and confirm normal internet access before reauthenticating.
+If the same network error repeats, wait briefly and confirm normal internet access before reauthenticating. Do not treat a transient token endpoint failure as proof that the plan is valid for live export.
 
 ## `Image.reduceRegions: Image has no bands`
 

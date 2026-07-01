@@ -1,5 +1,4 @@
 import json
-import hashlib
 from pathlib import Path
 
 from geeskill.cli import main
@@ -80,6 +79,20 @@ def test_structured_dataset_cards_are_rag_visible_markdown():
             assert f"{field}:" in text, (dataset["dataset_id"], field)
 
 
+def test_gitignore_blocks_private_research_artifacts():
+    text = Path(".gitignore").read_text(encoding="utf-8")
+    for pattern in [
+        "*_GEE_private/",
+        "*_private/",
+        "private_*/",
+        "private_research/",
+        "paper_private/",
+        "*.docx",
+        "~$*.docx",
+    ]:
+        assert pattern in text
+
+
 def test_v03_plan_schema_validator_reports_missing_fields():
     errors = validate_v03_plan_schema({"schema_version": "gee-plan/v0.3", "plan_id": "bad"})
     assert errors
@@ -148,27 +161,19 @@ def test_golden_examples_are_available_for_regression_checks():
     golden_tasks = [
         Path("examples/golden/hk_2024_01_ndvi_v01/task.yaml"),
         Path("examples/golden/hk_2024_01_ndvi_landcover_v02/task.yaml"),
-        Path("examples/golden/hk_2024_16day_ndvi/task.yaml"),
     ]
     for task_path in golden_tasks:
         assert task_path.exists(), task_path
 
 
-def test_v03_public_evidence_bundle_is_sanitized_and_hash_locked():
-    evidence_dir = Path("docs/evidence/v03_hk_2024_16day_ndvi")
-    readme = (evidence_dir / "README.md").read_text(encoding="utf-8")
-    csv_bytes = (evidence_dir / "hk_2024_16day_ndvi.csv").read_bytes()
-    digest = hashlib.sha256(csv_bytes).hexdigest()
-    assert digest == "f1a8502b64026f621ed8dd96af9dae80f2abe32494796b2af88d15a8f5d80475"
-    forbidden_terms = [
-        "refresh_token",
-        "private_key",
-        "service_account",
-        "client_secret",
-        "application_default_credentials",
+def test_private_academic_demo_is_not_published_as_golden_evidence():
+    forbidden_paths = [
+        Path("docs/evidence/private_academic_demo"),
+        Path("examples/golden/private_academic_demo"),
+        Path("examples/private_academic_demo"),
     ]
-    for term in forbidden_terms:
-        assert term not in readme
+    for path in forbidden_paths:
+        assert not path.exists(), path
 
 
 def test_tool_registry_separates_installed_and_exposed():

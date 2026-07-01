@@ -128,7 +128,3 @@ tasks:
     kind: render_validate
     template: hk_district_january_ndvi_smoke
     context: examples/hk_january_ndvi_smoke/task.yaml
-  - id: theme_hk_2024_16day_ndvi_render_validate
-    kind: render_validate
-    template: hk_2024_16day_ndvi_csv
-    context: evals/contexts/hk_2024_16day_ndvi.json

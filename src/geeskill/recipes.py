@@ -58,7 +58,7 @@ FALLBACK_RECIPES: tuple[Recipe, ...] = (
         validation_profile="vegetation_index_ndvi",
         output_schema=("aoi_name", "date_start", "date_end", "mean_ndvi", "dataset_id", "scale_m", "crs"),
         live_risk_level="medium",
-        examples=("Compute 16-day NDVI for Hong Kong in 2024 and export CSV.",),
+        examples=("Compute NDVI for a supplied AOI in March 2024 and export CSV.",),
     ),
     Recipe(
         recipe_id="vegetation-index-evi",

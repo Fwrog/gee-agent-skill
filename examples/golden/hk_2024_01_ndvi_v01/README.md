@@ -17,4 +17,4 @@ The artifacts are evidence that the harness can route a small natural-language E
 
 No credentials, OAuth tokens, service account JSON, refresh tokens, private keys, Google account identifiers, or local credential paths are included.
 
-No CSV sample is included here because the public evidence bundle keeps v0.1 lightweight and avoids inventing values. The v0.3 demo CSV is documented separately as the current reader-facing output example.
+No CSV sample is included here because the public evidence bundle keeps v0.1 lightweight and avoids inventing values. More complex academic demos are not published as reader-facing output examples.

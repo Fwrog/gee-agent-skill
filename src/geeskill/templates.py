@@ -137,28 +137,6 @@ TEMPLATE_SCHEMAS: dict[str, dict[str, Any]] = {
         ],
         "positive_numbers": ["scale", "tile_scale"],
     },
-    "hk_2024_16day_ndvi_csv": {
-        "required": [
-            "script_name",
-            "year",
-            "date_start",
-            "date_end",
-            "aoi_name",
-            "aoi_source",
-            "boundary_geojson",
-            "dataset_id",
-            "scale",
-            "crs",
-            "tile_scale",
-            "cloudy_pixel_percentage",
-            "max_pixels",
-            "temporal_cadence_days",
-            "export_description",
-            "drive_folder",
-            "file_prefix",
-        ],
-        "positive_numbers": ["scale", "tile_scale", "max_pixels", "temporal_cadence_days"],
-    },
     "hk_district_january_ndvi_smoke": {
         "required": [
             "script_name",
