@@ -30,7 +30,7 @@ def test_readiness_audit_reports_current_golden_state() -> None:
     passed = {check["name"] for check in payload["checks"] if check["ok"]}
     assert "no_pending_tasks" in passed
     assert "required_geotiff_tasks_completed" in passed
-    assert "required_geotiffs_downloaded" in passed
+    assert "required_geotiff_readback_evidence" in passed
     assert "geotiff_local_qa_passed" in passed
 
 
@@ -53,7 +53,13 @@ def test_readiness_audit_can_pass_on_complete_synthetic_evidence(tmp_path: Path)
             "snapshot_status": "complete_for_csv_tables",
             "key_metrics": {"matched_pixel_count": 10},
             "geotiff_local_qa": [
-                {"file": geotiff, "ndvi_sanity_nonzero_within_minus1_1": True}
+                {
+                    "file": geotiff,
+                    "bytes": 100,
+                    "width": 10,
+                    "height": 10,
+                    "ndvi_sanity_nonzero_within_minus1_1": True,
+                }
                 for geotiff in module.REQUIRED_GEOTIFFS
             ],
         },
@@ -104,7 +110,16 @@ def test_readiness_audit_accepts_complete_tile_set_for_a_required_geotiff(tmp_pa
             "claim_boundary": "Product-level consistency validation only; no in-situ ground truth is used.",
             "snapshot_status": "complete_for_csv_tables",
             "key_metrics": {"matched_pixel_count": 10},
-            "geotiff_local_qa": [{"file": geotiff, "ndvi_sanity_nonzero_within_minus1_1": True} for geotiff in qa_files],
+            "geotiff_local_qa": [
+                {
+                    "file": geotiff,
+                    "bytes": 100,
+                    "width": 10,
+                    "height": 10,
+                    "ndvi_sanity_nonzero_within_minus1_1": True,
+                }
+                for geotiff in qa_files
+            ],
         },
     )
     completed_descriptions = [

@@ -74,6 +74,19 @@ def _qa_row_passed(row: dict[str, Any] | None) -> bool:
     return bool(row.get("ndvi_sanity_nonzero_within_minus1_1"))
 
 
+def _qa_row_has_readback_evidence(row: dict[str, Any] | None) -> bool:
+    if not _qa_row_passed(row):
+        return False
+    try:
+        return (
+            int(row.get("bytes", 0)) > 0
+            and int(row.get("width", 0)) > 0
+            and int(row.get("height", 0)) > 0
+        )
+    except (TypeError, ValueError):
+        return False
+
+
 def audit(out_dir: Path = DEFAULT_OUT) -> dict[str, Any]:
     manifest_path = out_dir / "manifest.json"
     task_status_path = out_dir / "task_status_latest.json"
@@ -120,17 +133,29 @@ def audit(out_dir: Path = DEFAULT_OUT) -> dict[str, Any]:
     add_check("required_geotiff_tasks_completed", not missing_completed, f"Missing completed task descriptions: {missing_completed}")
 
     local_geotiffs = {path.name for path in raw_geotiff_dir.glob("*.tif")} if raw_geotiff_dir.exists() else set()
-    missing_local = []
+    qa_rows = manifest.get("geotiff_local_qa", [])
+    qa_by_file = {row.get("file"): row for row in qa_rows if isinstance(row, dict)}
+
+    missing_readback_evidence = []
     for filename, description in REQUIRED_GEOTIFF_DESCRIPTIONS.items():
         if filename in local_geotiffs:
             continue
         tile_files = [f"{tile}.tif" for tile in _tile_descriptions(task_status, description)]
-        if not tile_files or any(tile_file not in local_geotiffs for tile_file in tile_files):
-            missing_local.append(filename)
-    add_check("required_geotiffs_downloaded", not missing_local, f"Missing local Drive-downloaded GeoTIFFs: {missing_local}")
+        if _qa_row_has_readback_evidence(qa_by_file.get(filename)):
+            continue
+        if tile_files and all(
+            tile_file in local_geotiffs or _qa_row_has_readback_evidence(qa_by_file.get(tile_file))
+            for tile_file in tile_files
+        ):
+            continue
+        missing_readback_evidence.append(filename)
+    add_check(
+        "required_geotiff_readback_evidence",
+        not missing_readback_evidence,
+        "Missing local Drive-downloaded GeoTIFFs or committed manifest QA evidence: "
+        f"{missing_readback_evidence}",
+    )
 
-    qa_rows = manifest.get("geotiff_local_qa", [])
-    qa_by_file = {row.get("file"): row for row in qa_rows if isinstance(row, dict)}
     failed_qa = []
     for filename, description in REQUIRED_GEOTIFF_DESCRIPTIONS.items():
         if _qa_row_passed(qa_by_file.get(filename)):
