@@ -88,6 +88,18 @@ gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and expor
 gee-skill ask "Compute January 2024 Hong Kong NDVI by land-cover class and export CSV." --dry-run --json
 ```
 
+Portfolio validation demo:
+
+```bash
+python scripts/hk_ndvi_v03_export.py --mode smoke --year 2024 \
+  --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION \
+  --project "$EE_PROJECT" \
+  --confirm-live \
+  --json
+```
+
+This v0.3 command is a canonical script, not yet a fully generated natural-language recipe. It validates the harness through a product-intercomparison workflow: HLS NDVI is aggregated to the MODIS grid before comparison with MOD13Q1.
+
 ## Live Preflight
 
 Set your project id first.

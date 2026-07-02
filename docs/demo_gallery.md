@@ -10,6 +10,7 @@ Personal academic demos and unpublished research workflows are intentionally not
 | --- | --- | --- | --- | --- |
 | v0.1 minimal NDVI | January 2024 whole-AOI NDVI CSV | Golden regression | A compact Sentinel-2 NDVI request can be planned, validated, preflighted, exported, monitored, and redacted. | Vegetation-only condition, policy-ready assessment, or independent field validation. |
 | v0.2 land-cover-aware NDVI | January 2024 NDVI by Dynamic World strata | Golden regression | The harness can add land-cover interpretation masks and output caveats. | Dynamic World truth, administrative boundaries, or final class-level science. |
+| v0.3 HLS/MODIS NDVI product intercomparison | 2024 HLS NDVI aggregated to MODIS grid | Full-year CSV evidence; GeoTIFF verification partially complete | The harness can support scale-aware product consistency checks, Drive handoff, metrics contracts, land-cover stratification, and publication-style figures. | In-situ ground-truth accuracy, pixel-perfect product equality, or final vegetation-health conclusions. |
 
 ## How To Run A Public Demo
 
@@ -35,9 +36,21 @@ gee-skill run-plan outputs/runs/<run_id>/task_plan.yaml --project "$EE_PROJECT" 
 gee-skill monitor-exports --project "$EE_PROJECT" --json
 ```
 
+Product-intercomparison validation demo:
+
+```bash
+python scripts/hk_ndvi_v03_export.py --mode smoke --year 2024 \
+  --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION \
+  --project "$EE_PROJECT" \
+  --confirm-live \
+  --json
+```
+
+For full-year evidence, rerun the same command with `--mode full`, then use the Google Drive connector to download the CSV exports before running the local analysis and figure scripts.
+
 ## Evidence Boundary
 
-The demos are intentionally small. A completed export task proves the operational harness path, not scientific correctness. Scientific interpretation needs source validation, domain assumptions, uncertainty review, and cross-product checks such as the [remote sensing validation ladder](remote_sensing_validation.md).
+The demos are intentionally bounded. A completed export task proves the operational harness path, not scientific correctness. Scientific interpretation needs source validation, domain assumptions, uncertainty review, and cross-product checks such as the [remote sensing validation ladder](remote_sensing_validation.md). The v0.3 product-intercomparison demo is stronger than a toy map because it tests scale matching and cross-product consistency, but it still does not provide field truth.
 
 ## Promotion Rule
 

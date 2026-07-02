@@ -1,0 +1,71 @@
+schema_version: gee-example/v0.3
+example_id: hk_ndvi_product_validation_v03
+title: Hong Kong NDVI Product Intercomparison Validation
+status: portfolio_validation_demo
+claim_boundary: product_intercomparison_not_ground_truth
+drive_folder: GEE_SKILL_V03_HK_NDVI_VALIDATION
+aoi:
+  name: Hong Kong
+  preferred_source: FAO/GAUL/2015/level0
+  default_live_source: documented_bbox
+  fallback_source: documented_bbox
+  fallback_bbox: [113.82, 22.13, 114.45, 22.57]
+  note: FAO GAUL is conceptually preferred, but the live v0.3 script defaults to a documented bbox because GAUL geometry triggered product-grid transform failures during smoke export.
+time:
+  full_year: ["2024-01-01", "2025-01-01"]
+  smoke: ["2024-04-01", "2024-07-01"]
+datasets:
+  high_resolution:
+    - id: NASA/HLS/HLSL30/v002
+      red: B4
+      nir: B5
+      resolution_m: 30
+    - id: NASA/HLS/HLSS30/v002
+      red: B4
+      nir_default: B8A
+      nir_sensitivity: B8
+      resolution_m: 30
+  official_product:
+    id: MODIS/061/MOD13Q1
+    ndvi_band: NDVI
+    scale_factor: 0.0001
+    qa_bands: [SummaryQA, DetailedQA]
+    resolution_m: 250
+  stratification:
+    id: ESA/WorldCover/v200
+    band: Map
+    resolution_m: 10
+method:
+  temporal_matching: Use MOD13Q1 16-day windows as the comparison clock.
+  hls_composite: Median NDVI from L30 and S30 observations within each MODIS window.
+  scale_matching: Aggregate HLS 30 m NDVI to the MODIS projection with mean reduceResolution before comparing.
+  default_purity_threshold: 0.7
+  sensitivity_purity_thresholds: [0.5, 0.7, 0.9]
+exports:
+  folder: GEE_SKILL_V03_HK_NDVI_VALIDATION
+  csv_prefixes:
+    - hk_v03_hls_modis_window_metrics_2024
+    - hk_v03_hls_modis_pixel_samples_2024
+    - hk_v03_hls_modis_landcover_metrics_2024
+    - hk_v03_hls_modis_regional_timeseries_2024
+  geotiff_prefixes:
+    - hk_v03_annual_hls30_ndvi_mean_2024
+    - hk_v03_annual_hls_agg250_ndvi_mean_2024
+    - hk_v03_annual_modis250_ndvi_mean_2024
+    - hk_v03_annual_diff_hlsagg_minus_modis_2024
+    - hk_v03_valid_count_250m_2024
+analysis_outputs:
+  local_raw_drive_dir: outputs/hk_ndvi_product_validation_v03/raw_drive
+  local_analysis_dir: outputs/hk_ndvi_product_validation_v03/analysis
+  local_figures_dir: outputs/hk_ndvi_product_validation_v03/figures
+quality_gates:
+  - NDVI values must be mostly within [-1, 1] after scale and masking.
+  - MODIS NDVI must be scaled by 0.0001.
+  - No direct 30 m HLS versus 250 m MODIS pixel comparison is allowed.
+  - Matched valid pixels must be non-empty.
+  - Weak agreement is a warning and interpretation topic, not an automatic workflow failure.
+limitations:
+  - Product-level consistency supports workflow reliability but does not prove in-situ ground-truth accuracy.
+  - ESA WorldCover v200 is a static 2021 product used only for stratification.
+  - Coastal and dense urban mixed pixels can produce systematic product differences.
+  - FAO GAUL lookup may fall back to a documented bounding polygon if Hong Kong is ambiguous.

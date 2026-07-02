@@ -1,0 +1,550 @@
+{
+  "demo_id": "hk_ndvi_product_validation_v03",
+  "checked_utc": "2026-07-01T21:25:27.725931+00:00",
+  "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+  "claim_boundary": "Task completion evidence only; Drive readback and product validation are separate checks.",
+  "summary": {
+    "total": 28,
+    "states": {
+      "COMPLETED": 18,
+      "FAILED": 10
+    },
+    "pending_count": 0,
+    "failed_count": 10,
+    "all_terminal": true
+  },
+  "tasks": [
+    {
+      "description": "hk_v03_hls_modis_window_metrics_2024",
+      "task_id": "NZPMV2LZWZYIDDHKX2U5N5EY",
+      "artifact_type": "csv",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "MODIS native projection per 16-day window",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782935333101,
+      "update_timestamp_ms": 1782935491304
+    },
+    {
+      "description": "hk_v03_hls_modis_pixel_samples_2024",
+      "task_id": "JZDJPO4ADANSXUOASEPEHPSM",
+      "artifact_type": "csv",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "MODIS native projection per 16-day window",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782935335734,
+      "update_timestamp_ms": 1782935461874
+    },
+    {
+      "description": "hk_v03_hls_modis_landcover_metrics_2024",
+      "task_id": "27OETEPLZVXX5B2LESC36NO3",
+      "artifact_type": "csv",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "MODIS native projection per 16-day window",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782935348371,
+      "update_timestamp_ms": 1782935757058
+    },
+    {
+      "description": "hk_v03_hls_modis_regional_timeseries_2024",
+      "task_id": "GIYMEDUSFVSTQVRTUBN36CI7",
+      "artifact_type": "csv",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "MODIS native projection per 16-day window",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782935353009,
+      "update_timestamp_ms": 1782935498916
+    },
+    {
+      "description": "hk_v03_annual_hls30_ndvi_mean_2024",
+      "task_id": "DFY3P4V72EBGVKOFNGJQT747",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 30,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782935354920,
+      "update_timestamp_ms": 1782936380472
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024",
+      "task_id": "RTT3QTY4U7A3HFBKHYWL35HD",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Execution failed; out of memory.",
+      "creation_timestamp_ms": 1782935356828,
+      "update_timestamp_ms": 1782937608263
+    },
+    {
+      "description": "hk_v03_annual_modis250_ndvi_mean_2024",
+      "task_id": "JCWWH6RYTHYFXA63LT5YR3EB",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Image.clip: Can't transform (0.0,0.0)",
+      "creation_timestamp_ms": 1782935359139,
+      "update_timestamp_ms": 1782935805635
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024",
+      "task_id": "GS6XIPD2SLQU5EJ6V4WV3RRT",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Image.clip: Unable to transform edge (172800.000000, 4.394531 to 172800.000000, 4.428864) from SR-ORG:6974 PLANAR [231.65635826395825, 0.0, -2.0015109354E7, 0.0, -231.65635826395834, 1.0007554677003E7] to EPSG:4326.",
+      "creation_timestamp_ms": 1782935362079,
+      "update_timestamp_ms": 1782935811844
+    },
+    {
+      "description": "hk_v03_valid_count_250m_2024",
+      "task_id": "BA2TTOVRKJVETTLQ75SSXVXP",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Execution failed; out of memory.",
+      "creation_timestamp_ms": 1782935365249,
+      "update_timestamp_ms": 1782937720355
+    },
+    {
+      "description": "hk_v03_annual_modis250_ndvi_mean_2024",
+      "task_id": "ML4IF7QOIP63AAPJ6TXUZJAG",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782936423732,
+      "update_timestamp_ms": 1782936440603
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024",
+      "task_id": "VYV4QDICIAKQPL62IRE5UAFF",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Execution failed; out of memory.",
+      "creation_timestamp_ms": 1782936427295,
+      "update_timestamp_ms": 1782938435505
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024",
+      "task_id": "N6W3SDLSY5WFVL4IS3O7KRKR",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Image.reduceResolution: The input to reduceResolution does not have a valid default projection. Use setDefaultProjection() first.",
+      "creation_timestamp_ms": 1782937843342,
+      "update_timestamp_ms": 1782937848987
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024",
+      "task_id": "CVTRNEIT2KS63EXWQA3MRFRO",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Image.reduceResolution: The input to reduceResolution does not have a valid default projection. Use setDefaultProjection() first.",
+      "creation_timestamp_ms": 1782937846892,
+      "update_timestamp_ms": 1782937851363
+    },
+    {
+      "description": "hk_v03_valid_count_250m_2024",
+      "task_id": "4F2UKFOXHRFLOQD2OUESYMCC",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Execution failed; out of memory.",
+      "creation_timestamp_ms": 1782937850212,
+      "update_timestamp_ms": 1782940127501
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024",
+      "task_id": "B3Y2SVOFJNVVHP4Q5BTL42O6",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Execution failed; out of memory.",
+      "creation_timestamp_ms": 1782937955168,
+      "update_timestamp_ms": 1782939847671
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024",
+      "task_id": "W2WWGA4D7LUQK3FPZAM54THJ",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "FAILED",
+      "error_message": "Execution failed; out of memory.",
+      "creation_timestamp_ms": 1782937957793,
+      "update_timestamp_ms": 1782940296935
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024_tile_r01_c01",
+      "task_id": "GMJJTJJ2IDXSNL4FK6XL2SH2",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940379693,
+      "update_timestamp_ms": 1782940725516
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024_tile_r01_c02",
+      "task_id": "7MNVLVPL6KQVZI4AZXKVKPZH",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940382144,
+      "update_timestamp_ms": 1782940752437
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024_tile_r02_c01",
+      "task_id": "YZHKISDDJCP6CCZ5CNWPV33M",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940385332,
+      "update_timestamp_ms": 1782941102862
+    },
+    {
+      "description": "hk_v03_annual_diff_hlsagg_minus_modis_2024_tile_r02_c02",
+      "task_id": "M6PKMTHMK73NYXYMOBZI7ROC",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940388188,
+      "update_timestamp_ms": 1782940848744
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024_tile_r01_c01",
+      "task_id": "JWEFLQ56F57CBT2EIEM5IPIY",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782939987992,
+      "update_timestamp_ms": 1782940291953
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024_tile_r01_c02",
+      "task_id": "Q7RA3R3RJTN7LDVAY4RLD67O",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782939989258,
+      "update_timestamp_ms": 1782940322922
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024_tile_r02_c01",
+      "task_id": "3ROL7PQUDP2P5JNAAMYN6R3Z",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782939991120,
+      "update_timestamp_ms": 1782940521816
+    },
+    {
+      "description": "hk_v03_annual_hls_agg250_ndvi_mean_2024_tile_r02_c02",
+      "task_id": "H4VT6D3DHYNIVSJ7DLPDAXMF",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782939993134,
+      "update_timestamp_ms": 1782940387013
+    },
+    {
+      "description": "hk_v03_valid_count_250m_2024_tile_r01_c01",
+      "task_id": "BQOB3OZUNMASJ7ZWIYZ6RXPC",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940170867,
+      "update_timestamp_ms": 1782940448303
+    },
+    {
+      "description": "hk_v03_valid_count_250m_2024_tile_r01_c02",
+      "task_id": "6T2PFEWTKXACVYLLLAYNNHPQ",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940174416,
+      "update_timestamp_ms": 1782940663888
+    },
+    {
+      "description": "hk_v03_valid_count_250m_2024_tile_r02_c01",
+      "task_id": "HYZ2O63YUG7ZKBL4X6XO6UNO",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940177942,
+      "update_timestamp_ms": 1782941024005
+    },
+    {
+      "description": "hk_v03_valid_count_250m_2024_tile_r02_c02",
+      "task_id": "GDVLYGQHUCCPGJLPP2EL2XC4",
+      "artifact_type": "geotiff",
+      "drive_folder": "GEE_SKILL_V03_HK_NDVI_VALIDATION",
+      "source_assets": [
+        "NASA/HLS/HLSL30/v002",
+        "NASA/HLS/HLSS30/v002",
+        "MODIS/061/MOD13Q1",
+        "ESA/WorldCover/v200"
+      ],
+      "crs": "EPSG:4326",
+      "scale_m": 250,
+      "claim_boundary": "Product-level consistency validation; not in-situ ground-truth validation.",
+      "state": "COMPLETED",
+      "error_message": null,
+      "creation_timestamp_ms": 1782940181539,
+      "update_timestamp_ms": 1782940621312
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Roadmap and TODO
+    url: https://github.com/Fwrog/gee-agent-skill/blob/main/docs/roadmap.md
+    about: Check current status before opening duplicate roadmap work.
+  - name: Project board guide
+    url: https://github.com/Fwrog/gee-agent-skill/blob/main/docs/project_board.md
+    about: See board columns, labels, triage rules, and demo promotion criteria.

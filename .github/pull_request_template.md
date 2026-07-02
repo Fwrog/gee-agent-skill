@@ -14,12 +14,15 @@ Describe the user-facing change and whether it affects docs, templates, validati
 - [ ] HK NDVI golden example behavior remains accurate.
 - [ ] Non-golden recipe claims are limited to plan/render/validate unless live support is implemented and verified.
 - [ ] Preflight success is not described as export submission.
+- [ ] Demo status labels (`Golden`, `Partial`, `Implementation-ready`, `Planned`, `Blocked`) match `docs/roadmap.md`.
+- [ ] Validation demos do not claim ground-truth accuracy unless in-situ evidence is actually supplied.
 
 ## Safety
 
 - [ ] No credentials, tokens, service account JSON, or local credential paths committed
 - [ ] Live Earth Engine behavior requires explicit confirmation
 - [ ] Run traces do not write credential material
+- [ ] Large Drive exports, raw rasters, and intermediate analysis files stay ignored unless intentionally reviewed
 
 ## Notes
 

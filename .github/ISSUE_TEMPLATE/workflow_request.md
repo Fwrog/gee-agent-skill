@@ -17,6 +17,7 @@ Describe the Earth Engine workflow in plain language.
 - [ ] Generic preflight gate
 - [ ] Recipe-specific live preflight
 - [ ] Live export verification
+- [ ] Product/intercomparison validation
 
 ## Inputs
 
@@ -32,3 +33,9 @@ List dataset cards, operator cards, failure cards, paper/community sources, or o
 ## Safety boundary
 
 Live export support requires reviewed AOI/export context, passing preflight, explicit `--confirm-live`, monitored task state, and no credentials in traces.
+
+## Claim boundary
+
+- What this workflow can support:
+- What this workflow must not claim:
+- Which evidence would promote it to `Golden`:

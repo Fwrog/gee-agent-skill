@@ -28,6 +28,18 @@ dist/
 # Local generated output
 tmp/
 outputs/
+!outputs/
+outputs/*
+!outputs/hk_ndvi_product_validation_v03/
+outputs/hk_ndvi_product_validation_v03/*
+!outputs/hk_ndvi_product_validation_v03/VALIDATION_REPORT.md
+!outputs/hk_ndvi_product_validation_v03/manifest.json
+outputs/hk_ndvi_product_validation_v03/task_status_*.json
+!outputs/hk_ndvi_product_validation_v03/task_status_latest.json
+!outputs/hk_ndvi_product_validation_v03/figures/
+!outputs/hk_ndvi_product_validation_v03/figures/*.png
+outputs/hk_ndvi_product_validation_v03/raw_drive/
+outputs/hk_ndvi_product_validation_v03/analysis/
 preview/
 site/
 *.log

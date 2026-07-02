@@ -30,6 +30,10 @@ Live tests are optional and must require explicit `--project` and `--confirm-liv
 
 Add a template, context, example task, retrieval docs, semantic validator when needed, and offline regression tests. For live support, add the adapter, preflight checks, explicit run gate, mocked tests, and traceable live verification. Update docs only with behavior that is implemented and tested.
 
+## Roadmap Tasks
+
+Use [TODO.md](TODO.md) for the short current task list and [docs/roadmap.md](docs/roadmap.md) for the detailed board. Convert TODOs into issues with the `Roadmap task` template when the work is public, generic, scoped, and reviewable. Each issue needs acceptance checks, evidence level, and a claim boundary.
+
 ## Pull Requests
 
 Keep PRs focused. Include the commands you ran, whether live Earth Engine was used, and which outputs or run traces support the claim. Never include OAuth tokens, service account JSON, private keys, Google project secrets, or local credential paths.

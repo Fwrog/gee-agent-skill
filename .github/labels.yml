@@ -1,0 +1,50 @@
+# Suggested repository labels.
+# Apply these manually in GitHub or with a label-sync tool if the project uses one.
+
+- name: roadmap
+  color: "6f42c1"
+  description: Work tracked in docs/roadmap.md.
+
+- name: workflow
+  color: "1d76db"
+  description: Earth Engine recipes, templates, validators, or preflight adapters.
+
+- name: validation
+  color: "0e8a16"
+  description: Product checks, metrics, reports, and evidence bundles.
+
+- name: knowledge-base
+  color: "5319e7"
+  description: Dataset cards, rule cards, failure cases, or workflow cards.
+
+- name: remote-sensing
+  color: "0052cc"
+  description: QA, masking, scaling, projections, land cover, or interpretation.
+
+- name: docs
+  color: "0075ca"
+  description: README, guides, examples, release notes, and diagrams.
+
+- name: tests
+  color: "d4c5f9"
+  description: Unit, semantic, fixture, contract, or status-consistency tests.
+
+- name: good first issue
+  color: "7057ff"
+  description: Small tasks with clear acceptance checks.
+
+- name: blocked
+  color: "b60205"
+  description: Waiting on credentials, quota, external tasks, upstream data, or user input.
+
+- name: privacy-review
+  color: "fbca04"
+  description: Needs a scan for private paths, asset ids, unpublished content, or sensitive links.
+
+- name: claim-boundary
+  color: "c5def5"
+  description: Needs careful wording around evidence level and what cannot be claimed.
+
+- name: v0.4
+  color: "bfdadc"
+  description: Planned post-v0.3 generalization work.

@@ -3,9 +3,9 @@
 source_id: workflow-ndvi-demo-validation-ladder
 source_type: curated-workflow-pattern
 primary_status: curated
-source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1; https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD13Q1; https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2; https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2; https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1; https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200; https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater
-last_checked: 2026-07-01
-operator_chain: Sentinel-2 demo NDVI -> independent product lookup -> scale/QA harmonization -> aggregate comparison -> class/water sanity check -> claim-boundary review
+source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002; https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002; https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1; https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP13A1; https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD13Q1; https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2; https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2; https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1; https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200; https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater
+last_checked: 2026-07-02
+operator_chain: Sentinel-2 demo NDVI -> independent product lookup -> scale/QA harmonization -> temporal matching -> aggregate comparison -> class/water sanity check -> claim-boundary review
 risk_level: medium
 
 ## Pattern
@@ -14,7 +14,9 @@ Validate NDVI demos with a ladder of independent or semi-independent GEE product
 
 ## Product Roles
 
+- `NASA/HLS/HLSL30/v002` and `NASA/HLS/HLSS30/v002`: harmonized 30m surface-reflectance sources for higher-resolution NDVI that can be aggregated to coarser product grids.
 - `MODIS/061/MOD13Q1` and `MODIS/061/MYD13Q1`: coarse 16-day NDVI/EVI reference products for aggregate temporal and range checks.
+- `NASA/VIIRS/002/VNP13A1`: optional secondary 500m vegetation-index product check after the MODIS comparison is stable.
 - `LANDSAT/LC08/C02/T1_L2` and `LANDSAT/LC09/C02/T1_L2`: independent 30m surface-reflectance sensors for cross-sensor NDVI checks after QA masking and scale/offset conversion.
 - `JRC/GSW1_4/GlobalSurfaceWater`: surface-water occurrence reference to test whether all-surface NDVI is lower than non-water or vegetation-like strata in coastal AOIs.
 - `GOOGLE/DYNAMICWORLD/V1`: time-matched probabilistic land-cover strata for the land-cover-aware demo, with confidence thresholds and null-tolerant outputs.
@@ -23,6 +25,7 @@ Validate NDVI demos with a ladder of independent or semi-independent GEE product
 ## Validation Questions
 
 - Does Sentinel-2 all-surface NDVI fall in a plausible range after cloud and shadow masking?
+- Does HLS-derived NDVI agree with MOD13Q1 only after matching 16-day windows and aggregating to the MODIS grid?
 - Does a coarse MODIS 16-day NDVI product show the same broad temporal direction, even if absolute values differ?
 - Do Landsat 8/9 NDVI aggregates agree in sign, broad seasonal pattern, and approximate magnitude after QA masking?
 - Are water and built-up strata lower than vegetation-like strata?
@@ -31,6 +34,7 @@ Validate NDVI demos with a ladder of independent or semi-independent GEE product
 ## Required Caveats
 
 - MODIS 250m and Landsat 30m products cannot validate Sentinel-2 10m edges pixel-for-pixel.
+- HLS 30m pixels must be aggregated before comparison with MODIS or VIIRS product pixels.
 - Dynamic World is a model output and should not be treated as independent ground truth for the same Sentinel-2 observation.
 - ESA WorldCover is static and not time-matched to arbitrary analysis windows.
 - Surface-water masks explain all-surface NDVI behavior but do not validate vegetation health.

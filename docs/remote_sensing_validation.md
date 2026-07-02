@@ -7,8 +7,10 @@ This note explains how to reason about the public NDVI demos with independent or
 | Product | GEE id | Role | Main caveat |
 | --- | --- | --- | --- |
 | Sentinel-2 SR Harmonized | `COPERNICUS/S2_SR_HARMONIZED` | Primary high-resolution source used by the demos. | Needs cloud/shadow masking and explicit scale. |
+| NASA HLS L30/S30 | `NASA/HLS/HLSL30/v002`, `NASA/HLS/HLSS30/v002` | Harmonized 30m product source for scale-aware intercomparison. | Must be aggregated before comparison with MODIS/VIIRS product grids. |
 | MODIS Terra VI | `MODIS/061/MOD13Q1` | Coarse 16-day NDVI/EVI temporal sanity check. | 250m composites cannot validate 10m edges. |
 | MODIS Aqua VI | `MODIS/061/MYD13Q1` | Terra/Aqua consistency check for coarse NDVI/EVI timing. | Different overpass timing and compositing. |
+| VIIRS VNP13A1 | `NASA/VIIRS/002/VNP13A1` | Optional secondary vegetation-index product check. | 500m pixels are coarser than HLS and MODIS MOD13Q1. |
 | Landsat 8/9 C2 L2 | `LANDSAT/LC08/C02/T1_L2`, `LANDSAT/LC09/C02/T1_L2` | Independent 30m sensor check for NDVI sign, magnitude, and broad seasonal pattern. | Requires QA masking and surface-reflectance scale/offset conversion. |
 | JRC Global Surface Water | `JRC/GSW1_4/GlobalSurfaceWater` | Water-mask sanity check for all-surface NDVI. | Historical/static layers are context, not current vegetation truth. |
 | Dynamic World | `GOOGLE/DYNAMICWORLD/V1` | Time-matched land-cover strata for the land-cover-aware demo. | Model output, not independent ground truth. |
@@ -19,12 +21,14 @@ This note explains how to reason about the public NDVI demos with independent or
 - All-surface NDVI should be lower than land-only or vegetation-like NDVI in coastal or water-rich AOIs.
 - Water and built-up strata should generally have lower NDVI than tree, grass, or crop strata.
 - MODIS and Landsat should agree with Sentinel-2 in sign, broad magnitude, and temporal direction after scale, QA, and resolution differences are respected.
+- HLS and MODIS product intercomparison is defensible only after matching MODIS windows and aggregating HLS to the MODIS grid.
 - Dynamic World strata should be documented as interpretation masks, not boundaries or truth labels.
 - A workflow can be operationally correct even when different products do not match exactly.
 
 ## What It Cannot Validate
 
 - Pixel-perfect agreement between 10m Sentinel-2 and 250m MODIS.
+- Direct comparison of 30m HLS pixels against 250m MODIS or 500m VIIRS pixels.
 - Final vegetation health conclusions without field or trusted reference data.
 - Land-cover truth from Dynamic World alone.
 - Administrative or policy claims from land-cover masks.
@@ -51,9 +55,10 @@ This smoke evidence proves product availability and band compatibility only. It 
 1. Recompute the demo NDVI with the same AOI, dates, cloud policy, scale, and reducer.
 2. Compare the same date window against MOD13Q1/MYD13Q1 after applying the `0.0001` NDVI scale factor.
 3. Compare against Landsat 8/9 NDVI after QA masking and Collection 2 scale/offset conversion.
-4. Split Sentinel-2 NDVI by JRC water/non-water masks.
-5. Split Sentinel-2 NDVI by Dynamic World probability masks and sanity-check against ESA WorldCover broad classes.
-6. Report mismatches as sensor, resolution, compositing, QA, or mask-definition differences unless additional evidence says otherwise.
+4. For product-intercomparison demos, match product windows and aggregate the high-resolution product to the coarser product grid before pixel-level metrics.
+5. Split Sentinel-2 or HLS NDVI by JRC water/non-water masks.
+6. Split NDVI by Dynamic World probability masks or ESA WorldCover broad classes.
+7. Report mismatches as sensor, resolution, compositing, QA, or mask-definition differences unless additional evidence says otherwise.
 
 ## Claim Boundary
 

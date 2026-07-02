@@ -39,6 +39,9 @@ earthengine = [
   "earthengine-api>=1.5",
   "geemap>=0.35",
 ]
+validation = [
+  "matplotlib>=3.8",
+]
 dev = [
   "build>=1.2",
   "pytest>=8.0",

@@ -1,6 +1,6 @@
 # Capability Matrix
 
-Last updated: 2026-07-01
+Last updated: 2026-07-02
 
 This matrix is the public overclaim guard for `gee-agent-skill`. It separates public golden regression examples from generic plan/render/validate capability and withheld private academic workflows.
 
@@ -21,6 +21,7 @@ This matrix is the public overclaim guard for `gee-agent-skill`. It separates pu
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | HK Jan 2024 NDVI CSV | Golden | Yes | Yes | Yes | Yes | Yes | Yes | Public harness regression, not scientific conclusion. |
 | HK Jan 2024 land-cover-aware NDVI CSV | Golden | Yes | Yes | Yes | Yes | Yes | Yes | Dynamic World strata are interpretation masks. |
+| HK 2024 HLS/MODIS NDVI product intercomparison | Golden | Yes | Canonical script | No | Yes | Yes | CSV tables, annual rasters, 2x2 fallback tiles, Drive readback, local QA, figures, report, and readiness audit complete | Product-level consistency validation only; no in-situ ground truth. |
 | EVI CSV | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Needs reviewed AOI/export context and live evidence. |
 | NDWI GeoTIFF | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Generic preflight blocks placeholders. |
 | NDBI CSV | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Bare soil and built-up interpretation need review. |

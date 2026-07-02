@@ -61,8 +61,61 @@ The public demos are small golden regression examples for the harness contract. 
 | --- | --- | --- | --- |
 | v0.1 minimal NDVI CSV | Golden | Minimal Sentinel-2 NDVI request -> plan -> validation -> preflight -> export trace. | [Case study](docs/case_studies/hk_ndvi_v01.md) |
 | v0.2 land-cover-aware NDVI CSV | Golden | Dynamic World interpretation strata can be added with caveats and traceability. | [Case study](docs/case_studies/hk_ndvi_landcover_v02.md) |
+| v0.3 HLS/MODIS NDVI product intercomparison | Golden | Scale-aware product consistency: HLS NDVI -> MODIS grid -> Drive export -> metrics/figures/report/readiness audit. | [Validation](docs/validation/hk_ndvi_product_intercomparison_v03.md) |
 
 More complex academic demos are intentionally not displayed in this public README. Use the [capability matrix](docs/capability_matrix.md) for supported public surfaces and the [remote sensing validation ladder](docs/remote_sensing_validation.md) for generic NDVI reasonableness checks.
+
+## Validation v0.3: Hong Kong NDVI Product Intercomparison
+
+This v0.3 demo evaluates whether the skill can produce a scientifically plausible and reproducible NDVI workflow by comparing 30 m HLS-derived NDVI, aggregated to the MODIS grid, against the official MODIS MOD13Q1 vegetation-index product over Hong Kong. The experiment is designed as product intercomparison rather than in-situ validation: strong agreement supports workflow reliability, while systematic differences are analyzed by land-cover class, cloud coverage, and mixed-pixel effects.
+
+| Component | Choice |
+| --- | --- |
+| High-resolution source | `NASA/HLS/HLSL30/v002` and `NASA/HLS/HLSS30/v002` |
+| Official comparison product | `MODIS/061/MOD13Q1`, `NDVI * 0.0001` |
+| Stratification | `ESA/WorldCover/v200` purity groups |
+| Temporal logic | MODIS 16-day windows drive HLS collection windows |
+| Scale logic | HLS 30 m median NDVI is aggregated to the MODIS projection before comparison |
+| Drive handoff | `GEE_SKILL_V03_HK_NDVI_VALIDATION` |
+
+Pipeline:
+
+```text
+discover datasets -> build GEE workflow -> HLS QA/NDVI -> MODIS QA/scale -> aggregate HLS to MODIS grid -> export to Drive -> connector readback -> metrics and figures
+```
+
+Current evidence status: `Golden` validation evidence is available for the public v0.3 demo. Full-year 2024 CSV exports were read back from Google Drive, annual GeoTIFF raster outputs were verified through native files or deterministic 2x2 tiled fallbacks, local QA passed, and the readiness audit reports `golden_ready`.
+
+| Metric | Status |
+| --- | --- |
+| Matched pixel count | 5,575 matched full-year samples |
+| Bias / MAE / RMSE | -0.025 / 0.073 / 0.111 NDVI |
+| Pearson r / Spearman rho | 0.870 / 0.859 |
+| Land-cover finding | Vegetation-dominated pixels have the lowest RMSE (0.082); coastal/water-adjacent pixels have the highest RMSE (0.193). |
+| Raster QA | HLS 30 m, MODIS 250 m, HLS aggregated 250 m tiles, difference tiles, and valid-count tiles passed local sanity checks. |
+
+Figures generated from Drive-downloaded CSVs:
+
+![Hong Kong v0.3 regional NDVI time series](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_regional_ndvi_timeseries.png)
+
+![Hong Kong v0.3 HLS MODIS hexbin](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_hls_vs_modis_hexbin.png)
+
+![Hong Kong v0.3 land-cover metrics](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_landcover_metrics.png)
+
+Project status and remaining work are tracked in [Roadmap and TODO](docs/roadmap.md). The short contributor-facing task list is [TODO.md](TODO.md).
+
+Reproduce:
+
+```bash
+python scripts/hk_ndvi_v03_export.py --mode smoke --year 2024 --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION --project "$EE_PROJECT" --confirm-live --json
+python scripts/hk_ndvi_v03_export.py --mode full --year 2024 --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION --project "$EE_PROJECT" --confirm-live --json
+python scripts/hk_ndvi_v03_monitor_tasks.py --manifest outputs/hk_ndvi_product_validation_v03/manifest.json --out outputs/hk_ndvi_product_validation_v03 --json
+python scripts/hk_ndvi_v03_analyze_drive_exports.py --raw-dir outputs/hk_ndvi_product_validation_v03/raw_drive --out outputs/hk_ndvi_product_validation_v03 --json
+python scripts/hk_ndvi_v03_make_figures.py --input outputs/hk_ndvi_product_validation_v03/analysis --out outputs/hk_ndvi_product_validation_v03/figures --json
+python scripts/hk_ndvi_v03_readiness_audit.py --out outputs/hk_ndvi_product_validation_v03 --json
+```
+
+Limitations: this validates product-level consistency and remote-sensing workflow reliability, not ground-truth accuracy. Coastal mixed pixels, dense urban pixels, clouds, haze, terrain, BRDF differences, and static 2021 land-cover strata can all produce real product differences.
 
 ## 🔐 Tool Permissions
 
@@ -91,6 +144,14 @@ Full guidance: [Tool permissions](docs/tool_permissions.md).
 | A private research flow revealed repeated friction. | Generic workflow card only after privacy review and source verification. |
 
 More detail: [Closed loop](docs/closed_loop.md) and [adaptive browser-backed knowledge loop](references/knowledge_base/workflows/adaptive-browser-backed-knowledge-loop.md).
+
+## 🗺️ Roadmap And TODO
+
+The public roadmap is maintained as a lightweight project board in [docs/roadmap.md](docs/roadmap.md). It separates `Done`, `Now`, `Next`, and `Later` work, and uses explicit status labels: `Golden`, `Partial`, `Implementation-ready`, `Planned`, and `Blocked`.
+
+Use it to see what still needs work before a demo becomes public golden evidence. Current priorities are turning the completed v0.3 HLS/MODIS validation into generic v0.4 skill-generation capability, keeping release checks reproducible, and promoting only privacy-reviewed, source-backed lessons into the knowledge base.
+
+For GitHub-style maintenance, use [TODO.md](TODO.md), the issue templates under `.github/ISSUE_TEMPLATE/`, and the suggested labels in `.github/labels.yml`. The board process, labels, triage loop, and demo promotion rules are summarized in [Project Board Guide](docs/project_board.md).
 
 ## What This Project Does
 
@@ -133,6 +194,8 @@ Compatibility commands such as `ask`, `review-plan`, `preflight-plan`, `run-plan
 - [Closed loop](docs/closed_loop.md)
 - [Remote sensing validation ladder](docs/remote_sensing_validation.md)
 - [Capability matrix](docs/capability_matrix.md)
+- [Project board guide](docs/project_board.md)
+- [Roadmap and TODO](docs/roadmap.md)
 - [CLI reference](docs/cli_reference.md)
 - [Recipe registry](docs/recipes.md)
 - [Benchmark protocol](docs/benchmark_protocol.md)

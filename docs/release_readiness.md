@@ -1,6 +1,6 @@
 # Release Readiness
 
-Last updated: 2026-07-01
+Last updated: 2026-07-02
 
 This checklist defines what can be published for the public `gee-agent-skill` repository. It covers the agent-native GEE harness, public v0.1/v0.2 golden regression examples, generic knowledge cards, and documentation assets. Personal academic demos, unpublished workflows, private asset ids, result values, and paper drafts must stay outside this repository.
 
@@ -8,6 +8,7 @@ This checklist defines what can be published for the public `gee-agent-skill` re
 
 - v0.1 minimal January NDVI CSV remains a public golden regression example.
 - v0.2 land-cover-aware January NDVI CSV remains a public golden regression example.
+- v0.3 Hong Kong NDVI product intercomparison has full-year 2024 CSV evidence from Drive readback and local analysis, plus partial annual GeoTIFF readback; it remains partial until the remaining annual GeoTIFF exports are verified.
 - More complex academic demos are withheld from public display and must not be referenced in README, docs, examples, evidence bundles, or packaged resources.
 - `gee-plan/v0.3` remains a public plan schema and generic harness contract.
 - Non-golden workflows should be described by their actual evidence level: planned, render/validate, mocked preflight blocker, or live verified only when listed in `docs/capability_matrix.md`.
@@ -43,6 +44,21 @@ rg -n "private asset|draft manuscript|unpublished result" README.md README.zh-CN
 
 Any hit must be reviewed. Generic privacy rules may appear in security guidance, but concrete private paths, asset ids, unpublished results, and withheld academic demo names must not appear.
 
+## Demo Promotion Checklist
+
+Use this checklist before changing a demo status to `Golden` in README, docs, or the capability matrix:
+
+- [ ] Dataset choices are grounded in official catalog pages or source-backed dataset cards.
+- [ ] Canonical script or recipe is committed with deterministic output names.
+- [ ] Tests cover schema, scale factors, export naming, and metric sanity.
+- [ ] Live tasks were started with explicit confirmation and recorded task descriptions.
+- [ ] Required Drive artifacts were observed through connector readback.
+- [ ] Local analysis ran from Drive-downloaded artifacts, not from hidden local state.
+- [ ] Figures and reports identify metric definitions and claim boundaries.
+- [ ] Large raw exports remain ignored; only small reports, manifests, and docs are public.
+- [ ] Privacy scan passes for private terms, credentials, local paths, and unreviewed asset ids.
+- [ ] Remaining limitations are listed as TODOs rather than hidden.
+
 ## Claim Boundary
 
 The repository may claim:
@@ -52,6 +68,7 @@ The repository may claim:
 - explicit live-export gating through `--project` and `--confirm-live`;
 - trace artifacts under `outputs/runs/<run_id>/`;
 - public v0.1/v0.2 golden examples as harness regression evidence.
+- public v0.3 full-year CSV evidence for the Drive handoff, product-intercomparison metrics, land-cover stratification, and figure generation loop.
 
 The repository must not claim:
 

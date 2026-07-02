@@ -22,6 +22,10 @@ The Python module keeps a fallback registry only so broken local files do not ma
 
 See [Capability matrix](capability_matrix.md) for current status by workflow.
 
+## Canonical Validation Examples
+
+Some portfolio demos are intentionally kept as canonical scripts before being promoted into generic recipes. The v0.3 Hong Kong NDVI product intercomparison lives at `examples/hk_ndvi_product_validation_v03/` and validates a scale-aware HLS/MODIS workflow. It should not be described as a fully generated natural-language recipe until the skill can synthesize the same dataset choices, QA masks, temporal matching, grid aggregation, Drive schema, and claim-boundary wording.
+
 ## Registered Families
 
 | Recipe | Task type | Current status |
