@@ -94,6 +94,15 @@ Current evidence status: `Golden` validation evidence is available for the publi
 | Land-cover finding | Vegetation-dominated pixels have the lowest RMSE (0.082); coastal/water-adjacent pixels have the highest RMSE (0.193). |
 | Raster QA | HLS 30 m, MODIS 250 m, HLS aggregated 250 m tiles, difference tiles, and valid-count tiles passed local sanity checks. |
 
+**Why this analysis is credible**
+
+- 🛰️ **Reference-like high-resolution input:** HLS v2.0 is designed to make Landsat/Sentinel-2 30 m surface reflectance comparable through atmospheric correction, cloud/cloud-shadow masking, BRDF/view-angle normalization, bandpass adjustment, and common gridding. The HLS v2.0 paper reports robust harmonization for quantitative terrestrial applications. [USGS/RSE](https://pubs.usgs.gov/publication/70266349)
+- 🌿 **Official comparison product:** MOD13Q1 is the official 16-day 250 m MODIS vegetation-index product; the Earth Engine catalog and MOD13 user guide document atmospheric correction, QA layers, and the `0.0001` NDVI scale factor. [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1), [MOD13 guide](https://lpdaac.usgs.gov/documents/621/MOD13_User_Guide_V61.pdf)
+- 📏 **Scale-aware validation:** The workflow does not compare 30 m HLS pixels directly with 250 m MODIS pixels. It aggregates HLS to the MODIS grid first, matching the validation logic recommended for moderate-resolution products where direct comparison is affected by scale mismatch and heterogeneity. [MODIS validation review](https://sites.bu.edu/cliveg/files/2013/12/ywze02.pdf)
+- 🧭 **Interpretable error structure:** ESA WorldCover v200 provides a 10 m 2021 land-cover layer for stratification, so weaker coastal/mixed/built-up agreement is interpreted as a mixed-pixel and product-difference effect, not as a workflow failure. [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
+
+**Conclusion:** v0.3 provides credible evidence that the skill can build a QA-aware, temporally matched, scale-aware NDVI product-intercomparison workflow. The strong correlations and low vegetation-dominated RMSE support workflow reliability; the larger coastal and mixed-pixel errors are expected remote-sensing behavior, not a contradiction. This remains product-level consistency evidence, not in-situ ground-truth accuracy.
+
 Figures generated from Drive-downloaded CSVs:
 
 ![Hong Kong v0.3 regional NDVI time series](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_regional_ndvi_timeseries.png)

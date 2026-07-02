@@ -94,6 +94,15 @@ gee-skill run-plan outputs/runs/<run_id>/task_plan.yaml --project "$EE_PROJECT" 
 | Land-cover finding | 植被主导像元 RMSE 最低 (0.082)；海岸/水体邻近像元 RMSE 最高 (0.193)。 |
 | Raster QA | HLS 30 m、MODIS 250 m、HLS aggregated 250 m tiles、difference tiles 和 valid-count tiles 均通过本地 sanity checks。 |
 
+**为什么这个分析可信**
+
+- 🛰️ **高分辨率参考型输入：** HLS v2.0 的目标就是把 Landsat/Sentinel-2 30 m surface reflectance 做成可比产品，包括大气校正、云/云影掩膜、BRDF/view-angle 归一化、bandpass adjustment 和 common grid。HLS v2.0 论文认为其 harmonization 足以支撑定量陆地应用。 [USGS/RSE](https://pubs.usgs.gov/publication/70266349)
+- 🌿 **官方对比产品：** MOD13Q1 是官方 16-day、250 m MODIS vegetation-index 产品；GEE catalog 和 MOD13 user guide 都说明了大气校正、QA layers 和 `0.0001` NDVI scale factor。 [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1), [MOD13 guide](https://lpdaac.usgs.gov/documents/621/MOD13_User_Guide_V61.pdf)
+- 📏 **尺度匹配验证：** workflow 没有直接比较 30 m HLS 像元和 250 m MODIS 像元，而是先把 HLS 聚合到 MODIS grid。这符合中低分辨率产品验证中对 scale mismatch 和地表异质性的处理逻辑。 [MODIS validation review](https://sites.bu.edu/cliveg/files/2013/12/ywze02.pdf)
+- 🧭 **误差结构可解释：** ESA WorldCover v200 提供 2021 年 10 m land-cover layer，用来做分层解释。因此 coastal / mixed / built-up 像元一致性较弱，应解释为混合像元和产品差异，而不是 workflow 失败。 [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
+
+**结论：** v0.3 能有力说明这个 skill 可以构建 QA-aware、时间匹配、尺度匹配的 NDVI 产品互检流程。较高相关性和 vegetation-dominated 像元较低 RMSE 支持 workflow reliability；海岸和混合像元误差更大符合遥感常识，不构成反例。但它仍然是 product-level consistency evidence，不是 in-situ ground-truth accuracy。
+
 以下图表来自 Drive 下载的 CSV：
 
 ![Hong Kong v0.3 regional NDVI time series](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_regional_ndvi_timeseries.png)
