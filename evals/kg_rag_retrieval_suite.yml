@@ -6,14 +6,19 @@ cases:
     expected_cards: [modis_mod13q1_ndvi]
     expected_nodes: [scale_factor:modis_ndvi_0001]
     expected_rules: [0.0001]
+    expected_query_classification: dataset_fact
+    required_bundle_fields: [accepted_evidence_cards, candidate_evidence_cards, query_classification, warnings]
+    requires_accepted_evidence: true
     min_tier_a_count: 1
     top_k: 8
   - id: hls_modis_product_intercomparison
     query: HLS MODIS product intercomparison
     expected_cards: [hls_hlsl30, hls_hlss30, modis_mod13q1_ndvi, scale_aware_product_intercomparison_rule]
     expected_nodes: [validation_demo:hk_2024_hls_modis_ndvi_v03]
-    expected_rules: [aggregation, scale]
+    expected_rules: [aggregation, 0.0001]
     requires_claim_boundary: true
+    expected_query_classification: workflow_planning
+    requires_accepted_evidence: true
     min_tier_a_count: 2
     top_k: 10
   - id: direct_fine_coarse_comparison
@@ -21,6 +26,7 @@ cases:
     expected_cards: [direct_fine_coarse_comparison_failure_case]
     expected_nodes: [failure:direct_fine_coarse_pixel_comparison]
     requires_claim_boundary: true
+    expected_query_classification: failure_recovery
     min_tier_a_count: 1
     top_k: 10
   - id: golden_public_demo
@@ -36,6 +42,8 @@ cases:
     expected_nodes: [workflow:flood_mapping]
     expected_rules: [Sentinel-1, polarization, change metric, Do not route flood mapping to NDVI]
     excluded_nodes: [workflow:product_intercomparison, validation_demo:hk_2024_hls_modis_ndvi_v03]
+    excluded_cards: [modis_mod13q1_ndvi, scale_aware_product_intercomparison_rule]
+    expected_query_classification: workflow_planning
     requires_claim_boundary: true
     min_tier_a_count: 1
     top_k: 16
@@ -56,5 +64,38 @@ cases:
     query: What sources are authoritative for dataset band names?
     expected_cards: [earth_engine_data_catalog]
     expected_nodes: [source:google-earth-engine-data-catalog]
+    expected_query_classification: dataset_fact
     min_tier_a_count: 1
     top_k: 20
+  - id: sentinel2_ndvi
+    query: Plan Sentinel-2 NDVI with cloud masking
+    expected_cards: [sentinel2_sr_harmonized]
+    expected_nodes: [dataset:copernicus/s2_sr_harmonized]
+    expected_query_classification: workflow_planning
+    requires_accepted_evidence: true
+    min_tier_a_count: 1
+    top_k: 12
+  - id: landsat_lst
+    query: Landsat Collection 2 LST workflow
+    expected_cards: [landsat_collection2_sr]
+    expected_query_classification: workflow_planning
+    requires_accepted_evidence: true
+    min_tier_a_count: 1
+    top_k: 12
+  - id: dynamic_world_ndvi_interpretation
+    query: Dynamic World land-cover NDVI interpretation
+    expected_cards: [dynamic_world]
+    expected_query_classification: workflow_planning
+    requires_accepted_evidence: true
+    min_tier_a_count: 1
+    top_k: 12
+  - id: unsupported_private_asset_request
+    query: Use private asset users/example/private_aoi for validation
+    expected_cards: []
+    requires_insufficient_evidence_warning: true
+    top_k: 8
+  - id: ambiguous_task_insufficient_evidence
+    query: Prove crop yield accuracy from one NDVI image
+    expected_cards: []
+    requires_insufficient_evidence_warning: true
+    top_k: 8

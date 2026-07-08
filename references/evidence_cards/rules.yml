@@ -1,189 +1,351 @@
 cards:
-  - card_id: modis_ndvi_scale_factor_rule
-    title: MODIS NDVI scale factor required
-    source_id: gee-catalog-mod13q1
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [MODIS, NDVI, scale_factor, validator_rule]
-    extracted_facts:
-      - MODIS vegetation-index values must be interpreted with the documented 0.0001 scale factor.
-    extracted_patterns:
-      - Apply scale factors before metrics, exports, charts, or product intercomparison.
-    limitations:
-      - Scale factors do not resolve QA, temporal, projection, or mixed-pixel differences.
-    claim_boundaries:
-      - Quantitative agreement cannot be claimed if the MODIS scale factor is missing.
-    applicable_workflows: [product_intercomparison, vegetation_index]
-    applicable_datasets: [MODIS/061/MOD13Q1]
-    applicable_operators: []
-    known_failure_modes: [missing_modis_scale_factor]
-    validation_implications:
-      - Fail or warn when MOD13Q1 NDVI/EVI appears without 0.0001.
-    planner_hints:
-      - State the MODIS scale factor in plan methods.
-    validator_hints:
-      - Look for literal 0.0001 or equivalent scale-factor constant.
-    citation: Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: modis_qa_rule
-    title: MODIS SummaryQA or DetailedQA required
-    source_id: gee-catalog-mod13q1
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [MODIS, QA, SummaryQA, DetailedQA, validator_rule]
-    extracted_facts:
-      - MOD13Q1 provides SummaryQA and DetailedQA fields for vegetation-index quality review.
-    extracted_patterns:
-      - Product intercomparison should document a MODIS QA filtering or stratification policy.
-    limitations:
-      - QA screening does not make MODIS an in-situ reference.
-    claim_boundaries:
-      - MODIS QA supports product-level screening only.
-    applicable_workflows: [product_intercomparison, vegetation_index]
-    applicable_datasets: [MODIS/061/MOD13Q1]
-    applicable_operators: [updateMask]
-    known_failure_modes: [missing_modis_qa]
-    validation_implications:
-      - Warn when MOD13Q1 comparison code omits SummaryQA and DetailedQA.
-    planner_hints:
-      - Include a MODIS SummaryQA or DetailedQA policy.
-    validator_hints:
-      - Search scripts for SummaryQA or DetailedQA when MOD13Q1 is used.
-    citation: Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: hls_fmask_rule
-    title: HLS Fmask quality policy required
-    source_id: gee-catalog-hlsl30
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [HLS, Fmask, QA, validator_rule]
-    extracted_facts:
-      - HLS product intercomparison must document an Fmask-based or equivalent QA policy.
-    extracted_patterns:
-      - Apply HLS QA before NDVI compositing and aggregation to coarser products.
-    limitations:
-      - Fmask screening does not eliminate all atmospheric, BRDF, temporal, or mixed-pixel differences.
-    claim_boundaries:
-      - HLS Fmask supports product construction quality, not ground-truth accuracy.
-    applicable_workflows: [product_intercomparison, vegetation_index]
-    applicable_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002]
-    applicable_operators: [updateMask]
-    known_failure_modes: [missing_hls_fmask]
-    validation_implications:
-      - Warn when HLSL30 or HLSS30 appears without Fmask.
-    planner_hints:
-      - Include Fmask screening before HLS NDVI aggregation.
-    validator_hints:
-      - Search scripts for Fmask when NASA/HLS/HLSL30 or NASA/HLS/HLSS30 is used.
-    citation: Earth Engine Data Catalog NASA HLS pages, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: reduce_resolution_projection_rule
-    title: reduceResolution projection handling required
-    source_id: google-earth-engine-resample-guide
-    source_url: https://developers.google.com/earth-engine/guides/resample
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [reduceResolution, projection, scale, validator_rule]
-    extracted_facts:
-      - Cross-scale comparison needs explicit aggregation and projection handling to avoid accidental native-pixel comparison.
-    extracted_patterns:
-      - Pair reduceResolution or equivalent aggregation with reviewed projection/default-projection handling.
-    limitations:
-      - Projection handling makes comparison coherent but cannot remove sensor/product differences.
-    claim_boundaries:
-      - Aggregated product comparison remains product-level consistency evidence.
-    applicable_workflows: [product_intercomparison]
-    applicable_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002, MODIS/061/MOD13Q1]
-    applicable_operators: [reduceResolution, reproject, setDefaultProjection]
-    known_failure_modes: [reduce_resolution_projection_missing, direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Warn when reduceResolution appears without projection/default projection handling.
-    planner_hints:
-      - Make grid/projection matching explicit in product-intercomparison plans.
-    validator_hints:
-      - Look for reproject, setDefaultProjection, projection, CRS, or reviewed equivalent logic.
-    citation: Earth Engine resampling/reduceResolution guidance, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: claim_boundary_required_for_validation_report
-    title: Claim boundary required for validation reports
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [claim_boundary, validation_report, overclaim_prevention]
-    extracted_facts:
-      - A validation report should identify what its evidence supports and what it cannot claim.
-    extracted_patterns:
-      - Product intercomparison reports should state product-level consistency rather than in-situ ground-truth accuracy.
-    limitations:
-      - Claim boundaries are conservative policy controls, not statistical guarantees.
-    claim_boundaries:
-      - Validation reports without explicit claim boundaries should not be promoted.
-    applicable_workflows: [validation, product_intercomparison, golden_promotion]
-    applicable_datasets: []
-    applicable_operators: []
-    known_failure_modes: [ground_truth_overclaim, missing_claim_boundary]
-    validation_implications:
-      - Warn or fail when validation text lacks a claim boundary.
-    planner_hints:
-      - Include a claim-boundary section in validation-facing plans.
-    validator_hints:
-      - Search for product-level consistency, not ground truth, not in-situ, or explicit claim_boundary wording.
-    citation: Project source policy and Earth Engine documentation context, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: medium
-    private_content_risk: low
-  - card_id: sentinel1_flood_mapping_rule
-    title: Sentinel-1 flood mapping rule
-    source_id: gee-catalog-sentinel1-grd
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [Sentinel-1, flood_mapping, SAR, validator_rule]
-    extracted_facts:
-      - COPERNICUS/S1_GRD is the official Earth Engine dataset ID for Sentinel-1 SAR flood and change workflows.
-    extracted_patterns:
-      - Flood mapping plans should use before/after date windows, AOI filtering, IW mode, polarization/orbit filters, and an explicit change metric.
-    limitations:
-      - SAR threshold maps are screening products and need independent evidence before impact or ground-truth claims.
-      - Speckle, incidence angle, polarization, orbit direction, permanent water, and land-cover context can affect interpretation.
-    claim_boundaries:
-      - Sentinel-1 flood maps support candidate flood/change screening unless validated with independent reference evidence.
-    applicable_workflows: [flood_mapping, change_detection]
-    applicable_datasets: [COPERNICUS/S1_GRD]
-    applicable_operators: [filterDate, filterBounds, filterMetadata, divide, subtract, threshold]
-    known_failure_modes: [missing_s1_filters, threshold_overclaim, missing_before_after_windows]
-    validation_implications:
-      - Warn when Sentinel-1 flood workflows omit IW mode, polarization, before/after windows, or an explicit change metric.
-      - Do not route flood mapping to NDVI product-intercomparison rules unless the user explicitly asks for vegetation products.
-    planner_hints:
-      - Route flood mapping to the Sentinel-1 before/after recipe and include SAR caveats, threshold review, and export artifact expectations.
-    validator_hints:
-      - Check Sentinel-1 scripts for COPERNICUS/S1_GRD, IW mode, polarization, before/after date windows, AOI filtering, and change metric.
-    citation: Earth Engine Data Catalog COPERNICUS/S1_GRD and local Sentinel-1 flood recipe, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
+- card_id: modis_ndvi_scale_factor_rule
+  title: MODIS NDVI scale factor required
+  source_id: gee-catalog-mod13q1
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - MODIS
+  - NDVI
+  - scale_factor
+  - validator_rule
+  extracted_facts:
+  - MODIS vegetation-index values must be interpreted with the documented 0.0001 scale factor.
+  extracted_patterns:
+  - Apply scale factors before metrics, exports, charts, or product intercomparison.
+  limitations:
+  - Scale factors do not resolve QA, temporal, projection, or mixed-pixel differences.
+  claim_boundaries:
+  - Quantitative agreement cannot be claimed if the MODIS scale factor is missing.
+  applicable_workflows:
+  - product_intercomparison
+  - vegetation_index
+  applicable_datasets:
+  - MODIS/061/MOD13Q1
+  applicable_operators: []
+  known_failure_modes:
+  - missing_modis_scale_factor
+  validation_implications:
+  - Fail or warn when MOD13Q1 NDVI/EVI appears without 0.0001.
+  planner_hints:
+  - State the MODIS scale factor in plan methods.
+  validator_hints:
+  - Look for literal 0.0001 or equivalent scale-factor constant.
+  citation: Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - MODIS NDVI scale factor required
+  - modis_ndvi_scale_factor_rule
+  - MODIS
+  - NDVI
+  - scale_factor
+  - validator_rule
+  - product_intercomparison
+  - vegetation_index
+  aliases:
+  - MODIS scale factor
+  - 0.0001 scale factor
+  - MOD13Q1 NDVI scale
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: modis_qa_rule
+  title: MODIS SummaryQA or DetailedQA required
+  source_id: gee-catalog-mod13q1
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - MODIS
+  - QA
+  - SummaryQA
+  - DetailedQA
+  - validator_rule
+  extracted_facts:
+  - MOD13Q1 provides SummaryQA and DetailedQA fields for vegetation-index quality review.
+  extracted_patterns:
+  - Product intercomparison should document a MODIS QA filtering or stratification policy.
+  limitations:
+  - QA screening does not make MODIS an in-situ reference.
+  claim_boundaries:
+  - MODIS QA supports product-level screening only.
+  applicable_workflows:
+  - product_intercomparison
+  - vegetation_index
+  applicable_datasets:
+  - MODIS/061/MOD13Q1
+  applicable_operators:
+  - updateMask
+  known_failure_modes:
+  - missing_modis_qa
+  validation_implications:
+  - Warn when MOD13Q1 comparison code omits SummaryQA and DetailedQA.
+  planner_hints:
+  - Include a MODIS SummaryQA or DetailedQA policy.
+  validator_hints:
+  - Search scripts for SummaryQA or DetailedQA when MOD13Q1 is used.
+  citation: Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - MODIS SummaryQA or DetailedQA required
+  - modis_qa_rule
+  - MODIS
+  - QA
+  - SummaryQA
+  - DetailedQA
+  - product_intercomparison
+  - vegetation_index
+  aliases:
+  - MODIS QA
+  - SummaryQA
+  - DetailedQA
+  - MOD13Q1 quality
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: hls_fmask_rule
+  title: HLS Fmask quality policy required
+  source_id: gee-catalog-hlsl30
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - HLS
+  - Fmask
+  - QA
+  - validator_rule
+  extracted_facts:
+  - HLS product intercomparison must document an Fmask-based or equivalent QA policy.
+  extracted_patterns:
+  - Apply HLS QA before NDVI compositing and aggregation to coarser products.
+  limitations:
+  - Fmask screening does not eliminate all atmospheric, BRDF, temporal, or mixed-pixel differences.
+  claim_boundaries:
+  - HLS Fmask supports product construction quality, not ground-truth accuracy.
+  applicable_workflows:
+  - product_intercomparison
+  - vegetation_index
+  applicable_datasets:
+  - NASA/HLS/HLSL30/v002
+  - NASA/HLS/HLSS30/v002
+  applicable_operators:
+  - updateMask
+  known_failure_modes:
+  - missing_hls_fmask
+  validation_implications:
+  - Warn when HLSL30 or HLSS30 appears without Fmask.
+  planner_hints:
+  - Include Fmask screening before HLS NDVI aggregation.
+  validator_hints:
+  - Search scripts for Fmask when NASA/HLS/HLSL30 or NASA/HLS/HLSS30 is used.
+  citation: Earth Engine Data Catalog NASA HLS pages, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - HLS Fmask quality policy required
+  - hls_fmask_rule
+  - HLS
+  - Fmask
+  - QA
+  - validator_rule
+  - product_intercomparison
+  - vegetation_index
+  aliases:
+  - HLS Fmask
+  - HLS cloud mask
+  - HLS quality policy
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: reduce_resolution_projection_rule
+  title: reduceResolution projection handling required
+  source_id: google-earth-engine-resample-guide
+  source_url: https://developers.google.com/earth-engine/guides/resample
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - reduceResolution
+  - projection
+  - scale
+  - validator_rule
+  extracted_facts:
+  - Cross-scale comparison needs explicit aggregation and projection handling to avoid accidental native-pixel comparison.
+  extracted_patterns:
+  - Pair reduceResolution or equivalent aggregation with reviewed projection/default-projection handling.
+  limitations:
+  - Projection handling makes comparison coherent but cannot remove sensor/product differences.
+  claim_boundaries:
+  - Aggregated product comparison remains product-level consistency evidence.
+  applicable_workflows:
+  - product_intercomparison
+  applicable_datasets:
+  - NASA/HLS/HLSL30/v002
+  - NASA/HLS/HLSS30/v002
+  - MODIS/061/MOD13Q1
+  applicable_operators:
+  - reduceResolution
+  - reproject
+  - setDefaultProjection
+  known_failure_modes:
+  - reduce_resolution_projection_missing
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Warn when reduceResolution appears without projection/default projection handling.
+  planner_hints:
+  - Make grid/projection matching explicit in product-intercomparison plans.
+  validator_hints:
+  - Look for reproject, setDefaultProjection, projection, CRS, or reviewed equivalent logic.
+  citation: Earth Engine resampling/reduceResolution guidance, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - reduceResolution projection handling required
+  - reduce_resolution_projection_rule
+  - reduceResolution
+  - projection
+  - scale
+  - validator_rule
+  - product_intercomparison
+  aliases:
+  - reduceResolution projection
+  - projection handling
+  - default projection
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: claim_boundary_required_for_validation_report
+  title: Claim boundary required for validation reports
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - claim_boundary
+  - validation_report
+  - overclaim_prevention
+  extracted_facts:
+  - A validation report should identify what its evidence supports and what it cannot claim.
+  extracted_patterns:
+  - Product intercomparison reports should state product-level consistency rather than in-situ ground-truth accuracy.
+  limitations:
+  - Claim boundaries are conservative policy controls, not statistical guarantees.
+  claim_boundaries:
+  - Validation reports without explicit claim boundaries should not be promoted.
+  applicable_workflows:
+  - validation
+  - product_intercomparison
+  - golden_promotion
+  applicable_datasets: []
+  applicable_operators: []
+  known_failure_modes:
+  - ground_truth_overclaim
+  - missing_claim_boundary
+  validation_implications:
+  - Warn or fail when validation text lacks a claim boundary.
+  planner_hints:
+  - Include a claim-boundary section in validation-facing plans.
+  validator_hints:
+  - Search for product-level consistency, not ground truth, not in-situ, or explicit claim_boundary wording.
+  citation: Project source policy and Earth Engine documentation context, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Claim boundary required for validation reports
+  - claim_boundary_required_for_validation_report
+  - claim_boundary
+  - validation_report
+  - overclaim_prevention
+  - validation
+  - product_intercomparison
+  - golden_promotion
+  aliases:
+  - claim boundary
+  - validation report boundary
+  - Golden claim boundary
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: sentinel1_flood_mapping_rule
+  title: Sentinel-1 flood mapping rule
+  source_id: gee-catalog-sentinel1-grd
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - Sentinel-1
+  - flood_mapping
+  - SAR
+  - validator_rule
+  extracted_facts:
+  - COPERNICUS/S1_GRD is the official Earth Engine dataset ID for Sentinel-1 SAR flood and change workflows.
+  extracted_patterns:
+  - Flood mapping plans should use before/after date windows, AOI filtering, IW mode, polarization/orbit filters, and an explicit change metric.
+  limitations:
+  - SAR threshold maps are screening products and need independent evidence before impact or ground-truth claims.
+  - Speckle, incidence angle, polarization, orbit direction, permanent water, and land-cover context can affect interpretation.
+  claim_boundaries:
+  - Sentinel-1 flood maps support candidate flood/change screening unless validated with independent reference evidence.
+  applicable_workflows:
+  - flood_mapping
+  - change_detection
+  applicable_datasets:
+  - COPERNICUS/S1_GRD
+  applicable_operators:
+  - filterDate
+  - filterBounds
+  - filterMetadata
+  - divide
+  - subtract
+  - threshold
+  known_failure_modes:
+  - missing_s1_filters
+  - threshold_overclaim
+  - missing_before_after_windows
+  validation_implications:
+  - Warn when Sentinel-1 flood workflows omit IW mode, polarization, before/after windows, or an explicit change metric.
+  - Do not route flood mapping to NDVI product-intercomparison rules unless the user explicitly asks for vegetation products.
+  planner_hints:
+  - Route flood mapping to the Sentinel-1 before/after recipe and include SAR caveats, threshold review, and export artifact expectations.
+  validator_hints:
+  - Check Sentinel-1 scripts for COPERNICUS/S1_GRD, IW mode, polarization, before/after date windows, AOI filtering, and change metric.
+  citation: Earth Engine Data Catalog COPERNICUS/S1_GRD and local Sentinel-1 flood recipe, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Sentinel-1 flood mapping rule
+  - sentinel1_flood_mapping_rule
+  - Sentinel-1
+  - flood_mapping
+  - SAR
+  - validator_rule
+  - flood_mapping
+  - change_detection
+  aliases:
+  - Sentinel-1 flood
+  - flood mapping
+  - SAR change metric
+  negative_queries:
+  - HLS MODIS product intercomparison
+  - MODIS NDVI scale factor

@@ -1,5 +1,7 @@
 schema_version: gee-planner-grounding-eval/v0.1
-description: Planner-facing KG-RAG grounding cases for v0.4 product intercomparison.
+description: Planner-facing KG-RAG grounding cases for v0.4.1 hardening.
+docs_index: references/index/gee_docs_index.json
+kg_index: references/index/gee_kg_index.json
 cases:
   - id: product_intercomparison_plan_hints
     query: Plan an HLS MODIS NDVI product intercomparison
@@ -11,8 +13,37 @@ cases:
       - SummaryQA
       - 0.0001
       - product-level consistency
+    requires_rules: true
+    requires_claim_boundary: true
+    excluded_terms:
+      - flood_mapping
   - id: prevent_ground_truth_overclaim
     query: Which evidence supports product-level consistency but not ground-truth accuracy?
     must_include:
       - product_intercomparison_claim_boundary
       - product_intercomparison_not_ground_truth
+    requires_claim_boundary: true
+  - id: sentinel1_flood_grounding
+    query: Generate a GEE workflow for flood mapping
+    must_include:
+      - Sentinel-1
+      - flood
+      - screening
+    must_not_include:
+      - MOD13Q1 NDVI official product card
+    requires_rules: true
+    requires_claim_boundary: true
+    excluded_terms:
+      - validation_demo:hk_2024_hls_modis_ndvi_v03
+  - id: landsat_lst_grounding
+    query: Plan a Landsat LST workflow
+    must_include:
+      - Landsat
+      - ST_B10
+      - QA_PIXEL
+    requires_rules: false
+  - id: unsupported_private_asset
+    query: Use private asset users/example/private_aoi for validation
+    must_include:
+      - insufficient evidence
+    requires_rules: false

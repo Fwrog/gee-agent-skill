@@ -1,6 +1,6 @@
 # Release Readiness
 
-Last updated: 2026-07-02
+Last updated: 2026-07-09
 
 This checklist defines what can be published for the public `gee-agent-skill` repository. It covers the agent-native GEE harness, public v0.1/v0.2 golden regression examples, generic knowledge cards, and documentation assets. Personal academic demos, unpublished workflows, private asset ids, result values, and paper drafts must stay outside this repository.
 
@@ -11,6 +11,8 @@ This checklist defines what can be published for the public `gee-agent-skill` re
 - v0.3 Hong Kong NDVI product intercomparison has full-year 2024 CSV evidence from Drive readback and local analysis, plus partial annual GeoTIFF readback; it remains partial until the remaining annual GeoTIFF exports are verified.
 - More complex academic demos are withheld from public display and must not be referenced in README, docs, examples, evidence bundles, or packaged resources.
 - `gee-plan/v0.3` remains a public plan schema and generic harness contract.
+- v0.4 KG-RAG is the source/evidence/KG/hybrid retrieval baseline.
+- v0.4.1 is the deterministic hardening pass for source refresh, evidence quality, retrieval ranking, trace sidecars, evals, and release gates.
 - Non-golden workflows should be described by their actual evidence level: planned, render/validate, mocked preflight blocker, or live verified only when listed in `docs/capability_matrix.md`.
 
 ## Homepage Assets
@@ -29,6 +31,7 @@ Run before publishing or opening a PR:
 
 ```bash
 python scripts/ingest_docs.py
+python scripts/release_gate_kg_rag.py --json
 python -m pytest -q
 gee-skill smoke-test --json
 gee-skill eval evals/benchmark_suite.yml --json

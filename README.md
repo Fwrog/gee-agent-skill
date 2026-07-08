@@ -257,3 +257,14 @@ gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS
 ```
 
 See [KG-RAG architecture](docs/kg_rag_architecture.md), [knowledge graph schema](docs/knowledge_graph_schema.md), [KG-RAG examples](docs/kg_rag_examples.md), and [source policy](docs/source_policy.md).
+
+### v0.4.1 hardening
+
+v0.4.1 is a release-readiness pass, not a new autonomous science layer. It adds auditable source refresh status, evidence-card quality checks, deterministic weighted lexical ranking with aliases and negative routing, richer hybrid bundles that separate accepted and candidate evidence, KG-RAG trace sidecars, product-intercomparison validator fixtures, expanded red-team/eval coverage, and a single local release gate:
+
+```bash
+python scripts/audit_evidence_quality.py --json
+python scripts/release_gate_kg_rag.py --json
+```
+
+v0.5 is reserved for a future typed `product_intercomparison` planner/schema. v0.4.1 deliberately keeps the existing control plane and treats KG-RAG as grounding and validation support, not ground-truth proof.

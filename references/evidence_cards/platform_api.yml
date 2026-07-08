@@ -1,280 +1,480 @@
 cards:
-  - card_id: earth_engine_python_api
-    title: Earth Engine Python API execution surface
-    source_id: google-earth-engine-api-reference
-    source_url: https://developers.google.com/earth-engine/apidocs
-    source_type: official_api_reference
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [api, python, execution_boundary]
-    extracted_facts:
-      - The Python API is the reviewed execution surface for generated Earth Engine workflows in this harness.
-    extracted_patterns:
-      - Keep authentication, project selection, validation, preflight, and live execution in the CLI control plane.
-    limitations:
-      - API availability does not imply user credentials, quota, or scientific validity.
-    claim_boundaries:
-      - Python API facts support execution mechanics only.
-    applicable_workflows: [render, validate, preflight, run]
-    applicable_datasets: []
-    applicable_operators: [ee.Initialize, ee.ImageCollection, Export]
-    known_failure_modes: [inline_authentication, live_export_without_confirmation]
-    validation_implications:
-      - Generated scripts must not bypass CLI-controlled authentication and confirmation gates.
-    planner_hints:
-      - Plan generated code as reviewable Python API scripts.
-    validator_hints:
-      - Flag inline authentication or live task starts outside guarded paths.
-    citation: Earth Engine API reference, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_javascript_api
-    title: Earth Engine JavaScript and Code Editor surface
-    source_id: google-earth-engine-code-editor-guide
-    source_url: https://developers.google.com/earth-engine/guides/playground
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [api, javascript, code_editor]
-    extracted_facts:
-      - The Code Editor is an official JavaScript workflow surface, separate from this CLI-first Python execution path.
-    extracted_patterns:
-      - Treat JavaScript examples as API/workflow reference material unless explicitly ported and validated.
-    limitations:
-      - JavaScript examples do not automatically become safe Python export scripts.
-    claim_boundaries:
-      - Code Editor context supports surface understanding, not live CLI execution.
-    applicable_workflows: [source_review, recipe_distillation]
-    applicable_datasets: []
-    applicable_operators: []
-    known_failure_modes: [surface_confusion]
-    validation_implications:
-      - Rendered Python scripts still require Python validation and preflight.
-    planner_hints:
-      - Note when a source example is JavaScript and needs a reviewed Python translation.
-    validator_hints:
-      - Do not treat JavaScript snippets as executable Python.
-    citation: Earth Engine Code Editor guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_client_vs_server
-    title: Earth Engine client/server boundary
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine/guides/client_server
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [client_server, deferred_execution, getInfo]
-    extracted_facts:
-      - Earth Engine workflows should avoid unbounded client-side materialization of server-side objects.
-    extracted_patterns:
-      - Prefer server-side reducers, exports, metadata properties, and bounded preflight probes.
-    limitations:
-      - Client/server discipline does not by itself prove dataset correctness.
-    claim_boundaries:
-      - Client/server rules support runtime safety, not scientific truth.
-    applicable_workflows: [validation, run, trace]
-    applicable_datasets: []
-    applicable_operators: [getInfo, evaluate, reduceRegion, Export]
-    known_failure_modes: [unsafe_getinfo, client_side_iteration]
-    validation_implications:
-      - Warn on unsafe getInfo in generated workflows.
-    planner_hints:
-      - Keep expensive computation server-side and export reviewable artifacts.
-    validator_hints:
-      - Flag unbounded client fetches.
-    citation: Earth Engine client/server guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_deferred_execution
-    title: Earth Engine deferred execution
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine/guides/deferred_execution
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [deferred_execution, server_side]
-    extracted_facts:
-      - Earth Engine objects often represent deferred server-side computations until evaluated or exported.
-    extracted_patterns:
-      - Validate graph construction and export contracts before triggering live computation.
-    limitations:
-      - Deferred execution means static validation cannot guarantee live data availability.
-    claim_boundaries:
-      - Deferred execution guidance supports execution safety only.
-    applicable_workflows: [validate, preflight, run]
-    applicable_datasets: []
-    applicable_operators: [ee.Image, ee.ImageCollection, Export]
-    known_failure_modes: [late_runtime_failure, empty_collection]
-    validation_implications:
-      - Static validation should be paired with preflight for live workflows.
-    planner_hints:
-      - Include preflight and trace steps before export.
-    validator_hints:
-      - Avoid claiming live success from rendered code alone.
-    citation: Earth Engine deferred execution guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_scale_projection
-    title: Earth Engine scale and projection behavior
-    source_id: google-earth-engine-scale-guide
-    source_url: https://developers.google.com/earth-engine/guides/scale
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [scale, projection, reducers]
-    extracted_facts:
-      - Earth Engine scale/projection choices affect reducers, exports, and cross-product comparisons.
-    extracted_patterns:
-      - Make scale and CRS/projection choices explicit in generated plans and scripts.
-    limitations:
-      - Explicit scale/projection reduces ambiguity but does not remove sensor/product differences.
-    claim_boundaries:
-      - Scale/projection controls support reproducibility, not ground-truth accuracy.
-    applicable_workflows: [product_intercomparison, export, validation]
-    applicable_datasets: []
-    applicable_operators: [reduceRegion, reduceResolution, reproject]
-    known_failure_modes: [reducer_scale_error, direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Flag missing scale/projection in reducers and exports.
-    planner_hints:
-      - State scale and CRS/projection in plan assumptions.
-    validator_hints:
-      - Check reducers and exports for explicit scale and projection handling.
-    citation: Earth Engine scale guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_reduce_resolution
-    title: Earth Engine reduceResolution behavior
-    source_id: google-earth-engine-resample-guide
-    source_url: https://developers.google.com/earth-engine/guides/resample
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [reduceResolution, aggregation, projection]
-    extracted_facts:
-      - Fine-resolution products should be aggregated before coherent comparison with coarser products.
-    extracted_patterns:
-      - Pair reduceResolution with explicit projection handling for product intercomparison.
-    limitations:
-      - Aggregation cannot eliminate temporal, sensor, or mixed-pixel differences.
-    claim_boundaries:
-      - Aggregated product comparison supports product consistency, not in-situ validation.
-    applicable_workflows: [product_intercomparison]
-    applicable_datasets: []
-    applicable_operators: [reduceResolution, reproject]
-    known_failure_modes: [reduce_resolution_projection_missing, direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Warn when reduceResolution lacks projection/default projection handling.
-    planner_hints:
-      - Add aggregation-before-comparison as an explicit step.
-    validator_hints:
-      - Look for reduceResolution paired with projection handling.
-    citation: Earth Engine resampling guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_export_image
-    title: Earth Engine image export behavior
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine/guides/exporting_images
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [export, image, geotiff]
-    extracted_facts:
-      - Image exports require explicit review of region, scale, CRS, maxPixels, dtype, and destination.
-    extracted_patterns:
-      - Use deterministic tiling when full-region raster exports exceed memory or quota.
-    limitations:
-      - A submitted task is not completed evidence until monitored and read back.
-    claim_boundaries:
-      - Export completion supports engineering evidence, not scientific truth by itself.
-    applicable_workflows: [export, monitor, trace]
-    applicable_datasets: []
-    applicable_operators: [Export.image.toDrive]
-    known_failure_modes: [quota_or_timeout, mixed_dtype_export, missing_readback]
-    validation_implications:
-      - Check image exports for region, scale, CRS, maxPixels, and dtype stability.
-    planner_hints:
-      - Include export artifact expectations and fallback tiling.
-    validator_hints:
-      - Flag incomplete image export contracts.
-    citation: Earth Engine image export guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_export_table
-    title: Earth Engine table export behavior
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine/guides/exporting_tables
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [export, table, csv]
-    extracted_facts:
-      - Table exports should have stable descriptions, formats, selectors, and traceable destinations.
-    extracted_patterns:
-      - Use explicit selectors for reproducible CSV schemas.
-    limitations:
-      - Completed table exports do not prove raster exports or scientific validation completed.
-    claim_boundaries:
-      - Table exports are evidence artifacts only when monitored and read back.
-    applicable_workflows: [export, monitor, trace]
-    applicable_datasets: []
-    applicable_operators: [Export.table.toDrive]
-    known_failure_modes: [unstable_output_schema, missing_readback]
-    validation_implications:
-      - Flag table exports without selectors.
-    planner_hints:
-      - Include expected table schema in plans.
-    validator_hints:
-      - Check table exports for selectors and CSV format.
-    citation: Earth Engine table export guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: earth_engine_debugging_best_practices
-    title: Earth Engine debugging and quota best practices
-    source_id: google-earth-engine-usage-quotas
-    source_url: https://developers.google.com/earth-engine/guides/usage
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [debugging, quotas, tasks]
-    extracted_facts:
-      - Quota and resource limits are expected execution constraints for large Earth Engine workflows.
-    extracted_patterns:
-      - Record failure categories and recovery patterns in reusable public knowledge cards.
-    limitations:
-      - Quota guidance changes and should be checked against official docs.
-    claim_boundaries:
-      - Quota recovery supports engineering robustness only.
-    applicable_workflows: [preflight, export, monitor, trace]
-    applicable_datasets: []
-    applicable_operators: [Export, reduceRegion]
-    known_failure_modes: [quota_or_timeout, out_of_memory_export]
-    validation_implications:
-      - Warn when large exports omit budgets such as maxPixels or tile fallback strategy.
-    planner_hints:
-      - Include monitoring and recovery steps in plans.
-    validator_hints:
-      - Check for explicit budgets and fallback guidance.
-    citation: Earth Engine usage guide, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
+- card_id: earth_engine_python_api
+  title: Earth Engine Python API execution surface
+  source_id: google-earth-engine-api-reference
+  source_url: https://developers.google.com/earth-engine/apidocs
+  source_type: official_api_reference
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - api
+  - python
+  - execution_boundary
+  extracted_facts:
+  - The Python API is the reviewed execution surface for generated Earth Engine workflows in this harness.
+  extracted_patterns:
+  - Keep authentication, project selection, validation, preflight, and live execution in the CLI control plane.
+  limitations:
+  - API availability does not imply user credentials, quota, or scientific validity.
+  claim_boundaries:
+  - Python API facts support execution mechanics only.
+  applicable_workflows:
+  - render
+  - validate
+  - preflight
+  - run
+  applicable_datasets: []
+  applicable_operators:
+  - ee.Initialize
+  - ee.ImageCollection
+  - Export
+  known_failure_modes:
+  - inline_authentication
+  - live_export_without_confirmation
+  validation_implications:
+  - Generated scripts must not bypass CLI-controlled authentication and confirmation gates.
+  planner_hints:
+  - Plan generated code as reviewable Python API scripts.
+  validator_hints:
+  - Flag inline authentication or live task starts outside guarded paths.
+  citation: Earth Engine API reference, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine Python API execution surface
+  - earth_engine_python_api
+  - api
+  - python
+  - execution_boundary
+  - render
+  - validate
+  - preflight
+  aliases: []
+  negative_queries: []
+- card_id: earth_engine_javascript_api
+  title: Earth Engine JavaScript and Code Editor surface
+  source_id: google-earth-engine-code-editor-guide
+  source_url: https://developers.google.com/earth-engine/guides/playground
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - api
+  - javascript
+  - code_editor
+  extracted_facts:
+  - The Code Editor is an official JavaScript workflow surface, separate from this CLI-first Python execution path.
+  extracted_patterns:
+  - Treat JavaScript examples as API/workflow reference material unless explicitly ported and validated.
+  limitations:
+  - JavaScript examples do not automatically become safe Python export scripts.
+  claim_boundaries:
+  - Code Editor context supports surface understanding, not live CLI execution.
+  applicable_workflows:
+  - source_review
+  - recipe_distillation
+  applicable_datasets: []
+  applicable_operators: []
+  known_failure_modes:
+  - surface_confusion
+  validation_implications:
+  - Rendered Python scripts still require Python validation and preflight.
+  planner_hints:
+  - Note when a source example is JavaScript and needs a reviewed Python translation.
+  validator_hints:
+  - Do not treat JavaScript snippets as executable Python.
+  citation: Earth Engine Code Editor guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine JavaScript and Code Editor surface
+  - earth_engine_javascript_api
+  - api
+  - javascript
+  - code_editor
+  - source_review
+  - recipe_distillation
+  aliases: []
+  negative_queries: []
+- card_id: earth_engine_client_vs_server
+  title: Earth Engine client/server boundary
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - client_server
+  - deferred_execution
+  - getInfo
+  extracted_facts:
+  - Earth Engine workflows should avoid unbounded client-side materialization of server-side objects.
+  extracted_patterns:
+  - Prefer server-side reducers, exports, metadata properties, and bounded preflight probes.
+  limitations:
+  - Client/server discipline does not by itself prove dataset correctness.
+  claim_boundaries:
+  - Client/server rules support runtime safety, not scientific truth.
+  applicable_workflows:
+  - validation
+  - run
+  - trace
+  applicable_datasets: []
+  applicable_operators:
+  - getInfo
+  - evaluate
+  - reduceRegion
+  - Export
+  known_failure_modes:
+  - unsafe_getinfo
+  - client_side_iteration
+  validation_implications:
+  - Warn on unsafe getInfo in generated workflows.
+  planner_hints:
+  - Keep expensive computation server-side and export reviewable artifacts.
+  validator_hints:
+  - Flag unbounded client fetches.
+  citation: Earth Engine client/server guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine client/server boundary
+  - earth_engine_client_vs_server
+  - client_server
+  - deferred_execution
+  - getInfo
+  - validation
+  - run
+  - trace
+  aliases: []
+  negative_queries: []
+- card_id: earth_engine_deferred_execution
+  title: Earth Engine deferred execution
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - deferred_execution
+  - server_side
+  extracted_facts:
+  - Earth Engine objects often represent deferred server-side computations until evaluated or exported.
+  extracted_patterns:
+  - Validate graph construction and export contracts before triggering live computation.
+  limitations:
+  - Deferred execution means static validation cannot guarantee live data availability.
+  claim_boundaries:
+  - Deferred execution guidance supports execution safety only.
+  applicable_workflows:
+  - validate
+  - preflight
+  - run
+  applicable_datasets: []
+  applicable_operators:
+  - ee.Image
+  - ee.ImageCollection
+  - Export
+  known_failure_modes:
+  - late_runtime_failure
+  - empty_collection
+  validation_implications:
+  - Static validation should be paired with preflight for live workflows.
+  planner_hints:
+  - Include preflight and trace steps before export.
+  validator_hints:
+  - Avoid claiming live success from rendered code alone.
+  citation: Earth Engine deferred execution guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine deferred execution
+  - earth_engine_deferred_execution
+  - deferred_execution
+  - server_side
+  - validate
+  - preflight
+  - run
+  aliases: []
+  negative_queries: []
+- card_id: earth_engine_scale_projection
+  title: Earth Engine scale and projection behavior
+  source_id: google-earth-engine-scale-guide
+  source_url: https://developers.google.com/earth-engine/guides/scale
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - scale
+  - projection
+  - reducers
+  extracted_facts:
+  - Earth Engine scale/projection choices affect reducers, exports, and cross-product comparisons.
+  extracted_patterns:
+  - Make scale and CRS/projection choices explicit in generated plans and scripts.
+  limitations:
+  - Explicit scale/projection reduces ambiguity but does not remove sensor/product differences.
+  claim_boundaries:
+  - Scale/projection controls support reproducibility, not ground-truth accuracy.
+  applicable_workflows:
+  - product_intercomparison
+  - export
+  - validation
+  applicable_datasets: []
+  applicable_operators:
+  - reduceRegion
+  - reduceResolution
+  - reproject
+  known_failure_modes:
+  - reducer_scale_error
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Flag missing scale/projection in reducers and exports.
+  planner_hints:
+  - State scale and CRS/projection in plan assumptions.
+  validator_hints:
+  - Check reducers and exports for explicit scale and projection handling.
+  citation: Earth Engine scale guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine scale and projection behavior
+  - earth_engine_scale_projection
+  - scale
+  - projection
+  - reducers
+  - product_intercomparison
+  - export
+  - validation
+  aliases:
+  - scale projection
+  - projection handling
+  - reducer scale
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: earth_engine_reduce_resolution
+  title: Earth Engine reduceResolution behavior
+  source_id: google-earth-engine-resample-guide
+  source_url: https://developers.google.com/earth-engine/guides/resample
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - reduceResolution
+  - aggregation
+  - projection
+  extracted_facts:
+  - Fine-resolution products should be aggregated before coherent comparison with coarser products.
+  extracted_patterns:
+  - Pair reduceResolution with explicit projection handling for product intercomparison.
+  limitations:
+  - Aggregation cannot eliminate temporal, sensor, or mixed-pixel differences.
+  claim_boundaries:
+  - Aggregated product comparison supports product consistency, not in-situ validation.
+  applicable_workflows:
+  - product_intercomparison
+  applicable_datasets: []
+  applicable_operators:
+  - reduceResolution
+  - reproject
+  known_failure_modes:
+  - reduce_resolution_projection_missing
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Warn when reduceResolution lacks projection/default projection handling.
+  planner_hints:
+  - Add aggregation-before-comparison as an explicit step.
+  validator_hints:
+  - Look for reduceResolution paired with projection handling.
+  citation: Earth Engine resampling guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine reduceResolution behavior
+  - earth_engine_reduce_resolution
+  - reduceResolution
+  - aggregation
+  - projection
+  - product_intercomparison
+  aliases:
+  - reduceResolution projection
+  - aggregation before comparison
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: earth_engine_export_image
+  title: Earth Engine image export behavior
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - export
+  - image
+  - geotiff
+  extracted_facts:
+  - Image exports require explicit review of region, scale, CRS, maxPixels, dtype, and destination.
+  extracted_patterns:
+  - Use deterministic tiling when full-region raster exports exceed memory or quota.
+  limitations:
+  - A submitted task is not completed evidence until monitored and read back.
+  claim_boundaries:
+  - Export completion supports engineering evidence, not scientific truth by itself.
+  applicable_workflows:
+  - export
+  - monitor
+  - trace
+  applicable_datasets: []
+  applicable_operators:
+  - Export.image.toDrive
+  known_failure_modes:
+  - quota_or_timeout
+  - mixed_dtype_export
+  - missing_readback
+  validation_implications:
+  - Check image exports for region, scale, CRS, maxPixels, and dtype stability.
+  planner_hints:
+  - Include export artifact expectations and fallback tiling.
+  validator_hints:
+  - Flag incomplete image export contracts.
+  citation: Earth Engine image export guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine image export behavior
+  - earth_engine_export_image
+  - export
+  - image
+  - geotiff
+  - export
+  - monitor
+  - trace
+  aliases: []
+  negative_queries: []
+- card_id: earth_engine_export_table
+  title: Earth Engine table export behavior
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - export
+  - table
+  - csv
+  extracted_facts:
+  - Table exports should have stable descriptions, formats, selectors, and traceable destinations.
+  extracted_patterns:
+  - Use explicit selectors for reproducible CSV schemas.
+  limitations:
+  - Completed table exports do not prove raster exports or scientific validation completed.
+  claim_boundaries:
+  - Table exports are evidence artifacts only when monitored and read back.
+  applicable_workflows:
+  - export
+  - monitor
+  - trace
+  applicable_datasets: []
+  applicable_operators:
+  - Export.table.toDrive
+  known_failure_modes:
+  - unstable_output_schema
+  - missing_readback
+  validation_implications:
+  - Flag table exports without selectors.
+  planner_hints:
+  - Include expected table schema in plans.
+  validator_hints:
+  - Check table exports for selectors and CSV format.
+  citation: Earth Engine table export guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine table export behavior
+  - earth_engine_export_table
+  - export
+  - table
+  - csv
+  - export
+  - monitor
+  - trace
+  aliases: []
+  negative_queries: []
+- card_id: earth_engine_debugging_best_practices
+  title: Earth Engine debugging and quota best practices
+  source_id: google-earth-engine-usage-quotas
+  source_url: https://developers.google.com/earth-engine/guides/usage
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - debugging
+  - quotas
+  - tasks
+  extracted_facts:
+  - Quota and resource limits are expected execution constraints for large Earth Engine workflows.
+  extracted_patterns:
+  - Record failure categories and recovery patterns in reusable public knowledge cards.
+  limitations:
+  - Quota guidance changes and should be checked against official docs.
+  claim_boundaries:
+  - Quota recovery supports engineering robustness only.
+  applicable_workflows:
+  - preflight
+  - export
+  - monitor
+  - trace
+  applicable_datasets: []
+  applicable_operators:
+  - Export
+  - reduceRegion
+  known_failure_modes:
+  - quota_or_timeout
+  - out_of_memory_export
+  validation_implications:
+  - Warn when large exports omit budgets such as maxPixels or tile fallback strategy.
+  planner_hints:
+  - Include monitoring and recovery steps in plans.
+  validator_hints:
+  - Check for explicit budgets and fallback guidance.
+  citation: Earth Engine usage guide, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine debugging and quota best practices
+  - earth_engine_debugging_best_practices
+  - debugging
+  - quotas
+  - tasks
+  - preflight
+  - export
+  - monitor
+  aliases: []
+  negative_queries: []

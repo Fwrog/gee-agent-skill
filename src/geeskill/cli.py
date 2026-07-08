@@ -985,6 +985,35 @@ def _plan_query(task: dict) -> str:
     return task.get("query") or task.get("task") or ""
 
 
+def _maybe_hybrid_bundle(args: argparse.Namespace, query: str) -> dict[str, Any] | None:
+    if retrieve_hybrid is None:
+        return None
+    try:
+        return retrieve_hybrid(query, docs_index_path=Path(args.index), top_k=args.top_k)
+    except (FileNotFoundError, ValueError, KeyError):
+        return None
+
+
+def _write_hybrid_trace_sidecars(trace: RunTrace, hybrid_bundle: dict[str, Any] | None) -> None:
+    if hybrid_bundle is None:
+        return
+    trace.write_json("hybrid_retrieval_bundle.json", hybrid_bundle)
+    source_summary = hybrid_bundle.get("source_quality_summary")
+    if source_summary:
+        trace.write_json("source_quality_summary.json", source_summary)
+    claim_boundaries = hybrid_bundle.get("claim_boundaries") or []
+    graph_paths = hybrid_bundle.get("graph_paths") or []
+    if claim_boundaries or graph_paths:
+        trace.write_json(
+            "claim_boundary_summary.json",
+            {
+                "query": hybrid_bundle.get("query"),
+                "claim_boundaries": claim_boundaries,
+                "graph_paths": graph_paths,
+            },
+        )
+
+
 def _create_ask_trace_with_plan(args: argparse.Namespace, task: dict) -> tuple[RunTrace, dict, list, str]:
     trace = RunTrace.create(run_id=args.run_id)
     trace.write_yaml("task.yaml", task)
@@ -994,7 +1023,9 @@ def _create_ask_trace_with_plan(args: argparse.Namespace, task: dict) -> tuple[R
     index = load_index(Path(args.index))
     results = _operator_aware_results(index, query, top_k=args.top_k)
     trace.write_json("retrieval_trace.json", build_retrieval_trace(query, results))
-    plan = build_plan(task["task"], results, template=task["template"])
+    hybrid_bundle = _maybe_hybrid_bundle(args, query)
+    _write_hybrid_trace_sidecars(trace, hybrid_bundle)
+    plan = build_plan(task["task"], results, template=task["template"], hybrid_bundle=hybrid_bundle)
     trace.write_text("plan.md", plan.body)
     external_plan = Path(task.get("outputs", {}).get("task_plan", trace.path("task_plan.yaml")))
     write_task_plan(external_plan, task_plan)
@@ -1277,6 +1308,7 @@ def _write_plan_command_trace(
     *,
     plan_text: str,
     retrieval_trace: dict | None = None,
+    hybrid_bundle: dict[str, Any] | None = None,
     rendered: str | None = None,
     validation: dict | None = None,
     dry_run: dict | None = None,
@@ -1287,6 +1319,7 @@ def _write_plan_command_trace(
     trace.write_yaml("task.yaml", task)
     trace.write_yaml("task_plan.yaml", task_plan)
     trace.write_json("retrieval_trace.json", retrieval_trace or {"query": task.get("query"), "evidence": [], "coverage": {}})
+    _write_hybrid_trace_sidecars(trace, hybrid_bundle)
     trace.write_text("plan.md", plan_text)
     if rendered is not None:
         trace.write_text("generated_script.py", rendered)
@@ -1409,6 +1442,7 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
         preflight = None
         live = None
         retrieval = _plan_retrieval_trace(args.index, task, args.top_k)
+        hybrid_bundle = _maybe_hybrid_bundle(args, task.get("query") or task.get("task") or "")
         if not validation["ok"]:
             trace = _write_plan_command_trace(
                 args,
@@ -1416,6 +1450,7 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
                 task,
                 plan_text=plan_text,
                 retrieval_trace=retrieval,
+                hybrid_bundle=hybrid_bundle,
                 rendered=rendered,
                 validation=validation,
                 dry_run=dry,
@@ -1458,6 +1493,7 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
                 task,
                 plan_text=plan_text,
                 retrieval_trace=retrieval,
+                hybrid_bundle=hybrid_bundle,
                 rendered=rendered,
                 validation=validation,
                 dry_run=dry,
@@ -1516,6 +1552,7 @@ def cmd_run_plan(args: argparse.Namespace) -> int:
             task,
             plan_text=plan_text,
             retrieval_trace=retrieval,
+            hybrid_bundle=hybrid_bundle,
             rendered=rendered,
             validation=validation,
             dry_run=dry,
@@ -1710,8 +1747,7 @@ def _write_plan_trace(
     trace = RunTrace.create(run_id=args.run_id)
     trace.write_yaml("task.yaml", task)
     trace.write_json("retrieval_trace.json", build_retrieval_trace(task.get("query") or task_text, results))
-    if hybrid_bundle is not None:
-        trace.write_json("hybrid_retrieval_bundle.json", hybrid_bundle)
+    _write_hybrid_trace_sidecars(trace, hybrid_bundle)
     trace.write_text("plan.md", plan_body)
     if rendered is not None:
         trace.write_text("generated_script.py", rendered)
@@ -1744,12 +1780,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
         query = task.get("query") or task_text
         index = load_index(Path(args.index))
         results = _operator_aware_results(index, query, top_k=args.top_k)
-        hybrid_bundle = None
-        if retrieve_hybrid is not None:
-            try:
-                hybrid_bundle = retrieve_hybrid(query, docs_index_path=Path(args.index), top_k=args.top_k)
-            except (FileNotFoundError, ValueError, KeyError):
-                hybrid_bundle = None
+        hybrid_bundle = _maybe_hybrid_bundle(args, query)
         plan = build_plan(task_text, results, template=template, hybrid_bundle=hybrid_bundle)
         rendered = None
         if context is not None and (template or plan.template):

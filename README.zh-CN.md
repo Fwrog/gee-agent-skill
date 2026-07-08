@@ -257,3 +257,14 @@ gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS
 ```
 
 更多说明见 [KG-RAG architecture](docs/kg_rag_architecture.md)、[knowledge graph schema](docs/knowledge_graph_schema.md)、[KG-RAG examples](docs/kg_rag_examples.md) 和 [source policy](docs/source_policy.md)。
+
+### v0.4.1 hardening
+
+v0.4.1 是发布前加固，不是新的自动科学判断层。它新增可审计的 source refresh status、evidence-card quality audit、带 alias 和 negative routing 的确定性加权 lexical ranking、区分 accepted/candidate evidence 的 hybrid bundle、KG-RAG trace sidecar、product-intercomparison validator fixtures、更完整的 red-team/eval 覆盖，以及一个本地 release gate：
+
+```bash
+python scripts/audit_evidence_quality.py --json
+python scripts/release_gate_kg_rag.py --json
+```
+
+v0.5 才考虑 typed `product_intercomparison` planner/schema。v0.4.1 仍然保留现有 control plane，并把 KG-RAG 作为 grounding 和 validation support，而不是 ground-truth proof。

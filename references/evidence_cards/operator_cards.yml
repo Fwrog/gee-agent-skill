@@ -1,32 +1,61 @@
 cards:
-  - card_id: earth_engine_core_operators
-    title: Core Earth Engine operator card
-    source_id: google-earth-engine-api-reference
-    source_url: https://developers.google.com/earth-engine/apidocs
-    source_type: official_api_reference
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [operators, filterDate, filterBounds, reducers, export]
-    extracted_facts:
-      - Core workflows combine collection filters, QA masking, reducers, and exports through official API operators.
-    extracted_patterns:
-      - Prefer explicit operator ordering: source collection, temporal filter, spatial filter, QA mask, metric, reducer/export.
-    limitations:
-      - Correct operator names do not guarantee valid product interpretation.
-    claim_boundaries:
-      - Operator evidence supports syntax and workflow structure only.
-    applicable_workflows: [planning, rendering, validation]
-    applicable_datasets: []
-    applicable_operators: [filterDate, filterBounds, map, reduceRegion, reduceRegions, Export]
-    known_failure_modes: [operator_ordering_error, missing_filter]
-    validation_implications:
-      - Validate method names and required workflow ordering before live execution.
-    planner_hints:
-      - Plan operator chains explicitly.
-    validator_hints:
-      - Check for temporal/spatial filters before reducers and exports.
-    citation: Earth Engine API reference, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
+- card_id: earth_engine_core_operators
+  title: Core Earth Engine operator card
+  source_id: google-earth-engine-api-reference
+  source_url: https://developers.google.com/earth-engine/apidocs
+  source_type: official_api_reference
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - operators
+  - filterDate
+  - filterBounds
+  - reducers
+  - export
+  extracted_facts:
+  - Core workflows combine collection filters, QA masking, reducers, and exports through official API operators.
+  extracted_patterns:
+  - Prefer explicit operator ordering: source collection, temporal filter, spatial filter, QA mask, metric, reducer/export.
+  limitations:
+  - Correct operator names do not guarantee valid product interpretation.
+  claim_boundaries:
+  - Operator evidence supports syntax and workflow structure only.
+  applicable_workflows:
+  - planning
+  - rendering
+  - validation
+  applicable_datasets: []
+  applicable_operators:
+  - filterDate
+  - filterBounds
+  - map
+  - reduceRegion
+  - reduceRegions
+  - Export
+  known_failure_modes:
+  - operator_ordering_error
+  - missing_filter
+  validation_implications:
+  - Validate method names and required workflow ordering before live execution.
+  planner_hints:
+  - Plan operator chains explicitly.
+  validator_hints:
+  - Check for temporal/spatial filters before reducers and exports.
+  citation: Earth Engine API reference, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Core Earth Engine operator card
+  - earth_engine_core_operators
+  - operators
+  - filterDate
+  - filterBounds
+  - reducers
+  - planning
+  - rendering
+  - validation
+  aliases: []
+  negative_queries: []

@@ -9,7 +9,8 @@ This roadmap keeps the public project honest: finished evidence, pending live ch
 | Core harness | ✅ Stable public baseline | Keep CLI/API changes backward-compatible. |
 | Public demos v0.1/v0.2 | ✅ Golden | Preserve as regression examples. |
 | Public validation v0.3 | ✅ Golden | Preserve as portfolio-grade product-intercomparison evidence. |
-| Skill generation v0.4 | 🚧 Implementation-ready | Generalize product-intercomparison workflows with source-grounded KG-RAG retrieval. |
+| Skill generation v0.4 | ✅ Baseline complete | Source registry, evidence cards, KG, hybrid retrieval, CLI, hints, and evals exist. |
+| KG-RAG hardening v0.4.1 | 🚧 Active | Strengthen source refresh, evidence quality, ranking, trace sidecars, evals, and release gate. |
 | Knowledge loop | 🚧 Active | Promote only generic, source-backed, privacy-reviewed lessons. |
 | Packaging and contributor UX | 🚧 Active | Turn TODOs into small, labeled GitHub issues. |
 
@@ -87,6 +88,7 @@ These tasks are good candidates for a project board column named `Next`: scoped,
 
 - [x] Add a source registry, source policy, evidence cards, lightweight KG, hybrid retrieval, CLI commands, and KG-RAG eval fixtures.
 - [x] Add semantic validator hooks for MODIS scale factor, MODIS QA, HLS Fmask, reduceResolution/projection, direct fine/coarse comparison, claim boundaries, and Golden evidence checks.
+- [x] Add v0.4.1 source refresh status, evidence quality audit, weighted lexical ranking, richer hybrid bundles, validator fixtures, expanded evals, and release gate.
 - [ ] Add a generic `product_intercomparison` task type to the plan schema.
 - [ ] Add an HLS/MODIS NDVI product-intercomparison recipe card after the canonical v0.3 script has live evidence.
 - [ ] Teach the planner to generate scale-aware comparison plans with temporal windows and grid matching.
@@ -99,6 +101,7 @@ These tasks are good candidates for a project board column named `Next`: scoped,
 - [x] Add live failure guidance for `reduceResolution` without default projection and product-grid boundary transform failures.
 - [x] Add a rule card requiring explicit product scale factors for official vegetation-index products.
 - [x] Add a rule card requiring a claim boundary for every validation report.
+- [x] Add auditable `source_refresh_status` and review notes to the source registry.
 - [ ] Refresh official dataset cards on a scheduled cadence and record `last_checked`.
 
 ### 🧰 Project Polish

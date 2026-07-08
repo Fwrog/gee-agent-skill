@@ -255,7 +255,18 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "candidate",
         "confidence": "low",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "AutoGEEval benchmark research context",
+          "autogeeval_benchmark",
+          "research_context",
+          "benchmark",
+          "evaluation",
+          "evaluation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -306,7 +317,18 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "candidate",
         "confidence": "low",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "AutoGEEval++ benchmark research context",
+          "autogeeval_plus_benchmark",
+          "research_context",
+          "benchmark",
+          "evaluation",
+          "evaluation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -370,7 +392,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "medium",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Claim boundary required for validation reports",
+          "claim_boundary_required_for_validation_report",
+          "claim_boundary",
+          "validation_report",
+          "overclaim_prevention",
+          "validation",
+          "product_intercomparison",
+          "golden_promotion"
+        ],
+        "aliases": [
+          "claim boundary",
+          "validation report boundary",
+          "Golden claim boundary"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -390,7 +431,7 @@
         "card_id": "direct_fine_coarse_comparison_failure_case",
         "title": "Direct fine/coarse pixel comparison failure case",
         "source_id": "google-earth-engine-docs",
-        "source_url": "https://developers.google.com/earth-engine/guides/reducers_reduce_resolution",
+        "source_url": "https://developers.google.com/earth-engine",
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -441,7 +482,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Direct fine/coarse pixel comparison failure case",
+          "direct_fine_coarse_comparison_failure_case",
+          "failure_case",
+          "scale",
+          "projection",
+          "reduceResolution",
+          "product_intercomparison",
+          "validation"
+        ],
+        "aliases": [
+          "fine coarse comparison",
+          "direct pixel comparison",
+          "30m 250m comparison"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -509,7 +569,22 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Dynamic World V1 dataset card",
+          "dynamic_world",
+          "Dynamic_World",
+          "landcover",
+          "interpretation_mask",
+          "landcover_stratified_statistics",
+          "vegetation_index"
+        ],
+        "aliases": [
+          "Dynamic World land cover",
+          "land-cover NDVI interpretation"
+        ],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -528,7 +603,7 @@
         "card_id": "earth_engine_client_vs_server",
         "title": "Earth Engine client/server boundary",
         "source_id": "google-earth-engine-docs",
-        "source_url": "https://developers.google.com/earth-engine/guides/client_server",
+        "source_url": "https://developers.google.com/earth-engine",
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -578,7 +653,20 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine client/server boundary",
+          "earth_engine_client_vs_server",
+          "client_server",
+          "deferred_execution",
+          "getInfo",
+          "validation",
+          "run",
+          "trace"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -653,7 +741,21 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Core Earth Engine operator card",
+          "earth_engine_core_operators",
+          "operators",
+          "filterDate",
+          "filterBounds",
+          "reducers",
+          "planning",
+          "rendering",
+          "validation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -722,7 +824,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine Data Catalog authoritative dataset facts",
+          "earth_engine_data_catalog",
+          "data_catalog",
+          "dataset_ids",
+          "bands",
+          "qa",
+          "dataset_selection",
+          "product_intercomparison",
+          "validation"
+        ],
+        "aliases": [
+          "dataset facts authority",
+          "band names authority",
+          "Earth Engine Data Catalog"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -790,7 +912,20 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine debugging and quota best practices",
+          "earth_engine_debugging_best_practices",
+          "debugging",
+          "quotas",
+          "tasks",
+          "preflight",
+          "export",
+          "monitor"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -808,7 +943,7 @@
         "card_id": "earth_engine_deferred_execution",
         "title": "Earth Engine deferred execution",
         "source_id": "google-earth-engine-docs",
-        "source_url": "https://developers.google.com/earth-engine/guides/deferred_execution",
+        "source_url": "https://developers.google.com/earth-engine",
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -856,7 +991,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine deferred execution",
+          "earth_engine_deferred_execution",
+          "deferred_execution",
+          "server_side",
+          "validate",
+          "preflight",
+          "run"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -875,7 +1022,7 @@
         "card_id": "earth_engine_export_image",
         "title": "Earth Engine image export behavior",
         "source_id": "google-earth-engine-docs",
-        "source_url": "https://developers.google.com/earth-engine/guides/exporting_images",
+        "source_url": "https://developers.google.com/earth-engine",
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -923,7 +1070,20 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine image export behavior",
+          "earth_engine_export_image",
+          "export",
+          "image",
+          "geotiff",
+          "export",
+          "monitor",
+          "trace"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -942,7 +1102,7 @@
         "card_id": "earth_engine_export_table",
         "title": "Earth Engine table export behavior",
         "source_id": "google-earth-engine-docs",
-        "source_url": "https://developers.google.com/earth-engine/guides/exporting_tables",
+        "source_url": "https://developers.google.com/earth-engine",
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -989,7 +1149,20 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine table export behavior",
+          "earth_engine_export_table",
+          "export",
+          "table",
+          "csv",
+          "export",
+          "monitor",
+          "trace"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1051,7 +1224,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine JavaScript and Code Editor surface",
+          "earth_engine_javascript_api",
+          "api",
+          "javascript",
+          "code_editor",
+          "source_review",
+          "recipe_distillation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1101,7 +1286,18 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "candidate",
         "confidence": "low",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine planetary-scale analysis research context",
+          "earth_engine_planetary_scale_analysis_paper",
+          "research_context",
+          "earth_engine_platform",
+          "research_positioning",
+          "documentation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -1175,7 +1371,21 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine platform overview and execution boundary",
+          "earth_engine_platform_overview",
+          "platform",
+          "client_server",
+          "deferred_execution",
+          "export",
+          "planning",
+          "validation",
+          "export"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1244,7 +1454,20 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine Python API execution surface",
+          "earth_engine_python_api",
+          "api",
+          "python",
+          "execution_boundary",
+          "render",
+          "validate",
+          "preflight"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1309,7 +1532,23 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine reduceResolution behavior",
+          "earth_engine_reduce_resolution",
+          "reduceResolution",
+          "aggregation",
+          "projection",
+          "product_intercomparison"
+        ],
+        "aliases": [
+          "reduceResolution projection",
+          "aggregation before comparison"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1377,7 +1616,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine scale and projection behavior",
+          "earth_engine_scale_projection",
+          "scale",
+          "projection",
+          "reducers",
+          "product_intercomparison",
+          "export",
+          "validation"
+        ],
+        "aliases": [
+          "scale projection",
+          "projection handling",
+          "reducer scale"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1443,7 +1701,21 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "ESA WorldCover v200 dataset card",
+          "esa_worldcover",
+          "ESA_WorldCover",
+          "landcover",
+          "stratification",
+          "landcover_stratified_statistics",
+          "product_intercomparison"
+        ],
+        "aliases": [],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1503,7 +1775,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "medium",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine notebook example patterns",
+          "gee_notebook_example_patterns",
+          "community_patterns",
+          "notebooks",
+          "examples",
+          "examples",
+          "recipe_distillation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1555,7 +1839,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "candidate",
         "confidence": "low",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "GEE-OPs operator knowledge-base research context",
+          "gee_ops_operator_knowledge_base",
+          "research_context",
+          "operator_kb",
+          "rag",
+          "evaluation",
+          "retrieval_design"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -1616,7 +1912,20 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "medium",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "geemap community workflow patterns",
+          "geemap_community_patterns",
+          "community_patterns",
+          "geemap",
+          "visualization",
+          "visualization",
+          "notebooks",
+          "examples"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1668,7 +1977,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "candidate",
         "confidence": "low",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "geemap JOSS research software context",
+          "geemap_joss_paper",
+          "research_context",
+          "geemap",
+          "research_software",
+          "research_positioning",
+          "documentation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -1729,7 +2050,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "medium",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "geemap JavaScript-to-Python conversion patterns",
+          "geemap_js_to_python_conversion_patterns",
+          "community_patterns",
+          "javascript",
+          "python",
+          "recipe_distillation",
+          "rendering"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1781,7 +2114,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "candidate",
         "confidence": "low",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Geo-FuB operator-function knowledge-base research context",
+          "geofub_operator_function_kb",
+          "research_context",
+          "operator_function_kb",
+          "evaluation",
+          "evaluation",
+          "retrieval_design"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -1849,7 +2194,19 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Hansen Global Forest Change dataset card",
+          "hansen_global_forest_change",
+          "forest_change",
+          "tree_cover",
+          "dataset",
+          "change_detection",
+          "forest_monitoring"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1918,7 +2275,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "HLS Fmask quality policy required",
+          "hls_fmask_rule",
+          "HLS",
+          "Fmask",
+          "QA",
+          "validator_rule",
+          "product_intercomparison",
+          "vegetation_index"
+        ],
+        "aliases": [
+          "HLS Fmask",
+          "HLS cloud mask",
+          "HLS quality policy"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -1992,7 +2368,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "HLSL30 official high-resolution source card",
+          "hls_hlsl30",
+          "HLS",
+          "HLSL30",
+          "Landsat",
+          "Fmask",
+          "vegetation_index",
+          "product_intercomparison"
+        ],
+        "aliases": [
+          "HLSL30",
+          "HLS Landsat",
+          "HLS Fmask",
+          "30 m HLS"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2066,7 +2462,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "HLSS30 official high-resolution source card",
+          "hls_hlss30",
+          "HLS",
+          "HLSS30",
+          "Sentinel-2",
+          "Fmask",
+          "vegetation_index",
+          "product_intercomparison"
+        ],
+        "aliases": [
+          "HLSS30",
+          "HLS Sentinel-2",
+          "HLS Fmask",
+          "30 m HLS"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2133,7 +2549,22 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "JRC Global Surface Water dataset card",
+          "jrc_global_surface_water",
+          "water",
+          "coastal",
+          "surface_water",
+          "validation",
+          "product_intercomparison",
+          "water_index"
+        ],
+        "aliases": [],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2204,7 +2635,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Landsat Collection 2 Level 2 dataset card",
+          "landsat_collection2_sr",
+          "Landsat",
+          "surface_reflectance",
+          "LST",
+          "QA",
+          "vegetation_index",
+          "land_surface_temperature",
+          "product_intercomparison"
+        ],
+        "aliases": [
+          "Landsat LST",
+          "Collection 2 Level 2",
+          "ST_B10"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2271,7 +2722,23 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "MOD11A2 LST dataset card",
+          "modis_lst",
+          "MODIS",
+          "LST",
+          "scale_factor",
+          "land_surface_temperature"
+        ],
+        "aliases": [
+          "MODIS LST",
+          "MOD11A2 land surface temperature"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2350,7 +2817,28 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "MOD13Q1 NDVI official product card",
+          "modis_mod13q1_ndvi",
+          "MODIS",
+          "MOD13Q1",
+          "NDVI",
+          "QA",
+          "vegetation_index",
+          "product_intercomparison",
+          "validation"
+        ],
+        "aliases": [
+          "MODIS scale factor",
+          "MOD13Q1 NDVI",
+          "0.0001 NDVI",
+          "MODIS vegetation index"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2416,7 +2904,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "MODIS NDVI scale factor required",
+          "modis_ndvi_scale_factor_rule",
+          "MODIS",
+          "NDVI",
+          "scale_factor",
+          "validator_rule",
+          "product_intercomparison",
+          "vegetation_index"
+        ],
+        "aliases": [
+          "MODIS scale factor",
+          "0.0001 scale factor",
+          "MOD13Q1 NDVI scale"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2486,7 +2993,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "MODIS SummaryQA or DetailedQA required",
+          "modis_qa_rule",
+          "MODIS",
+          "QA",
+          "SummaryQA",
+          "DetailedQA",
+          "product_intercomparison",
+          "vegetation_index"
+        ],
+        "aliases": [
+          "MODIS QA",
+          "SummaryQA",
+          "DetailedQA",
+          "MOD13Q1 quality"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2550,7 +3077,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Product intercomparison claim boundary",
+          "product_intercomparison_claim_boundary",
+          "claim_boundary",
+          "validation",
+          "golden",
+          "validation",
+          "product_intercomparison",
+          "golden_promotion"
+        ],
+        "aliases": [
+          "ground truth validation",
+          "product-level consistency",
+          "not ground truth"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2622,7 +3168,25 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "reduceResolution projection handling required",
+          "reduce_resolution_projection_rule",
+          "reduceResolution",
+          "projection",
+          "scale",
+          "validator_rule",
+          "product_intercomparison"
+        ],
+        "aliases": [
+          "reduceResolution projection",
+          "projection handling",
+          "default projection"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2698,7 +3262,26 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Scale-aware HLS/MODIS product intercomparison rule",
+          "scale_aware_product_intercomparison_rule",
+          "product_intercomparison",
+          "scale",
+          "projection",
+          "aggregation",
+          "product_intercomparison",
+          "validation"
+        ],
+        "aliases": [
+          "product intercomparison",
+          "fine coarse comparison",
+          "aggregate before comparison"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2775,7 +3358,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Sentinel-1 flood mapping rule",
+          "sentinel1_flood_mapping_rule",
+          "Sentinel-1",
+          "flood_mapping",
+          "SAR",
+          "validator_rule",
+          "flood_mapping",
+          "change_detection"
+        ],
+        "aliases": [
+          "Sentinel-1 flood",
+          "flood mapping",
+          "SAR change metric"
+        ],
+        "negative_queries": [
+          "HLS MODIS product intercomparison",
+          "MODIS NDVI scale factor"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2846,7 +3449,27 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Sentinel-1 GRD dataset card",
+          "sentinel1_grd",
+          "Sentinel-1",
+          "SAR",
+          "flood",
+          "change_detection",
+          "flood_mapping",
+          "change_detection"
+        ],
+        "aliases": [
+          "Sentinel-1 flood",
+          "SAR flood mapping",
+          "COPERNICUS/S1_GRD"
+        ],
+        "negative_queries": [
+          "HLS MODIS product intercomparison",
+          "MODIS NDVI scale factor"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2918,7 +3541,23 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Sentinel-2 SR Harmonized dataset card",
+          "sentinel2_sr_harmonized",
+          "Sentinel-2",
+          "optical",
+          "NDVI",
+          "QA",
+          "vegetation_index",
+          "water_index",
+          "builtup_index"
+        ],
+        "aliases": [],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2938,7 +3577,7 @@
         "card_id": "tiled_export_fallback_recovery",
         "title": "Tiled export fallback recovery pattern",
         "source_id": "google-earth-engine-docs",
-        "source_url": "https://developers.google.com/earth-engine/guides/exporting_images",
+        "source_url": "https://developers.google.com/earth-engine",
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -2987,7 +3626,21 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "medium",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Tiled export fallback recovery pattern",
+          "tiled_export_fallback_recovery",
+          "export",
+          "recovery_pattern",
+          "tiling",
+          "quota",
+          "export",
+          "monitor",
+          "validation"
+        ],
+        "aliases": [],
+        "negative_queries": [],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -3054,7 +3707,24 @@
         "last_checked": "2026-07-09",
         "reviewer_status": "accepted",
         "confidence": "high",
-        "private_content_risk": "low"
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "VIIRS VNP13A1 vegetation-index dataset card",
+          "viirs_vegetation_index",
+          "VIIRS",
+          "NDVI",
+          "product_intercomparison",
+          "vegetation_index",
+          "product_intercomparison"
+        ],
+        "aliases": [
+          "VIIRS VNP13A1",
+          "VIIRS vegetation index"
+        ],
+        "negative_queries": [
+          "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -3212,7 +3882,9 @@
         "claim_boundary": "Candidate public benchmark repository; do not copy code, prompts, or configuration without license review.",
         "private_content_risk": "medium",
         "include_reason": "Public repository for AutoGEEval benchmark workflow; current review did not find a LICENSE at the expected path.",
-        "license": "license review required"
+        "license": "license review required",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3237,7 +3909,9 @@
         "claim_boundary": "Candidate benchmark context for GEE code evaluation; do not reuse code or accept API/dataset claims without review.",
         "private_content_risk": "low",
         "include_reason": "Requested benchmark source family for GEE code generation evaluation.",
-        "license": "arXiv / author terms"
+        "license": "arXiv / author terms",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3262,7 +3936,9 @@
         "claim_boundary": "Candidate benchmark context; do not promote claims without paper review.",
         "private_content_risk": "low",
         "include_reason": "Requested benchmark source family for multi-level GEE evaluation.",
-        "license": "arXiv / author terms"
+        "license": "arXiv / author terms",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3287,7 +3963,9 @@
         "claim_boundary": "Authoritative for Dynamic World Earth Engine dataset facts as of last check; not independent ground truth.",
         "private_content_risk": "low",
         "include_reason": "Required official source for land-cover-aware NDVI and interpretation-mask caveats.",
-        "license": "Dynamic World data terms"
+        "license": "Dynamic World data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3312,7 +3990,9 @@
         "claim_boundary": "Authoritative for ESA WorldCover v200 Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official source for public land-cover stratification context.",
-        "license": "ESA WorldCover terms"
+        "license": "ESA WorldCover terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3337,7 +4017,9 @@
         "claim_boundary": "Authoritative for Hansen Global Forest Change Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official source family for forest-change workflow grounding.",
-        "license": "Hansen/UMD data terms"
+        "license": "Hansen/UMD data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3362,7 +4044,9 @@
         "claim_boundary": "Authoritative for HLSL30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required high-resolution HLS Landsat source for product intercomparison.",
-        "license": "NASA HLS data terms"
+        "license": "NASA HLS data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3387,7 +4071,9 @@
         "claim_boundary": "Authoritative for HLSS30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required high-resolution HLS Sentinel-2 source for product intercomparison.",
-        "license": "NASA HLS data terms"
+        "license": "NASA HLS data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3412,7 +4098,9 @@
         "claim_boundary": "Authoritative for JRC Global Surface Water Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official source for water mask and coastal/mixed-pixel interpretation checks.",
-        "license": "JRC Global Surface Water terms"
+        "license": "JRC Global Surface Water terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3437,7 +4125,9 @@
         "claim_boundary": "Authoritative for Landsat 8 Collection 2 Level 2 Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official source for Landsat Collection 2 SR/LST workflows and scale/QA policies.",
-        "license": "USGS Landsat data terms"
+        "license": "USGS Landsat data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3462,7 +4152,9 @@
         "claim_boundary": "Authoritative for MOD11A2 Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official MODIS LST source for dataset and rule-card coverage.",
-        "license": "NASA LP DAAC / USGS MODIS data terms"
+        "license": "NASA LP DAAC / USGS MODIS data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3487,7 +4179,9 @@
         "claim_boundary": "Authoritative for MOD13Q1 Earth Engine dataset ID, bands, scale factors, QA fields, and catalog limitations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official comparison product for v0.3 HLS/MODIS NDVI intercomparison.",
-        "license": "NASA LP DAAC / USGS MODIS data terms"
+        "license": "NASA LP DAAC / USGS MODIS data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3512,7 +4206,9 @@
         "claim_boundary": "Authoritative for Sentinel-1 GRD Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official source for flood/change workflow grounding.",
-        "license": "Copernicus Sentinel data terms"
+        "license": "Copernicus Sentinel data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3537,7 +4233,9 @@
         "claim_boundary": "Authoritative for Sentinel-2 SR Harmonized Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required official optical dataset source for NDVI and cloud/QA policy examples.",
-        "license": "Copernicus Sentinel data terms"
+        "license": "Copernicus Sentinel data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3562,7 +4260,9 @@
         "claim_boundary": "Authoritative for VIIRS vegetation-index Earth Engine dataset facts as of last check.",
         "private_content_risk": "low",
         "include_reason": "Optional official vegetation-index comparison source after primary MODIS path is stable.",
-        "license": "NASA LP DAAC VIIRS data terms"
+        "license": "NASA LP DAAC VIIRS data terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3587,7 +4287,9 @@
         "claim_boundary": "Supports community implementation patterns; official docs override for current API and dataset facts.",
         "private_content_risk": "low",
         "include_reason": "High-quality public community Earth Engine Python package with MIT license.",
-        "license": "MIT"
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3612,7 +4314,9 @@
         "claim_boundary": "Candidate research source for operator knowledge-base and RAG design only; does not override official GEE facts.",
         "private_content_risk": "low",
         "include_reason": "Requested source family for GEE operator KB and code-generation evaluation context.",
-        "license": "arXiv / author terms"
+        "license": "arXiv / author terms",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3637,7 +4341,9 @@
         "claim_boundary": "Supports geemap software context, not authoritative dataset/API facts.",
         "private_content_risk": "low",
         "include_reason": "Research software paper for community Earth Engine Python workflows.",
-        "license": "JOSS article terms"
+        "license": "JOSS article terms",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3662,7 +4368,9 @@
         "claim_boundary": "Candidate public repository for Geo-FuB context; do not copy code or data without license review.",
         "private_content_risk": "low",
         "include_reason": "Repository linked to the Geo-FuB operator-function knowledge-base research line.",
-        "license": "license review required"
+        "license": "license review required",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3687,7 +4395,9 @@
         "claim_boundary": "Candidate research source for operator function KB design only.",
         "private_content_risk": "low",
         "include_reason": "Requested source family for geospatial operator/function knowledge-base design.",
-        "license": "arXiv / author terms"
+        "license": "arXiv / author terms",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {
@@ -3712,7 +4422,9 @@
         "claim_boundary": "Supports notebook workflow patterns; official docs override for current API and dataset facts.",
         "private_content_risk": "low",
         "include_reason": "Public Earth Engine notebook examples from a recognized maintainer with MIT license.",
-        "license": "MIT"
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3737,7 +4449,9 @@
         "claim_boundary": "Authoritative for current Earth Engine API method names and signatures.",
         "private_content_risk": "low",
         "include_reason": "Primary source for operator and API behavior facts.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3762,7 +4476,9 @@
         "claim_boundary": "Authoritative for current Code Editor role and JavaScript workflow surface as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official source for JavaScript API workflow context and tutorial/code surface boundaries.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3787,7 +4503,9 @@
         "claim_boundary": "Authoritative for current public dataset IDs, bands, scale factors, QA fields, availability, and provider notes.",
         "private_content_risk": "low",
         "include_reason": "Primary source for current Earth Engine dataset facts.",
-        "license": "Google documentation terms plus dataset provider terms"
+        "license": "Google documentation terms plus dataset provider terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3812,7 +4530,9 @@
         "claim_boundary": "Authoritative for current Earth Engine platform guides when checked against the live documentation.",
         "private_content_risk": "low",
         "include_reason": "Official platform guidance for client/server behavior, scale/projection, reducers, exports, quotas, and debugging.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3837,7 +4557,9 @@
         "claim_boundary": "Authoritative for current projection concepts and projection-sensitive operations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official support for projection/default projection handling in product intercomparison validators.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3862,7 +4584,9 @@
         "claim_boundary": "Authoritative for Earth Engine reduceResolution/resampling guidance as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official guidance for aggregating fine pixels to coarser pixels before cross-scale comparison.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3887,7 +4611,9 @@
         "claim_boundary": "Authoritative for current Earth Engine scale behavior as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official support for scale-aware validation and anti-overclaim guidance.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3912,7 +4638,9 @@
         "claim_boundary": "Authoritative for current quota guidance as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official source for export/task quota and resource-bound recovery policy.",
-        "license": "Google documentation terms"
+        "license": "Google documentation terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3937,7 +4665,9 @@
         "claim_boundary": "Authoritative for open-source client library implementation details, not for private account state.",
         "private_content_risk": "low",
         "include_reason": "Official public Earth Engine client repository.",
-        "license": "Apache-2.0"
+        "license": "Apache-2.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
       }
     },
     {
@@ -3962,7 +4692,9 @@
         "claim_boundary": "Supports platform and research workflow framing, not current API or dataset facts.",
         "private_content_risk": "low",
         "include_reason": "Canonical Earth Engine research platform citation.",
-        "license": "publisher terms"
+        "license": "publisher terms",
+        "source_refresh_status": "candidate_unverified",
+        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
       }
     },
     {

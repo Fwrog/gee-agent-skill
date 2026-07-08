@@ -23,3 +23,14 @@ Official Tier A sources override all other sources for current dataset IDs, band
 ## Promotion Rule
 
 A source can be `accepted` only when it has a stable ID, URL, source type, trust tier, allowed use, last checked date, clear include reason, low or mitigated private-content risk, and source-policy approval.
+
+## v0.4.1 Refresh Status
+
+Every source has `source_refresh_status`:
+
+- `fresh`: public URL/source family was checked in the controlled refresh window and may be used according to trust tier and allowed use.
+- `stale`: source exists in the registry but should be refreshed before current-fact use.
+- `unavailable`: URL or source family could not be verified; do not rely on it.
+- `candidate_unverified`: candidate source retained for metadata or research context only.
+
+Accepted Tier A sources should be `fresh` before they ground current dataset/API facts. Candidate papers and candidate repositories must not override official sources even if their URLs are reachable.

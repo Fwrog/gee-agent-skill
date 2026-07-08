@@ -34,7 +34,13 @@
           "reviewer_status",
           "confidence",
           "private_content_risk"
-        ]
+        ],
+        "properties": {
+          "canonical_terms": {"type": "array", "items": {"type": "string"}},
+          "aliases": {"type": "array", "items": {"type": "string"}},
+          "negative_queries": {"type": "array", "items": {"type": "string"}},
+          "source_refresh_status": {"enum": ["fresh", "stale", "unavailable", "candidate_unverified"]}
+        }
       }
     }
   }

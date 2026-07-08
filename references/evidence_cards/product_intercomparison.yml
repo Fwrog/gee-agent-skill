@@ -1,225 +1,425 @@
 cards:
-  - card_id: modis_mod13q1_ndvi
-    title: MOD13Q1 NDVI official product card
-    source_id: gee-catalog-mod13q1
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [MODIS, MOD13Q1, NDVI, QA, scale_factor]
-    extracted_facts:
-      - MOD13Q1 is the Earth Engine dataset ID used for Terra 16-day 250 m vegetation indices.
-      - NDVI and EVI values require the documented 0.0001 scale factor before quantitative interpretation.
-      - SummaryQA and DetailedQA are required QA fields for reviewed product intercomparison.
-    extracted_patterns:
-      - Compare MODIS vegetation-index products at their product grid or coarser aggregate scale.
-    limitations:
-      - MOD13Q1 is a coarse official product and cannot validate 30 m pixel-level edges.
-      - Product intercomparison is not in-situ accuracy assessment.
-    claim_boundaries:
-      - Supports product-level consistency claims only after scale, QA, temporal matching, and aggregation are documented.
-    applicable_workflows: [vegetation_index, product_intercomparison, validation]
-    applicable_datasets: [MODIS/061/MOD13Q1]
-    applicable_operators: [ee.ImageCollection, reduceResolution, reproject]
-    known_failure_modes: [missing_modis_scale_factor, missing_modis_qa, direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Fail or warn when MODIS NDVI/EVI is interpreted without multiplying by 0.0001.
-      - Warn when SummaryQA or DetailedQA is absent from MODIS product-intercomparison code.
-    planner_hints:
-      - Apply MODIS scale factor and QA before exporting or calculating agreement metrics.
-    validator_hints:
-      - Look for a 0.0001 scale factor and SummaryQA or DetailedQA when MOD13Q1 is used.
-    citation: Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: hls_hlsl30
-    title: HLSL30 official high-resolution source card
-    source_id: gee-catalog-hlsl30
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [HLS, HLSL30, Landsat, Fmask, NDVI]
-    extracted_facts:
-      - HLSL30 is the Earth Engine dataset ID for NASA HLS Landsat observations at 30 m.
-      - HLSL30 workflows need an Fmask policy before NDVI product intercomparison.
-    extracted_patterns:
-      - Use HLSL30 as one high-resolution input that must be QA-screened and aggregated before MODIS comparison.
-    limitations:
-      - HLSL30 is not an independent ground-truth reference.
-    claim_boundaries:
-      - Supports high-resolution product construction, not ground-truth accuracy.
-    applicable_workflows: [vegetation_index, product_intercomparison]
-    applicable_datasets: [NASA/HLS/HLSL30/v002]
-    applicable_operators: [ee.ImageCollection, updateMask, normalizedDifference]
-    known_failure_modes: [missing_hls_fmask, direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Warn when HLS product-intercomparison code omits Fmask or an equivalent QA policy.
-    planner_hints:
-      - Include Fmask screening and aggregation to the comparison product grid.
-    validator_hints:
-      - Check HLS scripts for Fmask or explicit QA masking.
-    citation: Earth Engine Data Catalog NASA/HLS/HLSL30/v002, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: hls_hlss30
-    title: HLSS30 official high-resolution source card
-    source_id: gee-catalog-hlss30
-    source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [HLS, HLSS30, Sentinel-2, Fmask, NDVI]
-    extracted_facts:
-      - HLSS30 is the Earth Engine dataset ID for NASA HLS Sentinel-2 observations at 30 m.
-      - HLSS30 workflows need an Fmask policy before NDVI product intercomparison.
-    extracted_patterns:
-      - Use HLSS30 as one high-resolution input that must be QA-screened and aggregated before MODIS comparison.
-    limitations:
-      - HLSS30 is not an independent ground-truth reference.
-    claim_boundaries:
-      - Supports high-resolution product construction, not ground-truth accuracy.
-    applicable_workflows: [vegetation_index, product_intercomparison]
-    applicable_datasets: [NASA/HLS/HLSS30/v002]
-    applicable_operators: [ee.ImageCollection, updateMask, normalizedDifference]
-    known_failure_modes: [missing_hls_fmask, direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Warn when HLS product-intercomparison code omits Fmask or an equivalent QA policy.
-    planner_hints:
-      - Include Fmask screening and aggregation to the comparison product grid.
-    validator_hints:
-      - Check HLS scripts for Fmask or explicit QA masking.
-    citation: Earth Engine Data Catalog NASA/HLS/HLSS30/v002, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: scale_aware_product_intercomparison_rule
-    title: Scale-aware HLS/MODIS product intercomparison rule
-    source_id: google-earth-engine-data-catalog
-    source_url: https://developers.google.com/earth-engine/datasets
-    source_type: official_data_catalog
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [product_intercomparison, scale, projection, aggregation, claim_boundary]
-    extracted_facts:
-      - High-resolution HLS and coarser MODIS products must not be compared as direct native pixels.
-      - Comparison requires temporal matching, QA filtering, scale factors, projection handling, and aggregation to a common grid.
-    extracted_patterns:
-      - Aggregate fine product values to the coarse product grid before computing agreement metrics.
-    limitations:
-      - Agreement metrics support workflow reliability, not in-situ ground-truth accuracy.
-    claim_boundaries:
-      - The strongest allowed claim is product-level consistency unless independent ground truth is added.
-    applicable_workflows: [product_intercomparison, validation]
-    applicable_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002, MODIS/061/MOD13Q1]
-    applicable_operators: [reduceResolution, reproject, setDefaultProjection]
-    known_failure_modes: [direct_fine_coarse_pixel_comparison, reduce_resolution_projection_missing]
-    validation_implications:
-      - Warn or fail when 30 m and 250 m products are compared without aggregation/projection handling.
-    planner_hints:
-      - State temporal matching, QA policies, scale factor, aggregation-before-comparison, metrics, and claim boundary.
-    validator_hints:
-      - Require explicit projection/scale logic when reduceResolution is used for coarse-grid comparison.
-    citation: Earth Engine official catalog and scale/projection guidance, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: direct_fine_coarse_comparison_failure_case
-    title: Direct fine/coarse pixel comparison failure case
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine/guides/reducers_reduce_resolution
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [failure_case, scale, projection, reduceResolution]
-    extracted_facts:
-      - Direct comparison between 30 m and 250 m pixels confounds resolution, projection, mixed pixels, and product design.
-    extracted_patterns:
-      - Recover by aggregating fine-resolution data to the comparison product grid with explicit projection and QA.
-    limitations:
-      - Aggregation reduces but does not remove sensor, BRDF, cloud, temporal, and mixed-pixel differences.
-    claim_boundaries:
-      - A repaired comparison can support product-level consistency, not ground-truth validation.
-    applicable_workflows: [product_intercomparison, validation]
-    applicable_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002, MODIS/061/MOD13Q1]
-    applicable_operators: [reduceResolution, reproject]
-    known_failure_modes: [direct_fine_coarse_pixel_comparison]
-    validation_implications:
-      - Flag native-resolution HLS/MODIS pixel comparisons as unsafe.
-    planner_hints:
-      - Add aggregation and projection matching before metrics.
-    validator_hints:
-      - Check for reduceResolution/reproject or an equivalent coarse-grid aggregation step.
-    citation: Earth Engine reduceResolution guidance and official dataset catalog facts, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: product_intercomparison_claim_boundary
-    title: Product intercomparison claim boundary
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [claim_boundary, validation, golden]
-    extracted_facts:
-      - A public Golden demo requires traceable source choices, task evidence, readback, analysis, tests, and explicit limitations.
-    extracted_patterns:
-      - Validation reports should state what the evidence supports and what it cannot claim.
-    limitations:
-      - Product intercomparison can be reproducible and useful without proving ground-truth accuracy.
-    claim_boundaries:
-      - Do not describe product intercomparison as in-situ ground-truth validation.
-    applicable_workflows: [validation, product_intercomparison, golden_promotion]
-    applicable_datasets: []
-    applicable_operators: []
-    known_failure_modes: [ground_truth_overclaim, golden_without_readback]
-    validation_implications:
-      - Flag validation reports or Golden promotion without explicit claim boundary.
-    planner_hints:
-      - Include public evidence artifacts and claim boundary in plan outputs.
-    validator_hints:
-      - Check for product-level consistency wording and absence of ground-truth overclaim.
-    citation: Earth Engine platform docs plus project public promotion policy, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: high
-    private_content_risk: low
-  - card_id: tiled_export_fallback_recovery
-    title: Tiled export fallback recovery pattern
-    source_id: google-earth-engine-docs
-    source_url: https://developers.google.com/earth-engine/guides/exporting_images
-    source_type: official_docs
-    trust_tier: A
-    allowed_use: summary_only
-    topics: [export, recovery_pattern, tiling, quota]
-    extracted_facts:
-      - Large raster exports can need explicit scale, CRS, maxPixels, and smaller export regions.
-    extracted_patterns:
-      - Recover from memory or quota pressure by deterministic tiling with traceable task metadata.
-    limitations:
-      - Tiling changes export orchestration, not underlying product validity.
-    claim_boundaries:
-      - Tiled readback supports engineering completion evidence when documented and tested.
-    applicable_workflows: [export, monitor, validation]
-    applicable_datasets: []
-    applicable_operators: [Export.image.toDrive]
-    known_failure_modes: [quota_or_timeout, out_of_memory_export, missing_readback]
-    validation_implications:
-      - Golden promotion needs observed terminal tasks and readback evidence, including fallback tiles when used.
-    planner_hints:
-      - Include a deterministic tiled fallback for large annual rasters.
-    validator_hints:
-      - Check export contracts for scale, CRS, maxPixels, and task/readback trace fields.
-    citation: Earth Engine image export guidance, checked 2026-07-09.
-    last_checked: "2026-07-09"
-    reviewer_status: accepted
-    confidence: medium
-    private_content_risk: low
+- card_id: modis_mod13q1_ndvi
+  title: MOD13Q1 NDVI official product card
+  source_id: gee-catalog-mod13q1
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - MODIS
+  - MOD13Q1
+  - NDVI
+  - QA
+  - scale_factor
+  extracted_facts:
+  - MOD13Q1 is the Earth Engine dataset ID used for Terra 16-day 250 m vegetation indices.
+  - NDVI and EVI values require the documented 0.0001 scale factor before quantitative interpretation.
+  - SummaryQA and DetailedQA are required QA fields for reviewed product intercomparison.
+  extracted_patterns:
+  - Compare MODIS vegetation-index products at their product grid or coarser aggregate scale.
+  limitations:
+  - MOD13Q1 is a coarse official product and cannot validate 30 m pixel-level edges.
+  - Product intercomparison is not in-situ accuracy assessment.
+  claim_boundaries:
+  - Supports product-level consistency claims only after scale, QA, temporal matching, and aggregation are documented.
+  applicable_workflows:
+  - vegetation_index
+  - product_intercomparison
+  - validation
+  applicable_datasets:
+  - MODIS/061/MOD13Q1
+  applicable_operators:
+  - ee.ImageCollection
+  - reduceResolution
+  - reproject
+  known_failure_modes:
+  - missing_modis_scale_factor
+  - missing_modis_qa
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Fail or warn when MODIS NDVI/EVI is interpreted without multiplying by 0.0001.
+  - Warn when SummaryQA or DetailedQA is absent from MODIS product-intercomparison code.
+  planner_hints:
+  - Apply MODIS scale factor and QA before exporting or calculating agreement metrics.
+  validator_hints:
+  - Look for a 0.0001 scale factor and SummaryQA or DetailedQA when MOD13Q1 is used.
+  citation: Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - MOD13Q1 NDVI official product card
+  - modis_mod13q1_ndvi
+  - MODIS
+  - MOD13Q1
+  - NDVI
+  - QA
+  - vegetation_index
+  - product_intercomparison
+  - validation
+  aliases:
+  - MODIS scale factor
+  - MOD13Q1 NDVI
+  - 0.0001 NDVI
+  - MODIS vegetation index
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: hls_hlsl30
+  title: HLSL30 official high-resolution source card
+  source_id: gee-catalog-hlsl30
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - HLS
+  - HLSL30
+  - Landsat
+  - Fmask
+  - NDVI
+  extracted_facts:
+  - HLSL30 is the Earth Engine dataset ID for NASA HLS Landsat observations at 30 m.
+  - HLSL30 workflows need an Fmask policy before NDVI product intercomparison.
+  extracted_patterns:
+  - Use HLSL30 as one high-resolution input that must be QA-screened and aggregated before MODIS comparison.
+  limitations:
+  - HLSL30 is not an independent ground-truth reference.
+  claim_boundaries:
+  - Supports high-resolution product construction, not ground-truth accuracy.
+  applicable_workflows:
+  - vegetation_index
+  - product_intercomparison
+  applicable_datasets:
+  - NASA/HLS/HLSL30/v002
+  applicable_operators:
+  - ee.ImageCollection
+  - updateMask
+  - normalizedDifference
+  known_failure_modes:
+  - missing_hls_fmask
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Warn when HLS product-intercomparison code omits Fmask or an equivalent QA policy.
+  planner_hints:
+  - Include Fmask screening and aggregation to the comparison product grid.
+  validator_hints:
+  - Check HLS scripts for Fmask or explicit QA masking.
+  citation: Earth Engine Data Catalog NASA/HLS/HLSL30/v002, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - HLSL30 official high-resolution source card
+  - hls_hlsl30
+  - HLS
+  - HLSL30
+  - Landsat
+  - Fmask
+  - vegetation_index
+  - product_intercomparison
+  aliases:
+  - HLSL30
+  - HLS Landsat
+  - HLS Fmask
+  - 30 m HLS
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: hls_hlss30
+  title: HLSS30 official high-resolution source card
+  source_id: gee-catalog-hlss30
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - HLS
+  - HLSS30
+  - Sentinel-2
+  - Fmask
+  - NDVI
+  extracted_facts:
+  - HLSS30 is the Earth Engine dataset ID for NASA HLS Sentinel-2 observations at 30 m.
+  - HLSS30 workflows need an Fmask policy before NDVI product intercomparison.
+  extracted_patterns:
+  - Use HLSS30 as one high-resolution input that must be QA-screened and aggregated before MODIS comparison.
+  limitations:
+  - HLSS30 is not an independent ground-truth reference.
+  claim_boundaries:
+  - Supports high-resolution product construction, not ground-truth accuracy.
+  applicable_workflows:
+  - vegetation_index
+  - product_intercomparison
+  applicable_datasets:
+  - NASA/HLS/HLSS30/v002
+  applicable_operators:
+  - ee.ImageCollection
+  - updateMask
+  - normalizedDifference
+  known_failure_modes:
+  - missing_hls_fmask
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Warn when HLS product-intercomparison code omits Fmask or an equivalent QA policy.
+  planner_hints:
+  - Include Fmask screening and aggregation to the comparison product grid.
+  validator_hints:
+  - Check HLS scripts for Fmask or explicit QA masking.
+  citation: Earth Engine Data Catalog NASA/HLS/HLSS30/v002, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - HLSS30 official high-resolution source card
+  - hls_hlss30
+  - HLS
+  - HLSS30
+  - Sentinel-2
+  - Fmask
+  - vegetation_index
+  - product_intercomparison
+  aliases:
+  - HLSS30
+  - HLS Sentinel-2
+  - HLS Fmask
+  - 30 m HLS
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: scale_aware_product_intercomparison_rule
+  title: Scale-aware HLS/MODIS product intercomparison rule
+  source_id: google-earth-engine-data-catalog
+  source_url: https://developers.google.com/earth-engine/datasets
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - product_intercomparison
+  - scale
+  - projection
+  - aggregation
+  - claim_boundary
+  extracted_facts:
+  - High-resolution HLS and coarser MODIS products must not be compared as direct native pixels.
+  - Comparison requires temporal matching, QA filtering, scale factors, projection handling, and aggregation to a common grid.
+  extracted_patterns:
+  - Aggregate fine product values to the coarse product grid before computing agreement metrics.
+  limitations:
+  - Agreement metrics support workflow reliability, not in-situ ground-truth accuracy.
+  claim_boundaries:
+  - The strongest allowed claim is product-level consistency unless independent ground truth is added.
+  applicable_workflows:
+  - product_intercomparison
+  - validation
+  applicable_datasets:
+  - NASA/HLS/HLSL30/v002
+  - NASA/HLS/HLSS30/v002
+  - MODIS/061/MOD13Q1
+  applicable_operators:
+  - reduceResolution
+  - reproject
+  - setDefaultProjection
+  known_failure_modes:
+  - direct_fine_coarse_pixel_comparison
+  - reduce_resolution_projection_missing
+  validation_implications:
+  - Warn or fail when 30 m and 250 m products are compared without aggregation/projection handling.
+  planner_hints:
+  - State temporal matching, QA policies, scale factor, aggregation-before-comparison, metrics, and claim boundary.
+  validator_hints:
+  - Require explicit projection/scale logic when reduceResolution is used for coarse-grid comparison.
+  citation: Earth Engine official catalog and scale/projection guidance, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Scale-aware HLS/MODIS product intercomparison rule
+  - scale_aware_product_intercomparison_rule
+  - product_intercomparison
+  - scale
+  - projection
+  - aggregation
+  - product_intercomparison
+  - validation
+  aliases:
+  - product intercomparison
+  - fine coarse comparison
+  - aggregate before comparison
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: direct_fine_coarse_comparison_failure_case
+  title: Direct fine/coarse pixel comparison failure case
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - failure_case
+  - scale
+  - projection
+  - reduceResolution
+  extracted_facts:
+  - Direct comparison between 30 m and 250 m pixels confounds resolution, projection, mixed pixels, and product design.
+  extracted_patterns:
+  - Recover by aggregating fine-resolution data to the comparison product grid with explicit projection and QA.
+  limitations:
+  - Aggregation reduces but does not remove sensor, BRDF, cloud, temporal, and mixed-pixel differences.
+  claim_boundaries:
+  - A repaired comparison can support product-level consistency, not ground-truth validation.
+  applicable_workflows:
+  - product_intercomparison
+  - validation
+  applicable_datasets:
+  - NASA/HLS/HLSL30/v002
+  - NASA/HLS/HLSS30/v002
+  - MODIS/061/MOD13Q1
+  applicable_operators:
+  - reduceResolution
+  - reproject
+  known_failure_modes:
+  - direct_fine_coarse_pixel_comparison
+  validation_implications:
+  - Flag native-resolution HLS/MODIS pixel comparisons as unsafe.
+  planner_hints:
+  - Add aggregation and projection matching before metrics.
+  validator_hints:
+  - Check for reduceResolution/reproject or an equivalent coarse-grid aggregation step.
+  citation: Earth Engine reduceResolution guidance and official dataset catalog facts, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Direct fine/coarse pixel comparison failure case
+  - direct_fine_coarse_comparison_failure_case
+  - failure_case
+  - scale
+  - projection
+  - reduceResolution
+  - product_intercomparison
+  - validation
+  aliases:
+  - fine coarse comparison
+  - direct pixel comparison
+  - 30m 250m comparison
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: product_intercomparison_claim_boundary
+  title: Product intercomparison claim boundary
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - claim_boundary
+  - validation
+  - golden
+  extracted_facts:
+  - A public Golden demo requires traceable source choices, task evidence, readback, analysis, tests, and explicit limitations.
+  extracted_patterns:
+  - Validation reports should state what the evidence supports and what it cannot claim.
+  limitations:
+  - Product intercomparison can be reproducible and useful without proving ground-truth accuracy.
+  claim_boundaries:
+  - Do not describe product intercomparison as in-situ ground-truth validation.
+  applicable_workflows:
+  - validation
+  - product_intercomparison
+  - golden_promotion
+  applicable_datasets: []
+  applicable_operators: []
+  known_failure_modes:
+  - ground_truth_overclaim
+  - golden_without_readback
+  validation_implications:
+  - Flag validation reports or Golden promotion without explicit claim boundary.
+  planner_hints:
+  - Include public evidence artifacts and claim boundary in plan outputs.
+  validator_hints:
+  - Check for product-level consistency wording and absence of ground-truth overclaim.
+  citation: Earth Engine platform docs plus project public promotion policy, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Product intercomparison claim boundary
+  - product_intercomparison_claim_boundary
+  - claim_boundary
+  - validation
+  - golden
+  - validation
+  - product_intercomparison
+  - golden_promotion
+  aliases:
+  - ground truth validation
+  - product-level consistency
+  - not ground truth
+  negative_queries:
+  - Generate a GEE workflow for flood mapping
+- card_id: tiled_export_fallback_recovery
+  title: Tiled export fallback recovery pattern
+  source_id: google-earth-engine-docs
+  source_url: https://developers.google.com/earth-engine
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - export
+  - recovery_pattern
+  - tiling
+  - quota
+  extracted_facts:
+  - Large raster exports can need explicit scale, CRS, maxPixels, and smaller export regions.
+  extracted_patterns:
+  - Recover from memory or quota pressure by deterministic tiling with traceable task metadata.
+  limitations:
+  - Tiling changes export orchestration, not underlying product validity.
+  claim_boundaries:
+  - Tiled readback supports engineering completion evidence when documented and tested.
+  applicable_workflows:
+  - export
+  - monitor
+  - validation
+  applicable_datasets: []
+  applicable_operators:
+  - Export.image.toDrive
+  known_failure_modes:
+  - quota_or_timeout
+  - out_of_memory_export
+  - missing_readback
+  validation_implications:
+  - Golden promotion needs observed terminal tasks and readback evidence, including fallback tiles when used.
+  planner_hints:
+  - Include a deterministic tiled fallback for large annual rasters.
+  validator_hints:
+  - Check export contracts for scale, CRS, maxPixels, and task/readback trace fields.
+  citation: Earth Engine image export guidance, checked 2026-07-09.
+  last_checked: '2026-07-09'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Tiled export fallback recovery pattern
+  - tiled_export_fallback_recovery
+  - export
+  - recovery_pattern
+  - tiling
+  - quota
+  - export
+  - monitor
+  - validation
+  aliases: []
+  negative_queries: []

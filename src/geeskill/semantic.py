@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import io
 from pathlib import Path
+import tokenize
 
 from .validation import Finding
 
@@ -152,6 +154,18 @@ def _require(
             retryable=retryable,
         )
     ]
+
+
+def _without_comments(text: str) -> str:
+    try:
+        tokens = []
+        for token in tokenize.generate_tokens(io.StringIO(text).readline):
+            if token.type == tokenize.COMMENT:
+                continue
+            tokens.append(token.string)
+        return " ".join(tokens)
+    except tokenize.TokenError:
+        return "\n".join(line.split("#", 1)[0] for line in text.splitlines())
 
 
 def _agent_script_contract(text: str, lower: str) -> list[Finding]:
@@ -599,12 +613,14 @@ def _dynamic_world_landcover(text: str, lower: str) -> list[Finding]:
 def _product_intercomparison(text: str, lower: str) -> list[Finding]:
     ruleset = "product_intercomparison"
     findings: list[Finding] = []
-    uses_modis_vi = "modis/061/mod13q1" in lower or "mod13q1" in lower
-    uses_hls = "nasa/hls/hlsl30" in lower or "nasa/hls/hlss30" in lower or "hlsl30" in lower or "hlss30" in lower
+    code_text = _without_comments(text)
+    code_lower = code_text.lower()
+    uses_modis_vi = "modis/061/mod13q1" in code_lower or "mod13q1" in code_lower
+    uses_hls = "nasa/hls/hlsl30" in code_lower or "nasa/hls/hlss30" in code_lower or "hlsl30" in code_lower or "hlss30" in code_lower
     mentions_product_intercomparison = "product_intercomparison" in lower or ("hls" in lower and "modis" in lower)
     if uses_modis_vi:
         findings += _require(
-            "0.0001" in text,
+            "0.0001" in code_text,
             ruleset,
             "modis-ndvi-scale-factor",
             "MODIS vegetation-index product comparison must apply the documented 0.0001 NDVI/EVI scale factor.",
@@ -612,7 +628,7 @@ def _product_intercomparison(text: str, lower: str) -> list[Finding]:
             hint="Multiply MOD13Q1 NDVI/EVI by 0.0001 before metrics or exports.",
         )
         findings += _require(
-            "summaryqa" in lower or "detailedqa" in lower,
+            "summaryqa" in code_lower or "detailedqa" in code_lower,
             ruleset,
             "modis-qa-policy",
             "MODIS vegetation-index product comparison must include SummaryQA or DetailedQA policy.",
@@ -621,7 +637,7 @@ def _product_intercomparison(text: str, lower: str) -> list[Finding]:
         )
     if uses_hls:
         findings += _require(
-            "fmask" in lower,
+            "fmask" in code_lower,
             ruleset,
             "hls-fmask-policy",
             "HLS product comparison must include an Fmask quality policy.",
@@ -630,8 +646,8 @@ def _product_intercomparison(text: str, lower: str) -> list[Finding]:
             retryable=True,
         )
     if uses_modis_vi and uses_hls:
-        has_aggregation = "reduceresolution" in lower or "reduce_resolution" in lower or "aggregate" in lower
-        has_projection = "reproject" in lower or "setdefaultprojection" in lower or "projection(" in lower or "crs" in lower
+        has_aggregation = "reduceresolution" in code_lower or "reduce_resolution" in code_lower or "aggregate" in code_lower
+        has_projection = "reproject" in code_lower or "setdefaultprojection" in code_lower or "projection(" in code_lower or "crs" in code_lower
         findings += _require(
             has_aggregation and has_projection,
             ruleset,
@@ -641,9 +657,9 @@ def _product_intercomparison(text: str, lower: str) -> list[Finding]:
             hint="Aggregate HLS to the MODIS grid before computing agreement metrics.",
             retryable=True,
         )
-    if "reduceresolution" in lower:
+    if "reduceresolution" in code_lower:
         findings += _require(
-            "reproject" in lower or "setdefaultprojection" in lower or "projection(" in lower,
+            "reproject" in code_lower or "setdefaultprojection" in code_lower or "projection(" in code_lower,
             ruleset,
             "reduce-resolution-projection",
             "reduceResolution product comparison should document explicit projection/default projection handling.",
@@ -667,6 +683,24 @@ def _product_intercomparison(text: str, lower: str) -> list[Finding]:
             "Product intercomparison outputs must state the claim boundary: product-level consistency, not in-situ ground-truth accuracy.",
             "VALIDATION_ERROR",
             hint="Add an explicit claim boundary before publishing validation or Golden status.",
+        )
+    overclaims_ground_truth = (
+        ("ground-truth validation" in lower and "not ground-truth validation" not in lower)
+        or ("ground truth validation" in lower and "not ground truth validation" not in lower)
+        or ("ground-truth accuracy" in lower and "not ground-truth accuracy" not in lower and "not in-situ ground-truth accuracy" not in lower)
+    )
+    if overclaims_ground_truth:
+        findings.append(
+            Finding(
+                "error",
+                "ground-truth-overclaim",
+                "Product intercomparison must not be described as ground-truth validation or accuracy without independent reference evidence.",
+                hint="State product-level consistency and explicitly avoid ground-truth claims.",
+                category="VALIDATION_ERROR",
+                rule_id=f"{ruleset}.ground-truth-overclaim",
+                ruleset=ruleset,
+                retryable=False,
+            )
         )
     if "golden" in lower:
         has_public_evidence = all(term in lower for term in ("readback", "test")) and ("trace" in lower or "task" in lower)

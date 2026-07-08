@@ -1,0 +1,43 @@
+schema_version: gee-semantic-fixture-eval/v0.1
+description: v0.4.1 product_intercomparison semantic validator fixture suite.
+cases:
+  - id: positive_hls_modis_product_intercomparison
+    fixture: tests/fixtures/product_intercomparison/positive_hls_modis_product_intercomparison.py
+    rulesets: [product_intercomparison]
+    expect_ok: true
+    absent_error_codes:
+      - modis-ndvi-scale-factor
+      - modis-qa-policy
+      - hls-fmask-policy
+      - fine-coarse-aggregation-required
+      - reduce-resolution-projection
+      - claim-boundary-required
+      - ground-truth-overclaim
+  - id: missing_modis_scale_factor
+    fixture: tests/fixtures/product_intercomparison/negative_missing_modis_scale_factor.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [modis-ndvi-scale-factor]
+  - id: missing_modis_qa
+    fixture: tests/fixtures/product_intercomparison/negative_missing_modis_qa.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [modis-qa-policy]
+  - id: missing_hls_fmask
+    fixture: tests/fixtures/product_intercomparison/negative_missing_hls_fmask.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [hls-fmask-policy]
+  - id: direct_fine_coarse
+    fixture: tests/fixtures/product_intercomparison/negative_direct_fine_coarse.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [fine-coarse-aggregation-required]
+  - id: reduce_resolution_no_projection
+    fixture: tests/fixtures/product_intercomparison/negative_reduce_resolution_no_projection.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [reduce-resolution-projection]
+  - id: missing_claim_boundary
+    fixture: tests/fixtures/product_intercomparison/negative_missing_claim_boundary.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [claim-boundary-required]
+  - id: ground_truth_overclaim
+    fixture: tests/fixtures/product_intercomparison/negative_ground_truth_overclaim.py
+    rulesets: [product_intercomparison]
+    expected_error_codes: [ground-truth-overclaim]

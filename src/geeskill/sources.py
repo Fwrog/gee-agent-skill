@@ -19,6 +19,7 @@ ALLOWED_USE = {
     "not_allowed",
 }
 REVIEWER_STATUSES = {"accepted", "candidate", "rejected"}
+SOURCE_REFRESH_STATUSES = {"fresh", "stale", "unavailable", "candidate_unverified"}
 SOURCE_TYPES = {
     "official_docs",
     "official_data_catalog",
@@ -76,6 +77,7 @@ def validate_source_registry(path: Path | None = None) -> dict[str, Any]:
         "claim_boundary",
         "private_content_risk",
         "include_reason",
+        "source_refresh_status",
     }
     for idx, item in enumerate(data.get("sources", []), 1):
         location = str(item.get("source_id") or f"sources[{idx}]")
@@ -97,6 +99,14 @@ def validate_source_registry(path: Path | None = None) -> dict[str, Any]:
             errors.append({"source_id": source_id, "code": "unknown-allowed-use", "message": str(item["allowed_use"])})
         if item["reviewer_status"] not in REVIEWER_STATUSES:
             errors.append({"source_id": source_id, "code": "unknown-reviewer-status", "message": str(item["reviewer_status"])})
+        if item["source_refresh_status"] not in SOURCE_REFRESH_STATUSES:
+            errors.append({"source_id": source_id, "code": "unknown-source-refresh-status", "message": str(item["source_refresh_status"])})
+        if item["reviewer_status"] == "accepted" and item["source_refresh_status"] == "candidate_unverified":
+            errors.append({"source_id": source_id, "code": "accepted-source-unverified", "message": "Accepted sources cannot be candidate_unverified."})
+        if item["reviewer_status"] == "candidate" and item["source_refresh_status"] == "fresh" and item["trust_tier"] != "C":
+            warnings.append({"source_id": source_id, "code": "candidate-marked-fresh", "message": "Candidate research sources should usually remain candidate_unverified."})
+        if item["source_refresh_status"] in {"stale", "unavailable"} and item["reviewer_status"] == "accepted":
+            warnings.append({"source_id": source_id, "code": "accepted-source-not-fresh", "message": "Accepted sources should be refreshed before relying on current facts."})
         if item["trust_tier"] == "A" and item["reviewer_status"] != "accepted":
             warnings.append({"source_id": source_id, "code": "tier-a-not-accepted", "message": "Tier A sources should be accepted after URL review."})
         if item["trust_tier"] != "A" and item["reviewer_status"] == "accepted" and item.get("allowed_use") == "code_reuse_allowed":

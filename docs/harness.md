@@ -30,6 +30,9 @@ Required trace files:
 
 - `task.yaml`: exact task definition.
 - `retrieval_trace.json`: selected evidence, source URLs, last-checked dates, evidence type, reason for selection, and influence.
+- `hybrid_retrieval_bundle.json`: v0.4.1 KG-RAG bundle when source/evidence/KG indexes are available.
+- `source_quality_summary.json`: compact accepted/candidate/tier/refresh-status summary when a hybrid bundle is written.
+- `claim_boundary_summary.json`: compact claim-boundary and graph-path summary when a hybrid bundle contains boundaries.
 - `plan.md`: cited workflow plan.
 - `generated_script.py`: rendered Earth Engine Python script.
 - `validation_report.json`: static and semantic findings.
@@ -54,3 +57,5 @@ gee-skill tools
 Each evidence record includes `evidence_type`, `source_url`, `last_checked`, `reason_for_selection`, and `influence`. Evidence types include dataset cards, operator syntax notes, operator relationship chains, workflow patterns, known failure cases, and general documentation chunks.
 
 The coverage summary includes dataset cards, operator notes, workflow patterns, known failures, and export guidance counts. A v0.1 trace should include at least one of each before live export is considered auditable.
+
+v0.4.1 trace sidecars are additive. Missing KG-RAG indexes should degrade to the legacy `retrieval_trace.json` path and must not block deterministic validation or preflight behavior.
