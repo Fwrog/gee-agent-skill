@@ -1,0 +1,2 @@
+source: ../../evals/kg_rag_retrieval_suite.yml
+description: Canonical v0.4 KG-RAG retrieval suite lives under evals/.

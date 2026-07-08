@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Fwrog/gee-agent-skill/schemas/evidence-card.schema.json",
+  "title": "GEE evidence card",
+  "type": "object",
+  "required": ["cards"],
+  "properties": {
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "card_id",
+          "title",
+          "source_id",
+          "source_url",
+          "source_type",
+          "trust_tier",
+          "allowed_use",
+          "topics",
+          "extracted_facts",
+          "extracted_patterns",
+          "limitations",
+          "claim_boundaries",
+          "applicable_workflows",
+          "applicable_datasets",
+          "applicable_operators",
+          "known_failure_modes",
+          "validation_implications",
+          "planner_hints",
+          "validator_hints",
+          "citation",
+          "last_checked",
+          "reviewer_status",
+          "confidence",
+          "private_content_risk"
+        ]
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ This roadmap keeps the public project honest: finished evidence, pending live ch
 | Core harness | ✅ Stable public baseline | Keep CLI/API changes backward-compatible. |
 | Public demos v0.1/v0.2 | ✅ Golden | Preserve as regression examples. |
 | Public validation v0.3 | ✅ Golden | Preserve as portfolio-grade product-intercomparison evidence. |
-| Skill generation v0.4 | 🚧 Planned | Generalize product-intercomparison workflows. |
+| Skill generation v0.4 | 🚧 Implementation-ready | Generalize product-intercomparison workflows with source-grounded KG-RAG retrieval. |
 | Knowledge loop | 🚧 Active | Promote only generic, source-backed, privacy-reviewed lessons. |
 | Packaging and contributor UX | 🚧 Active | Turn TODOs into small, labeled GitHub issues. |
 
@@ -85,10 +85,11 @@ These tasks are good candidates for a project board column named `Next`: scoped,
 
 ### 🚧 v0.4 Skill Generation Gap
 
+- [x] Add a source registry, source policy, evidence cards, lightweight KG, hybrid retrieval, CLI commands, and KG-RAG eval fixtures.
+- [x] Add semantic validator hooks for MODIS scale factor, MODIS QA, HLS Fmask, reduceResolution/projection, direct fine/coarse comparison, claim boundaries, and Golden evidence checks.
 - [ ] Add a generic `product_intercomparison` task type to the plan schema.
 - [ ] Add an HLS/MODIS NDVI product-intercomparison recipe card after the canonical v0.3 script has live evidence.
 - [ ] Teach the planner to generate scale-aware comparison plans with temporal windows and grid matching.
-- [ ] Add semantic validators for MODIS scale factor, HLS `Fmask`, MODIS `SummaryQA`/`DetailedQA`, and `reduceResolution` before coarse-grid comparison.
 - [ ] Add an automated comparator that checks skill-generated workflows against canonical v0.3 expectations.
 - [ ] Add optional VIIRS VNP13A1 secondary comparison once the primary MODIS path is stable.
 

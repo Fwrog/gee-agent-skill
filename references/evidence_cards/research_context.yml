@@ -1,0 +1,163 @@
+cards:
+  - card_id: gee_ops_operator_knowledge_base
+    title: GEE-OPs operator knowledge-base research context
+    source_id: gee-ops-paper
+    source_url: https://arxiv.org/abs/2412.05587
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    topics: [research_context, operator_kb, rag]
+    extracted_facts: []
+    extracted_patterns:
+      - Candidate research context for operator knowledge-base and RAG design.
+    limitations:
+      - Candidate source; not accepted for current Earth Engine API or dataset facts.
+    claim_boundaries:
+      - Use only for methodology inspiration until evidence curation review is complete.
+    applicable_workflows: [evaluation, retrieval_design]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: []
+    validation_implications: []
+    planner_hints: []
+    validator_hints: []
+    citation: GEE-OPs arXiv record, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    confidence: low
+    private_content_risk: low
+  - card_id: autogeeval_benchmark
+    title: AutoGEEval benchmark research context
+    source_id: autogeeval-paper
+    source_url: https://arxiv.org/abs/2505.12900
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    topics: [research_context, benchmark, evaluation]
+    extracted_facts: []
+    extracted_patterns:
+      - Candidate benchmark context for evaluating GEE code generation.
+    limitations:
+      - Candidate source; no benchmark data or code is copied into this repository.
+    claim_boundaries:
+      - Use only for local evaluation design inspiration until reviewed.
+    applicable_workflows: [evaluation]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: []
+    validation_implications: []
+    planner_hints: []
+    validator_hints: []
+    citation: AutoGEEval arXiv record, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    confidence: low
+    private_content_risk: low
+  - card_id: autogeeval_plus_benchmark
+    title: AutoGEEval++ benchmark research context
+    source_id: autogeeval-plus-paper
+    source_url: https://arxiv.org/abs/2506.10365
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    topics: [research_context, benchmark, evaluation]
+    extracted_facts: []
+    extracted_patterns:
+      - Candidate multi-level benchmark context for GEE agent evaluation.
+    limitations:
+      - Candidate source; no claims promoted without evidence review.
+    claim_boundaries:
+      - Use only for evaluation framing until reviewed.
+    applicable_workflows: [evaluation]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: []
+    validation_implications: []
+    planner_hints: []
+    validator_hints: []
+    citation: AutoGEEval++ arXiv record, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    confidence: low
+    private_content_risk: low
+  - card_id: geofub_operator_function_kb
+    title: Geo-FuB operator-function knowledge-base research context
+    source_id: geofub-paper
+    source_url: https://arxiv.org/abs/2410.20975
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    topics: [research_context, operator_function_kb, evaluation]
+    extracted_facts: []
+    extracted_patterns:
+      - Candidate context for geospatial operator-function knowledge-base construction.
+    limitations:
+      - Candidate source; not accepted for current Earth Engine API facts.
+    claim_boundaries:
+      - Use only for methodology inspiration until reviewed.
+    applicable_workflows: [evaluation, retrieval_design]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: []
+    validation_implications: []
+    planner_hints: []
+    validator_hints: []
+    citation: Geo-FuB arXiv record, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    confidence: low
+    private_content_risk: low
+  - card_id: earth_engine_planetary_scale_analysis_paper
+    title: Earth Engine planetary-scale analysis research context
+    source_id: gorelick-2017-earth-engine
+    source_url: https://doi.org/10.1016/j.rse.2017.06.031
+    source_type: journal_paper
+    trust_tier: B
+    allowed_use: summary_only
+    topics: [research_context, earth_engine_platform]
+    extracted_facts: []
+    extracted_patterns:
+      - Candidate research context for Earth Engine as a planetary-scale geospatial analysis platform.
+    limitations:
+      - Historical platform paper does not override current API, dataset, quota, or catalog facts.
+    claim_boundaries:
+      - Use for platform positioning and research context only.
+    applicable_workflows: [research_positioning, documentation]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: []
+    validation_implications: []
+    planner_hints: []
+    validator_hints: []
+    citation: Gorelick et al. 2017 DOI record, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    confidence: low
+    private_content_risk: low
+  - card_id: geemap_joss_paper
+    title: geemap JOSS research software context
+    source_id: geemap-joss-paper
+    source_url: https://joss.theoj.org/papers/10.21105/joss.02305
+    source_type: joss_paper
+    trust_tier: B
+    allowed_use: summary_only
+    topics: [research_context, geemap, research_software]
+    extracted_facts: []
+    extracted_patterns:
+      - Candidate research-software context for geemap as an Earth Engine Python ecosystem tool.
+    limitations:
+      - Software paper context does not override official Earth Engine API facts.
+    claim_boundaries:
+      - Use for ecosystem positioning only.
+    applicable_workflows: [research_positioning, documentation]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: []
+    validation_implications: []
+    planner_hints: []
+    validator_hints: []
+    citation: geemap JOSS paper, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    confidence: low
+    private_content_risk: low

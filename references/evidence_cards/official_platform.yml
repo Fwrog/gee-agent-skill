@@ -1,0 +1,65 @@
+cards:
+  - card_id: earth_engine_platform_overview
+    title: Earth Engine platform overview and execution boundary
+    source_id: google-earth-engine-docs
+    source_url: https://developers.google.com/earth-engine
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    topics: [platform, client_server, deferred_execution, export]
+    extracted_facts:
+      - Earth Engine workflows should separate client orchestration from server-side geospatial computation.
+      - Live export behavior must remain behind explicit authentication, project, preflight, and confirmation gates.
+    extracted_patterns:
+      - Retrieve official docs before relying on current API behavior.
+      - Keep generated scripts reviewable before execution.
+    limitations:
+      - Documentation summaries do not prove a workflow produced scientifically valid results.
+    claim_boundaries:
+      - Platform documentation grounds API and workflow behavior, not private project state or independent scientific truth.
+    applicable_workflows: [planning, validation, export, trace]
+    applicable_datasets: []
+    applicable_operators: [Export, ee.ImageCollection, ee.Reducer]
+    known_failure_modes: [inline_authentication, unsafe_getinfo, live_export_without_confirmation]
+    validation_implications:
+      - Do not let retrieval bypass schema validation, script validation, preflight, or confirm-live.
+    planner_hints:
+      - Include explicit date, AOI, dataset, scale, CRS, QA, reducer, export, and trace assumptions.
+    validator_hints:
+      - Warn when generated scripts inline authentication or start tasks outside a guarded entrypoint.
+    citation: Google Earth Engine documentation, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    confidence: high
+    private_content_risk: low
+  - card_id: earth_engine_data_catalog
+    title: Earth Engine Data Catalog authoritative dataset facts
+    source_id: google-earth-engine-data-catalog
+    source_url: https://developers.google.com/earth-engine/datasets
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    topics: [data_catalog, dataset_ids, bands, qa, scale_factors]
+    extracted_facts:
+      - Official catalog pages are the preferred source for current dataset IDs, band names, QA bands, scale factors, provider notes, and availability.
+    extracted_patterns:
+      - Dataset facts in evidence cards should cite the relevant catalog page rather than a paper or community example.
+    limitations:
+      - Catalog facts can drift and require a last_checked date.
+    claim_boundaries:
+      - Catalog facts support dataset/API correctness, not downstream scientific accuracy claims.
+    applicable_workflows: [dataset_selection, product_intercomparison, validation]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: [stale_dataset_fact, invented_dataset_id, wrong_band_name]
+    validation_implications:
+      - Treat non-official dataset facts as lower priority than Tier A catalog facts.
+    planner_hints:
+      - Prefer Tier A catalog cards when selecting datasets or bands.
+    validator_hints:
+      - Flag unknown or unsupported dataset IDs before live execution.
+    citation: Google Earth Engine Data Catalog, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    confidence: high
+    private_content_risk: low

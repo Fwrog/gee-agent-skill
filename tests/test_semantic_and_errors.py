@@ -174,3 +174,55 @@ def test_agent_script_contract_accepts_rendered_hk_template(tmp_path):
     )
     findings = validate_semantics(script, ["agent_script_contract"])
     assert not [item for item in findings if item.severity == "error"]
+
+
+def test_product_intercomparison_rejects_missing_scale_qa_and_boundary(tmp_path):
+    script = tmp_path / "bad_product_intercomparison.py"
+    script.write_text(
+        """
+import ee
+HLS = 'NASA/HLS/HLSL30/v002'
+MODIS = 'MODIS/061/MOD13Q1'
+def main():
+    hls = ee.ImageCollection(HLS).select('NDVI')
+    modis = ee.ImageCollection(MODIS).select('NDVI')
+    return hls.mean().subtract(modis.mean())
+""",
+        encoding="utf-8",
+    )
+    findings = validate_semantics(script, ["product_intercomparison"])
+    codes = {item.code for item in findings}
+    assert "modis-ndvi-scale-factor" in codes
+    assert "modis-qa-policy" in codes
+    assert "hls-fmask-policy" in codes
+    assert "fine-coarse-aggregation-required" in codes
+    assert "claim-boundary-required" in codes
+
+
+def test_product_intercomparison_accepts_reviewed_contract(tmp_path):
+    script = tmp_path / "good_product_intercomparison.py"
+    script.write_text(
+        """
+import ee
+CLAIM_BOUNDARY = 'product_intercomparison_not_ground_truth'
+HLS_L30 = 'NASA/HLS/HLSL30/v002'
+HLS_S30 = 'NASA/HLS/HLSS30/v002'
+MODIS = 'MODIS/061/MOD13Q1'
+CRS = 'EPSG:4326'
+def mask_hls(image):
+    return image.updateMask(image.select('Fmask').gte(0))
+def mask_modis(image):
+    ndvi = image.select('NDVI').multiply(0.0001)
+    qa = image.select('SummaryQA')
+    return ndvi.updateMask(qa.gte(0))
+def main():
+    hls = ee.ImageCollection(HLS_L30).merge(ee.ImageCollection(HLS_S30)).map(mask_hls)
+    modis = ee.ImageCollection(MODIS).map(mask_modis)
+    modis_projection = modis.first().projection()
+    hls_agg = hls.mean().reduceResolution(reducer=ee.Reducer.mean()).reproject(modis_projection)
+    return hls_agg
+""",
+        encoding="utf-8",
+    )
+    findings = validate_semantics(script, ["product_intercomparison"])
+    assert not [item for item in findings if item.severity == "error"]

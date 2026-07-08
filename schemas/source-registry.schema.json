@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Fwrog/gee-agent-skill/schemas/source-registry.schema.json",
+  "title": "GEE source registry",
+  "type": "object",
+  "required": ["schema_version", "sources"],
+  "properties": {
+    "schema_version": {"const": "gee-source-registry/v0.1"},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "title",
+          "source_url",
+          "source_type",
+          "trust_tier",
+          "allowed_use",
+          "last_checked",
+          "reviewer_status",
+          "claim_boundary",
+          "private_content_risk",
+          "include_reason"
+        ],
+        "properties": {
+          "source_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$"},
+          "title": {"type": "string"},
+          "source_url": {"type": "string"},
+          "source_type": {"type": "string"},
+          "trust_tier": {"enum": ["A", "B", "C", "D"]},
+          "allowed_use": {
+            "enum": [
+              "metadata_only",
+              "summary_only",
+              "distilled_patterns",
+              "short_quoted_excerpt_allowed",
+              "code_reuse_allowed",
+              "not_allowed"
+            ]
+          },
+          "last_checked": {"type": "string"},
+          "reviewer_status": {"enum": ["accepted", "candidate", "rejected"]},
+          "claim_boundary": {"type": "string"},
+          "private_content_risk": {"type": "string"},
+          "include_reason": {"type": "string"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4655 @@
+{
+  "schema_version": "gee-kg/v0.1",
+  "metadata": {
+    "source_count": 31,
+    "evidence_card_count": 43,
+    "seed_path": "references/graph/seed_graph.yml"
+  },
+  "nodes": [
+    {
+      "id": "artifact:hk_ndvi_product_intercomparison_report",
+      "type": "OutputArtifact",
+      "title": "HK NDVI product intercomparison validation report",
+      "description": "Public validation report for v0.3 product-level consistency demo.",
+      "tags": [
+        "report",
+        "validation"
+      ],
+      "metadata": {
+        "path": "docs/validation/hk_ndvi_product_intercomparison_v03.md"
+      }
+    },
+    {
+      "id": "band:ndvi",
+      "type": "Band",
+      "title": "NDVI",
+      "description": "Normalized Difference Vegetation Index product or derived band.",
+      "tags": [
+        "vegetation_index"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "claim:product_level_consistency",
+      "type": "Claim",
+      "title": "Product-level consistency",
+      "description": "Agreement between HLS-derived NDVI aggregated to MODIS grid and MOD13Q1 supports workflow reliability.",
+      "tags": [
+        "claim",
+        "validation"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "claim_boundary:flood_screening_not_ground_truth",
+      "type": "ClaimBoundary",
+      "title": "Sentinel-1 flood maps are screening products, not ground truth",
+      "description": "Candidate flood maps require independent reference evidence before impact, damage, or ground-truth claims.",
+      "tags": [
+        "claim_boundary",
+        "flood_mapping",
+        "overclaim_prevention"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "claim_boundary:product_intercomparison_not_ground_truth",
+      "type": "ClaimBoundary",
+      "title": "Product intercomparison is not in-situ ground-truth accuracy",
+      "description": "Product agreement cannot be described as in-situ ground-truth validation without independent reference evidence.",
+      "tags": [
+        "claim_boundary",
+        "overclaim_prevention"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "dataset:copernicus/s1_grd",
+      "type": "Dataset",
+      "title": "COPERNICUS/S1_GRD",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "COPERNICUS/S1_GRD"
+      }
+    },
+    {
+      "id": "dataset:copernicus/s2_sr_harmonized",
+      "type": "Dataset",
+      "title": "COPERNICUS/S2_SR_HARMONIZED",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "COPERNICUS/S2_SR_HARMONIZED"
+      }
+    },
+    {
+      "id": "dataset:esa/worldcover/v200",
+      "type": "Dataset",
+      "title": "ESA/WorldCover/v200",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "ESA/WorldCover/v200"
+      }
+    },
+    {
+      "id": "dataset:google/dynamicworld/v1",
+      "type": "Dataset",
+      "title": "GOOGLE/DYNAMICWORLD/V1",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "GOOGLE/DYNAMICWORLD/V1"
+      }
+    },
+    {
+      "id": "dataset:jrc/gsw1_4/globalsurfacewater",
+      "type": "Dataset",
+      "title": "JRC/GSW1_4/GlobalSurfaceWater",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "JRC/GSW1_4/GlobalSurfaceWater"
+      }
+    },
+    {
+      "id": "dataset:landsat/lc08/c02/t1_l2",
+      "type": "Dataset",
+      "title": "LANDSAT/LC08/C02/T1_L2",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "LANDSAT/LC08/C02/T1_L2"
+      }
+    },
+    {
+      "id": "dataset:modis/061/mod11a2",
+      "type": "Dataset",
+      "title": "MODIS/061/MOD11A2",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "MODIS/061/MOD11A2"
+      }
+    },
+    {
+      "id": "dataset:modis/061/mod13q1",
+      "type": "Dataset",
+      "title": "MODIS/061/MOD13Q1",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "MODIS/061/MOD13Q1"
+      }
+    },
+    {
+      "id": "dataset:nasa/hls/hlsl30/v002",
+      "type": "Dataset",
+      "title": "NASA/HLS/HLSL30/v002",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "NASA/HLS/HLSL30/v002"
+      }
+    },
+    {
+      "id": "dataset:nasa/hls/hlss30/v002",
+      "type": "Dataset",
+      "title": "NASA/HLS/HLSS30/v002",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "NASA/HLS/HLSS30/v002"
+      }
+    },
+    {
+      "id": "dataset:nasa/viirs/002/vnp13a1",
+      "type": "Dataset",
+      "title": "NASA/VIIRS/002/VNP13A1",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "NASA/VIIRS/002/VNP13A1"
+      }
+    },
+    {
+      "id": "dataset:umd/hansen/global_forest_change_2024_v1_12",
+      "type": "Dataset",
+      "title": "UMD/hansen/global_forest_change_2024_v1_12",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "UMD/hansen/global_forest_change_2024_v1_12"
+      }
+    },
+    {
+      "id": "evidence:autogeeval_benchmark",
+      "type": "EvidenceCard",
+      "title": "AutoGEEval benchmark research context",
+      "description": "",
+      "tags": [
+        "research_context",
+        "benchmark",
+        "evaluation",
+        "candidate",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "autogeeval_benchmark",
+        "title": "AutoGEEval benchmark research context",
+        "source_id": "autogeeval-paper",
+        "source_url": "https://arxiv.org/abs/2505.12900",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "topics": [
+          "research_context",
+          "benchmark",
+          "evaluation"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Candidate benchmark context for evaluating GEE code generation."
+        ],
+        "limitations": [
+          "Candidate source; no benchmark data or code is copied into this repository."
+        ],
+        "claim_boundaries": [
+          "Use only for local evaluation design inspiration until reviewed."
+        ],
+        "applicable_workflows": [
+          "evaluation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [],
+        "validation_implications": [],
+        "planner_hints": [],
+        "validator_hints": [],
+        "citation": "AutoGEEval arXiv record, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "confidence": "low",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:autogeeval_plus_benchmark",
+      "type": "EvidenceCard",
+      "title": "AutoGEEval++ benchmark research context",
+      "description": "",
+      "tags": [
+        "research_context",
+        "benchmark",
+        "evaluation",
+        "candidate",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "autogeeval_plus_benchmark",
+        "title": "AutoGEEval++ benchmark research context",
+        "source_id": "autogeeval-plus-paper",
+        "source_url": "https://arxiv.org/abs/2506.10365",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "topics": [
+          "research_context",
+          "benchmark",
+          "evaluation"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Candidate multi-level benchmark context for GEE agent evaluation."
+        ],
+        "limitations": [
+          "Candidate source; no claims promoted without evidence review."
+        ],
+        "claim_boundaries": [
+          "Use only for evaluation framing until reviewed."
+        ],
+        "applicable_workflows": [
+          "evaluation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [],
+        "validation_implications": [],
+        "planner_hints": [],
+        "validator_hints": [],
+        "citation": "AutoGEEval++ arXiv record, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "confidence": "low",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:claim_boundary_required_for_validation_report",
+      "type": "EvidenceCard",
+      "title": "Claim boundary required for validation reports",
+      "description": "A validation report should identify what its evidence supports and what it cannot claim.",
+      "tags": [
+        "claim_boundary",
+        "validation_report",
+        "overclaim_prevention",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "claim_boundary_required_for_validation_report",
+        "title": "Claim boundary required for validation reports",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "claim_boundary",
+          "validation_report",
+          "overclaim_prevention"
+        ],
+        "extracted_facts": [
+          "A validation report should identify what its evidence supports and what it cannot claim."
+        ],
+        "extracted_patterns": [
+          "Product intercomparison reports should state product-level consistency rather than in-situ ground-truth accuracy."
+        ],
+        "limitations": [
+          "Claim boundaries are conservative policy controls, not statistical guarantees."
+        ],
+        "claim_boundaries": [
+          "Validation reports without explicit claim boundaries should not be promoted."
+        ],
+        "applicable_workflows": [
+          "validation",
+          "product_intercomparison",
+          "golden_promotion"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "ground_truth_overclaim",
+          "missing_claim_boundary"
+        ],
+        "validation_implications": [
+          "Warn or fail when validation text lacks a claim boundary."
+        ],
+        "planner_hints": [
+          "Include a claim-boundary section in validation-facing plans."
+        ],
+        "validator_hints": [
+          "Search for product-level consistency, not ground truth, not in-situ, or explicit claim_boundary wording."
+        ],
+        "citation": "Project source policy and Earth Engine documentation context, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:direct_fine_coarse_comparison_failure_case",
+      "type": "EvidenceCard",
+      "title": "Direct fine/coarse pixel comparison failure case",
+      "description": "Direct comparison between 30 m and 250 m pixels confounds resolution, projection, mixed pixels, and product design.",
+      "tags": [
+        "failure_case",
+        "scale",
+        "projection",
+        "reduceResolution",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "direct_fine_coarse_comparison_failure_case",
+        "title": "Direct fine/coarse pixel comparison failure case",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine/guides/reducers_reduce_resolution",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "failure_case",
+          "scale",
+          "projection",
+          "reduceResolution"
+        ],
+        "extracted_facts": [
+          "Direct comparison between 30 m and 250 m pixels confounds resolution, projection, mixed pixels, and product design."
+        ],
+        "extracted_patterns": [
+          "Recover by aggregating fine-resolution data to the comparison product grid with explicit projection and QA."
+        ],
+        "limitations": [
+          "Aggregation reduces but does not remove sensor, BRDF, cloud, temporal, and mixed-pixel differences."
+        ],
+        "claim_boundaries": [
+          "A repaired comparison can support product-level consistency, not ground-truth validation."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison",
+          "validation"
+        ],
+        "applicable_datasets": [
+          "NASA/HLS/HLSL30/v002",
+          "NASA/HLS/HLSS30/v002",
+          "MODIS/061/MOD13Q1"
+        ],
+        "applicable_operators": [
+          "reduceResolution",
+          "reproject"
+        ],
+        "known_failure_modes": [
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Flag native-resolution HLS/MODIS pixel comparisons as unsafe."
+        ],
+        "planner_hints": [
+          "Add aggregation and projection matching before metrics."
+        ],
+        "validator_hints": [
+          "Check for reduceResolution/reproject or an equivalent coarse-grid aggregation step."
+        ],
+        "citation": "Earth Engine reduceResolution guidance and official dataset catalog facts, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:dynamic_world",
+      "type": "EvidenceCard",
+      "title": "Dynamic World V1 dataset card",
+      "description": "Dynamic World is a probabilistic land-cover product available in Earth Engine.",
+      "tags": [
+        "Dynamic_World",
+        "landcover",
+        "interpretation_mask",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "dynamic_world",
+        "title": "Dynamic World V1 dataset card",
+        "source_id": "gee-catalog-dynamic-world-v1",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "Dynamic_World",
+          "landcover",
+          "interpretation_mask"
+        ],
+        "extracted_facts": [
+          "Dynamic World is a probabilistic land-cover product available in Earth Engine."
+        ],
+        "extracted_patterns": [
+          "Use Dynamic World as an interpretation mask or strata with confidence thresholds."
+        ],
+        "limitations": [
+          "Dynamic World is not independent ground truth for Sentinel-2-derived vegetation claims."
+        ],
+        "claim_boundaries": [
+          "Land-cover-aware outputs must describe Dynamic World as interpretation context."
+        ],
+        "applicable_workflows": [
+          "landcover_stratified_statistics",
+          "vegetation_index"
+        ],
+        "applicable_datasets": [
+          "GOOGLE/DYNAMICWORLD/V1"
+        ],
+        "applicable_operators": [
+          "updateMask",
+          "reduceRegions"
+        ],
+        "known_failure_modes": [
+          "ground_truth_overclaim",
+          "missing_probability_threshold"
+        ],
+        "validation_implications": [
+          "Land-cover workflows need threshold and class-fraction fields."
+        ],
+        "planner_hints": [
+          "Include interpretation-mask caveats for Dynamic World."
+        ],
+        "validator_hints": [
+          "Check for label/probability bands and threshold handling."
+        ],
+        "citation": "Earth Engine Data Catalog GOOGLE/DYNAMICWORLD/V1, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_client_vs_server",
+      "type": "EvidenceCard",
+      "title": "Earth Engine client/server boundary",
+      "description": "Earth Engine workflows should avoid unbounded client-side materialization of server-side objects.",
+      "tags": [
+        "client_server",
+        "deferred_execution",
+        "getInfo",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_client_vs_server",
+        "title": "Earth Engine client/server boundary",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine/guides/client_server",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "client_server",
+          "deferred_execution",
+          "getInfo"
+        ],
+        "extracted_facts": [
+          "Earth Engine workflows should avoid unbounded client-side materialization of server-side objects."
+        ],
+        "extracted_patterns": [
+          "Prefer server-side reducers, exports, metadata properties, and bounded preflight probes."
+        ],
+        "limitations": [
+          "Client/server discipline does not by itself prove dataset correctness."
+        ],
+        "claim_boundaries": [
+          "Client/server rules support runtime safety, not scientific truth."
+        ],
+        "applicable_workflows": [
+          "validation",
+          "run",
+          "trace"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "getInfo",
+          "evaluate",
+          "reduceRegion",
+          "Export"
+        ],
+        "known_failure_modes": [
+          "unsafe_getinfo",
+          "client_side_iteration"
+        ],
+        "validation_implications": [
+          "Warn on unsafe getInfo in generated workflows."
+        ],
+        "planner_hints": [
+          "Keep expensive computation server-side and export reviewable artifacts."
+        ],
+        "validator_hints": [
+          "Flag unbounded client fetches."
+        ],
+        "citation": "Earth Engine client/server guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_core_operators",
+      "type": "EvidenceCard",
+      "title": "Core Earth Engine operator card",
+      "description": "Core workflows combine collection filters, QA masking, reducers, and exports through official API operators.",
+      "tags": [
+        "operators",
+        "filterDate",
+        "filterBounds",
+        "reducers",
+        "export",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_core_operators",
+        "title": "Core Earth Engine operator card",
+        "source_id": "google-earth-engine-api-reference",
+        "source_url": "https://developers.google.com/earth-engine/apidocs",
+        "source_type": "official_api_reference",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "operators",
+          "filterDate",
+          "filterBounds",
+          "reducers",
+          "export"
+        ],
+        "extracted_facts": [
+          "Core workflows combine collection filters, QA masking, reducers, and exports through official API operators."
+        ],
+        "extracted_patterns": [
+          "{'Prefer explicit operator ordering': 'source collection, temporal filter, spatial filter, QA mask, metric, reducer/export.'}"
+        ],
+        "limitations": [
+          "Correct operator names do not guarantee valid product interpretation."
+        ],
+        "claim_boundaries": [
+          "Operator evidence supports syntax and workflow structure only."
+        ],
+        "applicable_workflows": [
+          "planning",
+          "rendering",
+          "validation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "filterDate",
+          "filterBounds",
+          "map",
+          "reduceRegion",
+          "reduceRegions",
+          "Export"
+        ],
+        "known_failure_modes": [
+          "operator_ordering_error",
+          "missing_filter"
+        ],
+        "validation_implications": [
+          "Validate method names and required workflow ordering before live execution."
+        ],
+        "planner_hints": [
+          "Plan operator chains explicitly."
+        ],
+        "validator_hints": [
+          "Check for temporal/spatial filters before reducers and exports."
+        ],
+        "citation": "Earth Engine API reference, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_data_catalog",
+      "type": "EvidenceCard",
+      "title": "Earth Engine Data Catalog authoritative dataset facts",
+      "description": "Official catalog pages are the preferred source for current dataset IDs, band names, QA bands, scale factors, provider notes, and availability.",
+      "tags": [
+        "data_catalog",
+        "dataset_ids",
+        "bands",
+        "qa",
+        "scale_factors",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_data_catalog",
+        "title": "Earth Engine Data Catalog authoritative dataset facts",
+        "source_id": "google-earth-engine-data-catalog",
+        "source_url": "https://developers.google.com/earth-engine/datasets",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "data_catalog",
+          "dataset_ids",
+          "bands",
+          "qa",
+          "scale_factors"
+        ],
+        "extracted_facts": [
+          "Official catalog pages are the preferred source for current dataset IDs, band names, QA bands, scale factors, provider notes, and availability."
+        ],
+        "extracted_patterns": [
+          "Dataset facts in evidence cards should cite the relevant catalog page rather than a paper or community example."
+        ],
+        "limitations": [
+          "Catalog facts can drift and require a last_checked date."
+        ],
+        "claim_boundaries": [
+          "Catalog facts support dataset/API correctness, not downstream scientific accuracy claims."
+        ],
+        "applicable_workflows": [
+          "dataset_selection",
+          "product_intercomparison",
+          "validation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "stale_dataset_fact",
+          "invented_dataset_id",
+          "wrong_band_name"
+        ],
+        "validation_implications": [
+          "Treat non-official dataset facts as lower priority than Tier A catalog facts."
+        ],
+        "planner_hints": [
+          "Prefer Tier A catalog cards when selecting datasets or bands."
+        ],
+        "validator_hints": [
+          "Flag unknown or unsupported dataset IDs before live execution."
+        ],
+        "citation": "Google Earth Engine Data Catalog, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_debugging_best_practices",
+      "type": "EvidenceCard",
+      "title": "Earth Engine debugging and quota best practices",
+      "description": "Quota and resource limits are expected execution constraints for large Earth Engine workflows.",
+      "tags": [
+        "debugging",
+        "quotas",
+        "tasks",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_debugging_best_practices",
+        "title": "Earth Engine debugging and quota best practices",
+        "source_id": "google-earth-engine-usage-quotas",
+        "source_url": "https://developers.google.com/earth-engine/guides/usage",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "debugging",
+          "quotas",
+          "tasks"
+        ],
+        "extracted_facts": [
+          "Quota and resource limits are expected execution constraints for large Earth Engine workflows."
+        ],
+        "extracted_patterns": [
+          "Record failure categories and recovery patterns in reusable public knowledge cards."
+        ],
+        "limitations": [
+          "Quota guidance changes and should be checked against official docs."
+        ],
+        "claim_boundaries": [
+          "Quota recovery supports engineering robustness only."
+        ],
+        "applicable_workflows": [
+          "preflight",
+          "export",
+          "monitor",
+          "trace"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export",
+          "reduceRegion"
+        ],
+        "known_failure_modes": [
+          "quota_or_timeout",
+          "out_of_memory_export"
+        ],
+        "validation_implications": [
+          "Warn when large exports omit budgets such as maxPixels or tile fallback strategy."
+        ],
+        "planner_hints": [
+          "Include monitoring and recovery steps in plans."
+        ],
+        "validator_hints": [
+          "Check for explicit budgets and fallback guidance."
+        ],
+        "citation": "Earth Engine usage guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_deferred_execution",
+      "type": "EvidenceCard",
+      "title": "Earth Engine deferred execution",
+      "description": "Earth Engine objects often represent deferred server-side computations until evaluated or exported.",
+      "tags": [
+        "deferred_execution",
+        "server_side",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_deferred_execution",
+        "title": "Earth Engine deferred execution",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine/guides/deferred_execution",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "deferred_execution",
+          "server_side"
+        ],
+        "extracted_facts": [
+          "Earth Engine objects often represent deferred server-side computations until evaluated or exported."
+        ],
+        "extracted_patterns": [
+          "Validate graph construction and export contracts before triggering live computation."
+        ],
+        "limitations": [
+          "Deferred execution means static validation cannot guarantee live data availability."
+        ],
+        "claim_boundaries": [
+          "Deferred execution guidance supports execution safety only."
+        ],
+        "applicable_workflows": [
+          "validate",
+          "preflight",
+          "run"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "ee.Image",
+          "ee.ImageCollection",
+          "Export"
+        ],
+        "known_failure_modes": [
+          "late_runtime_failure",
+          "empty_collection"
+        ],
+        "validation_implications": [
+          "Static validation should be paired with preflight for live workflows."
+        ],
+        "planner_hints": [
+          "Include preflight and trace steps before export."
+        ],
+        "validator_hints": [
+          "Avoid claiming live success from rendered code alone."
+        ],
+        "citation": "Earth Engine deferred execution guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_export_image",
+      "type": "EvidenceCard",
+      "title": "Earth Engine image export behavior",
+      "description": "Image exports require explicit review of region, scale, CRS, maxPixels, dtype, and destination.",
+      "tags": [
+        "export",
+        "image",
+        "geotiff",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_export_image",
+        "title": "Earth Engine image export behavior",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine/guides/exporting_images",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "export",
+          "image",
+          "geotiff"
+        ],
+        "extracted_facts": [
+          "Image exports require explicit review of region, scale, CRS, maxPixels, dtype, and destination."
+        ],
+        "extracted_patterns": [
+          "Use deterministic tiling when full-region raster exports exceed memory or quota."
+        ],
+        "limitations": [
+          "A submitted task is not completed evidence until monitored and read back."
+        ],
+        "claim_boundaries": [
+          "Export completion supports engineering evidence, not scientific truth by itself."
+        ],
+        "applicable_workflows": [
+          "export",
+          "monitor",
+          "trace"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export.image.toDrive"
+        ],
+        "known_failure_modes": [
+          "quota_or_timeout",
+          "mixed_dtype_export",
+          "missing_readback"
+        ],
+        "validation_implications": [
+          "Check image exports for region, scale, CRS, maxPixels, and dtype stability."
+        ],
+        "planner_hints": [
+          "Include export artifact expectations and fallback tiling."
+        ],
+        "validator_hints": [
+          "Flag incomplete image export contracts."
+        ],
+        "citation": "Earth Engine image export guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_export_table",
+      "type": "EvidenceCard",
+      "title": "Earth Engine table export behavior",
+      "description": "Table exports should have stable descriptions, formats, selectors, and traceable destinations.",
+      "tags": [
+        "export",
+        "table",
+        "csv",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_export_table",
+        "title": "Earth Engine table export behavior",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine/guides/exporting_tables",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "export",
+          "table",
+          "csv"
+        ],
+        "extracted_facts": [
+          "Table exports should have stable descriptions, formats, selectors, and traceable destinations."
+        ],
+        "extracted_patterns": [
+          "Use explicit selectors for reproducible CSV schemas."
+        ],
+        "limitations": [
+          "Completed table exports do not prove raster exports or scientific validation completed."
+        ],
+        "claim_boundaries": [
+          "Table exports are evidence artifacts only when monitored and read back."
+        ],
+        "applicable_workflows": [
+          "export",
+          "monitor",
+          "trace"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export.table.toDrive"
+        ],
+        "known_failure_modes": [
+          "unstable_output_schema",
+          "missing_readback"
+        ],
+        "validation_implications": [
+          "Flag table exports without selectors."
+        ],
+        "planner_hints": [
+          "Include expected table schema in plans."
+        ],
+        "validator_hints": [
+          "Check table exports for selectors and CSV format."
+        ],
+        "citation": "Earth Engine table export guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_javascript_api",
+      "type": "EvidenceCard",
+      "title": "Earth Engine JavaScript and Code Editor surface",
+      "description": "The Code Editor is an official JavaScript workflow surface, separate from this CLI-first Python execution path.",
+      "tags": [
+        "api",
+        "javascript",
+        "code_editor",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_javascript_api",
+        "title": "Earth Engine JavaScript and Code Editor surface",
+        "source_id": "google-earth-engine-code-editor-guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/playground",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "api",
+          "javascript",
+          "code_editor"
+        ],
+        "extracted_facts": [
+          "The Code Editor is an official JavaScript workflow surface, separate from this CLI-first Python execution path."
+        ],
+        "extracted_patterns": [
+          "Treat JavaScript examples as API/workflow reference material unless explicitly ported and validated."
+        ],
+        "limitations": [
+          "JavaScript examples do not automatically become safe Python export scripts."
+        ],
+        "claim_boundaries": [
+          "Code Editor context supports surface understanding, not live CLI execution."
+        ],
+        "applicable_workflows": [
+          "source_review",
+          "recipe_distillation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "surface_confusion"
+        ],
+        "validation_implications": [
+          "Rendered Python scripts still require Python validation and preflight."
+        ],
+        "planner_hints": [
+          "Note when a source example is JavaScript and needs a reviewed Python translation."
+        ],
+        "validator_hints": [
+          "Do not treat JavaScript snippets as executable Python."
+        ],
+        "citation": "Earth Engine Code Editor guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_planetary_scale_analysis_paper",
+      "type": "EvidenceCard",
+      "title": "Earth Engine planetary-scale analysis research context",
+      "description": "",
+      "tags": [
+        "research_context",
+        "earth_engine_platform",
+        "candidate",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_planetary_scale_analysis_paper",
+        "title": "Earth Engine planetary-scale analysis research context",
+        "source_id": "gorelick-2017-earth-engine",
+        "source_url": "https://doi.org/10.1016/j.rse.2017.06.031",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "topics": [
+          "research_context",
+          "earth_engine_platform"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Candidate research context for Earth Engine as a planetary-scale geospatial analysis platform."
+        ],
+        "limitations": [
+          "Historical platform paper does not override current API, dataset, quota, or catalog facts."
+        ],
+        "claim_boundaries": [
+          "Use for platform positioning and research context only."
+        ],
+        "applicable_workflows": [
+          "research_positioning",
+          "documentation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [],
+        "validation_implications": [],
+        "planner_hints": [],
+        "validator_hints": [],
+        "citation": "Gorelick et al. 2017 DOI record, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "confidence": "low",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_platform_overview",
+      "type": "EvidenceCard",
+      "title": "Earth Engine platform overview and execution boundary",
+      "description": "Earth Engine workflows should separate client orchestration from server-side geospatial computation. Live export behavior must remain behind explicit authentication, project, preflight, and confirmation gates.",
+      "tags": [
+        "platform",
+        "client_server",
+        "deferred_execution",
+        "export",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_platform_overview",
+        "title": "Earth Engine platform overview and execution boundary",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "platform",
+          "client_server",
+          "deferred_execution",
+          "export"
+        ],
+        "extracted_facts": [
+          "Earth Engine workflows should separate client orchestration from server-side geospatial computation.",
+          "Live export behavior must remain behind explicit authentication, project, preflight, and confirmation gates."
+        ],
+        "extracted_patterns": [
+          "Retrieve official docs before relying on current API behavior.",
+          "Keep generated scripts reviewable before execution."
+        ],
+        "limitations": [
+          "Documentation summaries do not prove a workflow produced scientifically valid results."
+        ],
+        "claim_boundaries": [
+          "Platform documentation grounds API and workflow behavior, not private project state or independent scientific truth."
+        ],
+        "applicable_workflows": [
+          "planning",
+          "validation",
+          "export",
+          "trace"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export",
+          "ee.ImageCollection",
+          "ee.Reducer"
+        ],
+        "known_failure_modes": [
+          "inline_authentication",
+          "unsafe_getinfo",
+          "live_export_without_confirmation"
+        ],
+        "validation_implications": [
+          "Do not let retrieval bypass schema validation, script validation, preflight, or confirm-live."
+        ],
+        "planner_hints": [
+          "Include explicit date, AOI, dataset, scale, CRS, QA, reducer, export, and trace assumptions."
+        ],
+        "validator_hints": [
+          "Warn when generated scripts inline authentication or start tasks outside a guarded entrypoint."
+        ],
+        "citation": "Google Earth Engine documentation, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_python_api",
+      "type": "EvidenceCard",
+      "title": "Earth Engine Python API execution surface",
+      "description": "The Python API is the reviewed execution surface for generated Earth Engine workflows in this harness.",
+      "tags": [
+        "api",
+        "python",
+        "execution_boundary",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_python_api",
+        "title": "Earth Engine Python API execution surface",
+        "source_id": "google-earth-engine-api-reference",
+        "source_url": "https://developers.google.com/earth-engine/apidocs",
+        "source_type": "official_api_reference",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "api",
+          "python",
+          "execution_boundary"
+        ],
+        "extracted_facts": [
+          "The Python API is the reviewed execution surface for generated Earth Engine workflows in this harness."
+        ],
+        "extracted_patterns": [
+          "Keep authentication, project selection, validation, preflight, and live execution in the CLI control plane."
+        ],
+        "limitations": [
+          "API availability does not imply user credentials, quota, or scientific validity."
+        ],
+        "claim_boundaries": [
+          "Python API facts support execution mechanics only."
+        ],
+        "applicable_workflows": [
+          "render",
+          "validate",
+          "preflight",
+          "run"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "ee.Initialize",
+          "ee.ImageCollection",
+          "Export"
+        ],
+        "known_failure_modes": [
+          "inline_authentication",
+          "live_export_without_confirmation"
+        ],
+        "validation_implications": [
+          "Generated scripts must not bypass CLI-controlled authentication and confirmation gates."
+        ],
+        "planner_hints": [
+          "Plan generated code as reviewable Python API scripts."
+        ],
+        "validator_hints": [
+          "Flag inline authentication or live task starts outside guarded paths."
+        ],
+        "citation": "Earth Engine API reference, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_reduce_resolution",
+      "type": "EvidenceCard",
+      "title": "Earth Engine reduceResolution behavior",
+      "description": "Fine-resolution products should be aggregated before coherent comparison with coarser products.",
+      "tags": [
+        "reduceResolution",
+        "aggregation",
+        "projection",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_reduce_resolution",
+        "title": "Earth Engine reduceResolution behavior",
+        "source_id": "google-earth-engine-resample-guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/resample",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "reduceResolution",
+          "aggregation",
+          "projection"
+        ],
+        "extracted_facts": [
+          "Fine-resolution products should be aggregated before coherent comparison with coarser products."
+        ],
+        "extracted_patterns": [
+          "Pair reduceResolution with explicit projection handling for product intercomparison."
+        ],
+        "limitations": [
+          "Aggregation cannot eliminate temporal, sensor, or mixed-pixel differences."
+        ],
+        "claim_boundaries": [
+          "Aggregated product comparison supports product consistency, not in-situ validation."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "reduceResolution",
+          "reproject"
+        ],
+        "known_failure_modes": [
+          "reduce_resolution_projection_missing",
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Warn when reduceResolution lacks projection/default projection handling."
+        ],
+        "planner_hints": [
+          "Add aggregation-before-comparison as an explicit step."
+        ],
+        "validator_hints": [
+          "Look for reduceResolution paired with projection handling."
+        ],
+        "citation": "Earth Engine resampling guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:earth_engine_scale_projection",
+      "type": "EvidenceCard",
+      "title": "Earth Engine scale and projection behavior",
+      "description": "Earth Engine scale/projection choices affect reducers, exports, and cross-product comparisons.",
+      "tags": [
+        "scale",
+        "projection",
+        "reducers",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "earth_engine_scale_projection",
+        "title": "Earth Engine scale and projection behavior",
+        "source_id": "google-earth-engine-scale-guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/scale",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "scale",
+          "projection",
+          "reducers"
+        ],
+        "extracted_facts": [
+          "Earth Engine scale/projection choices affect reducers, exports, and cross-product comparisons."
+        ],
+        "extracted_patterns": [
+          "Make scale and CRS/projection choices explicit in generated plans and scripts."
+        ],
+        "limitations": [
+          "Explicit scale/projection reduces ambiguity but does not remove sensor/product differences."
+        ],
+        "claim_boundaries": [
+          "Scale/projection controls support reproducibility, not ground-truth accuracy."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison",
+          "export",
+          "validation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "reduceRegion",
+          "reduceResolution",
+          "reproject"
+        ],
+        "known_failure_modes": [
+          "reducer_scale_error",
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Flag missing scale/projection in reducers and exports."
+        ],
+        "planner_hints": [
+          "State scale and CRS/projection in plan assumptions."
+        ],
+        "validator_hints": [
+          "Check reducers and exports for explicit scale and projection handling."
+        ],
+        "citation": "Earth Engine scale guide, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:esa_worldcover",
+      "type": "EvidenceCard",
+      "title": "ESA WorldCover v200 dataset card",
+      "description": "ESA/WorldCover/v200 is a public land-cover dataset available in Earth Engine.",
+      "tags": [
+        "ESA_WorldCover",
+        "landcover",
+        "stratification",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "esa_worldcover",
+        "title": "ESA WorldCover v200 dataset card",
+        "source_id": "gee-catalog-esa-worldcover-v200",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "ESA_WorldCover",
+          "landcover",
+          "stratification"
+        ],
+        "extracted_facts": [
+          "ESA/WorldCover/v200 is a public land-cover dataset available in Earth Engine."
+        ],
+        "extracted_patterns": [
+          "Use static land-cover maps cautiously for broad stratification and interpretation."
+        ],
+        "limitations": [
+          "Static land-cover maps may not be time-matched to arbitrary analysis windows."
+        ],
+        "claim_boundaries": [
+          "Stratification supports interpretation, not authoritative local classification."
+        ],
+        "applicable_workflows": [
+          "landcover_stratified_statistics",
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [
+          "ESA/WorldCover/v200"
+        ],
+        "applicable_operators": [
+          "reduceRegions"
+        ],
+        "known_failure_modes": [
+          "static_landcover_overclaim"
+        ],
+        "validation_implications": [
+          "Reports should state temporal/static-map caveats."
+        ],
+        "planner_hints": [
+          "Include land-cover timing caveat."
+        ],
+        "validator_hints": [
+          "Check that WorldCover is not described as time-matched ground truth."
+        ],
+        "citation": "Earth Engine Data Catalog ESA/WorldCover/v200, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:gee_notebook_example_patterns",
+      "type": "EvidenceCard",
+      "title": "Earth Engine notebook example patterns",
+      "description": "",
+      "tags": [
+        "community_patterns",
+        "notebooks",
+        "examples",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "gee_notebook_example_patterns",
+        "title": "Earth Engine notebook example patterns",
+        "source_id": "giswqs-earthengine-py-notebooks",
+        "source_url": "https://github.com/giswqs/earthengine-py-notebooks",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "community_patterns",
+          "notebooks",
+          "examples"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Notebook repositories can reveal common workflow patterns and failure cases for later distilled cards."
+        ],
+        "limitations": [
+          "Notebook examples are not authoritative for current dataset facts or production export policy."
+        ],
+        "claim_boundaries": [
+          "Use as pattern context only."
+        ],
+        "applicable_workflows": [
+          "examples",
+          "recipe_distillation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "community_source_overpromotion"
+        ],
+        "validation_implications": [
+          "Any distilled pattern must cite official facts separately."
+        ],
+        "planner_hints": [
+          "Treat notebooks as examples, not sources of truth."
+        ],
+        "validator_hints": [
+          "Require Tier A confirmation for dataset/API facts."
+        ],
+        "citation": "giswqs/earthengine-py-notebooks repository, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:gee_ops_operator_knowledge_base",
+      "type": "EvidenceCard",
+      "title": "GEE-OPs operator knowledge-base research context",
+      "description": "",
+      "tags": [
+        "research_context",
+        "operator_kb",
+        "rag",
+        "candidate",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "gee_ops_operator_knowledge_base",
+        "title": "GEE-OPs operator knowledge-base research context",
+        "source_id": "gee-ops-paper",
+        "source_url": "https://arxiv.org/abs/2412.05587",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "topics": [
+          "research_context",
+          "operator_kb",
+          "rag"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Candidate research context for operator knowledge-base and RAG design."
+        ],
+        "limitations": [
+          "Candidate source; not accepted for current Earth Engine API or dataset facts."
+        ],
+        "claim_boundaries": [
+          "Use only for methodology inspiration until evidence curation review is complete."
+        ],
+        "applicable_workflows": [
+          "evaluation",
+          "retrieval_design"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [],
+        "validation_implications": [],
+        "planner_hints": [],
+        "validator_hints": [],
+        "citation": "GEE-OPs arXiv record, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "confidence": "low",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:geemap_community_patterns",
+      "type": "EvidenceCard",
+      "title": "geemap community workflow patterns",
+      "description": "",
+      "tags": [
+        "community_patterns",
+        "geemap",
+        "visualization",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "geemap_community_patterns",
+        "title": "geemap community workflow patterns",
+        "source_id": "gee-community-geemap",
+        "source_url": "https://github.com/gee-community/geemap",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "community_patterns",
+          "geemap",
+          "visualization"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "geemap can inform interactive mapping, notebook, and visualization patterns after license-aware review."
+        ],
+        "limitations": [
+          "Community patterns do not override official API or dataset facts."
+        ],
+        "claim_boundaries": [
+          "Store distilled patterns only; do not copy code without explicit review."
+        ],
+        "applicable_workflows": [
+          "visualization",
+          "notebooks",
+          "examples"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "community_source_overpromotion"
+        ],
+        "validation_implications": [
+          "Prefer official docs for current API behavior."
+        ],
+        "planner_hints": [
+          "Mark community-derived guidance as pattern support."
+        ],
+        "validator_hints": [
+          "Do not accept community examples as authoritative dataset facts."
+        ],
+        "citation": "gee-community/geemap repository, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:geemap_joss_paper",
+      "type": "EvidenceCard",
+      "title": "geemap JOSS research software context",
+      "description": "",
+      "tags": [
+        "research_context",
+        "geemap",
+        "research_software",
+        "candidate",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "geemap_joss_paper",
+        "title": "geemap JOSS research software context",
+        "source_id": "geemap-joss-paper",
+        "source_url": "https://joss.theoj.org/papers/10.21105/joss.02305",
+        "source_type": "joss_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "topics": [
+          "research_context",
+          "geemap",
+          "research_software"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Candidate research-software context for geemap as an Earth Engine Python ecosystem tool."
+        ],
+        "limitations": [
+          "Software paper context does not override official Earth Engine API facts."
+        ],
+        "claim_boundaries": [
+          "Use for ecosystem positioning only."
+        ],
+        "applicable_workflows": [
+          "research_positioning",
+          "documentation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [],
+        "validation_implications": [],
+        "planner_hints": [],
+        "validator_hints": [],
+        "citation": "geemap JOSS paper, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "confidence": "low",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:geemap_js_to_python_conversion_patterns",
+      "type": "EvidenceCard",
+      "title": "geemap JavaScript-to-Python conversion patterns",
+      "description": "",
+      "tags": [
+        "community_patterns",
+        "javascript",
+        "python",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "geemap_js_to_python_conversion_patterns",
+        "title": "geemap JavaScript-to-Python conversion patterns",
+        "source_id": "gee-community-geemap",
+        "source_url": "https://github.com/gee-community/geemap",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "community_patterns",
+          "javascript",
+          "python"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Community tooling can suggest conversion patterns, but generated Python must be validated independently."
+        ],
+        "limitations": [
+          "Conversion patterns may lag current official APIs."
+        ],
+        "claim_boundaries": [
+          "Conversion support is implementation guidance only."
+        ],
+        "applicable_workflows": [
+          "recipe_distillation",
+          "rendering"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "surface_confusion",
+          "stale_community_example"
+        ],
+        "validation_implications": [
+          "Converted code must pass Python syntax, semantic validation, and preflight."
+        ],
+        "planner_hints": [
+          "Note source language and conversion caveats."
+        ],
+        "validator_hints": [
+          "Check converted scripts against official Python API behavior."
+        ],
+        "citation": "gee-community/geemap repository, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:geofub_operator_function_kb",
+      "type": "EvidenceCard",
+      "title": "Geo-FuB operator-function knowledge-base research context",
+      "description": "",
+      "tags": [
+        "research_context",
+        "operator_function_kb",
+        "evaluation",
+        "candidate",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "geofub_operator_function_kb",
+        "title": "Geo-FuB operator-function knowledge-base research context",
+        "source_id": "geofub-paper",
+        "source_url": "https://arxiv.org/abs/2410.20975",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "topics": [
+          "research_context",
+          "operator_function_kb",
+          "evaluation"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Candidate context for geospatial operator-function knowledge-base construction."
+        ],
+        "limitations": [
+          "Candidate source; not accepted for current Earth Engine API facts."
+        ],
+        "claim_boundaries": [
+          "Use only for methodology inspiration until reviewed."
+        ],
+        "applicable_workflows": [
+          "evaluation",
+          "retrieval_design"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [],
+        "validation_implications": [],
+        "planner_hints": [],
+        "validator_hints": [],
+        "citation": "Geo-FuB arXiv record, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "confidence": "low",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:hansen_global_forest_change",
+      "type": "EvidenceCard",
+      "title": "Hansen Global Forest Change dataset card",
+      "description": "Hansen Global Forest Change is an official Earth Engine catalog source for forest-change context.",
+      "tags": [
+        "forest_change",
+        "tree_cover",
+        "dataset",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "hansen_global_forest_change",
+        "title": "Hansen Global Forest Change dataset card",
+        "source_id": "gee-catalog-hansen-global-forest-change",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/UMD_hansen_global_forest_change_2024_v1_12",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "forest_change",
+          "tree_cover",
+          "dataset"
+        ],
+        "extracted_facts": [
+          "Hansen Global Forest Change is an official Earth Engine catalog source for forest-change context."
+        ],
+        "extracted_patterns": [
+          "Use official catalog facts for forest-change band and availability decisions."
+        ],
+        "limitations": [
+          "Forest-change products have their own definitions and cannot be generalized to all vegetation accuracy claims."
+        ],
+        "claim_boundaries": [
+          "Forest-change layers support product-specific forest-change analysis only."
+        ],
+        "applicable_workflows": [
+          "change_detection",
+          "forest_monitoring"
+        ],
+        "applicable_datasets": [
+          "UMD/hansen/global_forest_change_2024_v1_12"
+        ],
+        "applicable_operators": [
+          "select",
+          "updateMask"
+        ],
+        "known_failure_modes": [
+          "wrong_band_name",
+          "product_definition_overclaim"
+        ],
+        "validation_implications": [
+          "Ground forest-change facts in the official catalog."
+        ],
+        "planner_hints": [
+          "Cite the official catalog for forest-change bands and definitions."
+        ],
+        "validator_hints": [
+          "Check dataset id and band names against Tier A evidence."
+        ],
+        "citation": "Earth Engine Data Catalog Hansen Global Forest Change, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:hls_fmask_rule",
+      "type": "EvidenceCard",
+      "title": "HLS Fmask quality policy required",
+      "description": "HLS product intercomparison must document an Fmask-based or equivalent QA policy.",
+      "tags": [
+        "HLS",
+        "Fmask",
+        "QA",
+        "validator_rule",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "hls_fmask_rule",
+        "title": "HLS Fmask quality policy required",
+        "source_id": "gee-catalog-hlsl30",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "HLS",
+          "Fmask",
+          "QA",
+          "validator_rule"
+        ],
+        "extracted_facts": [
+          "HLS product intercomparison must document an Fmask-based or equivalent QA policy."
+        ],
+        "extracted_patterns": [
+          "Apply HLS QA before NDVI compositing and aggregation to coarser products."
+        ],
+        "limitations": [
+          "Fmask screening does not eliminate all atmospheric, BRDF, temporal, or mixed-pixel differences."
+        ],
+        "claim_boundaries": [
+          "HLS Fmask supports product construction quality, not ground-truth accuracy."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison",
+          "vegetation_index"
+        ],
+        "applicable_datasets": [
+          "NASA/HLS/HLSL30/v002",
+          "NASA/HLS/HLSS30/v002"
+        ],
+        "applicable_operators": [
+          "updateMask"
+        ],
+        "known_failure_modes": [
+          "missing_hls_fmask"
+        ],
+        "validation_implications": [
+          "Warn when HLSL30 or HLSS30 appears without Fmask."
+        ],
+        "planner_hints": [
+          "Include Fmask screening before HLS NDVI aggregation."
+        ],
+        "validator_hints": [
+          "Search scripts for Fmask when NASA/HLS/HLSL30 or NASA/HLS/HLSS30 is used."
+        ],
+        "citation": "Earth Engine Data Catalog NASA HLS pages, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:hls_hlsl30",
+      "type": "EvidenceCard",
+      "title": "HLSL30 official high-resolution source card",
+      "description": "HLSL30 is the Earth Engine dataset ID for NASA HLS Landsat observations at 30 m. HLSL30 workflows need an Fmask policy before NDVI product intercomparison.",
+      "tags": [
+        "HLS",
+        "HLSL30",
+        "Landsat",
+        "Fmask",
+        "NDVI",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "hls_hlsl30",
+        "title": "HLSL30 official high-resolution source card",
+        "source_id": "gee-catalog-hlsl30",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "HLS",
+          "HLSL30",
+          "Landsat",
+          "Fmask",
+          "NDVI"
+        ],
+        "extracted_facts": [
+          "HLSL30 is the Earth Engine dataset ID for NASA HLS Landsat observations at 30 m.",
+          "HLSL30 workflows need an Fmask policy before NDVI product intercomparison."
+        ],
+        "extracted_patterns": [
+          "Use HLSL30 as one high-resolution input that must be QA-screened and aggregated before MODIS comparison."
+        ],
+        "limitations": [
+          "HLSL30 is not an independent ground-truth reference."
+        ],
+        "claim_boundaries": [
+          "Supports high-resolution product construction, not ground-truth accuracy."
+        ],
+        "applicable_workflows": [
+          "vegetation_index",
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [
+          "NASA/HLS/HLSL30/v002"
+        ],
+        "applicable_operators": [
+          "ee.ImageCollection",
+          "updateMask",
+          "normalizedDifference"
+        ],
+        "known_failure_modes": [
+          "missing_hls_fmask",
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Warn when HLS product-intercomparison code omits Fmask or an equivalent QA policy."
+        ],
+        "planner_hints": [
+          "Include Fmask screening and aggregation to the comparison product grid."
+        ],
+        "validator_hints": [
+          "Check HLS scripts for Fmask or explicit QA masking."
+        ],
+        "citation": "Earth Engine Data Catalog NASA/HLS/HLSL30/v002, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:hls_hlss30",
+      "type": "EvidenceCard",
+      "title": "HLSS30 official high-resolution source card",
+      "description": "HLSS30 is the Earth Engine dataset ID for NASA HLS Sentinel-2 observations at 30 m. HLSS30 workflows need an Fmask policy before NDVI product intercomparison.",
+      "tags": [
+        "HLS",
+        "HLSS30",
+        "Sentinel-2",
+        "Fmask",
+        "NDVI",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "hls_hlss30",
+        "title": "HLSS30 official high-resolution source card",
+        "source_id": "gee-catalog-hlss30",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "HLS",
+          "HLSS30",
+          "Sentinel-2",
+          "Fmask",
+          "NDVI"
+        ],
+        "extracted_facts": [
+          "HLSS30 is the Earth Engine dataset ID for NASA HLS Sentinel-2 observations at 30 m.",
+          "HLSS30 workflows need an Fmask policy before NDVI product intercomparison."
+        ],
+        "extracted_patterns": [
+          "Use HLSS30 as one high-resolution input that must be QA-screened and aggregated before MODIS comparison."
+        ],
+        "limitations": [
+          "HLSS30 is not an independent ground-truth reference."
+        ],
+        "claim_boundaries": [
+          "Supports high-resolution product construction, not ground-truth accuracy."
+        ],
+        "applicable_workflows": [
+          "vegetation_index",
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [
+          "NASA/HLS/HLSS30/v002"
+        ],
+        "applicable_operators": [
+          "ee.ImageCollection",
+          "updateMask",
+          "normalizedDifference"
+        ],
+        "known_failure_modes": [
+          "missing_hls_fmask",
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Warn when HLS product-intercomparison code omits Fmask or an equivalent QA policy."
+        ],
+        "planner_hints": [
+          "Include Fmask screening and aggregation to the comparison product grid."
+        ],
+        "validator_hints": [
+          "Check HLS scripts for Fmask or explicit QA masking."
+        ],
+        "citation": "Earth Engine Data Catalog NASA/HLS/HLSS30/v002, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:jrc_global_surface_water",
+      "type": "EvidenceCard",
+      "title": "JRC Global Surface Water dataset card",
+      "description": "JRC Global Surface Water is an official Earth Engine catalog source for surface-water context.",
+      "tags": [
+        "water",
+        "coastal",
+        "surface_water",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "jrc_global_surface_water",
+        "title": "JRC Global Surface Water dataset card",
+        "source_id": "gee-catalog-jrc-global-surface-water",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "water",
+          "coastal",
+          "surface_water"
+        ],
+        "extracted_facts": [
+          "JRC Global Surface Water is an official Earth Engine catalog source for surface-water context."
+        ],
+        "extracted_patterns": [
+          "Use water context to interpret low NDVI or mixed coastal pixels."
+        ],
+        "limitations": [
+          "Water occurrence context does not prove field conditions for a specific date."
+        ],
+        "claim_boundaries": [
+          "Water masks support interpretation only."
+        ],
+        "applicable_workflows": [
+          "validation",
+          "product_intercomparison",
+          "water_index"
+        ],
+        "applicable_datasets": [
+          "JRC/GSW1_4/GlobalSurfaceWater"
+        ],
+        "applicable_operators": [
+          "updateMask"
+        ],
+        "known_failure_modes": [
+          "coastal_mixed_pixel_overclaim"
+        ],
+        "validation_implications": [
+          "Coastal/mixed-pixel differences should be described as expected product differences where appropriate."
+        ],
+        "planner_hints": [
+          "Consider water context for coastal AOIs."
+        ],
+        "validator_hints": [
+          "Check reports for coastal/mixed-pixel caveats."
+        ],
+        "citation": "Earth Engine Data Catalog JRC Global Surface Water, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:landsat_collection2_sr",
+      "type": "EvidenceCard",
+      "title": "Landsat Collection 2 Level 2 dataset card",
+      "description": "Landsat Collection 2 Level 2 products require reviewed scale/offset and QA policies before physical interpretation.",
+      "tags": [
+        "Landsat",
+        "surface_reflectance",
+        "LST",
+        "QA",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "landsat_collection2_sr",
+        "title": "Landsat Collection 2 Level 2 dataset card",
+        "source_id": "gee-catalog-landsat-lc08-c2-l2",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "Landsat",
+          "surface_reflectance",
+          "LST",
+          "QA"
+        ],
+        "extracted_facts": [
+          "Landsat Collection 2 Level 2 products require reviewed scale/offset and QA policies before physical interpretation."
+        ],
+        "extracted_patterns": [
+          "Use QA_PIXEL and documented scale/offset for SR/LST workflows."
+        ],
+        "limitations": [
+          "Landsat products are not automatic ground truth for other sensors."
+        ],
+        "claim_boundaries": [
+          "Cross-sensor checks support product consistency only."
+        ],
+        "applicable_workflows": [
+          "vegetation_index",
+          "land_surface_temperature",
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [
+          "LANDSAT/LC08/C02/T1_L2"
+        ],
+        "applicable_operators": [
+          "updateMask",
+          "expression"
+        ],
+        "known_failure_modes": [
+          "missing_landsat_scale_offset",
+          "missing_qa_pixel"
+        ],
+        "validation_implications": [
+          "LST and SR scripts need documented scale/offset and QA_PIXEL masking."
+        ],
+        "planner_hints": [
+          "State Landsat scale/offset and QA policy."
+        ],
+        "validator_hints": [
+          "Check for QA_PIXEL and Collection 2 scale/offset constants."
+        ],
+        "citation": "Earth Engine Data Catalog LANDSAT/LC08/C02/T1_L2, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:modis_lst",
+      "type": "EvidenceCard",
+      "title": "MOD11A2 LST dataset card",
+      "description": "MOD11A2 is an official MODIS land-surface-temperature product available in Earth Engine.",
+      "tags": [
+        "MODIS",
+        "LST",
+        "scale_factor",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "modis_lst",
+        "title": "MOD11A2 LST dataset card",
+        "source_id": "gee-catalog-mod11a2-lst",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "MODIS",
+          "LST",
+          "scale_factor"
+        ],
+        "extracted_facts": [
+          "MOD11A2 is an official MODIS land-surface-temperature product available in Earth Engine."
+        ],
+        "extracted_patterns": [
+          "Apply documented scale and QA policy before interpreting LST."
+        ],
+        "limitations": [
+          "MODIS LST is coarse and product-specific."
+        ],
+        "claim_boundaries": [
+          "LST product checks are not local air-temperature ground truth."
+        ],
+        "applicable_workflows": [
+          "land_surface_temperature"
+        ],
+        "applicable_datasets": [
+          "MODIS/061/MOD11A2"
+        ],
+        "applicable_operators": [
+          "select",
+          "multiply"
+        ],
+        "known_failure_modes": [
+          "missing_lst_scale_factor",
+          "missing_lst_qa"
+        ],
+        "validation_implications": [
+          "LST workflows need scale-factor and QA evidence."
+        ],
+        "planner_hints": [
+          "Include scale/QA conversion in LST plans."
+        ],
+        "validator_hints": [
+          "Check LST scripts for scale-factor handling."
+        ],
+        "citation": "Earth Engine Data Catalog MODIS/061/MOD11A2, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:modis_mod13q1_ndvi",
+      "type": "EvidenceCard",
+      "title": "MOD13Q1 NDVI official product card",
+      "description": "MOD13Q1 is the Earth Engine dataset ID used for Terra 16-day 250 m vegetation indices. NDVI and EVI values require the documented 0.0001 scale factor before quantitative interpretation.",
+      "tags": [
+        "MODIS",
+        "MOD13Q1",
+        "NDVI",
+        "QA",
+        "scale_factor",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "modis_mod13q1_ndvi",
+        "title": "MOD13Q1 NDVI official product card",
+        "source_id": "gee-catalog-mod13q1",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "MODIS",
+          "MOD13Q1",
+          "NDVI",
+          "QA",
+          "scale_factor"
+        ],
+        "extracted_facts": [
+          "MOD13Q1 is the Earth Engine dataset ID used for Terra 16-day 250 m vegetation indices.",
+          "NDVI and EVI values require the documented 0.0001 scale factor before quantitative interpretation.",
+          "SummaryQA and DetailedQA are required QA fields for reviewed product intercomparison."
+        ],
+        "extracted_patterns": [
+          "Compare MODIS vegetation-index products at their product grid or coarser aggregate scale."
+        ],
+        "limitations": [
+          "MOD13Q1 is a coarse official product and cannot validate 30 m pixel-level edges.",
+          "Product intercomparison is not in-situ accuracy assessment."
+        ],
+        "claim_boundaries": [
+          "Supports product-level consistency claims only after scale, QA, temporal matching, and aggregation are documented."
+        ],
+        "applicable_workflows": [
+          "vegetation_index",
+          "product_intercomparison",
+          "validation"
+        ],
+        "applicable_datasets": [
+          "MODIS/061/MOD13Q1"
+        ],
+        "applicable_operators": [
+          "ee.ImageCollection",
+          "reduceResolution",
+          "reproject"
+        ],
+        "known_failure_modes": [
+          "missing_modis_scale_factor",
+          "missing_modis_qa",
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Fail or warn when MODIS NDVI/EVI is interpreted without multiplying by 0.0001.",
+          "Warn when SummaryQA or DetailedQA is absent from MODIS product-intercomparison code."
+        ],
+        "planner_hints": [
+          "Apply MODIS scale factor and QA before exporting or calculating agreement metrics."
+        ],
+        "validator_hints": [
+          "Look for a 0.0001 scale factor and SummaryQA or DetailedQA when MOD13Q1 is used."
+        ],
+        "citation": "Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:modis_ndvi_scale_factor_rule",
+      "type": "EvidenceCard",
+      "title": "MODIS NDVI scale factor required",
+      "description": "MODIS vegetation-index values must be interpreted with the documented 0.0001 scale factor.",
+      "tags": [
+        "MODIS",
+        "NDVI",
+        "scale_factor",
+        "validator_rule",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "modis_ndvi_scale_factor_rule",
+        "title": "MODIS NDVI scale factor required",
+        "source_id": "gee-catalog-mod13q1",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "MODIS",
+          "NDVI",
+          "scale_factor",
+          "validator_rule"
+        ],
+        "extracted_facts": [
+          "MODIS vegetation-index values must be interpreted with the documented 0.0001 scale factor."
+        ],
+        "extracted_patterns": [
+          "Apply scale factors before metrics, exports, charts, or product intercomparison."
+        ],
+        "limitations": [
+          "Scale factors do not resolve QA, temporal, projection, or mixed-pixel differences."
+        ],
+        "claim_boundaries": [
+          "Quantitative agreement cannot be claimed if the MODIS scale factor is missing."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison",
+          "vegetation_index"
+        ],
+        "applicable_datasets": [
+          "MODIS/061/MOD13Q1"
+        ],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "missing_modis_scale_factor"
+        ],
+        "validation_implications": [
+          "Fail or warn when MOD13Q1 NDVI/EVI appears without 0.0001."
+        ],
+        "planner_hints": [
+          "State the MODIS scale factor in plan methods."
+        ],
+        "validator_hints": [
+          "Look for literal 0.0001 or equivalent scale-factor constant."
+        ],
+        "citation": "Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:modis_qa_rule",
+      "type": "EvidenceCard",
+      "title": "MODIS SummaryQA or DetailedQA required",
+      "description": "MOD13Q1 provides SummaryQA and DetailedQA fields for vegetation-index quality review.",
+      "tags": [
+        "MODIS",
+        "QA",
+        "SummaryQA",
+        "DetailedQA",
+        "validator_rule",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "modis_qa_rule",
+        "title": "MODIS SummaryQA or DetailedQA required",
+        "source_id": "gee-catalog-mod13q1",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "MODIS",
+          "QA",
+          "SummaryQA",
+          "DetailedQA",
+          "validator_rule"
+        ],
+        "extracted_facts": [
+          "MOD13Q1 provides SummaryQA and DetailedQA fields for vegetation-index quality review."
+        ],
+        "extracted_patterns": [
+          "Product intercomparison should document a MODIS QA filtering or stratification policy."
+        ],
+        "limitations": [
+          "QA screening does not make MODIS an in-situ reference."
+        ],
+        "claim_boundaries": [
+          "MODIS QA supports product-level screening only."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison",
+          "vegetation_index"
+        ],
+        "applicable_datasets": [
+          "MODIS/061/MOD13Q1"
+        ],
+        "applicable_operators": [
+          "updateMask"
+        ],
+        "known_failure_modes": [
+          "missing_modis_qa"
+        ],
+        "validation_implications": [
+          "Warn when MOD13Q1 comparison code omits SummaryQA and DetailedQA."
+        ],
+        "planner_hints": [
+          "Include a MODIS SummaryQA or DetailedQA policy."
+        ],
+        "validator_hints": [
+          "Search scripts for SummaryQA or DetailedQA when MOD13Q1 is used."
+        ],
+        "citation": "Earth Engine Data Catalog MODIS/061/MOD13Q1, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:product_intercomparison_claim_boundary",
+      "type": "EvidenceCard",
+      "title": "Product intercomparison claim boundary",
+      "description": "A public Golden demo requires traceable source choices, task evidence, readback, analysis, tests, and explicit limitations.",
+      "tags": [
+        "claim_boundary",
+        "validation",
+        "golden",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "product_intercomparison_claim_boundary",
+        "title": "Product intercomparison claim boundary",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "claim_boundary",
+          "validation",
+          "golden"
+        ],
+        "extracted_facts": [
+          "A public Golden demo requires traceable source choices, task evidence, readback, analysis, tests, and explicit limitations."
+        ],
+        "extracted_patterns": [
+          "Validation reports should state what the evidence supports and what it cannot claim."
+        ],
+        "limitations": [
+          "Product intercomparison can be reproducible and useful without proving ground-truth accuracy."
+        ],
+        "claim_boundaries": [
+          "Do not describe product intercomparison as in-situ ground-truth validation."
+        ],
+        "applicable_workflows": [
+          "validation",
+          "product_intercomparison",
+          "golden_promotion"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [],
+        "known_failure_modes": [
+          "ground_truth_overclaim",
+          "golden_without_readback"
+        ],
+        "validation_implications": [
+          "Flag validation reports or Golden promotion without explicit claim boundary."
+        ],
+        "planner_hints": [
+          "Include public evidence artifacts and claim boundary in plan outputs."
+        ],
+        "validator_hints": [
+          "Check for product-level consistency wording and absence of ground-truth overclaim."
+        ],
+        "citation": "Earth Engine platform docs plus project public promotion policy, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:reduce_resolution_projection_rule",
+      "type": "EvidenceCard",
+      "title": "reduceResolution projection handling required",
+      "description": "Cross-scale comparison needs explicit aggregation and projection handling to avoid accidental native-pixel comparison.",
+      "tags": [
+        "reduceResolution",
+        "projection",
+        "scale",
+        "validator_rule",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "reduce_resolution_projection_rule",
+        "title": "reduceResolution projection handling required",
+        "source_id": "google-earth-engine-resample-guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/resample",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "reduceResolution",
+          "projection",
+          "scale",
+          "validator_rule"
+        ],
+        "extracted_facts": [
+          "Cross-scale comparison needs explicit aggregation and projection handling to avoid accidental native-pixel comparison."
+        ],
+        "extracted_patterns": [
+          "Pair reduceResolution or equivalent aggregation with reviewed projection/default-projection handling."
+        ],
+        "limitations": [
+          "Projection handling makes comparison coherent but cannot remove sensor/product differences."
+        ],
+        "claim_boundaries": [
+          "Aggregated product comparison remains product-level consistency evidence."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [
+          "NASA/HLS/HLSL30/v002",
+          "NASA/HLS/HLSS30/v002",
+          "MODIS/061/MOD13Q1"
+        ],
+        "applicable_operators": [
+          "reduceResolution",
+          "reproject",
+          "setDefaultProjection"
+        ],
+        "known_failure_modes": [
+          "reduce_resolution_projection_missing",
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Warn when reduceResolution appears without projection/default projection handling."
+        ],
+        "planner_hints": [
+          "Make grid/projection matching explicit in product-intercomparison plans."
+        ],
+        "validator_hints": [
+          "Look for reproject, setDefaultProjection, projection, CRS, or reviewed equivalent logic."
+        ],
+        "citation": "Earth Engine resampling/reduceResolution guidance, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:scale_aware_product_intercomparison_rule",
+      "type": "EvidenceCard",
+      "title": "Scale-aware HLS/MODIS product intercomparison rule",
+      "description": "High-resolution HLS and coarser MODIS products must not be compared as direct native pixels. Comparison requires temporal matching, QA filtering, scale factors, projection handling, and aggregation to a common grid.",
+      "tags": [
+        "product_intercomparison",
+        "scale",
+        "projection",
+        "aggregation",
+        "claim_boundary",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "scale_aware_product_intercomparison_rule",
+        "title": "Scale-aware HLS/MODIS product intercomparison rule",
+        "source_id": "google-earth-engine-data-catalog",
+        "source_url": "https://developers.google.com/earth-engine/datasets",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "product_intercomparison",
+          "scale",
+          "projection",
+          "aggregation",
+          "claim_boundary"
+        ],
+        "extracted_facts": [
+          "High-resolution HLS and coarser MODIS products must not be compared as direct native pixels.",
+          "Comparison requires temporal matching, QA filtering, scale factors, projection handling, and aggregation to a common grid."
+        ],
+        "extracted_patterns": [
+          "Aggregate fine product values to the coarse product grid before computing agreement metrics."
+        ],
+        "limitations": [
+          "Agreement metrics support workflow reliability, not in-situ ground-truth accuracy."
+        ],
+        "claim_boundaries": [
+          "The strongest allowed claim is product-level consistency unless independent ground truth is added."
+        ],
+        "applicable_workflows": [
+          "product_intercomparison",
+          "validation"
+        ],
+        "applicable_datasets": [
+          "NASA/HLS/HLSL30/v002",
+          "NASA/HLS/HLSS30/v002",
+          "MODIS/061/MOD13Q1"
+        ],
+        "applicable_operators": [
+          "reduceResolution",
+          "reproject",
+          "setDefaultProjection"
+        ],
+        "known_failure_modes": [
+          "direct_fine_coarse_pixel_comparison",
+          "reduce_resolution_projection_missing"
+        ],
+        "validation_implications": [
+          "Warn or fail when 30 m and 250 m products are compared without aggregation/projection handling."
+        ],
+        "planner_hints": [
+          "State temporal matching, QA policies, scale factor, aggregation-before-comparison, metrics, and claim boundary."
+        ],
+        "validator_hints": [
+          "Require explicit projection/scale logic when reduceResolution is used for coarse-grid comparison."
+        ],
+        "citation": "Earth Engine official catalog and scale/projection guidance, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:sentinel1_flood_mapping_rule",
+      "type": "EvidenceCard",
+      "title": "Sentinel-1 flood mapping rule",
+      "description": "COPERNICUS/S1_GRD is the official Earth Engine dataset ID for Sentinel-1 SAR flood and change workflows.",
+      "tags": [
+        "Sentinel-1",
+        "flood_mapping",
+        "SAR",
+        "validator_rule",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "sentinel1_flood_mapping_rule",
+        "title": "Sentinel-1 flood mapping rule",
+        "source_id": "gee-catalog-sentinel1-grd",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "Sentinel-1",
+          "flood_mapping",
+          "SAR",
+          "validator_rule"
+        ],
+        "extracted_facts": [
+          "COPERNICUS/S1_GRD is the official Earth Engine dataset ID for Sentinel-1 SAR flood and change workflows."
+        ],
+        "extracted_patterns": [
+          "Flood mapping plans should use before/after date windows, AOI filtering, IW mode, polarization/orbit filters, and an explicit change metric."
+        ],
+        "limitations": [
+          "SAR threshold maps are screening products and need independent evidence before impact or ground-truth claims.",
+          "Speckle, incidence angle, polarization, orbit direction, permanent water, and land-cover context can affect interpretation."
+        ],
+        "claim_boundaries": [
+          "Sentinel-1 flood maps support candidate flood/change screening unless validated with independent reference evidence."
+        ],
+        "applicable_workflows": [
+          "flood_mapping",
+          "change_detection"
+        ],
+        "applicable_datasets": [
+          "COPERNICUS/S1_GRD"
+        ],
+        "applicable_operators": [
+          "filterDate",
+          "filterBounds",
+          "filterMetadata",
+          "divide",
+          "subtract",
+          "threshold"
+        ],
+        "known_failure_modes": [
+          "missing_s1_filters",
+          "threshold_overclaim",
+          "missing_before_after_windows"
+        ],
+        "validation_implications": [
+          "Warn when Sentinel-1 flood workflows omit IW mode, polarization, before/after windows, or an explicit change metric.",
+          "Do not route flood mapping to NDVI product-intercomparison rules unless the user explicitly asks for vegetation products."
+        ],
+        "planner_hints": [
+          "Route flood mapping to the Sentinel-1 before/after recipe and include SAR caveats, threshold review, and export artifact expectations."
+        ],
+        "validator_hints": [
+          "Check Sentinel-1 scripts for COPERNICUS/S1_GRD, IW mode, polarization, before/after date windows, AOI filtering, and change metric."
+        ],
+        "citation": "Earth Engine Data Catalog COPERNICUS/S1_GRD and local Sentinel-1 flood recipe, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:sentinel1_grd",
+      "type": "EvidenceCard",
+      "title": "Sentinel-1 GRD dataset card",
+      "description": "COPERNICUS/S1_GRD is the official Earth Engine dataset ID for Sentinel-1 GRD SAR workflows.",
+      "tags": [
+        "Sentinel-1",
+        "SAR",
+        "flood",
+        "change_detection",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "sentinel1_grd",
+        "title": "Sentinel-1 GRD dataset card",
+        "source_id": "gee-catalog-sentinel1-grd",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "Sentinel-1",
+          "SAR",
+          "flood",
+          "change_detection"
+        ],
+        "extracted_facts": [
+          "COPERNICUS/S1_GRD is the official Earth Engine dataset ID for Sentinel-1 GRD SAR workflows."
+        ],
+        "extracted_patterns": [
+          "Filter by mode, polarization, orbit, date windows, and AOI before flood/change metrics."
+        ],
+        "limitations": [
+          "SAR flood workflows need caveats for speckle, incidence angle, polarization, and threshold choice."
+        ],
+        "claim_boundaries": [
+          "SAR change maps are screening products unless validated with independent evidence."
+        ],
+        "applicable_workflows": [
+          "flood_mapping",
+          "change_detection"
+        ],
+        "applicable_datasets": [
+          "COPERNICUS/S1_GRD"
+        ],
+        "applicable_operators": [
+          "filter",
+          "divide",
+          "subtract"
+        ],
+        "known_failure_modes": [
+          "missing_s1_filters",
+          "threshold_overclaim"
+        ],
+        "validation_implications": [
+          "Sentinel-1 flood workflows need mode/polarization/date filters and explicit change metric."
+        ],
+        "planner_hints": [
+          "Include before/after windows and SAR caveats."
+        ],
+        "validator_hints": [
+          "Check for IW mode, polarization, before/after windows, and change metric."
+        ],
+        "citation": "Earth Engine Data Catalog COPERNICUS/S1_GRD, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:sentinel2_sr_harmonized",
+      "type": "EvidenceCard",
+      "title": "Sentinel-2 SR Harmonized dataset card",
+      "description": "COPERNICUS/S2_SR_HARMONIZED is the official Earth Engine dataset ID for harmonized Sentinel-2 surface reflectance.",
+      "tags": [
+        "Sentinel-2",
+        "optical",
+        "NDVI",
+        "QA",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "sentinel2_sr_harmonized",
+        "title": "Sentinel-2 SR Harmonized dataset card",
+        "source_id": "gee-catalog-sentinel2-sr-harmonized",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "Sentinel-2",
+          "optical",
+          "NDVI",
+          "QA"
+        ],
+        "extracted_facts": [
+          "COPERNICUS/S2_SR_HARMONIZED is the official Earth Engine dataset ID for harmonized Sentinel-2 surface reflectance."
+        ],
+        "extracted_patterns": [
+          "Use explicit cloud/QA masking and scale choices for optical index workflows."
+        ],
+        "limitations": [
+          "Optical workflows are sensitive to clouds, haze, shadows, and band-resolution choices."
+        ],
+        "claim_boundaries": [
+          "Sentinel-2 derived indices are product outputs, not field validation."
+        ],
+        "applicable_workflows": [
+          "vegetation_index",
+          "water_index",
+          "builtup_index",
+          "zonal_statistics"
+        ],
+        "applicable_datasets": [
+          "COPERNICUS/S2_SR_HARMONIZED"
+        ],
+        "applicable_operators": [
+          "normalizedDifference",
+          "updateMask"
+        ],
+        "known_failure_modes": [
+          "missing_cloud_mask",
+          "empty_collection"
+        ],
+        "validation_implications": [
+          "Optical workflows need cloud/QA masking and explicit scale."
+        ],
+        "planner_hints": [
+          "Include SCL/QA/cloud policy for Sentinel-2 plans."
+        ],
+        "validator_hints": [
+          "Check for SCL, QA60, cloud, or equivalent masking."
+        ],
+        "citation": "Earth Engine Data Catalog COPERNICUS/S2_SR_HARMONIZED, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:tiled_export_fallback_recovery",
+      "type": "EvidenceCard",
+      "title": "Tiled export fallback recovery pattern",
+      "description": "Large raster exports can need explicit scale, CRS, maxPixels, and smaller export regions.",
+      "tags": [
+        "export",
+        "recovery_pattern",
+        "tiling",
+        "quota",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "tiled_export_fallback_recovery",
+        "title": "Tiled export fallback recovery pattern",
+        "source_id": "google-earth-engine-docs",
+        "source_url": "https://developers.google.com/earth-engine/guides/exporting_images",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "export",
+          "recovery_pattern",
+          "tiling",
+          "quota"
+        ],
+        "extracted_facts": [
+          "Large raster exports can need explicit scale, CRS, maxPixels, and smaller export regions."
+        ],
+        "extracted_patterns": [
+          "Recover from memory or quota pressure by deterministic tiling with traceable task metadata."
+        ],
+        "limitations": [
+          "Tiling changes export orchestration, not underlying product validity."
+        ],
+        "claim_boundaries": [
+          "Tiled readback supports engineering completion evidence when documented and tested."
+        ],
+        "applicable_workflows": [
+          "export",
+          "monitor",
+          "validation"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export.image.toDrive"
+        ],
+        "known_failure_modes": [
+          "quota_or_timeout",
+          "out_of_memory_export",
+          "missing_readback"
+        ],
+        "validation_implications": [
+          "Golden promotion needs observed terminal tasks and readback evidence, including fallback tiles when used."
+        ],
+        "planner_hints": [
+          "Include a deterministic tiled fallback for large annual rasters."
+        ],
+        "validator_hints": [
+          "Check export contracts for scale, CRS, maxPixels, and task/readback trace fields."
+        ],
+        "citation": "Earth Engine image export guidance, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "evidence:viirs_vegetation_index",
+      "type": "EvidenceCard",
+      "title": "VIIRS VNP13A1 vegetation-index dataset card",
+      "description": "VNP13A1 is an official Earth Engine VIIRS vegetation-index product.",
+      "tags": [
+        "VIIRS",
+        "NDVI",
+        "product_intercomparison",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "viirs_vegetation_index",
+        "title": "VIIRS VNP13A1 vegetation-index dataset card",
+        "source_id": "gee-catalog-viirs-vnp13a1",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP13A1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "VIIRS",
+          "NDVI",
+          "product_intercomparison"
+        ],
+        "extracted_facts": [
+          "VNP13A1 is an official Earth Engine VIIRS vegetation-index product."
+        ],
+        "extracted_patterns": [
+          "Use VIIRS as an optional coarse product consistency check only after primary MODIS logic is stable."
+        ],
+        "limitations": [
+          "VIIRS 500 m products are coarser than HLS and MODIS MOD13Q1."
+        ],
+        "claim_boundaries": [
+          "VIIRS comparison supports product-level consistency only."
+        ],
+        "applicable_workflows": [
+          "vegetation_index",
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [
+          "NASA/VIIRS/002/VNP13A1"
+        ],
+        "applicable_operators": [
+          "select",
+          "updateMask"
+        ],
+        "known_failure_modes": [
+          "direct_fine_coarse_pixel_comparison"
+        ],
+        "validation_implications": [
+          "Compare at VIIRS grid or coarser summaries, not direct fine pixels."
+        ],
+        "planner_hints": [
+          "Keep VIIRS optional unless source and QA behavior are reviewed for the AOI/year."
+        ],
+        "validator_hints": [
+          "Check VIIRS comparisons for scale and QA caveats."
+        ],
+        "citation": "Earth Engine Data Catalog NASA/VIIRS/002/VNP13A1, checked 2026-07-09.",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low"
+      }
+    },
+    {
+      "id": "failure:direct_fine_coarse_pixel_comparison",
+      "type": "FailureCase",
+      "title": "Direct fine/coarse pixel comparison",
+      "description": "Native 30 m HLS pixels must not be directly compared with native 250 m MODIS pixels.",
+      "tags": [
+        "failure_case",
+        "scale"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "failure:sentinel1_threshold_overclaim",
+      "type": "FailureCase",
+      "title": "Sentinel-1 threshold overclaim",
+      "description": "SAR threshold maps can be overclaimed when speckle, incidence angle, polarization, orbit, permanent water, or reference data are not reviewed.",
+      "tags": [
+        "failure_case",
+        "flood_mapping",
+        "Sentinel-1"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "operator:reduce_resolution",
+      "type": "Operator",
+      "title": "reduceResolution and projection handling",
+      "description": "Aggregates fine-resolution data before coarse-grid comparison with explicit projection handling.",
+      "tags": [
+        "scale",
+        "projection",
+        "aggregation"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "qa:fmask",
+      "type": "QAField",
+      "title": "HLS Fmask",
+      "description": "HLS quality field required for cloud, shadow, water, and aerosol policy.",
+      "tags": [
+        "HLS",
+        "QA"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "qa:modis_summaryqa",
+      "type": "QAField",
+      "title": "MODIS SummaryQA or DetailedQA",
+      "description": "MODIS vegetation-index QA fields needed for reviewed comparison.",
+      "tags": [
+        "MODIS",
+        "QA"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "recipe:sentinel1_flood_before_after",
+      "type": "Recipe",
+      "title": "sentinel1-flood-before-after",
+      "description": "Existing harness recipe for Sentinel-1 before/after flood or water-change GeoTIFF exports.",
+      "tags": [
+        "flood_mapping",
+        "Sentinel-1",
+        "recipe"
+      ],
+      "metadata": {
+        "recipe_id": "sentinel1-flood-before-after",
+        "template": "sentinel1_flood_before_after",
+        "validation_profile": "sentinel1_flood_before_after"
+      }
+    },
+    {
+      "id": "recovery:tiled_export_fallback",
+      "type": "RecoveryPattern",
+      "title": "Tiled export fallback for large rasters",
+      "description": "Use deterministic tiled exports when full-region rasters exceed memory or quota limits.",
+      "tags": [
+        "export",
+        "recovery"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "rule:scale_aware_product_intercomparison",
+      "type": "Rule",
+      "title": "Scale-aware product intercomparison required",
+      "description": "Compare HLS and MODIS after temporal matching, QA, scale factor, and aggregation to a common grid.",
+      "tags": [
+        "product_intercomparison",
+        "rule"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "rule:sentinel1_flood_before_after",
+      "type": "Rule",
+      "title": "Sentinel-1 before/after flood mapping requirements",
+      "description": "Require COPERNICUS/S1_GRD, AOI/date filtering, IW mode, polarization/orbit review, explicit change metric, and flood-screening claim boundary.",
+      "tags": [
+        "flood_mapping",
+        "Sentinel-1",
+        "SAR",
+        "rule"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "scale_factor:modis_ndvi_0001",
+      "type": "ScaleFactor",
+      "title": "MODIS NDVI 0.0001 scale factor",
+      "description": "MODIS NDVI and EVI values require the documented 0.0001 scale factor.",
+      "tags": [
+        "MODIS",
+        "NDVI",
+        "scale_factor"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "script:hk_ndvi_v03_export",
+      "type": "Script",
+      "title": "hk_ndvi_v03_export.py",
+      "description": "Canonical v0.3 export script for HLS/MODIS NDVI intercomparison.",
+      "tags": [
+        "script",
+        "v0.3"
+      ],
+      "metadata": {
+        "path": "scripts/hk_ndvi_v03_export.py"
+      }
+    },
+    {
+      "id": "source:autogeeval-github-repo",
+      "type": "Source",
+      "title": "szx-0633/AutoGEEval",
+      "description": "Public repository for AutoGEEval benchmark workflow; current review did not find a LICENSE at the expected path.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "autogeeval-github-repo",
+        "title": "szx-0633/AutoGEEval",
+        "source_url": "https://github.com/szx-0633/AutoGEEval",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "metadata_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Candidate public benchmark repository; do not copy code, prompts, or configuration without license review.",
+        "private_content_risk": "medium",
+        "include_reason": "Public repository for AutoGEEval benchmark workflow; current review did not find a LICENSE at the expected path.",
+        "license": "license review required"
+      }
+    },
+    {
+      "id": "source:autogeeval-paper",
+      "type": "Source",
+      "title": "AutoGEEval benchmark source",
+      "description": "Requested benchmark source family for GEE code generation evaluation.",
+      "tags": [
+        "arxiv_paper",
+        "tier_b",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "autogeeval-paper",
+        "title": "AutoGEEval benchmark source",
+        "source_url": "https://arxiv.org/abs/2505.12900",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Candidate benchmark context for GEE code evaluation; do not reuse code or accept API/dataset claims without review.",
+        "private_content_risk": "low",
+        "include_reason": "Requested benchmark source family for GEE code generation evaluation.",
+        "license": "arXiv / author terms"
+      }
+    },
+    {
+      "id": "source:autogeeval-plus-paper",
+      "type": "Source",
+      "title": "AutoGEEval++ benchmark source",
+      "description": "Requested benchmark source family for multi-level GEE evaluation.",
+      "tags": [
+        "arxiv_paper",
+        "tier_b",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "autogeeval-plus-paper",
+        "title": "AutoGEEval++ benchmark source",
+        "source_url": "https://arxiv.org/abs/2506.10365",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Candidate benchmark context; do not promote claims without paper review.",
+        "private_content_risk": "low",
+        "include_reason": "Requested benchmark source family for multi-level GEE evaluation.",
+        "license": "arXiv / author terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-dynamic-world-v1",
+      "type": "Source",
+      "title": "Dynamic World V1",
+      "description": "Required official source for land-cover-aware NDVI and interpretation-mask caveats.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-dynamic-world-v1",
+        "title": "Dynamic World V1",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for Dynamic World Earth Engine dataset facts as of last check; not independent ground truth.",
+        "private_content_risk": "low",
+        "include_reason": "Required official source for land-cover-aware NDVI and interpretation-mask caveats.",
+        "license": "Dynamic World data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-esa-worldcover-v200",
+      "type": "Source",
+      "title": "ESA WorldCover v200",
+      "description": "Required official source for public land-cover stratification context.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-esa-worldcover-v200",
+        "title": "ESA WorldCover v200",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for ESA WorldCover v200 Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official source for public land-cover stratification context.",
+        "license": "ESA WorldCover terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-hansen-global-forest-change",
+      "type": "Source",
+      "title": "Hansen Global Forest Change",
+      "description": "Required official source family for forest-change workflow grounding.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-hansen-global-forest-change",
+        "title": "Hansen Global Forest Change",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/UMD_hansen_global_forest_change_2024_v1_12",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for Hansen Global Forest Change Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official source family for forest-change workflow grounding.",
+        "license": "Hansen/UMD data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-hlsl30",
+      "type": "Source",
+      "title": "NASA HLS HLSL30 v002",
+      "description": "Required high-resolution HLS Landsat source for product intercomparison.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-hlsl30",
+        "title": "NASA HLS HLSL30 v002",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for HLSL30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required high-resolution HLS Landsat source for product intercomparison.",
+        "license": "NASA HLS data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-hlss30",
+      "type": "Source",
+      "title": "NASA HLS HLSS30 v002",
+      "description": "Required high-resolution HLS Sentinel-2 source for product intercomparison.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-hlss30",
+        "title": "NASA HLS HLSS30 v002",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for HLSS30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required high-resolution HLS Sentinel-2 source for product intercomparison.",
+        "license": "NASA HLS data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-jrc-global-surface-water",
+      "type": "Source",
+      "title": "JRC Global Surface Water",
+      "description": "Required official source for water mask and coastal/mixed-pixel interpretation checks.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-jrc-global-surface-water",
+        "title": "JRC Global Surface Water",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for JRC Global Surface Water Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official source for water mask and coastal/mixed-pixel interpretation checks.",
+        "license": "JRC Global Surface Water terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-landsat-lc08-c2-l2",
+      "type": "Source",
+      "title": "Landsat 8 Collection 2 Tier 1 Level 2",
+      "description": "Required official source for Landsat Collection 2 SR/LST workflows and scale/QA policies.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-landsat-lc08-c2-l2",
+        "title": "Landsat 8 Collection 2 Tier 1 Level 2",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for Landsat 8 Collection 2 Level 2 Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official source for Landsat Collection 2 SR/LST workflows and scale/QA policies.",
+        "license": "USGS Landsat data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-mod11a2-lst",
+      "type": "Source",
+      "title": "MOD11A2.061 Terra Land Surface Temperature and Emissivity",
+      "description": "Required official MODIS LST source for dataset and rule-card coverage.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-mod11a2-lst",
+        "title": "MOD11A2.061 Terra Land Surface Temperature and Emissivity",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for MOD11A2 Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official MODIS LST source for dataset and rule-card coverage.",
+        "license": "NASA LP DAAC / USGS MODIS data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-mod13q1",
+      "type": "Source",
+      "title": "MOD13Q1.061 Terra Vegetation Indices 16-Day Global 250m",
+      "description": "Required official comparison product for v0.3 HLS/MODIS NDVI intercomparison.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-mod13q1",
+        "title": "MOD13Q1.061 Terra Vegetation Indices 16-Day Global 250m",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for MOD13Q1 Earth Engine dataset ID, bands, scale factors, QA fields, and catalog limitations as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official comparison product for v0.3 HLS/MODIS NDVI intercomparison.",
+        "license": "NASA LP DAAC / USGS MODIS data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-sentinel1-grd",
+      "type": "Source",
+      "title": "Sentinel-1 SAR GRD",
+      "description": "Required official source for flood/change workflow grounding.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-sentinel1-grd",
+        "title": "Sentinel-1 SAR GRD",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for Sentinel-1 GRD Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official source for flood/change workflow grounding.",
+        "license": "Copernicus Sentinel data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-sentinel2-sr-harmonized",
+      "type": "Source",
+      "title": "Sentinel-2 MSI Surface Reflectance Harmonized",
+      "description": "Required official optical dataset source for NDVI and cloud/QA policy examples.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-sentinel2-sr-harmonized",
+        "title": "Sentinel-2 MSI Surface Reflectance Harmonized",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for Sentinel-2 SR Harmonized Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Required official optical dataset source for NDVI and cloud/QA policy examples.",
+        "license": "Copernicus Sentinel data terms"
+      }
+    },
+    {
+      "id": "source:gee-catalog-viirs-vnp13a1",
+      "type": "Source",
+      "title": "VIIRS VNP13A1 vegetation indices",
+      "description": "Optional official vegetation-index comparison source after primary MODIS path is stable.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-catalog-viirs-vnp13a1",
+        "title": "VIIRS VNP13A1 vegetation indices",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP13A1",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for VIIRS vegetation-index Earth Engine dataset facts as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Optional official vegetation-index comparison source after primary MODIS path is stable.",
+        "license": "NASA LP DAAC VIIRS data terms"
+      }
+    },
+    {
+      "id": "source:gee-community-geemap",
+      "type": "Source",
+      "title": "gee-community/geemap",
+      "description": "High-quality public community Earth Engine Python package with MIT license.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-community-geemap",
+        "title": "gee-community/geemap",
+        "source_url": "https://github.com/gee-community/geemap",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports community implementation patterns; official docs override for current API and dataset facts.",
+        "private_content_risk": "low",
+        "include_reason": "High-quality public community Earth Engine Python package with MIT license.",
+        "license": "MIT"
+      }
+    },
+    {
+      "id": "source:gee-ops-paper",
+      "type": "Source",
+      "title": "GEE-OPs operator knowledge base source",
+      "description": "Requested source family for GEE operator KB and code-generation evaluation context.",
+      "tags": [
+        "arxiv_paper",
+        "tier_b",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "gee-ops-paper",
+        "title": "GEE-OPs operator knowledge base source",
+        "source_url": "https://arxiv.org/abs/2412.05587",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Candidate research source for operator knowledge-base and RAG design only; does not override official GEE facts.",
+        "private_content_risk": "low",
+        "include_reason": "Requested source family for GEE operator KB and code-generation evaluation context.",
+        "license": "arXiv / author terms"
+      }
+    },
+    {
+      "id": "source:geemap-joss-paper",
+      "type": "Source",
+      "title": "geemap JOSS paper",
+      "description": "Research software paper for community Earth Engine Python workflows.",
+      "tags": [
+        "joss_paper",
+        "tier_b",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "geemap-joss-paper",
+        "title": "geemap JOSS paper",
+        "source_url": "https://joss.theoj.org/papers/10.21105/joss.02305",
+        "source_type": "joss_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Supports geemap software context, not authoritative dataset/API facts.",
+        "private_content_risk": "low",
+        "include_reason": "Research software paper for community Earth Engine Python workflows.",
+        "license": "JOSS article terms"
+      }
+    },
+    {
+      "id": "source:geofub-github-repo",
+      "type": "Source",
+      "title": "whuhsy/geo-fub",
+      "description": "Repository linked to the Geo-FuB operator-function knowledge-base research line.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "geofub-github-repo",
+        "title": "whuhsy/geo-fub",
+        "source_url": "https://github.com/whuhsy/geo-fub",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "metadata_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Candidate public repository for Geo-FuB context; do not copy code or data without license review.",
+        "private_content_risk": "low",
+        "include_reason": "Repository linked to the Geo-FuB operator-function knowledge-base research line.",
+        "license": "license review required"
+      }
+    },
+    {
+      "id": "source:geofub-paper",
+      "type": "Source",
+      "title": "Geo-FuB operator function knowledge base source",
+      "description": "Requested source family for geospatial operator/function knowledge-base design.",
+      "tags": [
+        "arxiv_paper",
+        "tier_b",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "geofub-paper",
+        "title": "Geo-FuB operator function knowledge base source",
+        "source_url": "https://arxiv.org/abs/2410.20975",
+        "source_type": "arxiv_paper",
+        "trust_tier": "B",
+        "allowed_use": "metadata_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Candidate research source for operator function KB design only.",
+        "private_content_risk": "low",
+        "include_reason": "Requested source family for geospatial operator/function knowledge-base design.",
+        "license": "arXiv / author terms"
+      }
+    },
+    {
+      "id": "source:giswqs-earthengine-py-notebooks",
+      "type": "Source",
+      "title": "giswqs/earthengine-py-notebooks",
+      "description": "Public Earth Engine notebook examples from a recognized maintainer with MIT license.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "giswqs-earthengine-py-notebooks",
+        "title": "giswqs/earthengine-py-notebooks",
+        "source_url": "https://github.com/giswqs/earthengine-py-notebooks",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports notebook workflow patterns; official docs override for current API and dataset facts.",
+        "private_content_risk": "low",
+        "include_reason": "Public Earth Engine notebook examples from a recognized maintainer with MIT license.",
+        "license": "MIT"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-api-reference",
+      "type": "Source",
+      "title": "Google Earth Engine API reference",
+      "description": "Primary source for operator and API behavior facts.",
+      "tags": [
+        "official_api_reference",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-api-reference",
+        "title": "Google Earth Engine API reference",
+        "source_url": "https://developers.google.com/earth-engine/apidocs",
+        "source_type": "official_api_reference",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current Earth Engine API method names and signatures.",
+        "private_content_risk": "low",
+        "include_reason": "Primary source for operator and API behavior facts.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-code-editor-guide",
+      "type": "Source",
+      "title": "Earth Engine Code Editor guide",
+      "description": "Official source for JavaScript API workflow context and tutorial/code surface boundaries.",
+      "tags": [
+        "official_docs",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-code-editor-guide",
+        "title": "Earth Engine Code Editor guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/playground",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current Code Editor role and JavaScript workflow surface as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Official source for JavaScript API workflow context and tutorial/code surface boundaries.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-data-catalog",
+      "type": "Source",
+      "title": "Google Earth Engine Data Catalog",
+      "description": "Primary source for current Earth Engine dataset facts.",
+      "tags": [
+        "official_data_catalog",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-data-catalog",
+        "title": "Google Earth Engine Data Catalog",
+        "source_url": "https://developers.google.com/earth-engine/datasets",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current public dataset IDs, bands, scale factors, QA fields, availability, and provider notes.",
+        "private_content_risk": "low",
+        "include_reason": "Primary source for current Earth Engine dataset facts.",
+        "license": "Google documentation terms plus dataset provider terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-docs",
+      "type": "Source",
+      "title": "Google Earth Engine official documentation",
+      "description": "Official platform guidance for client/server behavior, scale/projection, reducers, exports, quotas, and debugging.",
+      "tags": [
+        "official_docs",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-docs",
+        "title": "Google Earth Engine official documentation",
+        "source_url": "https://developers.google.com/earth-engine",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current Earth Engine platform guides when checked against the live documentation.",
+        "private_content_risk": "low",
+        "include_reason": "Official platform guidance for client/server behavior, scale/projection, reducers, exports, quotas, and debugging.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-projections-guide",
+      "type": "Source",
+      "title": "Earth Engine projections guide",
+      "description": "Official support for projection/default projection handling in product intercomparison validators.",
+      "tags": [
+        "official_docs",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-projections-guide",
+        "title": "Earth Engine projections guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/projections",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current projection concepts and projection-sensitive operations as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Official support for projection/default projection handling in product intercomparison validators.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-resample-guide",
+      "type": "Source",
+      "title": "Earth Engine resampling and reducing resolution guide",
+      "description": "Official guidance for aggregating fine pixels to coarser pixels before cross-scale comparison.",
+      "tags": [
+        "official_docs",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-resample-guide",
+        "title": "Earth Engine resampling and reducing resolution guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/resample",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for Earth Engine reduceResolution/resampling guidance as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Official guidance for aggregating fine pixels to coarser pixels before cross-scale comparison.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-scale-guide",
+      "type": "Source",
+      "title": "Earth Engine scale guide",
+      "description": "Official support for scale-aware validation and anti-overclaim guidance.",
+      "tags": [
+        "official_docs",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-scale-guide",
+        "title": "Earth Engine scale guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/scale",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current Earth Engine scale behavior as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Official support for scale-aware validation and anti-overclaim guidance.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earth-engine-usage-quotas",
+      "type": "Source",
+      "title": "Earth Engine usage and quotas guide",
+      "description": "Official source for export/task quota and resource-bound recovery policy.",
+      "tags": [
+        "official_docs",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earth-engine-usage-quotas",
+        "title": "Earth Engine usage and quotas guide",
+        "source_url": "https://developers.google.com/earth-engine/guides/usage",
+        "source_type": "official_docs",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for current quota guidance as of last check.",
+        "private_content_risk": "low",
+        "include_reason": "Official source for export/task quota and resource-bound recovery policy.",
+        "license": "Google documentation terms"
+      }
+    },
+    {
+      "id": "source:google-earthengine-api-repo",
+      "type": "Source",
+      "title": "google/earthengine-api",
+      "description": "Official public Earth Engine client repository.",
+      "tags": [
+        "official_github_repo",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-earthengine-api-repo",
+        "title": "google/earthengine-api",
+        "source_url": "https://github.com/google/earthengine-api",
+        "source_type": "official_github_repo",
+        "trust_tier": "A",
+        "allowed_use": "short_quoted_excerpt_allowed",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for open-source client library implementation details, not for private account state.",
+        "private_content_risk": "low",
+        "include_reason": "Official public Earth Engine client repository.",
+        "license": "Apache-2.0"
+      }
+    },
+    {
+      "id": "source:gorelick-2017-earth-engine",
+      "type": "Source",
+      "title": "Google Earth Engine planetary-scale geospatial analysis for everyone",
+      "description": "Canonical Earth Engine research platform citation.",
+      "tags": [
+        "journal_paper",
+        "tier_b",
+        "candidate"
+      ],
+      "metadata": {
+        "source_id": "gorelick-2017-earth-engine",
+        "title": "Google Earth Engine planetary-scale geospatial analysis for everyone",
+        "source_url": "https://doi.org/10.1016/j.rse.2017.06.031",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-09",
+        "reviewer_status": "candidate",
+        "claim_boundary": "Supports platform and research workflow framing, not current API or dataset facts.",
+        "private_content_risk": "low",
+        "include_reason": "Canonical Earth Engine research platform citation.",
+        "license": "publisher terms"
+      }
+    },
+    {
+      "id": "test:test_hk_ndvi_v03_schema",
+      "type": "Test",
+      "title": "v0.3 schema and product intercomparison tests",
+      "description": "Tests for product_intercomparison claim boundary, datasets, QA, and scale-aware contracts.",
+      "tags": [
+        "test",
+        "v0.3"
+      ],
+      "metadata": {
+        "path": "tests/test_hk_ndvi_v03_schema.py"
+      }
+    },
+    {
+      "id": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "type": "ValidationDemo",
+      "title": "HK 2024 HLS/MODIS NDVI product intercomparison",
+      "description": "Public v0.3 Golden demo comparing HLS NDVI aggregated to MODIS grid against MOD13Q1.",
+      "tags": [
+        "v0.3",
+        "golden",
+        "product_intercomparison",
+        "ndvi"
+      ],
+      "metadata": {
+        "status": "Golden",
+        "claim_boundary": "product_intercomparison_not_ground_truth"
+      }
+    },
+    {
+      "id": "workflow:flood_mapping",
+      "type": "Workflow",
+      "title": "Sentinel-1 flood mapping workflow",
+      "description": "Before/after Sentinel-1 SAR workflow for candidate flood or water-change mapping.",
+      "tags": [
+        "flood_mapping",
+        "Sentinel-1",
+        "SAR",
+        "v0.4"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "workflow:product_intercomparison",
+      "type": "Workflow",
+      "title": "Product intercomparison workflow",
+      "description": "Scale-aware comparison between independently produced Earth observation products.",
+      "tags": [
+        "product_intercomparison",
+        "validation",
+        "v0.4"
+      ],
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source": "claim:product_level_consistency",
+      "target": "claim_boundary:product_intercomparison_not_ground_truth",
+      "type": "limits_claim",
+      "description": ""
+    },
+    {
+      "source": "dataset:modis/061/mod13q1",
+      "target": "band:ndvi",
+      "type": "has_band",
+      "description": ""
+    },
+    {
+      "source": "dataset:modis/061/mod13q1",
+      "target": "qa:modis_summaryqa",
+      "type": "has_qa_field",
+      "description": ""
+    },
+    {
+      "source": "dataset:modis/061/mod13q1",
+      "target": "scale_factor:modis_ndvi_0001",
+      "type": "requires_scale_factor",
+      "description": ""
+    },
+    {
+      "source": "dataset:nasa/hls/hlsl30/v002",
+      "target": "qa:fmask",
+      "type": "has_qa_field",
+      "description": ""
+    },
+    {
+      "source": "dataset:nasa/hls/hlss30/v002",
+      "target": "qa:fmask",
+      "type": "has_qa_field",
+      "description": ""
+    },
+    {
+      "source": "evidence:autogeeval_benchmark",
+      "target": "source:autogeeval-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:autogeeval_plus_benchmark",
+      "target": "source:autogeeval-plus-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:claim_boundary_required_for_validation_report",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:direct_fine_coarse_comparison_failure_case",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:direct_fine_coarse_comparison_failure_case",
+      "target": "failure:direct_fine_coarse_pixel_comparison",
+      "type": "extracted_from",
+      "description": ""
+    },
+    {
+      "source": "evidence:direct_fine_coarse_comparison_failure_case",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:direct_fine_coarse_comparison_failure_case",
+      "target": "dataset:nasa/hls/hlsl30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:direct_fine_coarse_comparison_failure_case",
+      "target": "dataset:nasa/hls/hlss30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:dynamic_world",
+      "target": "source:gee-catalog-dynamic-world-v1",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:dynamic_world",
+      "target": "dataset:google/dynamicworld/v1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:earth_engine_client_vs_server",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_core_operators",
+      "target": "source:google-earth-engine-api-reference",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_data_catalog",
+      "target": "source:google-earth-engine-data-catalog",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_debugging_best_practices",
+      "target": "source:google-earth-engine-usage-quotas",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_deferred_execution",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_export_image",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_export_table",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_javascript_api",
+      "target": "source:google-earth-engine-code-editor-guide",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_planetary_scale_analysis_paper",
+      "target": "source:gorelick-2017-earth-engine",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_platform_overview",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_python_api",
+      "target": "source:google-earth-engine-api-reference",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_reduce_resolution",
+      "target": "source:google-earth-engine-resample-guide",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:earth_engine_scale_projection",
+      "target": "source:google-earth-engine-scale-guide",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:esa_worldcover",
+      "target": "source:gee-catalog-esa-worldcover-v200",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:esa_worldcover",
+      "target": "dataset:esa/worldcover/v200",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:gee_notebook_example_patterns",
+      "target": "source:giswqs-earthengine-py-notebooks",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:gee_ops_operator_knowledge_base",
+      "target": "source:gee-ops-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:geemap_community_patterns",
+      "target": "source:gee-community-geemap",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:geemap_joss_paper",
+      "target": "source:geemap-joss-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:geemap_js_to_python_conversion_patterns",
+      "target": "source:gee-community-geemap",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:geofub_operator_function_kb",
+      "target": "source:geofub-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:hansen_global_forest_change",
+      "target": "source:gee-catalog-hansen-global-forest-change",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:hansen_global_forest_change",
+      "target": "dataset:umd/hansen/global_forest_change_2024_v1_12",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:hls_fmask_rule",
+      "target": "source:gee-catalog-hlsl30",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:hls_fmask_rule",
+      "target": "dataset:nasa/hls/hlsl30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:hls_fmask_rule",
+      "target": "dataset:nasa/hls/hlss30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:hls_hlsl30",
+      "target": "source:gee-catalog-hlsl30",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:hls_hlsl30",
+      "target": "qa:fmask",
+      "type": "grounded_by",
+      "description": ""
+    },
+    {
+      "source": "evidence:hls_hlsl30",
+      "target": "dataset:nasa/hls/hlsl30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:hls_hlss30",
+      "target": "source:gee-catalog-hlss30",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:hls_hlss30",
+      "target": "qa:fmask",
+      "type": "grounded_by",
+      "description": ""
+    },
+    {
+      "source": "evidence:hls_hlss30",
+      "target": "dataset:nasa/hls/hlss30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:jrc_global_surface_water",
+      "target": "source:gee-catalog-jrc-global-surface-water",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:jrc_global_surface_water",
+      "target": "dataset:jrc/gsw1_4/globalsurfacewater",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:landsat_collection2_sr",
+      "target": "source:gee-catalog-landsat-lc08-c2-l2",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:landsat_collection2_sr",
+      "target": "dataset:landsat/lc08/c02/t1_l2",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:modis_lst",
+      "target": "source:gee-catalog-mod11a2-lst",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:modis_lst",
+      "target": "dataset:modis/061/mod11a2",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:modis_mod13q1_ndvi",
+      "target": "source:gee-catalog-mod13q1",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:modis_mod13q1_ndvi",
+      "target": "scale_factor:modis_ndvi_0001",
+      "type": "grounded_by",
+      "description": ""
+    },
+    {
+      "source": "evidence:modis_mod13q1_ndvi",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:modis_ndvi_scale_factor_rule",
+      "target": "source:gee-catalog-mod13q1",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:modis_ndvi_scale_factor_rule",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:modis_qa_rule",
+      "target": "source:gee-catalog-mod13q1",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:modis_qa_rule",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:product_intercomparison_claim_boundary",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:product_intercomparison_claim_boundary",
+      "target": "claim_boundary:product_intercomparison_not_ground_truth",
+      "type": "grounded_by",
+      "description": ""
+    },
+    {
+      "source": "evidence:reduce_resolution_projection_rule",
+      "target": "source:google-earth-engine-resample-guide",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:reduce_resolution_projection_rule",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:reduce_resolution_projection_rule",
+      "target": "dataset:nasa/hls/hlsl30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:reduce_resolution_projection_rule",
+      "target": "dataset:nasa/hls/hlss30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:scale_aware_product_intercomparison_rule",
+      "target": "source:google-earth-engine-data-catalog",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:scale_aware_product_intercomparison_rule",
+      "target": "rule:scale_aware_product_intercomparison",
+      "type": "extracted_from",
+      "description": ""
+    },
+    {
+      "source": "evidence:scale_aware_product_intercomparison_rule",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:scale_aware_product_intercomparison_rule",
+      "target": "dataset:nasa/hls/hlsl30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:scale_aware_product_intercomparison_rule",
+      "target": "dataset:nasa/hls/hlss30/v002",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:sentinel1_flood_mapping_rule",
+      "target": "source:gee-catalog-sentinel1-grd",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:sentinel1_flood_mapping_rule",
+      "target": "rule:sentinel1_flood_before_after",
+      "type": "extracted_from",
+      "description": ""
+    },
+    {
+      "source": "evidence:sentinel1_flood_mapping_rule",
+      "target": "claim_boundary:flood_screening_not_ground_truth",
+      "type": "grounded_by",
+      "description": ""
+    },
+    {
+      "source": "evidence:sentinel1_flood_mapping_rule",
+      "target": "dataset:copernicus/s1_grd",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:sentinel1_flood_mapping_rule",
+      "target": "failure:sentinel1_threshold_overclaim",
+      "type": "warns_about",
+      "description": ""
+    },
+    {
+      "source": "evidence:sentinel1_grd",
+      "target": "source:gee-catalog-sentinel1-grd",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:sentinel1_grd",
+      "target": "workflow:flood_mapping",
+      "type": "grounded_by",
+      "description": ""
+    },
+    {
+      "source": "evidence:sentinel1_grd",
+      "target": "dataset:copernicus/s1_grd",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:sentinel2_sr_harmonized",
+      "target": "source:gee-catalog-sentinel2-sr-harmonized",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:sentinel2_sr_harmonized",
+      "target": "dataset:copernicus/s2_sr_harmonized",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:tiled_export_fallback_recovery",
+      "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:tiled_export_fallback_recovery",
+      "target": "recovery:tiled_export_fallback",
+      "type": "extracted_from",
+      "description": ""
+    },
+    {
+      "source": "evidence:viirs_vegetation_index",
+      "target": "source:gee-catalog-viirs-vnp13a1",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:viirs_vegetation_index",
+      "target": "dataset:nasa/viirs/002/vnp13a1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "failure:direct_fine_coarse_pixel_comparison",
+      "target": "recovery:tiled_export_fallback",
+      "type": "recovers_by",
+      "description": ""
+    },
+    {
+      "source": "recipe:sentinel1_flood_before_after",
+      "target": "workflow:flood_mapping",
+      "type": "derived_from",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "script:hk_ndvi_v03_export",
+      "type": "implemented_in",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "claim_boundary:product_intercomparison_not_ground_truth",
+      "type": "limits_claim",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "workflow:product_intercomparison",
+      "type": "suitable_for",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "claim:product_level_consistency",
+      "type": "supports_claim",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "test:test_hk_ndvi_v03_schema",
+      "type": "tested_by",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "dataset:nasa/hls/hlsl30/v002",
+      "type": "uses_dataset",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "dataset:nasa/hls/hlss30/v002",
+      "type": "uses_dataset",
+      "description": ""
+    },
+    {
+      "source": "validation_demo:hk_2024_hls_modis_ndvi_v03",
+      "target": "artifact:hk_ndvi_product_intercomparison_report",
+      "type": "validated_by",
+      "description": ""
+    },
+    {
+      "source": "workflow:flood_mapping",
+      "target": "failure:sentinel1_threshold_overclaim",
+      "type": "has_failure_mode",
+      "description": ""
+    },
+    {
+      "source": "workflow:flood_mapping",
+      "target": "claim_boundary:flood_screening_not_ground_truth",
+      "type": "limits_claim",
+      "description": ""
+    },
+    {
+      "source": "workflow:flood_mapping",
+      "target": "rule:sentinel1_flood_before_after",
+      "type": "requires_rule",
+      "description": ""
+    },
+    {
+      "source": "workflow:flood_mapping",
+      "target": "recipe:sentinel1_flood_before_after",
+      "type": "suitable_for",
+      "description": ""
+    },
+    {
+      "source": "workflow:flood_mapping",
+      "target": "dataset:copernicus/s1_grd",
+      "type": "uses_dataset",
+      "description": ""
+    },
+    {
+      "source": "workflow:product_intercomparison",
+      "target": "failure:direct_fine_coarse_pixel_comparison",
+      "type": "has_failure_mode",
+      "description": ""
+    },
+    {
+      "source": "workflow:product_intercomparison",
+      "target": "rule:scale_aware_product_intercomparison",
+      "type": "requires_rule",
+      "description": ""
+    },
+    {
+      "source": "workflow:product_intercomparison",
+      "target": "operator:reduce_resolution",
+      "type": "uses_operator",
+      "description": ""
+    }
+  ]
+}

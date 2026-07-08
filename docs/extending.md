@@ -19,6 +19,23 @@
 python scripts/ingest_docs.py --docs-dir references/knowledge_base --out references/index/gee_docs_index.json
 ```
 
+## Add Source-Grounded KG-RAG Evidence
+
+1. Add or update a reviewed source in `references/sources/source_registry.yml`.
+2. Run `python scripts/validate_sources.py --json`.
+3. Add a short paraphrased evidence card under `references/evidence_cards/`; do not copy long source text.
+4. Include allowed use, trust tier, claim boundaries, planner hints, validator hints, and private-content risk.
+5. Run `python scripts/validate_evidence_cards.py --json`.
+6. Add graph seed nodes or edges only when the relationship is stable and useful for retrieval.
+7. Rebuild and validate the graph:
+
+```bash
+python scripts/build_kg.py --json
+python scripts/validate_kg.py --json
+```
+
+8. Add a retrieval or semantic-validator test before using the evidence in planner behavior.
+
 ## Add General GEE Knowledge
 
 Use `references/knowledge_base/core/`, `operators/`, `workflows/`, and `failure-cases/` for reusable GEE AI knowledge that is not tied to one dataset. Include source URLs, last-checked dates, operator chains, known failures, and recovery hints so retrieval traces remain auditable.

@@ -229,3 +229,31 @@ gee-skill eval evals/benchmark_suite.yml --json
 ## 安全
 
 Live Earth Engine 运行需要你自己的 Earth Engine account、Google Cloud Project 和本地 OAuth authentication。不要提交 service account JSON、OAuth token、本地 credential 文件、refresh token、credential path、private key、client secret、private asset id、论文草稿或未发表研究输出。
+
+## v0.4 KG-RAG 研究引擎
+
+v0.4 引入 source-grounded KG-RAG 层，用知识图谱和证据卡增强原有 Markdown BM25 检索。新的公开知识循环是：
+
+```text
+官方文档 / Data Catalog / API docs / 论文 / 可信社区仓库
+  -> source registry
+  -> evidence cards
+  -> deterministic knowledge graph
+  -> hybrid text + evidence + graph retrieval
+  -> planner hints / semantic validator hints / eval cases
+```
+
+这不是模型训练、不是微调，也不是通用聊天机器人。它是面向 Earth Engine agent workflow 的确定性、可审计、公开知识管线。官方 Earth Engine 文档和 Data Catalog 仍然是 dataset id、band、QA、scale factor、API 行为、quota、projection 和 export semantics 的最高依据。论文和社区仓库只能支持方法论与通用 pattern，不能覆盖官方当前事实。
+
+新增离线命令：
+
+```bash
+gee-skill sources validate --json
+gee-skill evidence search "MODIS NDVI scale factor" --json
+gee-skill kg build --json
+gee-skill kg search "HLS MODIS product intercomparison" --json
+gee-skill kg explain product_intercomparison --json
+gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS pixels?" --json
+```
+
+更多说明见 [KG-RAG architecture](docs/kg_rag_architecture.md)、[knowledge graph schema](docs/knowledge_graph_schema.md)、[KG-RAG examples](docs/kg_rag_examples.md) 和 [source policy](docs/source_policy.md)。

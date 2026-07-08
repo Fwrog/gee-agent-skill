@@ -1,0 +1,18 @@
+schema_version: gee-planner-grounding-eval/v0.1
+description: Planner-facing KG-RAG grounding cases for v0.4 product intercomparison.
+cases:
+  - id: product_intercomparison_plan_hints
+    query: Plan an HLS MODIS NDVI product intercomparison
+    must_include:
+      - HLSL30
+      - HLSS30
+      - MOD13Q1
+      - Fmask
+      - SummaryQA
+      - 0.0001
+      - product-level consistency
+  - id: prevent_ground_truth_overclaim
+    query: Which evidence supports product-level consistency but not ground-truth accuracy?
+    must_include:
+      - product_intercomparison_claim_boundary
+      - product_intercomparison_not_ground_truth

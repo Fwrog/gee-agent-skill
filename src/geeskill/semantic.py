@@ -36,6 +36,10 @@ RULESETS = {
         "dynamic_world_landcover", "Dynamic World land-cover summary workflow."
     ),
     "export_image_geotiff": SemanticRuleSet("export_image_geotiff", "Export.image.toDrive GeoTIFF export."),
+    "product_intercomparison": SemanticRuleSet(
+        "product_intercomparison",
+        "Scale-aware product intercomparison with QA, scale factors, projection handling, and claim boundaries.",
+    ),
 }
 
 
@@ -71,6 +75,12 @@ def infer_semantic_rulesets(text: str, explicit: str | None = None) -> list[str]
         rules.append("export_image_geotiff")
     if "google/dynamicworld/v1" in lower:
         rules.append("dynamic_world_landcover_ndvi" if "ndvi" in lower else "dynamic_world_landcover")
+    if (
+        "product_intercomparison" in lower
+        or ("modis/061/mod13q1" in lower and ("nasa/hls/hlsl30" in lower or "nasa/hls/hlss30" in lower))
+        or ("hls" in lower and "modis" in lower and "ndvi" in lower)
+    ):
+        rules.append("product_intercomparison")
     return rules
 
 
@@ -104,6 +114,8 @@ def validate_semantics(path: Path, rulesets: list[str] | None = None) -> list[Fi
             findings.extend(_dynamic_world_landcover_ndvi(text, lower))
         elif ruleset == "dynamic_world_landcover":
             findings.extend(_dynamic_world_landcover(text, lower))
+        elif ruleset == "product_intercomparison":
+            findings.extend(_product_intercomparison(text, lower))
         else:
             findings.append(Finding("warning", "unknown-semantic-ruleset", f"Unknown ruleset: {ruleset}", ruleset=ruleset))
     if selected and not any(item.severity == "error" for item in findings):
@@ -581,4 +593,89 @@ def _dynamic_world_landcover(text: str, lower: str) -> list[Finding]:
         "Dynamic World CSV export must use explicit selectors.",
         "EXPORT_TASK_ERROR",
     )
+    return findings
+
+
+def _product_intercomparison(text: str, lower: str) -> list[Finding]:
+    ruleset = "product_intercomparison"
+    findings: list[Finding] = []
+    uses_modis_vi = "modis/061/mod13q1" in lower or "mod13q1" in lower
+    uses_hls = "nasa/hls/hlsl30" in lower or "nasa/hls/hlss30" in lower or "hlsl30" in lower or "hlss30" in lower
+    mentions_product_intercomparison = "product_intercomparison" in lower or ("hls" in lower and "modis" in lower)
+    if uses_modis_vi:
+        findings += _require(
+            "0.0001" in text,
+            ruleset,
+            "modis-ndvi-scale-factor",
+            "MODIS vegetation-index product comparison must apply the documented 0.0001 NDVI/EVI scale factor.",
+            "VALIDATION_ERROR",
+            hint="Multiply MOD13Q1 NDVI/EVI by 0.0001 before metrics or exports.",
+        )
+        findings += _require(
+            "summaryqa" in lower or "detailedqa" in lower,
+            ruleset,
+            "modis-qa-policy",
+            "MODIS vegetation-index product comparison must include SummaryQA or DetailedQA policy.",
+            "VALIDATION_ERROR",
+            hint="Mask or stratify MOD13Q1 using SummaryQA or DetailedQA before interpreting agreement.",
+        )
+    if uses_hls:
+        findings += _require(
+            "fmask" in lower,
+            ruleset,
+            "hls-fmask-policy",
+            "HLS product comparison must include an Fmask quality policy.",
+            "EMPTY_COLLECTION",
+            hint="Use Fmask or an explicitly reviewed equivalent QA mask for HLSL30/HLSS30.",
+            retryable=True,
+        )
+    if uses_modis_vi and uses_hls:
+        has_aggregation = "reduceresolution" in lower or "reduce_resolution" in lower or "aggregate" in lower
+        has_projection = "reproject" in lower or "setdefaultprojection" in lower or "projection(" in lower or "crs" in lower
+        findings += _require(
+            has_aggregation and has_projection,
+            ruleset,
+            "fine-coarse-aggregation-required",
+            "Do not compare 30 m HLS and 250 m MODIS pixels directly; aggregate to a common grid with explicit projection handling.",
+            "REDUCER_SCALE_ERROR",
+            hint="Aggregate HLS to the MODIS grid before computing agreement metrics.",
+            retryable=True,
+        )
+    if "reduceresolution" in lower:
+        findings += _require(
+            "reproject" in lower or "setdefaultprojection" in lower or "projection(" in lower,
+            ruleset,
+            "reduce-resolution-projection",
+            "reduceResolution product comparison should document explicit projection/default projection handling.",
+            "REDUCER_SCALE_ERROR",
+            hint="Pair reduceResolution with reviewed projection handling before export or comparison.",
+            retryable=True,
+        )
+    if mentions_product_intercomparison or "validation report" in lower or "golden" in lower:
+        has_boundary = (
+            "product_intercomparison_not_ground_truth" in lower
+            or "not ground truth" in lower
+            or "not in-situ" in lower
+            or "not in situ" in lower
+            or "product-level consistency" in lower
+            or "claim_boundary" in lower
+        )
+        findings += _require(
+            has_boundary,
+            ruleset,
+            "claim-boundary-required",
+            "Product intercomparison outputs must state the claim boundary: product-level consistency, not in-situ ground-truth accuracy.",
+            "VALIDATION_ERROR",
+            hint="Add an explicit claim boundary before publishing validation or Golden status.",
+        )
+    if "golden" in lower:
+        has_public_evidence = all(term in lower for term in ("readback", "test")) and ("trace" in lower or "task" in lower)
+        findings += _require(
+            has_public_evidence,
+            ruleset,
+            "golden-evidence-required",
+            "Public Golden status requires task/trace evidence, readback, analysis/report evidence, tests, and claim boundaries.",
+            "VALIDATION_ERROR",
+            hint="Do not promote a demo to Golden until the public evidence checklist is satisfied.",
+        )
     return findings

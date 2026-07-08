@@ -57,6 +57,9 @@ where = ["src"]
 geeskill = [
   "resources/contexts/*.json",
   "resources/index/*.json",
+  "resources/sources/*.yml",
+  "resources/evidence_cards/*.yml",
+  "resources/graph/*.yml",
   "resources/boundaries/*.geojson",
   "resources/tasks/*.yaml",
   "resources/templates/*.j2",

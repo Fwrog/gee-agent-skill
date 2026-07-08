@@ -1,0 +1,376 @@
+schema_version: gee-source-registry/v0.1
+last_reviewed: "2026-07-09"
+policy: references/sources/source_policy.md
+sources:
+  - source_id: google-earth-engine-docs
+    title: Google Earth Engine official documentation
+    source_url: https://developers.google.com/earth-engine
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current Earth Engine platform guides when checked against the live documentation.
+    private_content_risk: low
+    include_reason: Official platform guidance for client/server behavior, scale/projection, reducers, exports, quotas, and debugging.
+    license: Google documentation terms
+  - source_id: google-earth-engine-data-catalog
+    title: Google Earth Engine Data Catalog
+    source_url: https://developers.google.com/earth-engine/datasets
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current public dataset IDs, bands, scale factors, QA fields, availability, and provider notes.
+    private_content_risk: low
+    include_reason: Primary source for current Earth Engine dataset facts.
+    license: Google documentation terms plus dataset provider terms
+  - source_id: google-earth-engine-api-reference
+    title: Google Earth Engine API reference
+    source_url: https://developers.google.com/earth-engine/apidocs
+    source_type: official_api_reference
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current Earth Engine API method names and signatures.
+    private_content_risk: low
+    include_reason: Primary source for operator and API behavior facts.
+    license: Google documentation terms
+  - source_id: google-earth-engine-resample-guide
+    title: Earth Engine resampling and reducing resolution guide
+    source_url: https://developers.google.com/earth-engine/guides/resample
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for Earth Engine reduceResolution/resampling guidance as of last check.
+    private_content_risk: low
+    include_reason: Official guidance for aggregating fine pixels to coarser pixels before cross-scale comparison.
+    license: Google documentation terms
+  - source_id: google-earth-engine-projections-guide
+    title: Earth Engine projections guide
+    source_url: https://developers.google.com/earth-engine/guides/projections
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current projection concepts and projection-sensitive operations as of last check.
+    private_content_risk: low
+    include_reason: Official support for projection/default projection handling in product intercomparison validators.
+    license: Google documentation terms
+  - source_id: google-earth-engine-scale-guide
+    title: Earth Engine scale guide
+    source_url: https://developers.google.com/earth-engine/guides/scale
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current Earth Engine scale behavior as of last check.
+    private_content_risk: low
+    include_reason: Official support for scale-aware validation and anti-overclaim guidance.
+    license: Google documentation terms
+  - source_id: google-earth-engine-usage-quotas
+    title: Earth Engine usage and quotas guide
+    source_url: https://developers.google.com/earth-engine/guides/usage
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current quota guidance as of last check.
+    private_content_risk: low
+    include_reason: Official source for export/task quota and resource-bound recovery policy.
+    license: Google documentation terms
+  - source_id: google-earth-engine-code-editor-guide
+    title: Earth Engine Code Editor guide
+    source_url: https://developers.google.com/earth-engine/guides/playground
+    source_type: official_docs
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for current Code Editor role and JavaScript workflow surface as of last check.
+    private_content_risk: low
+    include_reason: Official source for JavaScript API workflow context and tutorial/code surface boundaries.
+    license: Google documentation terms
+  - source_id: google-earthengine-api-repo
+    title: google/earthengine-api
+    source_url: https://github.com/google/earthengine-api
+    source_type: official_github_repo
+    trust_tier: A
+    allowed_use: short_quoted_excerpt_allowed
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for open-source client library implementation details, not for private account state.
+    private_content_risk: low
+    include_reason: Official public Earth Engine client repository.
+    license: Apache-2.0
+  - source_id: gee-catalog-mod13q1
+    title: MOD13Q1.061 Terra Vegetation Indices 16-Day Global 250m
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for MOD13Q1 Earth Engine dataset ID, bands, scale factors, QA fields, and catalog limitations as of last check.
+    private_content_risk: low
+    include_reason: Required official comparison product for v0.3 HLS/MODIS NDVI intercomparison.
+    license: NASA LP DAAC / USGS MODIS data terms
+  - source_id: gee-catalog-hlsl30
+    title: NASA HLS HLSL30 v002
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for HLSL30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.
+    private_content_risk: low
+    include_reason: Required high-resolution HLS Landsat source for product intercomparison.
+    license: NASA HLS data terms
+  - source_id: gee-catalog-hlss30
+    title: NASA HLS HLSS30 v002
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for HLSS30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.
+    private_content_risk: low
+    include_reason: Required high-resolution HLS Sentinel-2 source for product intercomparison.
+    license: NASA HLS data terms
+  - source_id: gee-catalog-sentinel2-sr-harmonized
+    title: Sentinel-2 MSI Surface Reflectance Harmonized
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for Sentinel-2 SR Harmonized Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official optical dataset source for NDVI and cloud/QA policy examples.
+    license: Copernicus Sentinel data terms
+  - source_id: gee-catalog-landsat-lc08-c2-l2
+    title: Landsat 8 Collection 2 Tier 1 Level 2
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for Landsat 8 Collection 2 Level 2 Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official source for Landsat Collection 2 SR/LST workflows and scale/QA policies.
+    license: USGS Landsat data terms
+  - source_id: gee-catalog-sentinel1-grd
+    title: Sentinel-1 SAR GRD
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for Sentinel-1 GRD Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official source for flood/change workflow grounding.
+    license: Copernicus Sentinel data terms
+  - source_id: gee-catalog-dynamic-world-v1
+    title: Dynamic World V1
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for Dynamic World Earth Engine dataset facts as of last check; not independent ground truth.
+    private_content_risk: low
+    include_reason: Required official source for land-cover-aware NDVI and interpretation-mask caveats.
+    license: Dynamic World data terms
+  - source_id: gee-catalog-esa-worldcover-v200
+    title: ESA WorldCover v200
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for ESA WorldCover v200 Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official source for public land-cover stratification context.
+    license: ESA WorldCover terms
+  - source_id: gee-catalog-jrc-global-surface-water
+    title: JRC Global Surface Water
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for JRC Global Surface Water Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official source for water mask and coastal/mixed-pixel interpretation checks.
+    license: JRC Global Surface Water terms
+  - source_id: gee-catalog-hansen-global-forest-change
+    title: Hansen Global Forest Change
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/UMD_hansen_global_forest_change_2024_v1_12
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for Hansen Global Forest Change Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official source family for forest-change workflow grounding.
+    license: Hansen/UMD data terms
+  - source_id: gee-catalog-mod11a2-lst
+    title: MOD11A2.061 Terra Land Surface Temperature and Emissivity
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for MOD11A2 Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Required official MODIS LST source for dataset and rule-card coverage.
+    license: NASA LP DAAC / USGS MODIS data terms
+  - source_id: gee-catalog-viirs-vnp13a1
+    title: VIIRS VNP13A1 vegetation indices
+    source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_VIIRS_002_VNP13A1
+    source_type: official_data_catalog
+    trust_tier: A
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Authoritative for VIIRS vegetation-index Earth Engine dataset facts as of last check.
+    private_content_risk: low
+    include_reason: Optional official vegetation-index comparison source after primary MODIS path is stable.
+    license: NASA LP DAAC VIIRS data terms
+  - source_id: gorelick-2017-earth-engine
+    title: Google Earth Engine planetary-scale geospatial analysis for everyone
+    source_url: https://doi.org/10.1016/j.rse.2017.06.031
+    source_type: journal_paper
+    trust_tier: B
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Supports platform and research workflow framing, not current API or dataset facts.
+    private_content_risk: low
+    include_reason: Canonical Earth Engine research platform citation.
+    license: publisher terms
+  - source_id: geemap-joss-paper
+    title: geemap JOSS paper
+    source_url: https://joss.theoj.org/papers/10.21105/joss.02305
+    source_type: joss_paper
+    trust_tier: B
+    allowed_use: summary_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Supports geemap software context, not authoritative dataset/API facts.
+    private_content_risk: low
+    include_reason: Research software paper for community Earth Engine Python workflows.
+    license: JOSS article terms
+  - source_id: gee-ops-paper
+    title: GEE-OPs operator knowledge base source
+    source_url: https://arxiv.org/abs/2412.05587
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Candidate research source for operator knowledge-base and RAG design only; does not override official GEE facts.
+    private_content_risk: low
+    include_reason: Requested source family for GEE operator KB and code-generation evaluation context.
+    license: arXiv / author terms
+  - source_id: autogeeval-paper
+    title: AutoGEEval benchmark source
+    source_url: https://arxiv.org/abs/2505.12900
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Candidate benchmark context for GEE code evaluation; do not reuse code or accept API/dataset claims without review.
+    private_content_risk: low
+    include_reason: Requested benchmark source family for GEE code generation evaluation.
+    license: arXiv / author terms
+  - source_id: autogeeval-plus-paper
+    title: AutoGEEval++ benchmark source
+    source_url: https://arxiv.org/abs/2506.10365
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Candidate benchmark context; do not promote claims without paper review.
+    private_content_risk: low
+    include_reason: Requested benchmark source family for multi-level GEE evaluation.
+    license: arXiv / author terms
+  - source_id: geofub-paper
+    title: Geo-FuB operator function knowledge base source
+    source_url: https://arxiv.org/abs/2410.20975
+    source_type: arxiv_paper
+    trust_tier: B
+    allowed_use: metadata_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Candidate research source for operator function KB design only.
+    private_content_risk: low
+    include_reason: Requested source family for geospatial operator/function knowledge-base design.
+    license: arXiv / author terms
+  - source_id: geofub-github-repo
+    title: whuhsy/geo-fub
+    source_url: https://github.com/whuhsy/geo-fub
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: metadata_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Candidate public repository for Geo-FuB context; do not copy code or data without license review.
+    private_content_risk: low
+    include_reason: Repository linked to the Geo-FuB operator-function knowledge-base research line.
+    license: license review required
+  - source_id: autogeeval-github-repo
+    title: szx-0633/AutoGEEval
+    source_url: https://github.com/szx-0633/AutoGEEval
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: metadata_only
+    last_checked: "2026-07-09"
+    reviewer_status: candidate
+    claim_boundary: Candidate public benchmark repository; do not copy code, prompts, or configuration without license review.
+    private_content_risk: medium
+    include_reason: Public repository for AutoGEEval benchmark workflow; current review did not find a LICENSE at the expected path.
+    license: license review required
+  - source_id: gee-community-geemap
+    title: gee-community/geemap
+    source_url: https://github.com/gee-community/geemap
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: distilled_patterns
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Supports community implementation patterns; official docs override for current API and dataset facts.
+    private_content_risk: low
+    include_reason: High-quality public community Earth Engine Python package with MIT license.
+    license: MIT
+  - source_id: giswqs-earthengine-py-notebooks
+    title: giswqs/earthengine-py-notebooks
+    source_url: https://github.com/giswqs/earthengine-py-notebooks
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: distilled_patterns
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    claim_boundary: Supports notebook workflow patterns; official docs override for current API and dataset facts.
+    private_content_risk: low
+    include_reason: Public Earth Engine notebook examples from a recognized maintainer with MIT license.
+    license: MIT

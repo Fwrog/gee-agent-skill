@@ -1,0 +1,91 @@
+cards:
+  - card_id: geemap_community_patterns
+    title: geemap community workflow patterns
+    source_id: gee-community-geemap
+    source_url: https://github.com/gee-community/geemap
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: distilled_patterns
+    topics: [community_patterns, geemap, visualization]
+    extracted_facts: []
+    extracted_patterns:
+      - geemap can inform interactive mapping, notebook, and visualization patterns after license-aware review.
+    limitations:
+      - Community patterns do not override official API or dataset facts.
+    claim_boundaries:
+      - Store distilled patterns only; do not copy code without explicit review.
+    applicable_workflows: [visualization, notebooks, examples]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: [community_source_overpromotion]
+    validation_implications:
+      - Prefer official docs for current API behavior.
+    planner_hints:
+      - Mark community-derived guidance as pattern support.
+    validator_hints:
+      - Do not accept community examples as authoritative dataset facts.
+    citation: gee-community/geemap repository, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    confidence: medium
+    private_content_risk: low
+  - card_id: geemap_js_to_python_conversion_patterns
+    title: geemap JavaScript-to-Python conversion patterns
+    source_id: gee-community-geemap
+    source_url: https://github.com/gee-community/geemap
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: distilled_patterns
+    topics: [community_patterns, javascript, python]
+    extracted_facts: []
+    extracted_patterns:
+      - Community tooling can suggest conversion patterns, but generated Python must be validated independently.
+    limitations:
+      - Conversion patterns may lag current official APIs.
+    claim_boundaries:
+      - Conversion support is implementation guidance only.
+    applicable_workflows: [recipe_distillation, rendering]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: [surface_confusion, stale_community_example]
+    validation_implications:
+      - Converted code must pass Python syntax, semantic validation, and preflight.
+    planner_hints:
+      - Note source language and conversion caveats.
+    validator_hints:
+      - Check converted scripts against official Python API behavior.
+    citation: gee-community/geemap repository, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    confidence: medium
+    private_content_risk: low
+  - card_id: gee_notebook_example_patterns
+    title: Earth Engine notebook example patterns
+    source_id: giswqs-earthengine-py-notebooks
+    source_url: https://github.com/giswqs/earthengine-py-notebooks
+    source_type: community_repo
+    trust_tier: C
+    allowed_use: distilled_patterns
+    topics: [community_patterns, notebooks, examples]
+    extracted_facts: []
+    extracted_patterns:
+      - Notebook repositories can reveal common workflow patterns and failure cases for later distilled cards.
+    limitations:
+      - Notebook examples are not authoritative for current dataset facts or production export policy.
+    claim_boundaries:
+      - Use as pattern context only.
+    applicable_workflows: [examples, recipe_distillation]
+    applicable_datasets: []
+    applicable_operators: []
+    known_failure_modes: [community_source_overpromotion]
+    validation_implications:
+      - Any distilled pattern must cite official facts separately.
+    planner_hints:
+      - Treat notebooks as examples, not sources of truth.
+    validator_hints:
+      - Require Tier A confirmation for dataset/API facts.
+    citation: giswqs/earthengine-py-notebooks repository, checked 2026-07-09.
+    last_checked: "2026-07-09"
+    reviewer_status: accepted
+    confidence: medium
+    private_content_risk: low

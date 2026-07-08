@@ -30,6 +30,8 @@ tmp/
 outputs/
 !outputs/
 outputs/*
+!outputs/research/
+!outputs/research/*.md
 !outputs/hk_ndvi_product_validation_v03/
 outputs/hk_ndvi_product_validation_v03/*
 !outputs/hk_ndvi_product_validation_v03/VALIDATION_REPORT.md

@@ -1,0 +1,224 @@
+schema_version: gee-kg-seed/v0.1
+nodes:
+  - id: workflow:product_intercomparison
+    type: Workflow
+    title: Product intercomparison workflow
+    description: Scale-aware comparison between independently produced Earth observation products.
+    tags: [product_intercomparison, validation, v0.4]
+  - id: workflow:flood_mapping
+    type: Workflow
+    title: Sentinel-1 flood mapping workflow
+    description: Before/after Sentinel-1 SAR workflow for candidate flood or water-change mapping.
+    tags: [flood_mapping, Sentinel-1, SAR, v0.4]
+  - id: recipe:sentinel1_flood_before_after
+    type: Recipe
+    title: sentinel1-flood-before-after
+    description: Existing harness recipe for Sentinel-1 before/after flood or water-change GeoTIFF exports.
+    tags: [flood_mapping, Sentinel-1, recipe]
+    metadata:
+      recipe_id: sentinel1-flood-before-after
+      template: sentinel1_flood_before_after
+      validation_profile: sentinel1_flood_before_after
+  - id: validation_demo:hk_2024_hls_modis_ndvi_v03
+    type: ValidationDemo
+    title: HK 2024 HLS/MODIS NDVI product intercomparison
+    description: Public v0.3 Golden demo comparing HLS NDVI aggregated to MODIS grid against MOD13Q1.
+    tags: [v0.3, golden, product_intercomparison, ndvi]
+    metadata:
+      status: Golden
+      claim_boundary: product_intercomparison_not_ground_truth
+  - id: band:ndvi
+    type: Band
+    title: NDVI
+    description: Normalized Difference Vegetation Index product or derived band.
+    tags: [vegetation_index]
+  - id: qa:fmask
+    type: QAField
+    title: HLS Fmask
+    description: HLS quality field required for cloud, shadow, water, and aerosol policy.
+    tags: [HLS, QA]
+  - id: qa:modis_summaryqa
+    type: QAField
+    title: MODIS SummaryQA or DetailedQA
+    description: MODIS vegetation-index QA fields needed for reviewed comparison.
+    tags: [MODIS, QA]
+  - id: scale_factor:modis_ndvi_0001
+    type: ScaleFactor
+    title: MODIS NDVI 0.0001 scale factor
+    description: MODIS NDVI and EVI values require the documented 0.0001 scale factor.
+    tags: [MODIS, NDVI, scale_factor]
+  - id: operator:reduce_resolution
+    type: Operator
+    title: reduceResolution and projection handling
+    description: Aggregates fine-resolution data before coarse-grid comparison with explicit projection handling.
+    tags: [scale, projection, aggregation]
+  - id: rule:scale_aware_product_intercomparison
+    type: Rule
+    title: Scale-aware product intercomparison required
+    description: Compare HLS and MODIS after temporal matching, QA, scale factor, and aggregation to a common grid.
+    tags: [product_intercomparison, rule]
+  - id: rule:sentinel1_flood_before_after
+    type: Rule
+    title: Sentinel-1 before/after flood mapping requirements
+    description: Require COPERNICUS/S1_GRD, AOI/date filtering, IW mode, polarization/orbit review, explicit change metric, and flood-screening claim boundary.
+    tags: [flood_mapping, Sentinel-1, SAR, rule]
+  - id: failure:direct_fine_coarse_pixel_comparison
+    type: FailureCase
+    title: Direct fine/coarse pixel comparison
+    description: Native 30 m HLS pixels must not be directly compared with native 250 m MODIS pixels.
+    tags: [failure_case, scale]
+  - id: failure:sentinel1_threshold_overclaim
+    type: FailureCase
+    title: Sentinel-1 threshold overclaim
+    description: SAR threshold maps can be overclaimed when speckle, incidence angle, polarization, orbit, permanent water, or reference data are not reviewed.
+    tags: [failure_case, flood_mapping, Sentinel-1]
+  - id: claim_boundary:flood_screening_not_ground_truth
+    type: ClaimBoundary
+    title: Sentinel-1 flood maps are screening products, not ground truth
+    description: Candidate flood maps require independent reference evidence before impact, damage, or ground-truth claims.
+    tags: [claim_boundary, flood_mapping, overclaim_prevention]
+  - id: recovery:tiled_export_fallback
+    type: RecoveryPattern
+    title: Tiled export fallback for large rasters
+    description: Use deterministic tiled exports when full-region rasters exceed memory or quota limits.
+    tags: [export, recovery]
+  - id: claim:product_level_consistency
+    type: Claim
+    title: Product-level consistency
+    description: Agreement between HLS-derived NDVI aggregated to MODIS grid and MOD13Q1 supports workflow reliability.
+    tags: [claim, validation]
+  - id: claim_boundary:product_intercomparison_not_ground_truth
+    type: ClaimBoundary
+    title: Product intercomparison is not in-situ ground-truth accuracy
+    description: Product agreement cannot be described as in-situ ground-truth validation without independent reference evidence.
+    tags: [claim_boundary, overclaim_prevention]
+  - id: script:hk_ndvi_v03_export
+    type: Script
+    title: hk_ndvi_v03_export.py
+    description: Canonical v0.3 export script for HLS/MODIS NDVI intercomparison.
+    tags: [script, v0.3]
+    metadata:
+      path: scripts/hk_ndvi_v03_export.py
+  - id: test:test_hk_ndvi_v03_schema
+    type: Test
+    title: v0.3 schema and product intercomparison tests
+    description: Tests for product_intercomparison claim boundary, datasets, QA, and scale-aware contracts.
+    tags: [test, v0.3]
+    metadata:
+      path: tests/test_hk_ndvi_v03_schema.py
+  - id: artifact:hk_ndvi_product_intercomparison_report
+    type: OutputArtifact
+    title: HK NDVI product intercomparison validation report
+    description: Public validation report for v0.3 product-level consistency demo.
+    tags: [report, validation]
+    metadata:
+      path: docs/validation/hk_ndvi_product_intercomparison_v03.md
+edges:
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: workflow:product_intercomparison
+    type: suitable_for
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: dataset:nasa/hls/hlsl30/v002
+    type: uses_dataset
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: dataset:nasa/hls/hlss30/v002
+    type: uses_dataset
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: dataset:modis/061/mod13q1
+    type: uses_dataset
+  - source: dataset:modis/061/mod13q1
+    target: band:ndvi
+    type: has_band
+  - source: dataset:modis/061/mod13q1
+    target: qa:modis_summaryqa
+    type: has_qa_field
+  - source: dataset:modis/061/mod13q1
+    target: scale_factor:modis_ndvi_0001
+    type: requires_scale_factor
+  - source: dataset:nasa/hls/hlsl30/v002
+    target: qa:fmask
+    type: has_qa_field
+  - source: dataset:nasa/hls/hlss30/v002
+    target: qa:fmask
+    type: has_qa_field
+  - source: workflow:product_intercomparison
+    target: operator:reduce_resolution
+    type: uses_operator
+  - source: workflow:product_intercomparison
+    target: rule:scale_aware_product_intercomparison
+    type: requires_rule
+  - source: workflow:product_intercomparison
+    target: failure:direct_fine_coarse_pixel_comparison
+    type: has_failure_mode
+  - source: workflow:flood_mapping
+    target: recipe:sentinel1_flood_before_after
+    type: suitable_for
+  - source: workflow:flood_mapping
+    target: dataset:copernicus/s1_grd
+    type: uses_dataset
+  - source: workflow:flood_mapping
+    target: rule:sentinel1_flood_before_after
+    type: requires_rule
+  - source: workflow:flood_mapping
+    target: failure:sentinel1_threshold_overclaim
+    type: has_failure_mode
+  - source: workflow:flood_mapping
+    target: claim_boundary:flood_screening_not_ground_truth
+    type: limits_claim
+  - source: recipe:sentinel1_flood_before_after
+    target: workflow:flood_mapping
+    type: derived_from
+  - source: evidence:sentinel1_grd
+    target: workflow:flood_mapping
+    type: grounded_by
+  - source: evidence:sentinel1_flood_mapping_rule
+    target: rule:sentinel1_flood_before_after
+    type: extracted_from
+  - source: evidence:sentinel1_flood_mapping_rule
+    target: failure:sentinel1_threshold_overclaim
+    type: warns_about
+  - source: evidence:sentinel1_flood_mapping_rule
+    target: claim_boundary:flood_screening_not_ground_truth
+    type: grounded_by
+  - source: failure:direct_fine_coarse_pixel_comparison
+    target: recovery:tiled_export_fallback
+    type: recovers_by
+  - source: evidence:scale_aware_product_intercomparison_rule
+    target: rule:scale_aware_product_intercomparison
+    type: extracted_from
+  - source: evidence:direct_fine_coarse_comparison_failure_case
+    target: failure:direct_fine_coarse_pixel_comparison
+    type: extracted_from
+  - source: evidence:tiled_export_fallback_recovery
+    target: recovery:tiled_export_fallback
+    type: extracted_from
+  - source: evidence:modis_mod13q1_ndvi
+    target: scale_factor:modis_ndvi_0001
+    type: grounded_by
+  - source: evidence:hls_hlsl30
+    target: qa:fmask
+    type: grounded_by
+  - source: evidence:hls_hlss30
+    target: qa:fmask
+    type: grounded_by
+  - source: evidence:product_intercomparison_claim_boundary
+    target: claim_boundary:product_intercomparison_not_ground_truth
+    type: grounded_by
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: claim_boundary:product_intercomparison_not_ground_truth
+    type: limits_claim
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: script:hk_ndvi_v03_export
+    type: implemented_in
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: test:test_hk_ndvi_v03_schema
+    type: tested_by
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: artifact:hk_ndvi_product_intercomparison_report
+    type: validated_by
+  - source: validation_demo:hk_2024_hls_modis_ndvi_v03
+    target: claim:product_level_consistency
+    type: supports_claim
+  - source: claim:product_level_consistency
+    target: claim_boundary:product_intercomparison_not_ground_truth
+    type: limits_claim

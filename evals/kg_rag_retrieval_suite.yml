@@ -1,0 +1,60 @@
+schema_version: gee-kg-rag-eval/v0.1
+kg_index: references/index/gee_kg_index.json
+cases:
+  - id: modis_ndvi_scale_factor
+    query: MODIS NDVI scale factor
+    expected_cards: [modis_mod13q1_ndvi]
+    expected_nodes: [scale_factor:modis_ndvi_0001]
+    expected_rules: [0.0001]
+    min_tier_a_count: 1
+    top_k: 8
+  - id: hls_modis_product_intercomparison
+    query: HLS MODIS product intercomparison
+    expected_cards: [hls_hlsl30, hls_hlss30, modis_mod13q1_ndvi, scale_aware_product_intercomparison_rule]
+    expected_nodes: [validation_demo:hk_2024_hls_modis_ndvi_v03]
+    expected_rules: [aggregation, scale]
+    requires_claim_boundary: true
+    min_tier_a_count: 2
+    top_k: 10
+  - id: direct_fine_coarse_comparison
+    query: Can I compare 30m HLS pixels directly with 250m MODIS pixels?
+    expected_cards: [direct_fine_coarse_comparison_failure_case]
+    expected_nodes: [failure:direct_fine_coarse_pixel_comparison]
+    requires_claim_boundary: true
+    min_tier_a_count: 1
+    top_k: 10
+  - id: golden_public_demo
+    query: What does Golden mean for a public demo?
+    expected_cards: [product_intercomparison_claim_boundary]
+    expected_nodes: [validation_demo:hk_2024_hls_modis_ndvi_v03]
+    requires_claim_boundary: true
+    min_tier_a_count: 1
+    top_k: 10
+  - id: flood_workflow_routing
+    query: Generate a GEE workflow for flood mapping
+    expected_cards: [sentinel1_grd, sentinel1_flood_mapping_rule]
+    expected_nodes: [workflow:flood_mapping]
+    expected_rules: [Sentinel-1, polarization, change metric, Do not route flood mapping to NDVI]
+    excluded_nodes: [workflow:product_intercomparison, validation_demo:hk_2024_hls_modis_ndvi_v03]
+    requires_claim_boundary: true
+    min_tier_a_count: 1
+    top_k: 16
+  - id: product_level_consistency_boundary
+    query: Which evidence supports product-level consistency but not ground-truth accuracy?
+    expected_cards: [product_intercomparison_claim_boundary]
+    expected_nodes: [claim:product_level_consistency, claim_boundary:product_intercomparison_not_ground_truth]
+    requires_claim_boundary: true
+    min_tier_a_count: 1
+    top_k: 20
+  - id: v03_script_links
+    query: Which scripts implement v0.3 HLS/MODIS validation?
+    expected_cards: []
+    expected_nodes: [script:hk_ndvi_v03_export]
+    min_tier_a_count: 0
+    top_k: 10
+  - id: source_tier_precedence
+    query: What sources are authoritative for dataset band names?
+    expected_cards: [earth_engine_data_catalog]
+    expected_nodes: [source:google-earth-engine-data-catalog]
+    min_tier_a_count: 1
+    top_k: 20

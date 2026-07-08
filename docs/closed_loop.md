@@ -7,12 +7,12 @@ The project is designed to get more useful without memorizing private research p
 ```text
 user task
   -> intent and privacy classification
-  -> local catalog / RAG retrieval
+  -> local catalog / BM25 + KG-RAG retrieval
   -> official-source or browser verification for drifting facts
   -> plan / render / validate / preflight / export
   -> trace and data-quality review
-  -> generic knowledge promotion
-  -> RAG rebuild and tests
+  -> generic source/evidence/KG promotion
+  -> RAG/KG rebuild and tests
 ```
 
 ## What Can Be Promoted
@@ -23,6 +23,8 @@ user task
 | Rule card | Export images must use uniform band dtype; public boundary substitutes cannot support authoritative local claims. |
 | Failure case | Unsupported CRS, empty collection, mixed export dtype, deprecated asset path, schema mismatch. |
 | Workflow card | Plan-first NDVI export, land-cover summary, validation ladder, adaptive browser-backed knowledge loop. |
+| Evidence card | Source-grounded facts, limitations, claim boundaries, planner hints, and validator hints. |
+| KG relation | Stable links such as dataset requires scale factor, workflow has failure mode, demo limits claim. |
 
 ## What Must Stay Private
 
@@ -42,8 +44,8 @@ Before a task-specific lesson enters the public repo:
 - record `source_url`, `last_checked`, scope, and known limitations;
 - state what the card cannot support;
 - scan for private terms and private asset ids;
-- rebuild the RAG index;
-- add or update tests that prove retrieval/catalog coverage.
+- rebuild the RAG index and KG index;
+- add or update tests that prove retrieval, graph, planner, validator, or eval coverage.
 
 ## Design Principle
 

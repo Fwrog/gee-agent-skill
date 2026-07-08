@@ -41,6 +41,11 @@ from .templates import TemplateContextError, load_context, render_template
 from .tool_registry import exposed_tools, installed_tools, require_flags
 from .validation import validate_script
 
+try:
+    from .hybrid_retrieval import retrieve_hybrid
+except Exception:  # pragma: no cover - defensive fallback for partial installs.
+    retrieve_hybrid = None  # type: ignore[assignment]
+
 
 def _print_error(
     message: str,
@@ -195,6 +200,10 @@ def cmd_info(args: argparse.Namespace) -> int:
             "exports": ["list", "watch"],
             "trace": ["list", "inspect"],
             "corpus": ["coverage"],
+            "sources": ["discover", "validate"],
+            "evidence": ["list", "show", "search"],
+            "kg": ["build", "validate", "search", "neighbors", "path", "explain"],
+            "retrieve": ["hybrid"],
             "eval": ["suite"],
         },
         "golden_examples": [
@@ -1696,10 +1705,13 @@ def _write_plan_trace(
     results,
     plan_body: str,
     rendered: str | None,
+    hybrid_bundle: dict[str, Any] | None = None,
 ) -> RunTrace:
     trace = RunTrace.create(run_id=args.run_id)
     trace.write_yaml("task.yaml", task)
     trace.write_json("retrieval_trace.json", build_retrieval_trace(task.get("query") or task_text, results))
+    if hybrid_bundle is not None:
+        trace.write_json("hybrid_retrieval_bundle.json", hybrid_bundle)
     trace.write_text("plan.md", plan_body)
     if rendered is not None:
         trace.write_text("generated_script.py", rendered)
@@ -1732,11 +1744,17 @@ def cmd_plan(args: argparse.Namespace) -> int:
         query = task.get("query") or task_text
         index = load_index(Path(args.index))
         results = _operator_aware_results(index, query, top_k=args.top_k)
-        plan = build_plan(task_text, results, template=template)
+        hybrid_bundle = None
+        if retrieve_hybrid is not None:
+            try:
+                hybrid_bundle = retrieve_hybrid(query, docs_index_path=Path(args.index), top_k=args.top_k)
+            except (FileNotFoundError, ValueError, KeyError):
+                hybrid_bundle = None
+        plan = build_plan(task_text, results, template=template, hybrid_bundle=hybrid_bundle)
         rendered = None
         if context is not None and (template or plan.template):
             rendered = render_template(Path(args.templates_dir), template or plan.template, context)
-        trace = _write_plan_trace(args, task, task_text, template or plan.template, context, results, plan.body, rendered)
+        trace = _write_plan_trace(args, task, task_text, template or plan.template, context, results, plan.body, rendered, hybrid_bundle)
 
         out_path = Path(args.out or task.get("outputs", {}).get("plan") or trace.path("plan.md"))
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -2315,6 +2333,129 @@ def cmd_eval(args: argparse.Namespace) -> int:
     return 0 if result["ok"] else 1
 
 
+def cmd_sources_discover(args: argparse.Namespace) -> int:
+    from .sources import load_source_registry
+
+    registry = load_source_registry(Path(args.registry))
+    candidates = [item for item in registry["sources"] if item.get("reviewer_status") == "candidate"]
+    accepted = [item for item in registry["sources"] if item.get("reviewer_status") == "accepted"]
+    data = {
+        "registry": args.registry,
+        "accepted_count": len(accepted),
+        "candidate_count": len(candidates),
+        "candidates": candidates,
+        "note": "Discovery reports source candidates only; promotion requires source-policy and evidence review.",
+    }
+    payload = _command_envelope("sources discover", data)
+    return _print_envelope(payload, as_json=args.json)
+
+
+def cmd_sources_validate(args: argparse.Namespace) -> int:
+    from .sources import validate_source_registry
+
+    report = validate_source_registry(Path(args.registry))
+    payload = _command_envelope("sources validate", report)
+    payload["ok"] = bool(report["ok"])
+    return _print_envelope(payload, as_json=args.json)
+
+
+def cmd_evidence_list(args: argparse.Namespace) -> int:
+    from .evidence import load_evidence_cards
+
+    cards = [card.to_dict() for card in load_evidence_cards(Path(args.cards_dir))]
+    if args.status != "all":
+        cards = [card for card in cards if card.get("reviewer_status") == args.status]
+    data = {"cards_dir": args.cards_dir, "count": len(cards), "cards": cards[: args.top_k]}
+    return _print_envelope(_command_envelope("evidence list", data), as_json=args.json)
+
+
+def cmd_evidence_show(args: argparse.Namespace) -> int:
+    from .evidence import load_evidence_cards
+
+    for card in load_evidence_cards(Path(args.cards_dir)):
+        if card.card_id == args.card_id:
+            return _print_envelope(_command_envelope("evidence show", card.to_dict()), as_json=args.json)
+    payload = _envelope_error("EVIDENCE_CARD_NOT_FOUND", f"Unknown evidence card: {args.card_id}", "Run gee-skill evidence list --json.")
+    payload["command"] = "evidence show"
+    payload["schema_version"] = "gee-cli/v0.3"
+    return _print_envelope(payload, as_json=args.json)
+
+
+def cmd_evidence_search(args: argparse.Namespace) -> int:
+    from .evidence import load_evidence_cards, search_evidence_cards
+
+    hits = search_evidence_cards(args.query, load_evidence_cards(Path(args.cards_dir)), top_k=args.top_k)
+    data = {"query": args.query, "results": hits}
+    return _print_envelope(_command_envelope("evidence search", data), as_json=args.json)
+
+
+def cmd_kg_build(args: argparse.Namespace) -> int:
+    from .kg import build_graph, validate_graph, write_graph_index
+
+    graph = build_graph(
+        source_registry_path=Path(args.registry),
+        evidence_cards_dir=Path(args.cards_dir),
+        seed_graph_path=Path(args.seed),
+    )
+    report = validate_graph(graph)
+    if report["ok"]:
+        write_graph_index(graph, Path(args.out))
+    data = {"index": args.out, **report}
+    payload = _command_envelope("kg build", data)
+    payload["ok"] = bool(report["ok"])
+    return _print_envelope(payload, as_json=args.json)
+
+
+def cmd_kg_validate(args: argparse.Namespace) -> int:
+    from .kg import load_graph, validate_graph
+
+    report = validate_graph(load_graph(Path(args.index)))
+    payload = _command_envelope("kg validate", report)
+    payload["ok"] = bool(report["ok"])
+    return _print_envelope(payload, as_json=args.json)
+
+
+def cmd_kg_search(args: argparse.Namespace) -> int:
+    from .kg import load_graph, search_nodes
+
+    results = search_nodes(load_graph(Path(args.index)), args.query, top_k=args.top_k)
+    return _print_envelope(_command_envelope("kg search", {"query": args.query, "results": results}), as_json=args.json)
+
+
+def cmd_kg_neighbors(args: argparse.Namespace) -> int:
+    from .kg import load_graph, neighbors
+
+    data = neighbors(load_graph(Path(args.index)), args.node_id, depth=args.depth)
+    return _print_envelope(_command_envelope("kg neighbors", data), as_json=args.json)
+
+
+def cmd_kg_path(args: argparse.Namespace) -> int:
+    from .kg import load_graph, shortest_path
+
+    data = {"source_id": args.source_id, "target_id": args.target_id, "path": shortest_path(load_graph(Path(args.index)), args.source_id, args.target_id)}
+    return _print_envelope(_command_envelope("kg path", data), as_json=args.json)
+
+
+def cmd_kg_explain(args: argparse.Namespace) -> int:
+    from .kg import explain_topic, load_graph
+
+    data = explain_topic(load_graph(Path(args.index)), args.topic)
+    return _print_envelope(_command_envelope("kg explain", data), as_json=args.json)
+
+
+def cmd_retrieve_hybrid(args: argparse.Namespace) -> int:
+    from .hybrid_retrieval import retrieve_hybrid
+
+    data = retrieve_hybrid(
+        args.query,
+        docs_index_path=Path(args.index),
+        evidence_cards_dir=Path(args.cards_dir),
+        kg_index_path=Path(args.kg_index),
+        top_k=args.top_k,
+    )
+    return _print_envelope(_command_envelope("retrieve hybrid", data), as_json=args.json)
+
+
 def build_parser() -> argparse.ArgumentParser:
     root = project_root()
     parser = argparse.ArgumentParser(prog="gee-skill")
@@ -2576,6 +2717,85 @@ def build_parser() -> argparse.ArgumentParser:
     corpus_coverage.add_argument("--top-k", type=int, default=8)
     corpus_coverage.add_argument("--json", action="store_true")
     corpus_coverage.set_defaults(func=cmd_corpus_coverage)
+
+    sources_parser = sub.add_parser("sources", help="Inspect and validate KG-RAG source governance.")
+    sources_sub = sources_parser.add_subparsers(dest="sources_command", required=True)
+    sources_discover = sources_sub.add_parser("discover", help="List unpromoted source candidates from the registry.")
+    sources_discover.add_argument("--registry", default=str(root / "references" / "sources" / "source_registry.yml"))
+    sources_discover.add_argument("--json", action="store_true")
+    sources_discover.set_defaults(func=cmd_sources_discover)
+    sources_validate = sources_sub.add_parser("validate", help="Validate source registry policy fields.")
+    sources_validate.add_argument("--registry", default=str(root / "references" / "sources" / "source_registry.yml"))
+    sources_validate.add_argument("--json", action="store_true")
+    sources_validate.set_defaults(func=cmd_sources_validate)
+
+    evidence_parser = sub.add_parser("evidence", help="Inspect KG-RAG evidence cards.")
+    evidence_sub = evidence_parser.add_subparsers(dest="evidence_command", required=True)
+    evidence_list = evidence_sub.add_parser("list", help="List evidence cards.")
+    evidence_list.add_argument("--cards-dir", default=str(root / "references" / "evidence_cards"))
+    evidence_list.add_argument("--status", choices=["all", "accepted", "candidate", "rejected"], default="all")
+    evidence_list.add_argument("--top-k", type=int, default=50)
+    evidence_list.add_argument("--json", action="store_true")
+    evidence_list.set_defaults(func=cmd_evidence_list)
+    evidence_show = evidence_sub.add_parser("show", help="Show one evidence card.")
+    evidence_show.add_argument("card_id")
+    evidence_show.add_argument("--cards-dir", default=str(root / "references" / "evidence_cards"))
+    evidence_show.add_argument("--json", action="store_true")
+    evidence_show.set_defaults(func=cmd_evidence_show)
+    evidence_search = evidence_sub.add_parser("search", help="Search evidence cards.")
+    evidence_search.add_argument("query")
+    evidence_search.add_argument("--cards-dir", default=str(root / "references" / "evidence_cards"))
+    evidence_search.add_argument("--top-k", type=int, default=10)
+    evidence_search.add_argument("--json", action="store_true")
+    evidence_search.set_defaults(func=cmd_evidence_search)
+
+    kg_parser = sub.add_parser("kg", help="Build and query the deterministic GEE knowledge graph.")
+    kg_sub = kg_parser.add_subparsers(dest="kg_command", required=True)
+    kg_build = kg_sub.add_parser("build", help="Build KG index from source registry, evidence cards, and seed graph.")
+    kg_build.add_argument("--registry", default=str(root / "references" / "sources" / "source_registry.yml"))
+    kg_build.add_argument("--cards-dir", default=str(root / "references" / "evidence_cards"))
+    kg_build.add_argument("--seed", default=str(root / "references" / "graph" / "seed_graph.yml"))
+    kg_build.add_argument("--out", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    kg_build.add_argument("--json", action="store_true")
+    kg_build.set_defaults(func=cmd_kg_build)
+    kg_validate = kg_sub.add_parser("validate", help="Validate KG index.")
+    kg_validate.add_argument("--index", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    kg_validate.add_argument("--json", action="store_true")
+    kg_validate.set_defaults(func=cmd_kg_validate)
+    kg_search = kg_sub.add_parser("search", help="Search KG nodes.")
+    kg_search.add_argument("query")
+    kg_search.add_argument("--index", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    kg_search.add_argument("--top-k", type=int, default=10)
+    kg_search.add_argument("--json", action="store_true")
+    kg_search.set_defaults(func=cmd_kg_search)
+    kg_neighbors = kg_sub.add_parser("neighbors", help="Show neighboring KG nodes.")
+    kg_neighbors.add_argument("node_id")
+    kg_neighbors.add_argument("--index", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    kg_neighbors.add_argument("--depth", type=int, default=1)
+    kg_neighbors.add_argument("--json", action="store_true")
+    kg_neighbors.set_defaults(func=cmd_kg_neighbors)
+    kg_path = kg_sub.add_parser("path", help="Find a shortest KG path.")
+    kg_path.add_argument("source_id")
+    kg_path.add_argument("target_id")
+    kg_path.add_argument("--index", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    kg_path.add_argument("--json", action="store_true")
+    kg_path.set_defaults(func=cmd_kg_path)
+    kg_explain = kg_sub.add_parser("explain", help="Explain a topic using KG nodes and claim boundaries.")
+    kg_explain.add_argument("topic")
+    kg_explain.add_argument("--index", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    kg_explain.add_argument("--json", action="store_true")
+    kg_explain.set_defaults(func=cmd_kg_explain)
+
+    retrieve_parser = sub.add_parser("retrieve", help="Run hybrid source/evidence/KG retrieval.")
+    retrieve_sub = retrieve_parser.add_subparsers(dest="retrieve_command", required=True)
+    retrieve_hybrid_parser = retrieve_sub.add_parser("hybrid", help="Retrieve BM25 text, evidence cards, and KG context.")
+    retrieve_hybrid_parser.add_argument("query")
+    retrieve_hybrid_parser.add_argument("--index", default=str(default_index_path(root)))
+    retrieve_hybrid_parser.add_argument("--kg-index", default=str(root / "references" / "index" / "gee_kg_index.json"))
+    retrieve_hybrid_parser.add_argument("--cards-dir", default=str(root / "references" / "evidence_cards"))
+    retrieve_hybrid_parser.add_argument("--top-k", type=int, default=8)
+    retrieve_hybrid_parser.add_argument("--json", action="store_true")
+    retrieve_hybrid_parser.set_defaults(func=cmd_retrieve_hybrid)
 
     preflight = sub.add_parser("preflight-hk-ndvi", help="Preflight Hong Kong Sentinel-2 NDVI before export.")
     preflight.add_argument("--project", required=True)

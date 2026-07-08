@@ -229,3 +229,31 @@ The local knowledge base under `references/knowledge_base/` contains distilled g
 ## Security
 
 Live Earth Engine runs require your own Earth Engine account, Google Cloud Project, and local OAuth authentication. Never commit service account JSON files, OAuth tokens, local credential files, refresh tokens, credential paths, private keys, client secrets, private asset ids, draft manuscripts, or unpublished research outputs.
+
+## v0.4 KG-RAG Research Engine
+
+v0.4 introduces a source-grounded KG-RAG layer that strengthens retrieval beyond Markdown BM25. The new loop is:
+
+```text
+official docs / Data Catalog / API docs / papers / vetted repos
+  -> source registry
+  -> evidence cards
+  -> deterministic knowledge graph
+  -> hybrid text + evidence + graph retrieval
+  -> planner hints / semantic validator hints / eval cases
+```
+
+This is not model training, fine-tuning, or a generic chatbot. It is a deterministic public knowledge pipeline for Earth Engine agent workflows. Official Earth Engine documentation and Data Catalog pages remain authoritative for dataset IDs, bands, QA fields, scale factors, API behavior, quotas, projections, and export semantics. Papers and community repositories can support methodology and distilled patterns, but they cannot override official current facts.
+
+New offline commands:
+
+```bash
+gee-skill sources validate --json
+gee-skill evidence search "MODIS NDVI scale factor" --json
+gee-skill kg build --json
+gee-skill kg search "HLS MODIS product intercomparison" --json
+gee-skill kg explain product_intercomparison --json
+gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS pixels?" --json
+```
+
+See [KG-RAG architecture](docs/kg_rag_architecture.md), [knowledge graph schema](docs/knowledge_graph_schema.md), [KG-RAG examples](docs/kg_rag_examples.md), and [source policy](docs/source_policy.md).

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from .rag import SearchResult
 
@@ -25,7 +26,65 @@ def infer_template(task: str) -> str | None:
     return None
 
 
-def build_plan(task: str, results: list[SearchResult], template: str | None = None) -> Plan:
+def _hybrid_grounding_section(bundle: dict[str, Any] | None) -> str:
+    if not bundle:
+        return ""
+
+    def bullets(values: list[Any], *, fallback: str = "No KG-RAG hints found.") -> str:
+        rendered = []
+        for item in values:
+            text = str(item).strip()
+            if text:
+                rendered.append(f"- {text}")
+        return "\n".join(rendered) if rendered else f"- {fallback}"
+
+    card_lines = []
+    for card in bundle.get("evidence_cards", [])[:8]:
+        card_lines.append(
+            f"{card.get('card_id')} (Tier {card.get('trust_tier')}, {card.get('confidence')}): {card.get('title')}"
+        )
+    quality = bundle.get("source_quality_summary", {})
+    quality_line = (
+        f"Tier A={quality.get('tier_a_count', 0)}, Tier B={quality.get('tier_b_count', 0)}, "
+        f"Tier C={quality.get('tier_c_count', 0)}, unreviewed={quality.get('unreviewed_count', 0)}"
+    )
+    return f"""
+## KG-RAG Grounding Hints
+
+Source quality: {quality_line}
+
+### Evidence Cards
+
+{bullets(card_lines, fallback="No reviewed evidence cards found.")}
+
+### Required Rules
+
+{bullets(list(bundle.get("required_rules", [])))}
+
+### Known Failure Cases
+
+{bullets(list(bundle.get("known_failure_cases", [])))}
+
+### Claim Boundaries
+
+{bullets(list(bundle.get("claim_boundaries", [])))}
+
+### Planner Hints
+
+{bullets(list(bundle.get("planner_hints", [])))}
+
+### Validator Hints
+
+{bullets(list(bundle.get("validator_hints", [])))}
+"""
+
+
+def build_plan(
+    task: str,
+    results: list[SearchResult],
+    template: str | None = None,
+    hybrid_bundle: dict[str, Any] | None = None,
+) -> Plan:
     chosen = template or infer_template(task)
     citations = []
     for idx, result in enumerate(results, 1):
@@ -73,9 +132,10 @@ def build_plan(task: str, results: list[SearchResult], template: str | None = No
 - Export descriptions and formats are stable.
 - Script avoids unnecessary `getInfo()` calls.
 
+{_hybrid_grounding_section(hybrid_bundle)}
+
 ## Retrieved Sources
 
 {citation_block}
 """
     return Plan(task=task, template=chosen, body=body)
-

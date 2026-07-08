@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Fwrog/gee-agent-skill/schemas/knowledge-graph.schema.json",
+  "title": "GEE KG index",
+  "type": "object",
+  "required": ["schema_version", "nodes", "edges"],
+  "properties": {
+    "schema_version": {"const": "gee-kg/v0.1"},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "title", "description", "tags", "metadata"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "title": {"type": "string"},
+          "description": {"type": "string"},
+          "tags": {"type": "array"},
+          "metadata": {"type": "object"}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target", "type"],
+        "properties": {
+          "source": {"type": "string"},
+          "target": {"type": "string"},
+          "type": {"type": "string"},
+          "description": {"type": "string"}
+        }
+      }
+    }
+  }
+}

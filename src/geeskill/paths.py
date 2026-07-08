@@ -29,6 +29,35 @@ def default_index_path(root: Path | None = None) -> Path:
     return package_resources_dir() / "index" / "gee_docs_index.json"
 
 
+def default_kg_index_path(root: Path | None = None) -> Path:
+    source_path = (root or project_root()) / "references" / "index" / "gee_kg_index.json"
+    if source_path.exists():
+        return source_path
+    return package_resources_dir() / "index" / "gee_kg_index.json"
+
+
+def default_source_registry_path(root: Path | None = None) -> Path:
+    source_path = (root or project_root()) / "references" / "sources" / "source_registry.yml"
+    if source_path.exists():
+        return source_path
+    return package_resources_dir() / "sources" / "source_registry.yml"
+
+
+def default_evidence_cards_dir(root: Path | None = None) -> Path:
+    source_path = (root or project_root()) / "references" / "evidence_cards"
+    if source_path.exists():
+        return source_path
+    return package_resources_dir() / "evidence_cards"
+
+
+def default_graph_seed_path(root: Path | None = None) -> Path:
+    return (root or project_root()) / "references" / "graph" / "seed_graph.yml"
+
+
+def default_graph_ontology_path(root: Path | None = None) -> Path:
+    return (root or project_root()) / "references" / "graph" / "ontology.yml"
+
+
 def default_templates_dir(root: Path | None = None) -> Path:
     source_path = (root or project_root()) / "assets" / "templates"
     if source_path.exists():

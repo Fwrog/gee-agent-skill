@@ -33,6 +33,38 @@ gee-skill render outputs/plans/ndvi_supplied_aoi.yaml \
 gee-skill validate outputs/scripts/ndvi_supplied_aoi.py --json
 ```
 
+For v0.4 product-intercomparison checks, semantic validation can include the KG-RAG-informed ruleset:
+
+```bash
+gee-skill validate outputs/scripts/hls_modis_product_intercomparison.py \
+  --semantic-rules product_intercomparison \
+  --json
+```
+
+## v0.4 KG-RAG
+
+These commands are offline after indexes are built. They do not require Earth Engine credentials and do not submit live exports.
+
+```bash
+gee-skill sources discover --json
+gee-skill sources validate --json
+
+gee-skill evidence list --json
+gee-skill evidence show modis_mod13q1_ndvi --json
+gee-skill evidence search "MODIS NDVI scale factor" --json
+
+gee-skill kg build --json
+gee-skill kg validate --json
+gee-skill kg search "HLS MODIS product intercomparison" --json
+gee-skill kg neighbors validation_demo:hk_2024_hls_modis_ndvi_v03 --json
+gee-skill kg path validation_demo:hk_2024_hls_modis_ndvi_v03 claim_boundary:product_intercomparison_not_ground_truth --json
+gee-skill kg explain product_intercomparison --json
+
+gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS pixels?" --json
+```
+
+The hybrid retrieval payload includes BM25 text evidence, evidence cards, graph nodes, graph edges, graph paths, required rules, failure cases, claim boundaries, source-tier counts, planner hints, validator hints, and compact prompt context.
+
 ## Preflight And Live Run
 
 Live Earth Engine work requires a user-owned Google Cloud Project and explicit confirmation.
