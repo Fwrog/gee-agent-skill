@@ -85,8 +85,14 @@ def test_template_renders_parseable_script_and_passes_annual_rules(tmp_path: Pat
             "coverage",
             "GEE_CRS_OVERRIDES",
             'AUTHORITY["EPSG","6933"]',
+            "HLS_REFLECTANCE_SCALE_POLICY",
+            "gee_catalog_float_no_0_0001_multiplier",
+            'setOutputMode("MULTIPROBABILITY")',
+            "arrayFlatten",
+            "setDefaultProjection",
         ):
             assert marker in rendered
+        assert ".multiply(0.0001)" not in rendered
 
 
 def test_public_and_packaged_annual_templates_are_identical() -> None:
@@ -166,10 +172,38 @@ def test_each_stable_annual_validation_code_is_emitted(tmp_path: Path) -> None:
         "COMMUNITY_ASSET_METADATA_DRIFT": "EXPECTED_YEARS=[2020]\nfilterDate='x'\ncoverage_count=1\nequal_area=True\nCRS_TRANSFORM=[]\nreproject=True\npopulation_density=True\npixelArea=True\nreduceResolution=True\narea_weighted=True\nprojects_sat_io=True\n",
         "PRIVATE_ASSET_EXPORT_RISK": "EXPECTED_YEARS=[2020]\nfilterDate='x'\ncoverage_count=1\nequal_area=True\nCRS_TRANSFORM=[]\nreproject=True\nasset='projects/example/assets/private_landcover'\n",
         "CATEGORICAL_RESAMPLING_UNSAFE": "EXPECTED_YEARS=[2020]\nfilterDate='x'\ncoverage_count=1\nequal_area=True\nCRS_TRANSFORM=[]\nreproject=True\ncategorical=True\nlandcover_band='class'\n",
+        "HLS_REFLECTANCE_DOUBLE_SCALING": (
+            "EXPECTED_YEARS=[2020]\n"
+            "HLS='NASA/HLS/HLSL30/v002'\n"
+            "def _prepare_l30(image):\n"
+            "    return image.select('B2').multiply(0.0001)\n"
+        ),
     }
     for expected_code, script in bad_scripts.items():
         findings = validate_semantics(_write(tmp_path, script), ["annual_endmember_transition"])
         assert expected_code in {finding.code for finding in findings}
+
+
+def test_forced_categorical_reproject_is_a_memory_warning(tmp_path: Path) -> None:
+    script = """
+EXPECTED_YEARS=[2020]
+filterDate='x'
+coverage_count=1
+equal_area=True
+CRS_TRANSFORM=[]
+setDefaultProjection=True
+categorical=True
+landcover_band='class'
+class_codes=[1]
+PRIVATE_ASSET_EXPORT_POLICY='derived_outputs_only'
+asset='projects/example/assets/private_landcover'
+def class_fraction(image):
+    return image.eq(1).reduceResolution().reproject('EPSG:6933')
+"""
+    findings = validate_semantics(_write(tmp_path, script), ["annual_endmember_transition"])
+    match = [item for item in findings if item.code == "FORCED_REPROJECT_MEMORY_RISK"]
+    assert len(match) == 1
+    assert match[0].severity == "warning"
 
 
 def test_landscan_and_external_cards_are_catalog_and_kg_visible() -> None:

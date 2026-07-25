@@ -15,7 +15,7 @@ preflight_profile: optical_index
 validation_profile: annual_endmember_transition
 output_schema: year, feature_stack, endpoint_samples, urban_probability, model_uncertainty, valid_observation_count, export_task_description
 live_risk_level: high
-last_checked: 2026-07-25
+last_checked: 2026-07-26
 risk_level: high
 
 ## Use
@@ -26,11 +26,17 @@ Use this recipe to construct a reviewable annual feature stack on one fixed equa
 
 - Declare every expected year and verify annual coverage before export.
 - Pin one CRS and affine transform for all annual feature images.
+- Treat Earth Engine HLS v002 bands as already exposed floating-point
+  reflectance; do not reapply the source-file 0.0001 packing factor, and run a
+  bounded value-range smoke check.
 - Verify that Earth Engine can parse the selected CRS identifier. In
   particular, encode EPSG:6933 with its reviewed WKT1 definition because the
   short identifier is not currently accepted by Earth Engine.
 - Convert population counts to density before area-weighted aggregation; verify population conservation independently.
 - Aggregate categorical land cover as per-class area fractions or with nearest-neighbour semantics, never bilinear interpolation of class codes.
+- Defer whole-image target-grid realization to the final reducer/export
+  request; forcing an intermediate cross-CRS `reproject()` can exceed worker
+  dimensions even when the final 1-km output is small.
 - Treat community-catalog metadata as drift-prone and verify asset ID, band, year coverage, license, and image time properties.
 - Prefer `NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG` for a consistently processed multi-year activity series. If annual V2.1 and V2.2 products are joined, declare a cross-version policy and verify each expected year; V2.2 alone starts in 2022.
 - Export only derived products from private assets unless redistribution permission is documented.

@@ -42,6 +42,7 @@ SCALE = abs(CRS_TRANSFORM[0])
 GRID_ALIGNMENT_POLICY = "fixed_equal_area_crs_transform"
 COUNT_AGGREGATION_POLICY = "count_to_density_then_area_weighted"
 CATEGORICAL_AGGREGATION_POLICY = "per_class_area_fraction_no_bilinear"
+HLS_REFLECTANCE_SCALE_POLICY = "gee_catalog_float_no_0_0001_multiplier"
 COMMUNITY_ASSET_METADATA_POLICY = "verify_asset_band_years_and_system_time_start"
 PRIVATE_ASSET_EXPORT_POLICY = "derived_outputs_only"
 CROSS_VERSION_POLICY = "single_reviewed_activity_collection_for_all_expected_years"
@@ -83,10 +84,22 @@ def _target_projection() -> ee.Projection:
     return ee.Projection(CRS, CRS_TRANSFORM)
 
 
-def _target_grid(image: ee.Image) -> ee.Image:
-    return image.setDefaultProjection(_target_projection()).reproject(
-        crs=CRS,
-        crsTransform=CRS_TRANSFORM,
+def _nested_projection(scale: int) -> ee.Projection:
+    return ee.Projection(
+        CRS,
+        [scale, 0, CRS_TRANSFORM[2], 0, -scale, CRS_TRANSFORM[5]],
+    )
+
+
+def _continuous_mean_to_target(
+    image: ee.Image, source_projection: ee.Projection
+) -> ee.Image:
+    # Give composites a physical source grid, request overlap-weighted
+    # aggregation, and defer final target-grid realization to the export.
+    return (
+        image.setDefaultProjection(source_projection)
+        .reduceResolution(reducer=ee.Reducer.mean(), maxPixels=4096)
+        .setDefaultProjection(_target_projection())
     )
 
 
@@ -100,7 +113,6 @@ def _prepare_l30(image: ee.Image) -> ee.Image:
     optical = (
         _mask_hls(image)
         .select(["B2", "B3", "B4", "B5", "B6", "B7"], ["blue", "green", "red", "nir", "swir1", "swir2"])
-        .multiply(0.0001)
     )
     return _add_indices(optical).copyProperties(image, ["system:time_start"])
 
@@ -109,7 +121,6 @@ def _prepare_s30(image: ee.Image) -> ee.Image:
     optical = (
         _mask_hls(image)
         .select(["B2", "B3", "B4", "B8A", "B11", "B12"], ["blue", "green", "red", "nir", "swir1", "swir2"])
-        .multiply(0.0001)
     )
     return _add_indices(optical).copyProperties(image, ["system:time_start"])
 
@@ -154,7 +165,9 @@ def _annual_hls(year: int, aoi: ee.Geometry) -> ee.Image:
         ]
     )
     valid = merged.select("red").count().rename("valid_observation_count")
-    return _target_grid(selected.addBands(valid)).set({"year": year, "system:time_start": start.millis()})
+    return _continuous_mean_to_target(
+        selected.addBands(valid), _nested_projection(30)
+    ).set({"year": year, "system:time_start": start.millis()})
 
 
 def _annual_population(year: int, aoi: ee.Geometry) -> ee.Image:
@@ -168,35 +181,39 @@ def _annual_population(year: int, aoi: ee.Geometry) -> ee.Image:
     )
     population_count = ee.Image(source)
     population_density = population_count.divide(ee.Image.pixelArea())
-    target_density = population_density.reduceResolution(reducer=ee.Reducer.mean(), maxPixels=4096).reproject(
-        crs=CRS,
-        crsTransform=CRS_TRANSFORM,
-    )
-    return target_density.multiply(ee.Image.pixelArea()).rename("population_count").set(
+    target_density = population_density.reduceResolution(
+        reducer=ee.Reducer.mean(), maxPixels=4096
+    ).setDefaultProjection(_target_projection())
+    return target_density.multiply(SCALE * SCALE).rename("population_count").set(
         {"year": year, "system:time_start": start.millis()}
     )
 
 
 def _annual_activity(year: int, aoi: ee.Geometry) -> ee.Image:
     start = ee.Date.fromYMD(year, 1, 1)
-    annual = (
+    collection = (
         ee.ImageCollection(ACTIVITY_COLLECTION_ID)
         .filterDate(start, start.advance(1, "year"))
         .filterBounds(aoi)
         .select(ACTIVITY_BAND)
+    )
+    native_projection = ee.Image(collection.first()).projection()
+    annual = (
+        collection
         .mean()
         .rename("activity")
     )
-    return _target_grid(annual).set({"year": year, "system:time_start": start.millis()})
+    return _continuous_mean_to_target(annual, native_projection).set(
+        {"year": year, "system:time_start": start.millis()}
+    )
 
 
 def _class_fraction(image: ee.Image, class_codes: list[int], name: str) -> ee.Image:
     masks = [image.eq(code) for code in class_codes]
     combined = ee.ImageCollection.fromImages(masks).max()
-    fraction = combined.reduceResolution(reducer=ee.Reducer.mean(), maxPixels=4096).reproject(
-        crs=CRS,
-        crsTransform=CRS_TRANSFORM,
-    )
+    fraction = combined.reduceResolution(
+        reducer=ee.Reducer.mean(), maxPixels=4096
+    ).setDefaultProjection(_target_projection())
     return fraction.rename(name)
 
 
@@ -219,7 +236,8 @@ def _annual_landcover(year: int, aoi: ee.Geometry) -> ee.Image:
 
 
 def _accessibility() -> ee.Image:
-    return _target_grid(ee.Image(ACCESSIBILITY_IMAGE_ID).select("accessibility").rename("accessibility"))
+    source = ee.Image(ACCESSIBILITY_IMAGE_ID).select("accessibility").rename("accessibility")
+    return _continuous_mean_to_target(source, source.projection())
 
 
 def _annual_feature_stack(year: int, aoi: ee.Geometry) -> ee.Image:
@@ -296,7 +314,7 @@ def _train_classifier(samples: ee.FeatureCollection) -> ee.Classifier:
             minLeafPopulation=MIN_LEAF_POPULATION,
             seed=RANDOM_SEED,
         )
-        .setOutputMode("PROBABILITY")
+        .setOutputMode("MULTIPROBABILITY")
         .train(features=samples, classProperty="endpoint_label", inputProperties=FEATURE_BANDS)
     )
 
@@ -326,7 +344,11 @@ def build_export_tasks() -> list[ee.batch.Task]:
     ]
     for year in EXPECTED_YEARS:
         feature_stack = _annual_feature_stack(year, aoi).select(FEATURE_BANDS)
-        probability = feature_stack.classify(classifier).rename("urban_probability")
+        probability = (
+            feature_stack.classify(classifier)
+            .arrayFlatten([["rural_probability", "urban_probability"]])
+            .select("urban_probability")
+        )
         uncertainty = probability.multiply(ee.Image(1).subtract(probability)).multiply(4).rename("model_uncertainty")
         derived = probability.addBands(uncertainty).addBands(feature_stack.select("valid_observation_count"))
         tasks.append(

@@ -732,6 +732,36 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
     findings: list[Finding] = []
     code_text = _without_comments(text)
     code_lower = code_text.lower()
+    uses_hls = "nasa/hls/hlsl30" in code_lower or "nasa/hls/hlss30" in code_lower
+    if uses_hls:
+        preparation_blocks = re.findall(
+            r"def\s+_prepare_(?:l30|s30)\b.*?(?=\ndef\s+|\Z)",
+            text,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        double_scaled = any(
+            re.search(r"\.multiply\(\s*(?:0\.0001|1e-?4)\s*\)", block)
+            for block in preparation_blocks
+        )
+        if double_scaled:
+            findings.append(
+                Finding(
+                    "error",
+                    "HLS_REFLECTANCE_DOUBLE_SCALING",
+                    "Earth Engine HLS v002 reflectance is already exposed as "
+                    "floating point; reapplying the source-file packing factor "
+                    "produces implausibly small values.",
+                    hint="Remove the HLS .multiply(0.0001) call and run a bounded "
+                    "reflectance range smoke test.",
+                    category="VALIDATION_ERROR",
+                    rule_id=(
+                        f"{ruleset}.HLS_REFLECTANCE_DOUBLE_SCALING."
+                        "gee-v002-float"
+                    ),
+                    ruleset=ruleset,
+                    retryable=True,
+                )
+            )
 
     has_annual_contract = (
         "expected_years" in code_lower
@@ -851,6 +881,29 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
             hint="Convert each reviewed class to a binary mask and aggregate the mask to an area fraction.",
             retryable=True,
         )
+        if re.search(
+            r"reduceresolution\s*\(.*?\.reproject\s*\(",
+            lower,
+            flags=re.DOTALL,
+        ):
+            findings.append(
+                Finding(
+                    "warning",
+                    "FORCED_REPROJECT_MEMORY_RISK",
+                    "A categorical reduceResolution chain forces an intermediate "
+                    "reproject; large cross-CRS regions can exceed Earth Engine "
+                    "worker dimensions before the final export grid is applied.",
+                    hint="Prefer setDefaultProjection after reduceResolution and "
+                    "supply the exact CRS transform to the final export/reducer.",
+                    category="REDUCER_SCALE_ERROR",
+                    rule_id=(
+                        f"{ruleset}.FORCED_REPROJECT_MEMORY_RISK."
+                        "categorical-intermediate"
+                    ),
+                    ruleset=ruleset,
+                    retryable=True,
+                )
+            )
 
     joins_viirs_versions = "annual_v21" in code_lower and "annual_v22" in code_lower
     if joins_viirs_versions and "cross_version_policy" not in code_lower:
