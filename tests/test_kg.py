@@ -13,6 +13,9 @@ def test_build_and_validate_graph():
     assert report["ok"], report
     assert report["node_count"] >= 25
     assert report["edge_count"] >= 25
+    assert graph.metadata["seed_path"] == "references/graph/seed_graph.yml"
+    assert "\\" not in graph.metadata["seed_path"]
+    assert not Path(graph.metadata["seed_path"]).is_absolute()
 
 
 def test_graph_search_finds_product_intercomparison():

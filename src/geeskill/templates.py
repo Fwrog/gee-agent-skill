@@ -210,6 +210,44 @@ TEMPLATE_SCHEMAS: dict[str, dict[str, Any]] = {
         ],
         "positive_numbers": ["scale", "max_pixels"],
     },
+    "recipes/annual_endmember_transition": {
+        "required": [
+            "script_name",
+            "years",
+            "aoi_asset",
+            "annual_landcover_asset",
+            "activity_collection_id",
+            "activity_band",
+            "accessibility_image_id",
+            "landcover_band",
+            "impervious_class_codes",
+            "cropland_class_codes",
+            "ecological_class_codes",
+            "target_crs",
+            "target_crs_transform",
+            "stable_year_min",
+            "urban_impervious_threshold",
+            "rural_cropland_threshold",
+            "urban_activity_threshold",
+            "rural_activity_threshold",
+            "samples_per_class",
+            "trees",
+            "min_leaf_population",
+            "random_seed",
+            "drive_folder",
+            "file_prefix",
+            "max_pixels",
+        ],
+        "positive_numbers": [
+            "stable_year_min",
+            "urban_impervious_threshold",
+            "rural_cropland_threshold",
+            "samples_per_class",
+            "trees",
+            "min_leaf_population",
+            "max_pixels",
+        ],
+    },
 }
 
 
@@ -247,6 +285,19 @@ def validate_context(template_name: str, context: dict[str, Any]) -> None:
         year = int(context["year"])
         if year < 1980 or year > 2100:
             raise TemplateContextError("year must be between 1980 and 2100")
+    if "years" in context:
+        years = context["years"]
+        if not isinstance(years, list) or not years:
+            raise TemplateContextError("years must be a non-empty list")
+        normalized_years = [int(year) for year in years]
+        if any(year < 1980 or year > 2100 for year in normalized_years):
+            raise TemplateContextError("years must be between 1980 and 2100")
+        if normalized_years != sorted(set(normalized_years)):
+            raise TemplateContextError("years must be sorted and unique")
+    if "target_crs_transform" in context:
+        transform = context["target_crs_transform"]
+        if not isinstance(transform, list) or len(transform) != 6 or any(not isinstance(value, (int, float)) for value in transform):
+            raise TemplateContextError("target_crs_transform must be a six-number affine transform")
     for key in schema.get("positive_numbers", []):
         if key in context and float(context[key]) <= 0:
             raise TemplateContextError(f"{key} must be positive")

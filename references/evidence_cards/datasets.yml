@@ -494,3 +494,120 @@ cards:
   - VIIRS vegetation index
   negative_queries:
   - Generate a GEE workflow for flood mapping
+- card_id: landscan_global_community
+  title: LandScan Global community asset dataset card
+  source_id: gee-community-catalog-landscan-global
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/projects_sat-io_open-datasets_ORNL_LANDSCAN_GLOBAL
+  source_type: community_docs
+  trust_tier: B
+  allowed_use: summary_only
+  topics:
+  - LandScan
+  - population_count
+  - annual
+  - community_asset
+  extracted_facts:
+  - projects/sat-io/open-datasets/ORNL/LANDSCAN_GLOBAL is directly callable as an ee.ImageCollection.
+  - Band b1 stores estimated population counts at approximately 30 arc-seconds / 1 km.
+  - The catalog states CC BY 4.0 attribution terms and explicitly says the community asset is not managed by Google Earth Engine.
+  extracted_patterns:
+  - Filter by each expected year, verify exactly one reviewed annual image and band b1, convert counts to density, aggregate density to the target equal-area grid, and multiply by target pixel area.
+  limitations:
+  - Catalog prose and live collection metadata can differ; a 2026-07-25 live check exposed 2024 while the catalog availability text ended in 2023.
+  - LandScan is a modeled ambient-population estimate, not a census-cell ground truth.
+  claim_boundaries:
+  - Direct public availability does not remove the need for annual coverage, population-conservation, license, and attribution checks.
+  applicable_workflows:
+  - annual_endmember_transition
+  - change_detection
+  - zonal_statistics
+  applicable_datasets:
+  - projects/sat-io/open-datasets/ORNL/LANDSCAN_GLOBAL
+  applicable_operators:
+  - filterDate
+  - select
+  - pixelArea
+  - reduceResolution
+  known_failure_modes:
+  - annual_coverage_gap
+  - count_resampling_unsafe
+  - community_asset_metadata_drift
+  validation_implications:
+  - Require explicit expected years, expected band b1, system time metadata, density conversion, target grid, and a population-conservation audit.
+  planner_hints:
+  - Mark the asset as community-managed, record CC BY 4.0 attribution, and keep catalog-status metadata separate from live asset observations.
+  validator_hints:
+  - Flag direct interpolation or averaging of b1 counts and missing community-asset metadata contracts.
+  citation: Earth Engine Community Data Catalog LandScan Global entry, checked 2026-07-25.
+  last_checked: '2026-07-25'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - LandScan Global community asset
+  - landscan_global_community
+  - population count
+  - annual population
+  aliases:
+  - LANDSCAN_GLOBAL
+  - ORNL LandScan
+  - LandScan 1km
+  negative_queries:
+  - Generate a Sentinel-1 flood workflow
+- card_id: external_annual_categorical_landcover
+  title: External annual categorical land-cover asset contract
+  source_id: google-earth-engine-managing-assets
+  source_url: https://developers.google.com/earth-engine/guides/manage_assets
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - external_asset
+  - annual_landcover
+  - categorical
+  - private_asset
+  extracted_facts:
+  - User-supplied Earth Engine assets retain source-specific class semantics, license, version, and access controls.
+  extracted_patterns:
+  - Represent each reviewed class as a binary mask and aggregate to target-grid class fractions, or use nearest-neighbour semantics when a categorical code raster is required.
+  limitations:
+  - This generic card does not assert the availability, license, class mapping, accuracy, or year coverage of any particular external product.
+  claim_boundaries:
+  - A public workflow may describe the asset contract but must not publish private asset IDs, raw rasters, or redistribution-sensitive content.
+  applicable_workflows:
+  - annual_endmember_transition
+  - change_detection
+  - landcover_summary
+  applicable_datasets:
+  - external/annual-categorical-landcover
+  applicable_operators:
+  - eq
+  - reduceResolution
+  - reproject
+  known_failure_modes:
+  - annual_coverage_gap
+  - categorical_resampling_unsafe
+  - private_asset_export_risk
+  validation_implications:
+  - Fail bilinear interpolation of categorical codes and require derived-only export policy for private assets.
+  planner_hints:
+  - Require source, version, license, expected years, band, class map, checksum or asset manifest, and aggregation semantics.
+  validator_hints:
+  - Check for class-fraction or nearest-neighbour handling and for a private-asset export boundary.
+  citation: Earth Engine asset management and resampling guidance, checked 2026-07-25.
+  last_checked: '2026-07-25'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - External annual categorical land-cover asset
+  - external_annual_categorical_landcover
+  - class fraction
+  - derived outputs only
+  aliases:
+  - annual land-cover asset
+  - uploaded categorical raster
+  negative_queries:
+  - Publicly redistribute my private asset

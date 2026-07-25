@@ -26,6 +26,7 @@ cards:
   applicable_workflows:
   - vegetation_index
   - product_intercomparison
+  - annual_endmember_transition
   - validation
   applicable_datasets:
   - MODIS/061/MOD13Q1
@@ -92,6 +93,7 @@ cards:
   applicable_workflows:
   - vegetation_index
   - product_intercomparison
+  - annual_endmember_transition
   applicable_datasets:
   - NASA/HLS/HLSL30/v002
   applicable_operators:

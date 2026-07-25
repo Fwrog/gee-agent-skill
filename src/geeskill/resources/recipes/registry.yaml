@@ -129,6 +129,25 @@ recipes:
       - Map Sentinel-1 flood extent for a supplied AOI before and after a storm.
     limitations:
       - Flood thresholds and before/after windows require event-specific domain review.
+  - recipe_id: annual-endmember-transition
+    task_type: change_detection
+    description: Build annual equal-area multi-source features, select stable endpoint samples, train a shared classifier, and export yearly probabilities.
+    required_inputs: [aoi, time_range, annual_categorical_landcover, output]
+    optional_inputs: [activity_collection, population_collection, accessibility_image, grid, endpoint_rules, random_seed]
+    candidate_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002, projects/sat-io/open-datasets/ORNL/LANDSCAN_GLOBAL, NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG, external/annual-categorical-landcover]
+    default_dataset_policy: Use HLS v002 for annual optical features; prefer one consistently processed monthly activity collection for multi-year aggregation; verify every community or external asset year and band before use; aggregate counts and categories with their declared semantics.
+    template: recipes/annual_endmember_transition
+    preflight_profile: optical_index
+    validation_profile: annual_endmember_transition
+    output_schema: [year, feature_stack, endpoint_samples, urban_probability, model_uncertainty, valid_observation_count, export_task_description]
+    live_risk_level: high
+    examples:
+      - Build annual transition probabilities for a reviewed multi-year AOI on a fixed equal-area grid.
+    limitations:
+      - The recipe is generic render-and-validate capability and has no public live-export evidence.
+      - Endpoint thresholds, class codes, activity coverage, and private-asset permissions require study-specific review.
+      - Joining VIIRS ANNUAL_V21 and ANNUAL_V22 requires an explicit cross-version policy; ANNUAL_V22 alone does not cover years before 2022.
+      - Classifier probability near 0.5 is model ambiguity unless independently supported as spatial mixture.
   - recipe_id: zonal-statistics-table
     task_type: zonal_statistics
     description: Reduce an image or index product over supplied zones and export a table.

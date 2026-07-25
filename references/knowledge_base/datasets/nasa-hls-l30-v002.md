@@ -12,12 +12,12 @@ temporal_coverage: 2013-present; check catalog for current ingestion status
 spatial_resolution: 30m
 bands: B1, B2, B3, B4, B5, B6, B7, B9, B10, B11, Fmask
 qa_bands: Fmask
-common_uses: harmonized Landsat surface reflectance, NDVI, multi-sensor time series, product intercomparison
-recommended_tasks: vegetation_index, product_intercomparison, export_image
+common_uses: harmonized Landsat surface reflectance, NDVI, annual optical features, multi-sensor time series, product intercomparison
+recommended_tasks: vegetation_index, annual_endmember_transition, product_intercomparison, export_image
 scale_notes: Reflectance bands should be explicitly scaled before physical range checks; NDVI uses red B4 and NIR B5.
 projection_notes: HLS is 30m and must be aggregated before comparison with coarser products.
 license_attribution: NASA LP DAAC HLS data terms apply.
-last_checked: 2026-07-02
+last_checked: 2026-07-25
 risk_level: medium
 
 ## Use
@@ -33,3 +33,4 @@ Use `Fmask` to remove cloud, adjacent cloud/shadow, cloud shadow, snow/ice, wate
 - HLS is not a ground-truth product.
 - HLS 30m outputs should not be compared directly with MODIS 250m pixels.
 - Exported image bands should be cast to a uniform dtype before Drive export.
+- Annual workflows must persist per-year image counts and valid-observation rasters; catalog availability does not guarantee usable AOI coverage.
