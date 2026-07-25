@@ -48,6 +48,9 @@ This is an agent-native GEE harness, not a GUI controller. Prefer `gee-skill` co
 20. Avoid overclaiming: say `live verified` only for workflows marked live export completed in `docs/capability_matrix.md`; say `render/validate verified`, `dry-run verified`, `mocked preflight blocked`, `planned`, or `experimental` for all other cases.
 21. When a concrete task reveals a reusable lesson, classify it before editing public knowledge: dataset card, rule card, failure case, workflow card, or private-only note. Public cards must include source, `last_checked`, scope, limitations, and what they cannot claim.
 22. For NDVI demo reasonableness, use a validation ladder rather than a single truth source: MODIS VI products for coarse temporal checks, Landsat for independent sensor checks, JRC water for all-surface interpretation, Dynamic World for time-matched strata, and ESA WorldCover for static class sanity.
+23. For private raster ingestion, partition work before asking the user to act. Reserve account ownership, billing/cost acceptance, organization policy, license decisions, interactive authentication, and unavailable local-to-cloud upload surfaces for a human checkpoint. Keep inventory, checksums, manifests, ingestion commands, task monitoring, metadata audits, failed-subset retries, preflight, and downstream analysis agent-owned whenever the authenticated CLI/API and authority are already available.
+24. Request only the minimum non-secret checkpoint needed to resume: project id, bucket/prefix or completed object URIs, asset root/pattern, expected years, task ids or completion status, and the saved preflight-report path. Never request OAuth files, API keys, service-account JSON, or credential contents.
+25. After the checkpoint is satisfied, resume the code path without asking the user to keep operating the UI. Verify asset existence, band dtype/name, projection/transform, mask/no-data semantics, categorical pyramiding policy, time metadata, expected-year coverage, license/export boundary, and downstream aggregation semantics before feature construction.
 
 ## Golden Examples
 
@@ -125,6 +128,7 @@ Every planned or executed workflow should write `outputs/runs/<run_id>/` with:
 - Read [docs/troubleshooting.md](docs/troubleshooting.md) for common failures and boundary mismatch guidance.
 - Read [docs/error_taxonomy.md](docs/error_taxonomy.md) for failure categories and recovery hints.
 - Read [docs/extending.md](docs/extending.md) before adding workflow recipes, dataset cards, or semantic validators.
+- Read [references/knowledge_base/workflows/private-raster-ingestion-handoff.md](references/knowledge_base/workflows/private-raster-ingestion-handoff.md) when local/private rasters must pass through Cloud Storage or an Earth Engine asset-ingestion checkpoint.
 - Use `references/knowledge_base/` as the retrieval corpus; official Google docs are canonical, research notes are design guidance.
 - Use `references/corpus/github_gee_seed_repos.yml` as the 30-50 reviewed seed inventory for pattern-only corpus expansion.
 - Use `references/corpus/github_gee_discovery_100.yml` as the 100+ metadata-only discovery queue.
