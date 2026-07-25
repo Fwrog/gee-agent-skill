@@ -22,6 +22,7 @@ cards:
   applicable_workflows:
   - product_intercomparison
   - vegetation_index
+  - annual_endmember_transition
   applicable_datasets:
   - MODIS/061/MOD13Q1
   applicable_operators: []

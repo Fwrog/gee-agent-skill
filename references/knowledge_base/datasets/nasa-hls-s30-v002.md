@@ -12,12 +12,12 @@ temporal_coverage: 2015-present; check catalog for current ingestion status
 spatial_resolution: 30m
 bands: B1, B2, B3, B4, B5, B6, B7, B8, B8A, B9, B10, B11, B12, Fmask
 qa_bands: Fmask
-common_uses: harmonized Sentinel-2 surface reflectance, NDVI, dense optical time series, HLS/MODIS intercomparison
-recommended_tasks: vegetation_index, product_intercomparison, export_image
-scale_notes: Reflectance bands should be explicitly scaled before physical range checks. Default NDVI uses red B4 and narrow NIR B8A; broad NIR B8 is a sensitivity option.
+common_uses: harmonized Sentinel-2 surface reflectance, NDVI, annual optical features, dense optical time series, HLS/MODIS intercomparison
+recommended_tasks: vegetation_index, annual_endmember_transition, product_intercomparison, export_image
+scale_notes: Earth Engine exposes HLS v002 reflectance as floating-point values; do not reapply the source-file 0.0001 packing factor. Verify sampled physical ranges before export. Default NDVI uses red B4 and narrow NIR B8A; broad NIR B8 is a sensitivity option.
 projection_notes: HLS is 30m and must be aggregated before comparison with coarser products.
 license_attribution: NASA LP DAAC HLS data terms apply.
-last_checked: 2026-07-02
+last_checked: 2026-07-26
 risk_level: medium
 
 ## Use
@@ -31,5 +31,8 @@ Use `Fmask` to remove cloud, adjacent cloud/shadow, cloud shadow, snow/ice, wate
 ## Known Limitations
 
 - S30 red-edge and NIR choices must be explicit; default to B8A for narrow-NIR HLS/MODIS comparison.
+- Applying `.multiply(0.0001)` to the Earth Engine v002 reflectance bands
+  double-scales them; retain a bounded reflectance plausibility check.
 - HLS 30m outputs should not be compared directly with MODIS 250m pixels.
 - Exported image bands should be cast to a uniform dtype before Drive export.
+- Annual workflows must persist per-year image counts and valid-observation rasters; catalog availability does not guarantee usable AOI coverage.

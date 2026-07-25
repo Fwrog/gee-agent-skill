@@ -131,6 +131,28 @@ def validate_v03_plan_schema(plan: dict[str, Any]) -> list[str]:
                 continue
             if not _is_nonempty_string(item.get("dataset_id")):
                 errors.append(f"{field}[{index}].dataset_id must be a non-empty string")
+            for key in ("catalog_status", "license", "source_role"):
+                if key in item and not _is_nonempty_string(item[key]):
+                    errors.append(f"{field}[{index}].{key} must be a non-empty string")
+            if "private_asset" in item and not isinstance(item["private_asset"], bool):
+                errors.append(f"{field}[{index}].private_asset must be a boolean")
+            if "expected_years" in item:
+                years = item["expected_years"]
+                if not isinstance(years, list) or not years:
+                    errors.append(f"{field}[{index}].expected_years must be a non-empty list")
+                elif (
+                    any(not isinstance(year, int) or isinstance(year, bool) or year < 1980 or year > 2100 for year in years)
+                    or len(years) != len(set(years))
+                ):
+                    errors.append(f"{field}[{index}].expected_years must contain unique years between 1980 and 2100")
+            if "aggregation_semantics" in item and item["aggregation_semantics"] not in {
+                "continuous_mean",
+                "count_density_area_weighted",
+                "categorical_class_fraction",
+                "categorical_nearest",
+                "none",
+            }:
+                errors.append(f"{field}[{index}].aggregation_semantics is unsupported")
 
     for field in ("indices_or_variables", "operators"):
         values = _require_list(plan, field, errors, min_items=1)

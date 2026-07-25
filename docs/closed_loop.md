@@ -23,6 +23,7 @@ user task
 | Rule card | Export images must use uniform band dtype; public boundary substitutes cannot support authoritative local claims. |
 | Failure case | Unsupported CRS, empty collection, mixed export dtype, deprecated asset path, schema mismatch. |
 | Workflow card | Plan-first NDVI export, land-cover summary, validation ladder, adaptive browser-backed knowledge loop. |
+| Handoff contract | Which step requires human authority, the minimum non-secret checkpoint, and the programmatic continuation after it. |
 | Evidence card | Source-grounded facts, limitations, claim boundaries, planner hints, and validator hints. |
 | KG relation | Stable links such as dataset requires scale factor, workflow has failure mode, demo limits claim. |
 
@@ -44,6 +45,7 @@ Before a task-specific lesson enters the public repo:
 - record `source_url`, `last_checked`, scope, and known limitations;
 - state what the card cannot support;
 - scan for private terms and private asset ids;
+- generalize real bucket names, project ids, local paths, task ids, and study regions into placeholders;
 - rebuild the RAG index and KG index;
 - add or update tests that prove retrieval, graph, planner, validator, or eval coverage.
 

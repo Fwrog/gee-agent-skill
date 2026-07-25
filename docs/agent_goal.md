@@ -20,6 +20,8 @@ The repository should contain reusable infrastructure, public v0.1/v0.2 regressi
 - Use Data Analytics after data exists to validate charts, reports, and metric definitions.
 - Use Computer Use only when no CLI/API/plugin route can complete the task.
 - Use imagegen only for documentation visuals, never as scientific evidence.
+- Split private-data ingestion into a minimal human authority checkpoint and an agent-owned continuation. After the user supplies non-secret target/status facts, continue with metadata checks, task monitoring, failed-subset retry, preflight, and downstream code instead of returning routine CLI work to the user.
+- Never request OAuth files, service-account JSON, tokens, keys, or credential contents. Persist only project/asset/object identifiers, task IDs, checksums, data semantics, and validation reports that the public/private boundary permits.
 
 ## Public v0.3 Requirements
 

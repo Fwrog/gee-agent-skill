@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import io
 from pathlib import Path
+import re
 import tokenize
 
 from .validation import Finding
@@ -41,6 +42,10 @@ RULESETS = {
     "product_intercomparison": SemanticRuleSet(
         "product_intercomparison",
         "Scale-aware product intercomparison with QA, scale factors, projection handling, and claim boundaries.",
+    ),
+    "annual_endmember_transition": SemanticRuleSet(
+        "annual_endmember_transition",
+        "Annual multi-source endpoint classification with coverage, grid, aggregation, metadata, and private-asset safeguards.",
     ),
 }
 
@@ -83,6 +88,11 @@ def infer_semantic_rulesets(text: str, explicit: str | None = None) -> list[str]
         or ("hls" in lower and "modis" in lower and "ndvi" in lower)
     ):
         rules.append("product_intercomparison")
+    if (
+        "annual_endmember_transition" in lower
+        or ("expected_years" in lower and "endpoint_label" in lower and "urban_probability" in lower)
+    ):
+        rules.append("annual_endmember_transition")
     return rules
 
 
@@ -118,6 +128,8 @@ def validate_semantics(path: Path, rulesets: list[str] | None = None) -> list[Fi
             findings.extend(_dynamic_world_landcover(text, lower))
         elif ruleset == "product_intercomparison":
             findings.extend(_product_intercomparison(text, lower))
+        elif ruleset == "annual_endmember_transition":
+            findings.extend(_annual_endmember_transition(text, lower))
         else:
             findings.append(Finding("warning", "unknown-semantic-ruleset", f"Unknown ruleset: {ruleset}", ruleset=ruleset))
     if selected and not any(item.severity == "error" for item in findings):
@@ -711,5 +723,200 @@ def _product_intercomparison(text: str, lower: str) -> list[Finding]:
             "Public Golden status requires task/trace evidence, readback, analysis/report evidence, tests, and claim boundaries.",
             "VALIDATION_ERROR",
             hint="Do not promote a demo to Golden until the public evidence checklist is satisfied.",
+        )
+    return findings
+
+
+def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
+    ruleset = "annual_endmember_transition"
+    findings: list[Finding] = []
+    code_text = _without_comments(text)
+    code_lower = code_text.lower()
+    uses_hls = "nasa/hls/hlsl30" in code_lower or "nasa/hls/hlss30" in code_lower
+    if uses_hls:
+        preparation_blocks = re.findall(
+            r"def\s+_prepare_(?:l30|s30)\b.*?(?=\ndef\s+|\Z)",
+            text,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        double_scaled = any(
+            re.search(r"\.multiply\(\s*(?:0\.0001|1e-?4)\s*\)", block)
+            for block in preparation_blocks
+        )
+        if double_scaled:
+            findings.append(
+                Finding(
+                    "error",
+                    "HLS_REFLECTANCE_DOUBLE_SCALING",
+                    "Earth Engine HLS v002 reflectance is already exposed as "
+                    "floating point; reapplying the source-file packing factor "
+                    "produces implausibly small values.",
+                    hint="Remove the HLS .multiply(0.0001) call and run a bounded "
+                    "reflectance range smoke test.",
+                    category="VALIDATION_ERROR",
+                    rule_id=(
+                        f"{ruleset}.HLS_REFLECTANCE_DOUBLE_SCALING."
+                        "gee-v002-float"
+                    ),
+                    ruleset=ruleset,
+                    retryable=True,
+                )
+            )
+
+    has_annual_contract = (
+        "expected_years" in code_lower
+        and "filterdate" in code_lower
+        and "coverage" in code_lower
+        and ("_count" in code_lower or ".size()" in code_lower)
+    )
+    findings += _require(
+        has_annual_contract,
+        ruleset,
+        "ANNUAL_COVERAGE_GAP",
+        "Annual workflows must declare expected years and produce per-source, per-year coverage evidence before export.",
+        "EMPTY_COLLECTION",
+        hint="Declare EXPECTED_YEARS and export a coverage manifest with annual image counts.",
+        retryable=True,
+    )
+
+    has_fixed_grid = (
+        ("crs_transform" in code_lower or "crstransform" in code_lower)
+        and ("setdefaultprojection" in code_lower or "reproject" in code_lower)
+        and ("equal_area" in code_lower or "equal-area" in code_lower or "epsg:6933" in code_lower)
+    )
+    findings += _require(
+        has_fixed_grid,
+        ruleset,
+        "GRID_ALIGNMENT_MISMATCH",
+        "Annual multi-source features must use one explicit equal-area CRS and affine grid transform.",
+        "REDUCER_SCALE_ERROR",
+        hint="Expose CRS/CRS_TRANSFORM and apply the same target projection to every annual feature.",
+        retryable=True,
+    )
+
+    uses_population_count = (
+        "landscan" in code_lower
+        or "population_count" in code_lower
+        or "estimated population count" in code_lower
+    )
+    if uses_population_count:
+        has_count_safe_aggregation = (
+            "population_density" in code_lower
+            and "pixelarea" in code_lower
+            and "reduceresolution" in code_lower
+            and ("area_weighted" in code_lower or "area-weighted" in code_lower)
+        )
+        findings += _require(
+            has_count_safe_aggregation,
+            ruleset,
+            "COUNT_RESAMPLING_UNSAFE",
+            "Population-count rasters must be converted to density before area-weighted aggregation to the target grid.",
+            "REDUCER_SCALE_ERROR",
+            hint="Divide native counts by pixelArea, aggregate density, then multiply by target pixel area and verify conservation.",
+            retryable=True,
+        )
+
+    uses_community_asset = any(
+        marker in code_lower
+        for marker in ("projects/sat-io/", "projects_sat_io", "community_asset_id", "community_asset")
+    )
+    if uses_community_asset:
+        has_metadata_contract = all(
+            marker in code_lower
+            for marker in (
+                "community_asset_expected_band",
+                "community_asset_expected_years",
+                "system:time_start",
+                "community_asset_metadata_policy",
+            )
+        )
+        findings += _require(
+            has_metadata_contract,
+            ruleset,
+            "COMMUNITY_ASSET_METADATA_DRIFT",
+            "Community assets require an explicit ID, band, year-coverage, and time-property metadata contract.",
+            "DATASET_NOT_FOUND",
+            hint="Record expected band/years and verify system:time_start because community metadata can drift from catalog text.",
+            retryable=True,
+        )
+
+    private_asset_pattern = re.compile(r"(?:users/[a-z0-9_.-]+/|projects/[^/\s\"']+/assets/)", re.IGNORECASE)
+    private_assets = [
+        match.group(0)
+        for match in private_asset_pattern.finditer(text)
+        if "projects/sat-io/" not in match.group(0).lower()
+    ]
+    if private_assets:
+        has_private_export_policy = (
+            "private_asset_export_policy" in code_lower
+            and ("derived_outputs_only" in code_lower or "redistribution_permission" in code_lower)
+        )
+        findings += _require(
+            has_private_export_policy,
+            ruleset,
+            "PRIVATE_ASSET_EXPORT_RISK",
+            "Scripts that reference private assets must state that only derived outputs are exported unless redistribution is authorized.",
+            "EXPORT_TASK_ERROR",
+            hint="Add PRIVATE_ASSET_EXPORT_POLICY='derived_outputs_only' and avoid exporting raw private rasters.",
+        )
+
+    uses_categorical = any(
+        marker in code_lower
+        for marker in ("categorical", "landcover_band", "class_codes", "impervious_fraction", "cropland_fraction")
+    )
+    if uses_categorical:
+        safe_category_aggregation = (
+            re.search(r"\beq\b", code_lower) is not None
+            and "reduceresolution" in code_lower
+            and ("class_fraction" in code_lower or "categorical_nearest" in code_lower)
+            and "resample(\"bilinear\")" not in lower
+            and "resample('bilinear')" not in lower
+        )
+        findings += _require(
+            safe_category_aggregation,
+            ruleset,
+            "CATEGORICAL_RESAMPLING_UNSAFE",
+            "Categorical codes must be aggregated as class fractions or with nearest-neighbour semantics, never bilinear interpolation.",
+            "REDUCER_SCALE_ERROR",
+            hint="Convert each reviewed class to a binary mask and aggregate the mask to an area fraction.",
+            retryable=True,
+        )
+        if re.search(
+            r"reduceresolution\s*\(.*?\.reproject\s*\(",
+            lower,
+            flags=re.DOTALL,
+        ):
+            findings.append(
+                Finding(
+                    "warning",
+                    "FORCED_REPROJECT_MEMORY_RISK",
+                    "A categorical reduceResolution chain forces an intermediate "
+                    "reproject; large cross-CRS regions can exceed Earth Engine "
+                    "worker dimensions before the final export grid is applied.",
+                    hint="Prefer setDefaultProjection after reduceResolution and "
+                    "supply the exact CRS transform to the final export/reducer.",
+                    category="REDUCER_SCALE_ERROR",
+                    rule_id=(
+                        f"{ruleset}.FORCED_REPROJECT_MEMORY_RISK."
+                        "categorical-intermediate"
+                    ),
+                    ruleset=ruleset,
+                    retryable=True,
+                )
+            )
+
+    joins_viirs_versions = "annual_v21" in code_lower and "annual_v22" in code_lower
+    if joins_viirs_versions and "cross_version_policy" not in code_lower:
+        findings.append(
+            Finding(
+                "error",
+                "ANNUAL_COVERAGE_GAP",
+                "Joining VIIRS annual V2.1 and V2.2 requires an explicit cross-version policy and annual coverage audit.",
+                hint="Prefer one consistently processed monthly collection for a multi-year series or document the V2.1/V2.2 bridge.",
+                category="VALIDATION_ERROR",
+                rule_id=f"{ruleset}.ANNUAL_COVERAGE_GAP.viirs-cross-version",
+                ruleset=ruleset,
+                retryable=True,
+            )
         )
     return findings

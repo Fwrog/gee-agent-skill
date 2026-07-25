@@ -1,6 +1,6 @@
 # Capability Matrix
 
-Last updated: 2026-07-02
+Last updated: 2026-07-25
 
 This matrix is the public overclaim guard for `gee-agent-skill`. It separates public golden regression examples from generic plan/render/validate capability and withheld private academic workflows.
 
@@ -27,6 +27,7 @@ This matrix is the public overclaim guard for `gee-agent-skill`. It separates pu
 | NDBI CSV | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Bare soil and built-up interpretation need review. |
 | Landsat LST CSV / image | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Thermal interpretation requires QA and scale/offset review. |
 | Sentinel-1 flood/change GeoTIFF | Partial | Yes | Yes | Blocks placeholder context | No | No | No | Event windows and thresholds require domain review. |
+| Annual endpoint-transition probabilities | Partial | Yes | Yes | Blocks unreviewed asset/year/grid context | No | No | No | Generic recipe only; classifier ambiguity is not itself a mapped transition belt. |
 | Dynamic World summary CSV | Partial | Yes | Yes | No | No | No | No | Probability thresholds need review. |
 | Generic zonal statistics CSV | Partial | Yes | No | No | No | No | No | Template/context completion needed. |
 | Image GeoTIFF export utility | Partial | Yes | Partial | No | No | No | No | Region, CRS, dtype, and maxPixels need review. |

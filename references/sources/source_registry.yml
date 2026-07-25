@@ -1,5 +1,5 @@
 schema_version: gee-source-registry/v0.1
-last_reviewed: '2026-07-09'
+last_reviewed: '2026-07-25'
 policy: references/sources/source_policy.md
 sources:
 - source_id: google-earth-engine-docs
@@ -170,6 +170,34 @@ sources:
   license: NASA HLS data terms
   source_refresh_status: fresh
   review_notes: v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy.
+- source_id: gee-community-catalog-landscan-global
+  title: LandScan Population Data Global 1km community catalog entry
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/projects_sat-io_open-datasets_ORNL_LANDSCAN_GLOBAL
+  source_type: community_docs
+  trust_tier: B
+  allowed_use: summary_only
+  last_checked: '2026-07-25'
+  reviewer_status: accepted
+  claim_boundary: Documents the public community asset ID, b1 population-count band, catalog availability, and CC BY 4.0 terms; the asset is not managed by Google Earth Engine and live metadata can drift.
+  private_content_risk: low
+  include_reason: Required source for direct GEE access to annual LandScan population counts and community-asset drift checks.
+  license: CC BY 4.0 with source attribution
+  source_refresh_status: fresh
+  review_notes: Live collection metadata exposed a 2024 image while the catalog availability text ended in 2023, so workflows must verify expected years from the collection rather than trusting prose alone.
+- source_id: google-earth-engine-managing-assets
+  title: Earth Engine asset management guide
+  source_url: https://developers.google.com/earth-engine/guides/manage_assets
+  source_type: official_docs
+  trust_tier: A
+  allowed_use: summary_only
+  last_checked: '2026-07-25'
+  reviewer_status: accepted
+  claim_boundary: Authoritative for Earth Engine asset management and access-control concepts, not for the license or class semantics of a user-supplied land-cover product.
+  private_content_risk: low
+  include_reason: Grounds generic external annual categorical asset handling without publishing study-specific asset IDs.
+  license: Google documentation terms
+  source_refresh_status: fresh
+  review_notes: Keep private asset IDs and redistribution-sensitive rasters out of public evidence cards and examples.
 - source_id: gee-catalog-sentinel2-sr-harmonized
   title: Sentinel-2 MSI Surface Reflectance Harmonized
   source_url: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED

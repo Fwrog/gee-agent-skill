@@ -217,6 +217,25 @@
         "qa_bands": {
           "type": "array",
           "items": { "type": "string" }
+        },
+        "catalog_status": { "type": "string" },
+        "license": { "type": "string" },
+        "source_role": { "type": "string" },
+        "private_asset": { "type": "boolean" },
+        "expected_years": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1980, "maximum": 2100 },
+          "uniqueItems": true
+        },
+        "aggregation_semantics": {
+          "type": "string",
+          "enum": [
+            "continuous_mean",
+            "count_density_area_weighted",
+            "categorical_class_fraction",
+            "categorical_nearest",
+            "none"
+          ]
         }
       },
       "additionalProperties": true

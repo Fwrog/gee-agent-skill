@@ -156,6 +156,24 @@ RULESETS: tuple[RuleSetCard, ...] = (
         validation_entrypoint="geeskill.semantic.validate_semantics",
         examples=("dynamic_world_landcover_ndvi",),
     ),
+    RuleSetCard(
+        ruleset_id="annual_endmember_transition",
+        scope="change_detection",
+        description="Annual multi-source endpoint classification with explicit coverage, equal-area grid, aggregation, metadata-drift, and private-asset safeguards.",
+        checks=(
+            "ANNUAL_COVERAGE_GAP: expected years and per-source annual counts",
+            "GRID_ALIGNMENT_MISMATCH: fixed equal-area CRS and affine transform",
+            "COUNT_RESAMPLING_UNSAFE: count-to-density area-weighted aggregation",
+            "COMMUNITY_ASSET_METADATA_DRIFT: expected asset band, years, and system time metadata",
+            "PRIVATE_ASSET_EXPORT_RISK: derived-only export policy for private assets",
+            "CATEGORICAL_RESAMPLING_UNSAFE: class fractions or nearest-neighbour semantics",
+            "HLS_REFLECTANCE_DOUBLE_SCALING: do not reapply source packing to GEE HLS v002 floats",
+            "FORCED_REPROJECT_MEMORY_RISK: defer large cross-CRS realization to final export/reducer",
+        ),
+        error_categories=("EMPTY_COLLECTION", "REDUCER_SCALE_ERROR", "DATASET_NOT_FOUND", "EXPORT_TASK_ERROR"),
+        validation_entrypoint="geeskill.semantic.validate_semantics",
+        examples=("annual-endmember-transition recipe",),
+    ),
 )
 
 
