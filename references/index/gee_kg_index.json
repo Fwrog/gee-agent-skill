@@ -1773,10 +1773,14 @@
           "User-supplied Earth Engine assets retain source-specific class semantics, license, version, and access controls."
         ],
         "extracted_patterns": [
-          "Represent each reviewed class as a binary mask and aggregate to target-grid class fractions, or use nearest-neighbour semantics when a categorical code raster is required."
+          "Represent each reviewed class as a binary mask and aggregate to target-grid class fractions, or use nearest-neighbour semantics when a categorical code raster is required.",
+          "Treat one-hot outputs as absolute full-cell fractions whose sum matches valid_fraction; normalize by valid_fraction behind a minimum-support gate when thresholds describe composition within observed land.",
+          "When the raw categorical source is already an internal Earth Engine asset, first stage the one-hot class-fraction derivative inside Earth Engine; use local preaggregation and re-ingestion only if the bounded internal derivation fails.",
+          "Pause for a human only when authority, interactive authentication, license, cost, or an unavailable upload surface requires it; resume agent-owned inspection, preflight, and downstream computation afterward."
         ],
         "limitations": [
-          "This generic card does not assert the availability, license, class mapping, accuracy, or year coverage of any particular external product."
+          "This generic card does not assert the availability, license, class mapping, accuracy, or year coverage of any particular external product.",
+          "Successful derivation or ingestion does not prove class-map correctness or downstream scientific validity."
         ],
         "claim_boundaries": [
           "A public workflow may describe the asset contract but must not publish private asset IDs, raw rasters, or redistribution-sensitive content."
@@ -1797,16 +1801,24 @@
         "known_failure_modes": [
           "annual_coverage_gap",
           "categorical_resampling_unsafe",
-          "private_asset_export_risk"
+          "private_asset_export_risk",
+          "monolithic_reduction_risk",
+          "categorical_fraction_semantics_unsafe"
         ],
         "validation_implications": [
-          "Fail bilinear interpolation of categorical codes and require derived-only export policy for private assets."
+          "Fail bilinear interpolation of categorical codes and require derived-only export policy for private assets.",
+          "Require a staged one-hot fraction asset or manifest before large annual model tasks.",
+          "Reject workflows that silently mix whole-cell class fractions with valid-area composition thresholds."
         ],
         "planner_hints": [
-          "Require source, version, license, expected years, band, class map, checksum or asset manifest, and aggregation semantics."
+          "Require source, version, license, expected years, band, class map, checksum or asset manifest, and aggregation semantics.",
+          "Prefer internal staged derivation for an existing Earth Engine asset; record local preprocessing and re-ingestion as an explicit fallback.",
+          "Declare the denominator and minimum valid_fraction required for every composition threshold."
         ],
         "validator_hints": [
-          "Check for class-fraction or nearest-neighbour handling and for a private-asset export boundary."
+          "Check for class-fraction or nearest-neighbour handling and for a private-asset export boundary.",
+          "Check that a satisfied upload checkpoint resumes automated asset audit and downstream work rather than sending routine code steps back to the user.",
+          "Check that class-fraction sums, valid_fraction, denominator semantics, and minimum-support masking are tested together."
         ],
         "citation": "Earth Engine asset management and resampling guidance, checked 2026-07-25.",
         "last_checked": "2026-07-25",
@@ -1817,11 +1829,15 @@
           "External annual categorical land-cover asset",
           "external_annual_categorical_landcover",
           "class fraction",
-          "derived outputs only"
+          "derived outputs only",
+          "staged one-hot class fractions",
+          "agent continuation",
+          "valid fraction normalization"
         ],
         "aliases": [
           "annual land-cover asset",
-          "uploaded categorical raster"
+          "uploaded categorical raster",
+          "internal derived fraction asset"
         ],
         "negative_queries": [
           "Publicly redistribute my private asset"
@@ -2323,21 +2339,23 @@
     {
       "id": "evidence:hls_fmask_rule",
       "type": "EvidenceCard",
-      "title": "HLS Fmask quality policy required",
-      "description": "HLS product intercomparison must document an Fmask-based or equivalent QA policy.",
+      "title": "HLS quality and tile-property policy required",
+      "description": "HLS product intercomparison must document an Fmask-based or equivalent QA policy. HLSS30 exposes MGRS_TILE_ID as the tile identifier for the observation grid.",
       "tags": [
         "HLS",
         "Fmask",
         "QA",
+        "MGRS_TILE_ID",
+        "metadata_filter",
         "validator_rule",
         "accepted",
         "tier_a"
       ],
       "metadata": {
         "card_id": "hls_fmask_rule",
-        "title": "HLS Fmask quality policy required",
-        "source_id": "gee-catalog-hlsl30",
-        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002",
+        "title": "HLS quality and tile-property policy required",
+        "source_id": "gee-catalog-hlss30",
+        "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002",
         "source_type": "official_data_catalog",
         "trust_tier": "A",
         "allowed_use": "summary_only",
@@ -2345,62 +2363,79 @@
           "HLS",
           "Fmask",
           "QA",
+          "MGRS_TILE_ID",
+          "metadata_filter",
           "validator_rule"
         ],
         "extracted_facts": [
-          "HLS product intercomparison must document an Fmask-based or equivalent QA policy."
+          "HLS product intercomparison must document an Fmask-based or equivalent QA policy.",
+          "HLSS30 exposes MGRS_TILE_ID as the tile identifier for the observation grid."
         ],
         "extracted_patterns": [
-          "Apply HLS QA before NDVI compositing and aggregation to coarser products."
+          "Apply HLS QA before NDVI compositing and aggregation to coarser products.",
+          "For large annual workflows, filter HLSS30 by a reviewed MGRS_TILE_ID whitelist before reducing the collection and report per-tile coverage."
         ],
         "limitations": [
-          "Fmask screening does not eliminate all atmospheric, BRDF, temporal, or mixed-pixel differences."
+          "Fmask screening does not eliminate all atmospheric, BRDF, temporal, or mixed-pixel differences.",
+          "The catalog property documents tile identity; it does not prove that a user-defined whitelist is complete for a particular AOI."
         ],
         "claim_boundaries": [
           "HLS Fmask supports product construction quality, not ground-truth accuracy."
         ],
         "applicable_workflows": [
           "product_intercomparison",
-          "vegetation_index"
+          "vegetation_index",
+          "annual_endmember_transition"
         ],
         "applicable_datasets": [
           "NASA/HLS/HLSL30/v002",
           "NASA/HLS/HLSS30/v002"
         ],
         "applicable_operators": [
-          "updateMask"
+          "updateMask",
+          "filter"
         ],
         "known_failure_modes": [
-          "missing_hls_fmask"
+          "missing_hls_fmask",
+          "collection_geometry_unbounded",
+          "spatial_filter_ineffective"
         ],
         "validation_implications": [
-          "Warn when HLSL30 or HLSS30 appears without Fmask."
+          "Warn when HLSL30 or HLSS30 appears without Fmask.",
+          "Require an audited tile-property filter when an annual workflow cannot rely on source image footprints for spatial pruning."
         ],
         "planner_hints": [
-          "Include Fmask screening before HLS NDVI aggregation."
+          "Include Fmask screening before HLS NDVI aggregation.",
+          "Persist the reviewed tile whitelist and per-year, per-tile image counts."
         ],
         "validator_hints": [
-          "Search scripts for Fmask when NASA/HLS/HLSL30 or NASA/HLS/HLSS30 is used."
+          "Search scripts for Fmask when NASA/HLS/HLSL30 or NASA/HLS/HLSS30 is used.",
+          "Search annual HLSS30 scripts for MGRS_TILE_ID filtering before collection reduction."
         ],
-        "citation": "Earth Engine Data Catalog NASA HLS pages, checked 2026-07-09.",
-        "last_checked": "2026-07-09",
+        "citation": "Earth Engine Data Catalog NASA/HLS/HLSS30/v002, checked 2026-07-26.",
+        "last_checked": "2026-07-26",
         "reviewer_status": "accepted",
         "confidence": "high",
         "private_content_risk": "low",
         "canonical_terms": [
-          "HLS Fmask quality policy required",
+          "HLS quality and tile-property policy required",
           "hls_fmask_rule",
           "HLS",
           "Fmask",
           "QA",
+          "MGRS_TILE_ID",
+          "metadata_filter",
           "validator_rule",
           "product_intercomparison",
-          "vegetation_index"
+          "vegetation_index",
+          "annual_endmember_transition"
         ],
         "aliases": [
           "HLS Fmask",
           "HLS cloud mask",
-          "HLS quality policy"
+          "HLS quality policy",
+          "HLS tile filter",
+          "MGRS tile property"
         ],
         "negative_queries": [
           "Generate a GEE workflow for flood mapping"
@@ -5261,7 +5296,7 @@
     },
     {
       "source": "evidence:hls_fmask_rule",
-      "target": "source:gee-catalog-hlsl30",
+      "target": "source:gee-catalog-hlss30",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
     },

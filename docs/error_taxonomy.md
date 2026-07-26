@@ -33,3 +33,15 @@ Every structured error includes agent-facing `code`/`hint` fields plus category,
 - `PREFLIGHT_REQUIRED`: live export was requested before the review, validation, and preflight gate sequence was completed.
 
 Validation findings carry the category when it is known. Live failures are classified from the original exception and written into `live_run_report.json`.
+
+## Annual-workflow validation codes
+
+The `annual_endmember_transition` semantic profile also emits stable, non-provider-specific findings:
+
+- `COLLECTION_GEOMETRY_UNBOUNDED`: a tiled/global collection lacks a reviewed metadata-property filter before reduction.
+- `SPATIAL_FILTER_INEFFECTIVE`: an AOI-only spatial filter is treated as sufficient even though image footprints may not prune the collection.
+- `COMPLEX_EXPORT_REGION_RISK`: a complex feature geometry is passed directly as the export region instead of using a bounding rectangle plus raster mask.
+- `MONOLITHIC_REDUCTION_RISK`: a large multi-band annual graph is reduced before bounded tile or band-group staging.
+- `CATEGORICAL_FRACTION_SEMANTICS_UNSAFE`: preaggregated class fractions do not declare whole-cell versus valid-area composition semantics, or valid-area thresholds omit a minimum-support normalization gate.
+
+The first two are blocking errors because they can silently admit unrelated observations. The export-region and monolithic-graph findings are warnings: fix them before large live tasks, but do not treat a static warning alone as proof that an Earth Engine task will fail.

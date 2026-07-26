@@ -16,14 +16,18 @@ END_DATE = f"{EXPECTED_YEARS[-1] + 1}-01-01"
 DATASET_ID = "NASA/HLS/HLSL30/v002"
 HLS_L30_DATASET_ID = DATASET_ID
 HLS_S30_DATASET_ID = "NASA/HLS/HLSS30/v002"
+HLS_S30_TILE_PROPERTY = "MGRS_TILE_ID"
+HLS_TILE_IDS = {{ hls_tile_ids | tojson }}
 COMMUNITY_ASSET_ID = "projects/sat-io/open-datasets/ORNL/LANDSCAN_GLOBAL"
 COMMUNITY_ASSET_EXPECTED_BAND = "b1"
 COMMUNITY_ASSET_EXPECTED_YEARS = EXPECTED_YEARS
 ANNUAL_CATEGORICAL_ASSET_ID = {{ annual_landcover_asset | tojson }}
+ANNUAL_CATEGORICAL_FRACTION_ASSET_ID = {{ categorical_fraction_asset | tojson }}
 ACTIVITY_COLLECTION_ID = {{ activity_collection_id | tojson }}
 ACTIVITY_BAND = {{ activity_band | tojson }}
 ACCESSIBILITY_IMAGE_ID = {{ accessibility_image_id | tojson }}
 AOI_ASSET = {{ aoi_asset | tojson }}
+STUDY_MASK_ASSET_ID = {{ study_mask_asset | tojson }}
 LANDCOVER_BAND = {{ landcover_band | tojson }}
 IMPERVIOUS_CLASS_CODES = {{ impervious_class_codes | tojson }}
 CROPLAND_CLASS_CODES = {{ cropland_class_codes | tojson }}
@@ -43,9 +47,18 @@ GRID_ALIGNMENT_POLICY = "fixed_equal_area_crs_transform"
 COUNT_AGGREGATION_POLICY = "count_to_density_then_area_weighted"
 CATEGORICAL_AGGREGATION_POLICY = "per_class_area_fraction_no_bilinear"
 HLS_REFLECTANCE_SCALE_POLICY = "gee_catalog_float_no_0_0001_multiplier"
+HLS_SPATIAL_FILTER_POLICY = "property_whitelist_before_spatial_filter"
+HLS_REDUCTION_POLICY = "per_tile_reduction_before_annual_mosaic"
 COMMUNITY_ASSET_METADATA_POLICY = "verify_asset_band_years_and_system_time_start"
 PRIVATE_ASSET_EXPORT_POLICY = "derived_outputs_only"
 CROSS_VERSION_POLICY = "single_reviewed_activity_collection_for_all_expected_years"
+CATEGORICAL_PREAGGREGATION_POLICY = "one_hot_masks_to_materialized_area_fractions"
+CATEGORICAL_DERIVATION_ORDER = "internal_asset_stage_then_local_preaggregate_reingest_fallback"
+CLASS_FRACTION_SEMANTICS = "absolute_full_cell_fraction_sum_matches_valid_fraction"
+COMPOSITION_NORMALIZATION_POLICY = "divide_by_valid_fraction_after_min_support_gate"
+EXPORT_REGION_POLICY = "rectangular_bounds_plus_raster_mask"
+HUMAN_UPLOAD_CHECKPOINT_POLICY = "authority_only_then_agent_resumes"
+AGENT_CONTINUATION_POLICY = "resume_from_assets_ready_or_preflight_passed"
 
 STABLE_YEAR_MIN = {{ stable_year_min }}
 URBAN_IMPERVIOUS_THRESHOLD = {{ urban_impervious_threshold }}
@@ -56,6 +69,7 @@ SAMPLES_PER_CLASS = {{ samples_per_class }}
 TREES = {{ trees }}
 MIN_LEAF_POPULATION = {{ min_leaf_population }}
 RANDOM_SEED = {{ random_seed }}
+MIN_VALID_FRACTION = {{ min_valid_fraction }}
 DRIVE_FOLDER = {{ drive_folder | tojson }}
 FILE_PREFIX = {{ file_prefix | tojson }}
 EXPORT_DESCRIPTION = f"{FILE_PREFIX}_annual_transition"
@@ -79,6 +93,13 @@ FEATURE_BANDS = [
     "accessibility",
 ]
 
+PREAGGREGATED_CLASS_FRACTION_BANDS = [
+    "impervious_fraction",
+    "cropland_fraction",
+    "ecological_fraction",
+    "valid_fraction",
+]
+
 
 def _target_projection() -> ee.Projection:
     return ee.Projection(CRS, CRS_TRANSFORM)
@@ -89,6 +110,16 @@ def _nested_projection(scale: int) -> ee.Projection:
         CRS,
         [scale, 0, CRS_TRANSFORM[2], 0, -scale, CRS_TRANSFORM[5]],
     )
+
+
+def _study_mask() -> ee.Image:
+    return ee.Image(STUDY_MASK_ASSET_ID).select("study_mask").gt(0)
+
+
+def _export_region(aoi: ee.Geometry) -> ee.Geometry:
+    # Keep the complex reviewed AOI in a raster mask; send only a rectangle to
+    # Export so geometry densification does not dominate the computation.
+    return aoi.bounds(maxError=SCALE)
 
 
 def _continuous_mean_to_target(
@@ -141,12 +172,31 @@ def _add_indices(image: ee.Image) -> ee.Image:
     return image.addBands([ndvi, ndwi, ndbi, bsi])
 
 
-def _annual_hls(year: int, aoi: ee.Geometry) -> ee.Image:
+def _l30_for_tile(year: int, tile_id: str) -> ee.ImageCollection:
     start = ee.Date.fromYMD(year, 1, 1)
     end = start.advance(1, "year")
-    l30 = ee.ImageCollection(HLS_L30_DATASET_ID).filterDate(start, end).filterBounds(aoi).map(_prepare_l30)
-    s30 = ee.ImageCollection(HLS_S30_DATASET_ID).filterDate(start, end).filterBounds(aoi).map(_prepare_s30)
-    merged = l30.merge(s30)
+    return (
+        ee.ImageCollection(HLS_L30_DATASET_ID)
+        .filterDate(start, end)
+        .filter(ee.Filter.stringStartsWith("system:index", f"T{tile_id}_"))
+        .map(_prepare_l30)
+    )
+
+
+def _s30_for_tile(year: int, tile_id: str) -> ee.ImageCollection:
+    start = ee.Date.fromYMD(year, 1, 1)
+    end = start.advance(1, "year")
+    return (
+        ee.ImageCollection(HLS_S30_DATASET_ID)
+        .filterDate(start, end)
+        .filter(ee.Filter.eq(HLS_S30_TILE_PROPERTY, tile_id))
+        .map(_prepare_s30)
+    )
+
+
+def _annual_hls_tile(year: int, tile_id: str, tile_rank: int) -> ee.Image:
+    start = ee.Date.fromYMD(year, 1, 1)
+    merged = _l30_for_tile(year, tile_id).merge(_s30_for_tile(year, tile_id))
     percentiles = merged.reduce(ee.Reducer.percentile([25, 50, 75]))
     selected = percentiles.select(
         [
@@ -167,7 +217,29 @@ def _annual_hls(year: int, aoi: ee.Geometry) -> ee.Image:
     valid = merged.select("red").count().rename("valid_observation_count")
     return _continuous_mean_to_target(
         selected.addBands(valid), _nested_projection(30)
-    ).set({"year": year, "system:time_start": start.millis()})
+    ).set(
+        {
+            "year": year,
+            "tile_id": tile_id,
+            "tile_rank": tile_rank,
+            "system:time_start": start.millis(),
+        }
+    )
+
+
+def _annual_hls(year: int, aoi: ee.Geometry) -> ee.Image:
+    del aoi  # Spatial admission is controlled by the reviewed tile whitelist.
+    tile_images = [
+        _annual_hls_tile(year, tile_id, tile_rank)
+        for tile_rank, tile_id in enumerate(HLS_TILE_IDS)
+    ]
+    return (
+        ee.ImageCollection.fromImages(tile_images)
+        .sort("tile_rank")
+        .mosaic()
+        .updateMask(_study_mask())
+        .set({"year": year, "system:time_start": ee.Date.fromYMD(year, 1, 1).millis()})
+    )
 
 
 def _annual_population(year: int, aoi: ee.Geometry) -> ee.Image:
@@ -208,29 +280,30 @@ def _annual_activity(year: int, aoi: ee.Geometry) -> ee.Image:
     )
 
 
-def _class_fraction(image: ee.Image, class_codes: list[int], name: str) -> ee.Image:
-    masks = [image.eq(code) for code in class_codes]
-    combined = ee.ImageCollection.fromImages(masks).max()
-    fraction = combined.reduceResolution(
-        reducer=ee.Reducer.mean(), maxPixels=4096
-    ).setDefaultProjection(_target_projection())
-    return fraction.rename(name)
-
-
 def _annual_landcover(year: int, aoi: ee.Geometry) -> ee.Image:
+    del aoi
     start = ee.Date.fromYMD(year, 1, 1)
-    categorical = (
-        ee.ImageCollection(ANNUAL_CATEGORICAL_ASSET_ID)
+    # This asset is a reviewed, grid-aligned derivative. Its source class codes
+    # were converted to one-hot masks and area-averaged before model execution.
+    fractions = (
+        ee.ImageCollection(ANNUAL_CATEGORICAL_FRACTION_ASSET_ID)
         .filterDate(start, start.advance(1, "year"))
-        .filterBounds(aoi)
-        .select(LANDCOVER_BAND)
+        .select(PREAGGREGATED_CLASS_FRACTION_BANDS)
         .first()
     )
-    categorical = ee.Image(categorical)
+    fractions = ee.Image(fractions).setDefaultProjection(_target_projection())
+    valid_fraction = fractions.select("valid_fraction")
+    composition = (
+        fractions.select(
+            ["impervious_fraction", "cropland_fraction", "ecological_fraction"]
+        )
+        .divide(valid_fraction.max(1e-6))
+        .updateMask(valid_fraction.gte(MIN_VALID_FRACTION))
+    )
     return (
-        _class_fraction(categorical, IMPERVIOUS_CLASS_CODES, "impervious_fraction")
-        .addBands(_class_fraction(categorical, CROPLAND_CLASS_CODES, "cropland_fraction"))
-        .addBands(_class_fraction(categorical, ECOLOGICAL_CLASS_CODES, "ecological_fraction"))
+        composition.addBands(valid_fraction)
+        .setDefaultProjection(_target_projection())
+        .updateMask(_study_mask())
         .set({"year": year, "system:time_start": start.millis()})
     )
 
@@ -250,22 +323,29 @@ def _annual_feature_stack(year: int, aoi: ee.Geometry) -> ee.Image:
 
 
 def _coverage_manifest(aoi: ee.Geometry) -> ee.FeatureCollection:
-    def one_year(year: int) -> ee.Feature:
+    def one_tile_year(year: int, tile_id: str) -> ee.Feature:
         start = ee.Date.fromYMD(year, 1, 1)
         end = start.advance(1, "year")
         return ee.Feature(
             None,
             {
                 "year": year,
-                "hls_l30_count": ee.ImageCollection(HLS_L30_DATASET_ID).filterDate(start, end).filterBounds(aoi).size(),
-                "hls_s30_count": ee.ImageCollection(HLS_S30_DATASET_ID).filterDate(start, end).filterBounds(aoi).size(),
+                "hls_tile_id": tile_id,
+                "hls_l30_count": _l30_for_tile(year, tile_id).size(),
+                "hls_s30_count": _s30_for_tile(year, tile_id).size(),
                 "landscan_count": ee.ImageCollection(COMMUNITY_ASSET_ID).filterDate(start, end).filterBounds(aoi).size(),
-                "landcover_count": ee.ImageCollection(ANNUAL_CATEGORICAL_ASSET_ID).filterDate(start, end).filterBounds(aoi).size(),
+                "landcover_count": ee.ImageCollection(ANNUAL_CATEGORICAL_FRACTION_ASSET_ID).filterDate(start, end).size(),
                 "activity_count": ee.ImageCollection(ACTIVITY_COLLECTION_ID).filterDate(start, end).filterBounds(aoi).size(),
             },
         )
 
-    return ee.FeatureCollection([one_year(year) for year in EXPECTED_YEARS])
+    return ee.FeatureCollection(
+        [
+            one_tile_year(year, tile_id)
+            for year in EXPECTED_YEARS
+            for tile_id in HLS_TILE_IDS
+        ]
+    )
 
 
 def _stable_endpoint_masks(aoi: ee.Geometry) -> tuple[ee.Image, ee.Image]:
@@ -321,6 +401,7 @@ def _train_classifier(samples: ee.FeatureCollection) -> ee.Classifier:
 
 def build_export_tasks() -> list[ee.batch.Task]:
     aoi = ee.FeatureCollection(AOI_ASSET).geometry()
+    export_region = _export_region(aoi)
     coverage = _coverage_manifest(aoi)
     samples = _endpoint_samples(aoi)
     classifier = _train_classifier(samples)
@@ -331,7 +412,7 @@ def build_export_tasks() -> list[ee.batch.Task]:
             folder=DRIVE_FOLDER,
             fileNamePrefix=f"{FILE_PREFIX}_coverage",
             fileFormat="CSV",
-            selectors=["year", "hls_l30_count", "hls_s30_count", "landscan_count", "landcover_count", "activity_count"],
+            selectors=["year", "hls_tile_id", "hls_l30_count", "hls_s30_count", "landscan_count", "landcover_count", "activity_count"],
         ),
         ee.batch.Export.table.toDrive(
             collection=samples,
@@ -357,7 +438,7 @@ def build_export_tasks() -> list[ee.batch.Task]:
                 description=f"{EXPORT_DESCRIPTION}_{year}_probability",
                 folder=DRIVE_FOLDER,
                 fileNamePrefix=f"{FILE_PREFIX}_{year}_probability",
-                region=aoi,
+                region=export_region,
                 crs=CRS,
                 crsTransform=CRS_TRANSFORM,
                 maxPixels=MAX_PIXELS,

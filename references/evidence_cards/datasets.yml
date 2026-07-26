@@ -571,8 +571,12 @@ cards:
   - User-supplied Earth Engine assets retain source-specific class semantics, license, version, and access controls.
   extracted_patterns:
   - Represent each reviewed class as a binary mask and aggregate to target-grid class fractions, or use nearest-neighbour semantics when a categorical code raster is required.
+  - Treat one-hot outputs as absolute full-cell fractions whose sum matches valid_fraction; normalize by valid_fraction behind a minimum-support gate when thresholds describe composition within observed land.
+  - When the raw categorical source is already an internal Earth Engine asset, first stage the one-hot class-fraction derivative inside Earth Engine; use local preaggregation and re-ingestion only if the bounded internal derivation fails.
+  - Pause for a human only when authority, interactive authentication, license, cost, or an unavailable upload surface requires it; resume agent-owned inspection, preflight, and downstream computation afterward.
   limitations:
   - This generic card does not assert the availability, license, class mapping, accuracy, or year coverage of any particular external product.
+  - Successful derivation or ingestion does not prove class-map correctness or downstream scientific validity.
   claim_boundaries:
   - A public workflow may describe the asset contract but must not publish private asset IDs, raw rasters, or redistribution-sensitive content.
   applicable_workflows:
@@ -589,12 +593,20 @@ cards:
   - annual_coverage_gap
   - categorical_resampling_unsafe
   - private_asset_export_risk
+  - monolithic_reduction_risk
+  - categorical_fraction_semantics_unsafe
   validation_implications:
   - Fail bilinear interpolation of categorical codes and require derived-only export policy for private assets.
+  - Require a staged one-hot fraction asset or manifest before large annual model tasks.
+  - Reject workflows that silently mix whole-cell class fractions with valid-area composition thresholds.
   planner_hints:
   - Require source, version, license, expected years, band, class map, checksum or asset manifest, and aggregation semantics.
+  - Prefer internal staged derivation for an existing Earth Engine asset; record local preprocessing and re-ingestion as an explicit fallback.
+  - Declare the denominator and minimum valid_fraction required for every composition threshold.
   validator_hints:
   - Check for class-fraction or nearest-neighbour handling and for a private-asset export boundary.
+  - Check that a satisfied upload checkpoint resumes automated asset audit and downstream work rather than sending routine code steps back to the user.
+  - Check that class-fraction sums, valid_fraction, denominator semantics, and minimum-support masking are tested together.
   citation: Earth Engine asset management and resampling guidance, checked 2026-07-25.
   last_checked: '2026-07-25'
   reviewer_status: accepted
@@ -606,8 +618,12 @@ cards:
   - external_annual_categorical_landcover
   - class fraction
   - derived outputs only
+  - staged one-hot class fractions
+  - agent continuation
+  - valid fraction normalization
   aliases:
   - annual land-cover asset
   - uploaded categorical raster
+  - internal derived fraction asset
   negative_queries:
   - Publicly redistribute my private asset

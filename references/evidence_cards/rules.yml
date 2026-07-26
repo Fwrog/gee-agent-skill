@@ -114,9 +114,9 @@ cards:
   negative_queries:
   - Generate a GEE workflow for flood mapping
 - card_id: hls_fmask_rule
-  title: HLS Fmask quality policy required
-  source_id: gee-catalog-hlsl30
-  source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSL30_v002
+  title: HLS quality and tile-property policy required
+  source_id: gee-catalog-hlss30
+  source_url: https://developers.google.com/earth-engine/datasets/catalog/NASA_HLS_HLSS30_v002
   source_type: official_data_catalog
   trust_tier: A
   allowed_use: summary_only
@@ -124,50 +124,67 @@ cards:
   - HLS
   - Fmask
   - QA
+  - MGRS_TILE_ID
+  - metadata_filter
   - validator_rule
   extracted_facts:
   - HLS product intercomparison must document an Fmask-based or equivalent QA policy.
+  - HLSS30 exposes MGRS_TILE_ID as the tile identifier for the observation grid.
   extracted_patterns:
   - Apply HLS QA before NDVI compositing and aggregation to coarser products.
+  - For large annual workflows, filter HLSS30 by a reviewed MGRS_TILE_ID whitelist before reducing the collection and report per-tile coverage.
   limitations:
   - Fmask screening does not eliminate all atmospheric, BRDF, temporal, or mixed-pixel differences.
+  - The catalog property documents tile identity; it does not prove that a user-defined whitelist is complete for a particular AOI.
   claim_boundaries:
   - HLS Fmask supports product construction quality, not ground-truth accuracy.
   applicable_workflows:
   - product_intercomparison
   - vegetation_index
+  - annual_endmember_transition
   applicable_datasets:
   - NASA/HLS/HLSL30/v002
   - NASA/HLS/HLSS30/v002
   applicable_operators:
   - updateMask
+  - filter
   known_failure_modes:
   - missing_hls_fmask
+  - collection_geometry_unbounded
+  - spatial_filter_ineffective
   validation_implications:
   - Warn when HLSL30 or HLSS30 appears without Fmask.
+  - Require an audited tile-property filter when an annual workflow cannot rely on source image footprints for spatial pruning.
   planner_hints:
   - Include Fmask screening before HLS NDVI aggregation.
+  - Persist the reviewed tile whitelist and per-year, per-tile image counts.
   validator_hints:
   - Search scripts for Fmask when NASA/HLS/HLSL30 or NASA/HLS/HLSS30 is used.
-  citation: Earth Engine Data Catalog NASA HLS pages, checked 2026-07-09.
-  last_checked: '2026-07-09'
+  - Search annual HLSS30 scripts for MGRS_TILE_ID filtering before collection reduction.
+  citation: Earth Engine Data Catalog NASA/HLS/HLSS30/v002, checked 2026-07-26.
+  last_checked: '2026-07-26'
   reviewer_status: accepted
   confidence: high
   private_content_risk: low
   source_refresh_status: fresh
   canonical_terms:
-  - HLS Fmask quality policy required
+  - HLS quality and tile-property policy required
   - hls_fmask_rule
   - HLS
   - Fmask
   - QA
+  - MGRS_TILE_ID
+  - metadata_filter
   - validator_rule
   - product_intercomparison
   - vegetation_index
+  - annual_endmember_transition
   aliases:
   - HLS Fmask
   - HLS cloud mask
   - HLS quality policy
+  - HLS tile filter
+  - MGRS tile property
   negative_queries:
   - Generate a GEE workflow for flood mapping
 - card_id: reduce_resolution_projection_rule

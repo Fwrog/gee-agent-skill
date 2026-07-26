@@ -16,10 +16,11 @@ risk_level: high
 5. Raster-semantic contract
 6. Safe staged-ingestion pattern
 7. Post-upload continuation
-8. Failure and retry rules
-9. Location constraint boundary
-10. Claim boundary
-11. Official sources
+8. Large categorical derivatives
+9. Failure and retry rules
+10. Location constraint boundary
+11. Claim boundary
+12. Official sources
 
 ## Goal
 
@@ -189,6 +190,21 @@ After objects are staged or tasks are submitted, the agent should:
 
 The user should not need to relay the entire task-list output if the agent can query it. If the agent cannot access the project, request task IDs or the saved task/preflight report, not credentials.
 
+## Large Categorical Derivatives
+
+For annual categorical rasters, separate source preservation from repeated model computation:
+
+1. Convert each reviewed class or class group to a one-hot mask.
+2. Aggregate masks to area fractions on the fixed target grid; never interpolate class codes with bilinear resampling.
+3. Preserve `valid_fraction`. Absolute one-hot fractions should sum to `valid_fraction`, not automatically to one.
+4. Before applying composition thresholds, either declare whole-cell semantics or divide class fractions by `valid_fraction` after masking cells below a reviewed minimum-support threshold.
+5. Validate fraction bounds, fraction sums, denominator semantics, grid alignment, annual coverage, and source-to-target area conservation.
+6. Materialize the reviewed fraction bands once, then let endpoint or model workflows read that derivative.
+
+When the source raster is already an internal Earth Engine asset, first attempt a bounded, staged Earth Engine derivation using a simple export region and raster study mask. Use local preaggregation plus Cloud Storage re-ingestion only if that internal route fails after the graph, projection, region, and task scope have been audited. This preserves the already-ingested source and avoids making an unnecessary second upload the default recovery.
+
+If upload remains necessary and the agent lacks a safe upload surface, pause only for the upload or authority checkpoint. After the user reports objects staged, assets ready, or preflight passed, resume task inspection, semantic validation, failed-subset recovery, and downstream work without returning routine code operations to the user.
+
 ## Failure And Retry Rules
 
 - `asset exists`: inspect it; do not overwrite automatically.
@@ -199,6 +215,9 @@ The user should not need to relay the entire task-list output if the agent can q
 - year/time metadata mismatch: fix metadata or re-ingest before annual filtering.
 - asset listing shows an odd client timestamp: inspect canonical asset metadata and task state before declaring failure; UI/CLI display artifacts are not scientific evidence.
 - preflight reports a private-export warning only: retain the private boundary; a governance warning is not a data-semantic failure.
+- a large internal categorical derivation fails: first replace complex export geometry with a bounding rectangle plus raster mask and stage one-hot fractions; use local preaggregation and re-ingestion only after the bounded internal route still fails.
+- a tiled collection has global or unbounded image geometry: filter by a documented tile/property whitelist and record per-tile coverage before annual reduction; do not assume `filterBounds` pruned the collection.
+- a large multi-band annual graph exceeds memory: reduce and materialize bounded tile or band groups before assembling the annual stack.
 
 Never add `--force` as a generic recovery step. Never delete a successful asset merely to make a batch script idempotent.
 
