@@ -25,28 +25,22 @@ dist/
 *.whl
 *.tar.gz
 
-# Local generated output
+# Local generated output. Reviewed public artifacts already tracked by Git
+# remain tracked; new run and research outputs stay private by default.
 tmp/
 outputs/
-!outputs/
-outputs/*
-!outputs/research/
-!outputs/research/*.md
-!outputs/hk_ndvi_product_validation_v03/
-outputs/hk_ndvi_product_validation_v03/*
-!outputs/hk_ndvi_product_validation_v03/VALIDATION_REPORT.md
-!outputs/hk_ndvi_product_validation_v03/manifest.json
-outputs/hk_ndvi_product_validation_v03/task_status_*.json
-!outputs/hk_ndvi_product_validation_v03/task_status_latest.json
-!outputs/hk_ndvi_product_validation_v03/figures/
-!outputs/hk_ndvi_product_validation_v03/figures/*.png
-outputs/hk_ndvi_product_validation_v03/raw_drive/
-outputs/hk_ndvi_product_validation_v03/analysis/
 preview/
 site/
 *.log
 
-# Private research workspaces and paper drafts
+# Private research data, workspaces, and paper drafts
+data/
+local_data/
+research_data/
+study_workspace/
+research_workspace/
+manuscripts/
+drafts/
 *_GEE_private/
 *_private/
 private_*/
@@ -54,6 +48,13 @@ private_research/
 paper_private/
 local_research/
 research_private/
+*.private.json
+*.private.yaml
+*.private.yml
+*.tif
+*.tiff
+*.vrt
+*.gpkg
 *.docx
 ~$*.docx
 

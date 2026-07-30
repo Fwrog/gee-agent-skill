@@ -1,4 +1,4 @@
 interface:
   display_name: "GEE Agent Skill"
-  short_description: "Reproducible Google Earth Engine workflows"
-  default_prompt: "Use $gee-agent-skill to separate a private raster ingestion into a minimal human checkpoint, then resume automated asset validation, preflight, and reproducible Earth Engine analysis."
+  short_description: "Traceable Google Earth Engine workflows"
+  default_prompt: "Use $gee-agent-skill to plan, ground, render, and validate a reproducible Earth Engine workflow before any confirmed live export."

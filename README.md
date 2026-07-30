@@ -9,262 +9,108 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Fwrog/gee-agent-skill/actions"><img alt="CI" src="https://img.shields.io/badge/CI-pytest%20%2B%20smoke-2ea44f"></a>
-  <a href="./docs/capability_matrix.md"><img alt="Capability" src="https://img.shields.io/badge/capability-matrix-2563eb"></a>
-  <a href="./docs/tool_permissions.md"><img alt="Live safe" src="https://img.shields.io/badge/live--export-confirm--live-f59e0b"></a>
-  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-see%20LICENSE-64748b"></a>
+  <a href="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Release" src="https://img.shields.io/badge/release-v0.4.2-2563eb">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
+  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-64748b"></a>
 </p>
 
-`gee-agent-skill` is an agent-native command-line harness for Google Earth Engine workflows. It helps Codex or another coding agent turn a geospatial request into a reviewable plan, source-grounded dataset/operator choices, validated Earth Engine Python, safe preflight checks, explicit confirmed exports, task monitoring, and reproducible traces.
-
-## Project Snapshot
+`gee-agent-skill` is a public Codex skill and Python CLI for building reviewable Google Earth Engine workflows. It turns a geospatial request into a source-grounded plan, validated Earth Engine Python, explicit preflight and live-export gates, monitored tasks, and reproducible run traces.
 
 ```text
-natural language -> plan -> RAG evidence -> render -> validate -> preflight -> export -> monitor -> trace -> reusable knowledge
+request -> plan -> evidence -> render -> validate -> preflight -> export -> monitor -> trace
 ```
 
-This repository is the public harness, not a private research workspace. Private research questions, unpublished findings, private asset ids, and draft manuscript content stay outside the public repo. Only generic lessons such as dataset cards, rule cards, failure cases, and workflow constraints should be promoted here.
+## What It Provides
 
-| Layer | Public role |
+| Surface | Role |
 | --- | --- |
-| 🧭 Plan-first CLI | Converts a natural-language GEE task into a reviewable `gee-plan/v0.3` contract. |
-| 📚 RAG evidence | Retrieves dataset, operator, recipe, rule, and failure cards before rendering code. |
-| ✅ Validation gates | Blocks unsafe exports, missing bands, unresolved templates, placeholder AOIs, and overclaims. |
-| 📤 Live execution | Uses the official Earth Engine Python API and requires `--project` plus `--confirm-live`. |
-| 🧠 Learning loop | Promotes only generic, source-backed lessons after privacy review. |
+| Plan-first CLI | Converts supported requests into editable `gee-plan/v0.3` YAML. |
+| Evidence retrieval | Grounds dataset, operator, recipe, rule, and failure choices in a local corpus. |
+| Validation gates | Detects unresolved context, unsafe patterns, semantic mismatches, and unsupported claims. |
+| Controlled live execution | Requires a project, passing preflight, and explicit `--confirm-live`. |
+| Auditable outputs | Persists scripts, evidence, validation, task state, environment data, and final reports. |
 
-## 5-Minute Quick Start
+This repository is the reusable public harness, not a research workspace. Real project and asset IDs, bucket and object names, task IDs, source rasters, manuscript drafts, and unpublished results stay outside GitHub. Only generic, source-backed lessons are promoted.
+
+## Install
 
 ```bash
+git clone https://github.com/Fwrog/gee-agent-skill.git
+cd gee-agent-skill
 python -m venv .venv
-source .venv/bin/activate
 python -m pip install -e ".[earthengine]"
-
-gee-skill smoke-test --json
-gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." --dry-run --json
-```
-
-Live export is always opt-in and user-owned:
-
-```bash
-export EE_PROJECT="your-google-cloud-project-id"
-earthengine authenticate --auth_mode=localhost
-gee-skill preflight-plan outputs/runs/<run_id>/task_plan.yaml --project "$EE_PROJECT" --json
-gee-skill run-plan outputs/runs/<run_id>/task_plan.yaml --project "$EE_PROJECT" --confirm-live --json
-```
-
-## 🧪 Public Demo Gallery
-
-The public demos are small golden regression examples for the harness contract. They are not scientific vegetation products.
-
-| Demo | Status | What it proves | Details |
-| --- | --- | --- | --- |
-| v0.1 minimal NDVI CSV | Golden | Minimal Sentinel-2 NDVI request -> plan -> validation -> preflight -> export trace. | [Case study](docs/case_studies/hk_ndvi_v01.md) |
-| v0.2 land-cover-aware NDVI CSV | Golden | Dynamic World interpretation strata can be added with caveats and traceability. | [Case study](docs/case_studies/hk_ndvi_landcover_v02.md) |
-| v0.3 HLS/MODIS NDVI product intercomparison | Golden | Scale-aware product consistency: HLS NDVI -> MODIS grid -> Drive export -> metrics/figures/report/readiness audit. | [Validation](docs/validation/hk_ndvi_product_intercomparison_v03.md) |
-
-More complex academic demos are intentionally not displayed in this public README. Use the [capability matrix](docs/capability_matrix.md) for supported public surfaces and the [remote sensing validation ladder](docs/remote_sensing_validation.md) for generic NDVI reasonableness checks.
-
-## Validation v0.3: Hong Kong NDVI Product Intercomparison
-
-This v0.3 demo evaluates whether the skill can produce a scientifically plausible and reproducible NDVI workflow by comparing 30 m HLS-derived NDVI, aggregated to the MODIS grid, against the official MODIS MOD13Q1 vegetation-index product over Hong Kong. The experiment is designed as product intercomparison rather than in-situ validation: strong agreement supports workflow reliability, while systematic differences are analyzed by land-cover class, cloud coverage, and mixed-pixel effects.
-
-| Component | Choice |
-| --- | --- |
-| High-resolution source | `NASA/HLS/HLSL30/v002` and `NASA/HLS/HLSS30/v002` |
-| Official comparison product | `MODIS/061/MOD13Q1`, `NDVI * 0.0001` |
-| Stratification | `ESA/WorldCover/v200` purity groups |
-| Temporal logic | MODIS 16-day windows drive HLS collection windows |
-| Scale logic | HLS 30 m median NDVI is aggregated to the MODIS projection before comparison |
-| Drive handoff | `GEE_SKILL_V03_HK_NDVI_VALIDATION` |
-
-Pipeline:
-
-```text
-discover datasets -> build GEE workflow -> HLS QA/NDVI -> MODIS QA/scale -> aggregate HLS to MODIS grid -> export to Drive -> connector readback -> metrics and figures
-```
-
-Current evidence status: `Golden` validation evidence is available for the public v0.3 demo. Full-year 2024 CSV exports were read back from Google Drive, annual GeoTIFF raster outputs were verified through native files or deterministic 2x2 tiled fallbacks, local QA passed, and the readiness audit reports `golden_ready`.
-
-| Metric | Status |
-| --- | --- |
-| Matched pixel count | 5,575 matched full-year samples |
-| Bias / MAE / RMSE | -0.025 / 0.073 / 0.111 NDVI |
-| Pearson r / Spearman rho | 0.870 / 0.859 |
-| Land-cover finding | Vegetation-dominated pixels have the lowest RMSE (0.082); coastal/water-adjacent pixels have the highest RMSE (0.193). |
-| Raster QA | HLS 30 m, MODIS 250 m, HLS aggregated 250 m tiles, difference tiles, and valid-count tiles passed local sanity checks. |
-
-**Why this analysis is credible**
-
-- 🛰️ **Reference-like high-resolution input:** HLS v2.0 is designed to make Landsat/Sentinel-2 30 m surface reflectance comparable through atmospheric correction, cloud/cloud-shadow masking, BRDF/view-angle normalization, bandpass adjustment, and common gridding. The HLS v2.0 paper reports robust harmonization for quantitative terrestrial applications. [USGS/RSE](https://pubs.usgs.gov/publication/70266349)
-- 🌿 **Official comparison product:** MOD13Q1 is the official 16-day 250 m MODIS vegetation-index product; the Earth Engine catalog and MOD13 user guide document atmospheric correction, QA layers, and the `0.0001` NDVI scale factor. [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1), [MOD13 guide](https://lpdaac.usgs.gov/documents/621/MOD13_User_Guide_V61.pdf)
-- 📏 **Scale-aware validation:** The workflow does not compare 30 m HLS pixels directly with 250 m MODIS pixels. It aggregates HLS to the MODIS grid first, matching the validation logic recommended for moderate-resolution products where direct comparison is affected by scale mismatch and heterogeneity. [MODIS validation review](https://sites.bu.edu/cliveg/files/2013/12/ywze02.pdf)
-- 🧭 **Interpretable error structure:** ESA WorldCover v200 provides a 10 m 2021 land-cover layer for stratification, so weaker coastal/mixed/built-up agreement is interpreted as a mixed-pixel and product-difference effect, not as a workflow failure. [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
-
-**Conclusion:** v0.3 provides credible evidence that the skill can build a QA-aware, temporally matched, scale-aware NDVI product-intercomparison workflow. The strong correlations and low vegetation-dominated RMSE support workflow reliability; the larger coastal and mixed-pixel errors are expected remote-sensing behavior, not a contradiction. This remains product-level consistency evidence, not in-situ ground-truth accuracy.
-
-Figures generated from Drive-downloaded CSVs:
-
-![Hong Kong v0.3 regional NDVI time series](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_regional_ndvi_timeseries.png)
-
-![Hong Kong v0.3 HLS MODIS hexbin](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_hls_vs_modis_hexbin.png)
-
-![Hong Kong v0.3 land-cover metrics](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_landcover_metrics.png)
-
-Project status and remaining work are tracked in [Roadmap and TODO](docs/roadmap.md). The short contributor-facing task list is [TODO.md](TODO.md).
-
-Reproduce:
-
-```bash
-python scripts/hk_ndvi_v03_export.py --mode smoke --year 2024 --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION --project "$EE_PROJECT" --confirm-live --json
-python scripts/hk_ndvi_v03_export.py --mode full --year 2024 --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION --project "$EE_PROJECT" --confirm-live --json
-python scripts/hk_ndvi_v03_monitor_tasks.py --manifest outputs/hk_ndvi_product_validation_v03/manifest.json --out outputs/hk_ndvi_product_validation_v03 --json
-python scripts/hk_ndvi_v03_analyze_drive_exports.py --raw-dir outputs/hk_ndvi_product_validation_v03/raw_drive --out outputs/hk_ndvi_product_validation_v03 --json
-python scripts/hk_ndvi_v03_make_figures.py --input outputs/hk_ndvi_product_validation_v03/analysis --out outputs/hk_ndvi_product_validation_v03/figures --json
-python scripts/hk_ndvi_v03_readiness_audit.py --out outputs/hk_ndvi_product_validation_v03 --json
-```
-
-Limitations: this validates product-level consistency and remote-sensing workflow reliability, not ground-truth accuracy. Coastal mixed pixels, dense urban pixels, clouds, haze, terrain, BRDF differences, and static 2021 land-cover strata can all produce real product differences.
-
-## 🔐 Tool Permissions
-
-![GEE agent toolchain](assets/images/gee-agent-toolchain.png)
-
-| Tool | Best use | Boundary |
-| --- | --- | --- |
-| Earth Engine Python API / `gee-skill` | GEE plan, render, validate, preflight, export, monitor, trace | Primary execution path; live export needs `--confirm-live`. |
-| Browser | Official docs and dataset catalog verification, README visual QA | Do not submit exports through browser when API/CLI works. |
-| Google Drive | Export handoff, zip/report/CSV/figure readback | Return only connector-observed links. |
-| Data Analytics | Chart/report/data-quality validation after data exists | Does not replace remote-sensing domain review. |
-| Computer Use | Local GUI fallback when no API/CLI/plugin path exists | Last resort, especially around credentials or live tasks. |
-| imagegen | README/documentation raster visuals | Communication asset only, not scientific evidence. |
-
-Full guidance: [Tool permissions](docs/tool_permissions.md).
-
-## 🧠 Learning Loop
-
-![GEE agent knowledge loop](assets/images/gee-agent-knowledge-loop.png)
-
-| Task-specific observation | Public generic form |
-| --- | --- |
-| A dataset path, band, or year range changed. | Dataset card with source URL, `last_checked`, scope, and caveats. |
-| A live export failed because bands had mixed dtypes. | Failure case and rule: cast image export bands to a uniform dtype. |
-| A public boundary substitute did not match an authority boundary. | Claim-boundary rule: do not state authoritative local conclusions. |
-| A private research flow revealed repeated friction. | Generic workflow card only after privacy review and source verification. |
-
-More detail: [Closed loop](docs/closed_loop.md) and [adaptive browser-backed knowledge loop](references/knowledge_base/workflows/adaptive-browser-backed-knowledge-loop.md).
-
-## 🗺️ Roadmap And TODO
-
-The public roadmap is maintained as a lightweight project board in [docs/roadmap.md](docs/roadmap.md). It separates `Done`, `Now`, `Next`, and `Later` work, and uses explicit status labels: `Golden`, `Partial`, `Implementation-ready`, `Planned`, and `Blocked`.
-
-Use it to see what still needs work before a demo becomes public golden evidence. Current priorities are turning the completed v0.3 HLS/MODIS validation into generic v0.4 skill-generation capability, keeping release checks reproducible, and promoting only privacy-reviewed, source-backed lessons into the knowledge base.
-
-For GitHub-style maintenance, use [TODO.md](TODO.md), the issue templates under `.github/ISSUE_TEMPLATE/`, and the suggested labels in `.github/labels.yml`. The board process, labels, triage loop, and demo promotion rules are summarized in [Project Board Guide](docs/project_board.md).
-
-## What This Project Does
-
-- parses supported natural-language GEE tasks into reviewable plans;
-- retrieves local dataset, operator, recipe, rule, and failure evidence;
-- renders approved Jinja2 Earth Engine Python templates;
-- validates scripts before live use;
-- runs dry-run and preflight checks before export;
-- submits live exports only after explicit `--confirm-live`;
-- monitors export tasks and records traces under `outputs/runs/<run_id>/`;
-- keeps public knowledge generic and private research content out of GitHub.
-
-## Agent-Native Interface
-
-Core commands return deterministic JSON for agent orchestration:
-
-```bash
 gee-skill info --json
-gee-skill doctor --json
-gee-skill catalog search "Sentinel-2 NDVI" --json
-gee-skill catalog evidence --category dataset --json
+gee-skill smoke-test --json
+```
+
+Activate `.venv` before installation when your shell requires it. See [How to start](docs/how_to_start.md) for PowerShell and POSIX commands.
+
+To use the repository as a Codex skill, open the checkout as the workspace or ask `$skill-installer` to install the GitHub repository. The agent entry point is [SKILL.md](SKILL.md); UI metadata is in [agents/openai.yaml](agents/openai.yaml).
+
+## Core Workflow
+
+```bash
 gee-skill recipe list --json
 gee-skill plan from-text "Compute NDVI for a supplied AOI in March 2024 and export CSV." --json
 gee-skill render <plan.yaml> --script-out <script.py> --json
 gee-skill validate <script.py> --json
-gee-skill preflight <plan.yaml> --project "$EE_PROJECT" --json
-gee-skill run <plan.yaml> --project "$EE_PROJECT" --confirm-live --json
-gee-skill exports list --project "$EE_PROJECT" --json
+gee-skill preflight <plan.yaml> --project <project-id> --json
+gee-skill run <plan.yaml> --project <project-id> --confirm-live --json
+gee-skill exports list --project <project-id> --json
 gee-skill trace inspect <run_id> --json
-gee-skill eval evals/benchmark_suite.yml --json
 ```
 
-Compatibility commands such as `ask`, `review-plan`, `preflight-plan`, `run-plan`, and `monitor-exports` remain available for existing public examples.
+Planning, retrieval, rendering, validation, and offline evaluation do not require Earth Engine credentials. Live work uses the user's own Earth Engine account, Google Cloud Project, local authentication, quota, and export destination.
+
+## Public Evidence
+
+| Capability | Public status | Evidence boundary |
+| --- | --- | --- |
+| Minimal Sentinel-2 NDVI CSV | Golden | End-to-end public regression path. |
+| Land-cover-aware NDVI CSV | Golden | Adds Dynamic World strata with explicit interpretation limits. |
+| HLS/MODIS NDVI intercomparison | Golden | Product consistency and workflow reliability, not in-situ accuracy. |
+| Annual multi-source transition recipe | Partial | Generic render-and-validate capability; no public live scientific result. |
+| Private raster ingestion handoff | Curated workflow | Reusable authority and validation pattern; no private identifiers or data. |
+
+Detailed status lives in the [capability matrix](docs/capability_matrix.md). The full public product-intercomparison method, metrics, figures, and limitations are in the [v0.3 validation report](docs/validation/hk_ndvi_product_intercomparison_v03.md).
+
+The v0.3 `Golden` status is grounded in full-year CSV and annual GeoTIFF Google Drive readback, local QA, and a passing readiness audit. It is product-level consistency evidence, not in-situ ground-truth accuracy.
+
+[![Public HLS/MODIS product intercomparison](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_hls_vs_modis_hexbin.png)](docs/validation/hk_ndvi_product_intercomparison_v03.md)
+
+## Safety And Claim Boundaries
+
+- Never commit credentials, tokens, service-account files, local credential paths, or private keys.
+- Never run live exports without reviewed context, preflight, a project, and explicit confirmation.
+- Never use overwrite, deletion, public access, or broader IAM as an automatic recovery step.
+- Treat exports and model outputs as workflow artifacts, not scientific conclusions or ground truth.
+- Call a workflow `live verified` only when the capability matrix records completed public evidence.
+
+See [Security](SECURITY.md), [tool permissions](docs/tool_permissions.md), and the [private-raster handoff](references/knowledge_base/workflows/private-raster-ingestion-handoff.md).
 
 ## Documentation
 
-- [How to start](docs/how_to_start.md)
-- [Demo gallery](docs/demo_gallery.md)
-- [Tool permissions](docs/tool_permissions.md)
-- [Closed loop](docs/closed_loop.md)
-- [Remote sensing validation ladder](docs/remote_sensing_validation.md)
-- [Capability matrix](docs/capability_matrix.md)
-- [Project board guide](docs/project_board.md)
-- [Roadmap and TODO](docs/roadmap.md)
 - [CLI reference](docs/cli_reference.md)
-- [Recipe registry](docs/recipes.md)
+- [Recipes](docs/recipes.md)
+- [Capability matrix](docs/capability_matrix.md)
+- [KG-RAG architecture](docs/kg_rag_architecture.md)
 - [Benchmark protocol](docs/benchmark_protocol.md)
+- [Remote-sensing validation](docs/remote_sensing_validation.md)
 - [Troubleshooting](docs/troubleshooting.md)
-- [Extending workflows](docs/extending.md)
+- [Release readiness](docs/release_readiness.md)
 
-## References and Data Sources
+Official Earth Engine documentation and Data Catalog pages remain canonical for API behavior, dataset identifiers, bands, scale factors, projections, quotas, and export semantics.
 
-- [Earth Engine Python API](https://developers.google.com/earth-engine/guides/python_install)
-- [Earth Engine authentication](https://developers.google.com/earth-engine/guides/auth)
-- [Sentinel-2 SR Harmonized](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED)
-- [MODIS Terra Vegetation Indices MOD13Q1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1)
-- [MODIS Aqua Vegetation Indices MYD13Q1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD13Q1)
-- [Landsat 8 Collection 2 Level 2](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2)
-- [Landsat 9 Collection 2 Level 2](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2)
-- [Dynamic World V1](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1)
-- [ESA WorldCover](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
-- [JRC Global Surface Water](https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater)
+## Release And Contribution
 
-The local knowledge base under `references/knowledge_base/` contains distilled guidance. Official Earth Engine documentation remains canonical.
-
-## Security
-
-Live Earth Engine runs require your own Earth Engine account, Google Cloud Project, and local OAuth authentication. Never commit service account JSON files, OAuth tokens, local credential files, refresh tokens, credential paths, private keys, client secrets, private asset ids, draft manuscripts, or unpublished research outputs.
-
-## v0.4 KG-RAG Research Engine
-
-v0.4 introduces a source-grounded KG-RAG layer that strengthens retrieval beyond Markdown BM25. The new loop is:
-
-```text
-official docs / Data Catalog / API docs / papers / vetted repos
-  -> source registry
-  -> evidence cards
-  -> deterministic knowledge graph
-  -> hybrid text + evidence + graph retrieval
-  -> planner hints / semantic validator hints / eval cases
-```
-
-This is not model training, fine-tuning, or a generic chatbot. It is a deterministic public knowledge pipeline for Earth Engine agent workflows. Official Earth Engine documentation and Data Catalog pages remain authoritative for dataset IDs, bands, QA fields, scale factors, API behavior, quotas, projections, and export semantics. Papers and community repositories can support methodology and distilled patterns, but they cannot override official current facts.
-
-New offline commands:
+Current release: [v0.4.2 notes](docs/releases/v0.4.2.md). Run the local release gates before publishing:
 
 ```bash
-gee-skill sources validate --json
-gee-skill evidence search "MODIS NDVI scale factor" --json
-gee-skill kg build --json
-gee-skill kg search "HLS MODIS product intercomparison" --json
-gee-skill kg explain product_intercomparison --json
-gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS pixels?" --json
-```
-
-See [KG-RAG architecture](docs/kg_rag_architecture.md), [knowledge graph schema](docs/knowledge_graph_schema.md), [KG-RAG examples](docs/kg_rag_examples.md), and [source policy](docs/source_policy.md).
-
-### v0.4.1 hardening
-
-v0.4.1 is a release-readiness pass, not a new autonomous science layer. It adds auditable source refresh status, evidence-card quality checks, deterministic weighted lexical ranking with aliases and negative routing, richer hybrid bundles that separate accepted and candidate evidence, KG-RAG trace sidecars, product-intercomparison validator fixtures, expanded red-team/eval coverage, and a single local release gate:
-
-```bash
-python scripts/audit_evidence_quality.py --json
+python -m pytest
+python scripts/ingest_docs.py
 python scripts/release_gate_kg_rag.py --json
+python -m build --sdist --wheel
 ```
 
-v0.5 is reserved for a future typed `product_intercomparison` planner/schema. v0.4.1 deliberately keeps the existing control plane and treats KG-RAG as grounding and validation support, not ground-truth proof.
+Use [CONTRIBUTING.md](CONTRIBUTING.md), the issue templates under `.github/ISSUE_TEMPLATE/`, and [TODO.md](TODO.md) for public contributions. This project is released under the [MIT License](LICENSE).

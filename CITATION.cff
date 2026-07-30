@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this repository, please cite it as an agent-native Google Earth Engine harness."
 title: "gee-agent-skill: An Agent-Native Harness for Traceable Google Earth Engine Workflows"
-version: "0.3.0"
+version: "0.4.2"
 type: software
 authors:
   - name: "gee-agent-skill maintainers"

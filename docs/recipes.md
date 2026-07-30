@@ -37,6 +37,7 @@ Some portfolio demos are intentionally kept as canonical scripts before being pr
 | `landcover-stratified-ndvi` | `landcover_stratified_statistics` | Golden v0.2 path. |
 | `landsat-lst` | `land_surface_temperature` | Plan/render/validate ready for Landsat LST CSV/image; generic preflight gate exists; live export not yet verified. |
 | `sentinel1-flood-before-after` | `flood_mapping` | Plan/render/validate ready for Sentinel-1 before/after GeoTIFF; generic preflight gate exists; live export not yet verified. |
+| `annual-endmember-transition` | `change_detection` | Generic render/validate recipe with annual coverage, fixed-grid, tile-property, categorical-preaggregation, and export-graph safeguards; live export not verified. |
 | `landcover-summary-dynamic-world` | `landcover_summary` | Plan/render/validate ready for Dynamic World area/fraction CSV; live export not yet verified. |
 | `zonal-statistics-table` | `zonal_statistics` | Render/validation template exists. |
 | `image-export-geotiff` | `export_image` | Validation rules for region, scale, CRS, and `maxPixels`. |

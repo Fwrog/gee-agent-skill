@@ -16,7 +16,7 @@ ls pyproject.toml
 Windows PowerShell:
 
 ```powershell
-cd E:\projects\gee-agent-skill
+Set-Location 'C:\path\to\gee-agent-skill'
 dir pyproject.toml
 ```
 
@@ -79,7 +79,7 @@ which earthengine
 Windows PowerShell fix:
 
 ```powershell
-cd E:\projects\gee-agent-skill
+Set-Location 'C:\path\to\gee-agent-skill'
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[earthengine]"
 where python

@@ -65,7 +65,7 @@ def test_version_reports_package_version(capsys):
     with pytest.raises(SystemExit) as exc:
         main(["--version"])
     assert exc.value.code == 0
-    assert "gee-agent-skill 0.3.0" in capsys.readouterr().out
+    assert "gee-agent-skill 0.4.2" in capsys.readouterr().out
 
 
 def test_execute_script_treats_system_exit_zero_as_success(tmp_path, monkeypatch):

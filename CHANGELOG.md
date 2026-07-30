@@ -4,15 +4,23 @@ All notable changes to `gee-agent-skill` are documented here.
 
 ## Unreleased
 
-### Release polish
+## 0.4.2 - 2026-07-30
 
-- Reworked README and documentation around an agent-native GEE closed loop.
-- Added documentation visuals for the closed loop, knowledge loop, and toolchain.
-- Added tool permission guidance for Browser, Google Drive, Data Analytics, Computer Use, and imagegen.
-- Added closed-loop knowledge promotion guidance for dataset cards, rule cards, failure cases, and workflow cards.
-- Added public NDVI validation guidance using MODIS VI, Landsat, Dynamic World, ESA WorldCover, and JRC surface-water references.
-- Kept public demo gallery limited to v0.1 and v0.2 golden regression examples.
-- Removed private academic demo material from public docs, examples, evidence bundles, and packaged resources.
+### Added
+
+- Added a generic annual endpoint-transition recipe with fixed-grid, tile-filtering, categorical-fraction, and bounded-export safeguards.
+- Added reusable private-raster ingestion guidance that resumes agent-owned validation after the minimum human authority checkpoint.
+
+### Changed
+
+- Compressed `SKILL.md` to the reusable execution path, safety boundaries, and on-demand references.
+- Compressed the bilingual GitHub project showcase and aligned package, CLI, citation, and release metadata.
+- Generalized privacy regression tests so they detect non-portable identifiers without embedding project-specific values.
+
+### Privacy and release hygiene
+
+- Ignore generated research outputs, local datasets, GIS rasters, private manifests, workspaces, and manuscript drafts by default.
+- Keep public examples limited to reviewed regression evidence and label the annual transition recipe as render-and-validate capability rather than live scientific evidence.
 
 ## 0.3.0-alpha - 2026-07-01
 

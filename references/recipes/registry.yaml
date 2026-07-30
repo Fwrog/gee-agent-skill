@@ -133,9 +133,9 @@ recipes:
     task_type: change_detection
     description: Build annual equal-area multi-source features, select stable endpoint samples, train a shared classifier, and export yearly probabilities.
     required_inputs: [aoi, time_range, annual_categorical_landcover, output]
-    optional_inputs: [activity_collection, population_collection, accessibility_image, grid, endpoint_rules, random_seed]
+    optional_inputs: [activity_collection, population_collection, accessibility_image, grid, endpoint_rules, random_seed, hls_tile_ids, categorical_fraction_asset, study_mask_asset, preaggregation_manifest, min_valid_fraction]
     candidate_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002, projects/sat-io/open-datasets/ORNL/LANDSCAN_GLOBAL, NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG, external/annual-categorical-landcover]
-    default_dataset_policy: Use HLS v002 for annual optical features; prefer one consistently processed monthly activity collection for multi-year aggregation; verify every community or external asset year and band before use; aggregate counts and categories with their declared semantics.
+    default_dataset_policy: Use HLS v002 for annual optical features and filter tiled collections by reviewed metadata properties before reduction; prefer one consistently processed monthly activity collection for multi-year aggregation; verify every community or external asset year and band before use; aggregate counts and categories with their declared semantics.
     template: recipes/annual_endmember_transition
     preflight_profile: optical_index
     validation_profile: annual_endmember_transition
@@ -146,6 +146,11 @@ recipes:
     limitations:
       - The recipe is generic render-and-validate capability and has no public live-export evidence.
       - Endpoint thresholds, class codes, activity coverage, and private-asset permissions require study-specific review.
+      - Materialize categorical one-hot area fractions on the target grid before model tasks; prefer a staged internal Earth Engine derivation when the source is already an asset, and use local preaggregation plus re-ingestion only after that route fails.
+      - Absolute one-hot fractions sum to valid_fraction; valid-area composition thresholds require explicit normalization and a reviewed minimum-support gate.
+      - A collection-wide AOI filter is not a substitute for a reviewed tile-property whitelist when source image footprints are global or unbounded.
+      - Use a rectangular export region plus a grid-aligned study mask, and stage per-tile or band-group reductions when a monolithic annual graph exceeds memory.
+      - Human action is limited to authority, interactive authentication, or an unavailable upload surface; resume agent-owned validation and analysis after assets are ready.
       - Joining VIIRS ANNUAL_V21 and ANNUAL_V22 requires an explicit cross-version policy; ANNUAL_V22 alone does not cover years before 2022.
       - Classifier probability near 0.5 is model ambiguity unless independently supported as spatial mixture.
   - recipe_id: zonal-statistics-table

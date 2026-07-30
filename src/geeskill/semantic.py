@@ -732,6 +732,7 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
     findings: list[Finding] = []
     code_text = _without_comments(text)
     code_lower = code_text.lower()
+    compact_code = re.sub(r"\s+", "", code_lower)
     uses_hls = "nasa/hls/hlsl30" in code_lower or "nasa/hls/hlss30" in code_lower
     if uses_hls:
         preparation_blocks = re.findall(
@@ -763,6 +764,41 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
                 )
             )
 
+    uses_hls_s30 = "nasa/hls/hlss30" in code_lower
+    if uses_hls_s30:
+        has_tile_property_filter = (
+            "mgrs_tile_id" in compact_code
+            and "hls_tile_ids" in compact_code
+            and (
+                "filter.eq(" in compact_code
+                or "filter.inlist(" in compact_code
+                or "filter.in_list(" in compact_code
+            )
+        )
+        findings += _require(
+            has_tile_property_filter,
+            ruleset,
+            "COLLECTION_GEOMETRY_UNBOUNDED",
+            "Collections whose catalog footprint is global or unbounded need a reviewed metadata or tile-property filter before annual reduction.",
+            "EMPTY_COLLECTION",
+            hint="Filter the HLS-like collection by its documented tile property and audit allowed tile IDs before compositing.",
+            retryable=True,
+        )
+        has_spatial_filter_guard = (
+            has_tile_property_filter
+            and "hls_spatial_filter_policy" in compact_code
+            and "property_whitelist_before_spatial_filter" in compact_code
+        )
+        findings += _require(
+            has_spatial_filter_guard,
+            ruleset,
+            "SPATIAL_FILTER_INEFFECTIVE",
+            "AOI filtering alone is not an adequate contract for a collection with global or unbounded image geometry.",
+            "EMPTY_COLLECTION",
+            hint="Apply the reviewed tile/property whitelist before any optional filterBounds call and export per-tile coverage evidence.",
+            retryable=True,
+        )
+
     has_annual_contract = (
         "expected_years" in code_lower
         and "filterdate" in code_lower
@@ -793,6 +829,72 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
         hint="Expose CRS/CRS_TRANSFORM and apply the same target projection to every annual feature.",
         retryable=True,
     )
+
+    complex_export_region = (
+        re.search(
+            r"region=(?:ee\.)?featurecollection\([^)]*\)\.geometry\(",
+            compact_code,
+        )
+        is not None
+        or re.search(r"region=aoi\b", compact_code) is not None
+    )
+    has_safe_export_region = (
+        "export_region_policy" in code_lower
+        and "rectangular_bounds_plus_raster_mask" in code_lower
+        and "study_mask" in code_lower
+    )
+    if complex_export_region and not has_safe_export_region:
+        findings.append(
+            Finding(
+                "warning",
+                "COMPLEX_EXPORT_REGION_RISK",
+                "A complex AOI geometry is used directly as an export region and may trigger expensive geometry densification or clipping.",
+                hint="Use a simple bounding rectangle for region and apply the reviewed study area as a grid-aligned raster mask.",
+                category="EXPORT_TASK_ERROR",
+                rule_id=f"{ruleset}.COMPLEX_EXPORT_REGION_RISK",
+                ruleset=ruleset,
+                retryable=True,
+            )
+        )
+
+    feature_band_match = re.search(
+        r"feature_bands=\[(.*?)\]",
+        compact_code,
+        flags=re.DOTALL,
+    )
+    explicit_feature_count = (
+        len(re.findall(r"[\"'][^\"']+[\"']", feature_band_match.group(1)))
+        if feature_band_match
+        else 0
+    )
+    looks_monolithic = (
+        "reduceresolution" in compact_code
+        and (
+            explicit_feature_count >= 24
+            or re.search(
+                r"(?:feature_stack|features)\.?reduceresolution",
+                compact_code,
+            )
+            is not None
+        )
+    )
+    has_staged_reduction = (
+        "hls_reduction_policy" in code_lower
+        and "per_tile_reduction_before_annual_mosaic" in code_lower
+    )
+    if looks_monolithic and not has_staged_reduction:
+        findings.append(
+            Finding(
+                "warning",
+                "MONOLITHIC_REDUCTION_RISK",
+                "A large multi-band annual feature image is reduced as one computation graph, which can exceed fixed per-request memory.",
+                hint="Reduce bounded tile or band groups first, persist or export intermediates when needed, and assemble the annual stack afterward.",
+                category="REDUCER_SCALE_ERROR",
+                rule_id=f"{ruleset}.MONOLITHIC_REDUCTION_RISK",
+                ruleset=ruleset,
+                retryable=True,
+            )
+        )
 
     uses_population_count = (
         "landscan" in code_lower
@@ -865,10 +967,18 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
         for marker in ("categorical", "landcover_band", "class_codes", "impervious_fraction", "cropland_fraction")
     )
     if uses_categorical:
-        safe_category_aggregation = (
+        inline_safe_category_aggregation = (
             re.search(r"\beq\b", code_lower) is not None
             and "reduceresolution" in code_lower
             and ("class_fraction" in code_lower or "categorical_nearest" in code_lower)
+        )
+        preaggregated_category_fractions = (
+            "categorical_preaggregation_policy" in code_lower
+            and "one_hot_masks_to_materialized_area_fractions" in code_lower
+            and "preaggregated_class_fraction_bands" in code_lower
+        )
+        safe_category_aggregation = (
+            (inline_safe_category_aggregation or preaggregated_category_fractions)
             and "resample(\"bilinear\")" not in lower
             and "resample('bilinear')" not in lower
         )
@@ -881,6 +991,29 @@ def _annual_endmember_transition(text: str, lower: str) -> list[Finding]:
             hint="Convert each reviewed class to a binary mask and aggregate the mask to an area fraction.",
             retryable=True,
         )
+        if preaggregated_category_fractions:
+            declares_whole_cell_semantics = (
+                "class_fraction_semantics" in compact_code
+                and "absolute_full_cell_fraction" in compact_code
+                and "whole_cell_threshold_policy" in compact_code
+            )
+            normalizes_valid_composition = (
+                "class_fraction_semantics" in compact_code
+                and "absolute_full_cell_fraction" in compact_code
+                and "composition_normalization_policy" in compact_code
+                and "divide_by_valid_fraction_after_min_support_gate" in compact_code
+                and "min_valid_fraction" in compact_code
+                and ".divide(valid_fraction" in compact_code
+            )
+            findings += _require(
+                declares_whole_cell_semantics or normalizes_valid_composition,
+                ruleset,
+                "CATEGORICAL_FRACTION_SEMANTICS_UNSAFE",
+                "Preaggregated class fractions must declare whether they are whole-cell fractions or valid-area composition; the two threshold semantics cannot be mixed.",
+                "REDUCER_SCALE_ERROR",
+                hint="Either keep explicitly declared whole-cell thresholds, or divide absolute class fractions by valid_fraction after a reviewed minimum-support gate.",
+                retryable=True,
+            )
         if re.search(
             r"reduceresolution\s*\(.*?\.reproject\s*\(",
             lower,
