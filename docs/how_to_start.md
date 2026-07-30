@@ -57,7 +57,7 @@ python -c "import ee; print('ee import ok')"
 ## Windows PowerShell Setup
 
 ```powershell
-cd E:\projects\gee-agent-skill
+Set-Location 'C:\path\to\gee-agent-skill'
 
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1

@@ -9,262 +9,108 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Fwrog/gee-agent-skill/actions"><img alt="CI" src="https://img.shields.io/badge/CI-pytest%20%2B%20smoke-2ea44f"></a>
-  <a href="./docs/capability_matrix.md"><img alt="Capability" src="https://img.shields.io/badge/capability-matrix-2563eb"></a>
-  <a href="./docs/tool_permissions.md"><img alt="Live safe" src="https://img.shields.io/badge/live--export-confirm--live-f59e0b"></a>
-  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-see%20LICENSE-64748b"></a>
+  <a href="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Release" src="https://img.shields.io/badge/release-v0.4.2-2563eb">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
+  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-64748b"></a>
 </p>
 
-`gee-agent-skill` 是面向 Google Earth Engine 的 agent-native 命令行工作流框架。它把自然语言地理空间任务转换成可审查 plan、带来源的数据集/算子选择、经过验证的 Earth Engine Python 脚本、安全 preflight、显式确认后的 export、任务监控和可复现 trace。
-
-## 项目快照
+`gee-agent-skill` 是一个面向 Codex 的公开 Skill 和 Python CLI，用于构建可审查的 Google Earth Engine 工作流。它把地理空间请求转换为有来源依据的计划、经过验证的 Earth Engine Python、显式的 preflight 与 live-export 门控、可监控任务和可复现运行记录。
 
 ```text
-自然语言 -> plan -> RAG 证据 -> 渲染脚本 -> 验证 -> preflight -> export -> monitor -> trace -> 通用知识沉淀
+请求 -> 计划 -> 证据 -> 渲染 -> 验证 -> preflight -> 导出 -> 监控 -> trace
 ```
 
-这是公开 GEE harness，不是私有研究仓库。私有研究问题、未发表结果、私有 asset id、论文草稿和专有输出不进入公开 repo。只有可泛化的 dataset card、rule card、failure case 和 workflow constraint 才适合沉淀到这里。
+## 核心能力
 
-| 层级 | 公开作用 |
+| 能力面 | 作用 |
 | --- | --- |
-| 🧭 Plan-first CLI | 把自然语言 GEE 任务变成可审查的 `gee-plan/v0.3` 合约。 |
-| 📚 RAG evidence | 在渲染代码前检索 dataset、operator、recipe、rule、failure cards。 |
-| ✅ Validation gates | 阻止不安全导出、缺失 band、未解析模板、占位 AOI 和过度声明。 |
-| 📤 Live execution | 使用官方 Earth Engine Python API，并要求 `--project` 和 `--confirm-live`。 |
-| 🧠 Learning loop | 经过隐私审查后，只把通用、带来源的经验沉淀到公开 repo。 |
+| Plan-first CLI | 把支持的请求转换为可编辑的 `gee-plan/v0.3` YAML。 |
+| 证据检索 | 从本地语料中检索数据集、算子、配方、规则和失败案例。 |
+| 验证门控 | 发现未解决上下文、不安全模式、语义不匹配和不受支持的结论。 |
+| 受控 live 执行 | 要求项目、通过 preflight，并显式使用 `--confirm-live`。 |
+| 可审计输出 | 持久化脚本、证据、验证结果、任务状态、环境信息和最终报告。 |
 
-## 5 分钟快速开始
+本仓库是可复用的公开 harness，不是具体研究工作区。真实项目和 asset ID、bucket 与 object 名称、task ID、源栅格、论文草稿和未发布结果都应留在 GitHub 之外；只有通用且有来源依据的经验可以进入公开仓库。
+
+## 安装
 
 ```bash
+git clone https://github.com/Fwrog/gee-agent-skill.git
+cd gee-agent-skill
 python -m venv .venv
-source .venv/bin/activate
 python -m pip install -e ".[earthengine]"
-
-gee-skill smoke-test --json
-gee-skill ask "Compute January 2024 mean NDVI for Hong Kong and export CSV." --dry-run --json
-```
-
-Live export 永远是用户显式选择的步骤：
-
-```bash
-export EE_PROJECT="your-google-cloud-project-id"
-earthengine authenticate --auth_mode=localhost
-gee-skill preflight-plan outputs/runs/<run_id>/task_plan.yaml --project "$EE_PROJECT" --json
-gee-skill run-plan outputs/runs/<run_id>/task_plan.yaml --project "$EE_PROJECT" --confirm-live --json
-```
-
-## 🧪 Public Demo Gallery
-
-公开 demo 是 harness 的 golden regression examples，不是科学植被产品。
-
-| Demo | 状态 | 证明什么 | 详情 |
-| --- | --- | --- | --- |
-| v0.1 minimal NDVI CSV | Golden | 最小 Sentinel-2 NDVI 请求可以走完 plan、validation、preflight、export trace。 | [案例](docs/case_studies/hk_ndvi_v01.md) |
-| v0.2 land-cover-aware NDVI CSV | Golden | 可以加入 Dynamic World 解释分层，并保留限制说明和 trace。 | [案例](docs/case_studies/hk_ndvi_landcover_v02.md) |
-| v0.3 HLS/MODIS NDVI product intercomparison | Golden | 尺度感知产品一致性：HLS NDVI -> MODIS grid -> Drive export -> metrics/figures/report/readiness audit。 | [验证说明](docs/validation/hk_ndvi_product_intercomparison_v03.md) |
-
-更复杂的个人学术 demo 不在公开 README 展示。公开支持范围看 [Capability matrix](docs/capability_matrix.md)，通用 NDVI 合理性验证看 [remote sensing validation ladder](docs/remote_sensing_validation.md)。
-
-## Validation v0.3: Hong Kong NDVI Product Intercomparison
-
-这个 v0.3 demo 用 30 m HLS NDVI 和官方 MODIS MOD13Q1 NDVI 做产品级互检。关键不是宣称“地面真值精度”，而是验证 skill 能否生成一个遥感上合理、可复现、尺度匹配的流程：HLS 先按 MODIS 16-day window 合成，再聚合到 MODIS 250 m grid，最后与 MODIS NDVI 做定量比较。
-
-| 组件 | 选择 |
-| --- | --- |
-| 高分辨率来源 | `NASA/HLS/HLSL30/v002` 和 `NASA/HLS/HLSS30/v002` |
-| 官方对比产品 | `MODIS/061/MOD13Q1`，`NDVI * 0.0001` |
-| 分层 | `ESA/WorldCover/v200` purity groups |
-| 时间逻辑 | 使用 MODIS 16-day windows 驱动 HLS 时间窗口 |
-| 尺度逻辑 | HLS 30 m median NDVI 先聚合到 MODIS projection 再比较 |
-| Drive handoff | `GEE_SKILL_V03_HK_NDVI_VALIDATION` |
-
-流程：
-
-```text
-发现数据集 -> 生成 GEE workflow -> HLS QA/NDVI -> MODIS QA/scale -> HLS 聚合到 MODIS grid -> 导出到 Drive -> connector 回读 -> 指标和图表
-```
-
-当前证据状态：公开 v0.3 demo 已有 `Golden` validation evidence。2024 full-year CSV exports 已通过 Google Drive 回读，年度 GeoTIFF raster 通过整图或 deterministic 2x2 tiled fallback 完成验证，本地 QA 通过，readiness audit 返回 `golden_ready`。
-
-| 指标 | 当前 full-year CSV 结果 |
-| --- | --- |
-| Matched pixel count | 5,575 个全年匹配样本 |
-| Bias / MAE / RMSE | -0.025 / 0.073 / 0.111 NDVI |
-| Pearson r / Spearman rho | 0.870 / 0.859 |
-| Land-cover finding | 植被主导像元 RMSE 最低 (0.082)；海岸/水体邻近像元 RMSE 最高 (0.193)。 |
-| Raster QA | HLS 30 m、MODIS 250 m、HLS aggregated 250 m tiles、difference tiles 和 valid-count tiles 均通过本地 sanity checks。 |
-
-**为什么这个分析可信**
-
-- 🛰️ **高分辨率参考型输入：** HLS v2.0 的目标就是把 Landsat/Sentinel-2 30 m surface reflectance 做成可比产品，包括大气校正、云/云影掩膜、BRDF/view-angle 归一化、bandpass adjustment 和 common grid。HLS v2.0 论文认为其 harmonization 足以支撑定量陆地应用。 [USGS/RSE](https://pubs.usgs.gov/publication/70266349)
-- 🌿 **官方对比产品：** MOD13Q1 是官方 16-day、250 m MODIS vegetation-index 产品；GEE catalog 和 MOD13 user guide 都说明了大气校正、QA layers 和 `0.0001` NDVI scale factor。 [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1), [MOD13 guide](https://lpdaac.usgs.gov/documents/621/MOD13_User_Guide_V61.pdf)
-- 📏 **尺度匹配验证：** workflow 没有直接比较 30 m HLS 像元和 250 m MODIS 像元，而是先把 HLS 聚合到 MODIS grid。这符合中低分辨率产品验证中对 scale mismatch 和地表异质性的处理逻辑。 [MODIS validation review](https://sites.bu.edu/cliveg/files/2013/12/ywze02.pdf)
-- 🧭 **误差结构可解释：** ESA WorldCover v200 提供 2021 年 10 m land-cover layer，用来做分层解释。因此 coastal / mixed / built-up 像元一致性较弱，应解释为混合像元和产品差异，而不是 workflow 失败。 [GEE catalog](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
-
-**结论：** v0.3 能有力说明这个 skill 可以构建 QA-aware、时间匹配、尺度匹配的 NDVI 产品互检流程。较高相关性和 vegetation-dominated 像元较低 RMSE 支持 workflow reliability；海岸和混合像元误差更大符合遥感常识，不构成反例。但它仍然是 product-level consistency evidence，不是 in-situ ground-truth accuracy。
-
-以下图表来自 Drive 下载的 CSV：
-
-![Hong Kong v0.3 regional NDVI time series](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_regional_ndvi_timeseries.png)
-
-![Hong Kong v0.3 HLS MODIS hexbin](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_hls_vs_modis_hexbin.png)
-
-![Hong Kong v0.3 land-cover metrics](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_landcover_metrics.png)
-
-项目状态和后续事项见 [Roadmap and TODO](docs/roadmap.md)。更短的新贡献者任务入口见 [TODO.md](TODO.md)。
-
-复现命令：
-
-```bash
-python scripts/hk_ndvi_v03_export.py --mode smoke --year 2024 --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION --project "$EE_PROJECT" --confirm-live --json
-python scripts/hk_ndvi_v03_export.py --mode full --year 2024 --drive-folder GEE_SKILL_V03_HK_NDVI_VALIDATION --project "$EE_PROJECT" --confirm-live --json
-python scripts/hk_ndvi_v03_monitor_tasks.py --manifest outputs/hk_ndvi_product_validation_v03/manifest.json --out outputs/hk_ndvi_product_validation_v03 --json
-python scripts/hk_ndvi_v03_analyze_drive_exports.py --raw-dir outputs/hk_ndvi_product_validation_v03/raw_drive --out outputs/hk_ndvi_product_validation_v03 --json
-python scripts/hk_ndvi_v03_make_figures.py --input outputs/hk_ndvi_product_validation_v03/analysis --out outputs/hk_ndvi_product_validation_v03/figures --json
-python scripts/hk_ndvi_v03_readiness_audit.py --out outputs/hk_ndvi_product_validation_v03 --json
-```
-
-限制：这是 product-level consistency 和 workflow reliability 验证，不是 ground-truth accuracy。海岸混合像元、密集城市像元、云/霾、地形、BRDF 差异，以及 2021 静态土地覆盖分层都会造成真实产品差异。
-
-## 🔐 Tool Permissions
-
-![GEE agent toolchain](assets/images/gee-agent-toolchain.png)
-
-| 工具 | 最适合做什么 | 边界 |
-| --- | --- | --- |
-| Earth Engine Python API / `gee-skill` | GEE plan、render、validate、preflight、export、monitor、trace | 主执行路径；live export 必须显式 `--confirm-live`。 |
-| Browser | 官方文档、dataset catalog 核验、README 视觉 QA | API/CLI 可用时，不通过浏览器提交 export。 |
-| Google Drive | 结果 handoff、zip/report/CSV/figure 回读 | 只返回 connector 实际返回或回读到的链接。 |
-| Data Analytics | 已有表格/图表/报告的数据质量和展示验证 | 不能替代遥感领域审查。 |
-| Computer Use | 没有 API/CLI/plugin 路径时的本地 GUI 兜底 | 最后手段，尤其谨慎处理凭证和 live task。 |
-| imagegen | README 和文档视觉资产 | 只是沟通素材，不是科学证据。 |
-
-完整说明见 [Tool permissions](docs/tool_permissions.md)。
-
-## 🧠 Learning Loop
-
-![GEE agent knowledge loop](assets/images/gee-agent-knowledge-loop.png)
-
-| 任务中的具体观察 | 公开通用沉淀 |
-| --- | --- |
-| 某个数据集路径、band 或年份范围变化。 | 带 source URL、`last_checked`、适用范围和限制的 dataset card。 |
-| live export 因 band dtype 混合失败。 | failure case 和规则：image export 前统一 band dtype。 |
-| 公开边界替代源与权威边界不一致。 | claim-boundary 规则：不能宣称权威本地结论。 |
-| 私有研究流程暴露重复摩擦。 | 经过隐私审查和来源核验后，抽象成通用 workflow card。 |
-
-更多说明见 [Closed loop](docs/closed_loop.md) 和 [adaptive browser-backed knowledge loop](references/knowledge_base/workflows/adaptive-browser-backed-knowledge-loop.md)。
-
-## 🗺️ Roadmap And TODO
-
-公开 roadmap 维护在 [docs/roadmap.md](docs/roadmap.md)，按 `Done`、`Now`、`Next`、`Later` 分层组织，并统一使用 `Golden`、`Partial`、`Implementation-ready`、`Planned`、`Blocked` 这些状态标签。
-
-它用来说明一个 demo 还差什么才能成为 public golden evidence。当前重点是把已完成的 v0.3 HLS/MODIS 验证流程泛化成 v0.4 skill generation 能力，保持 release checks 可复现，并且只把经过隐私审查、带来源的通用经验沉淀到知识库。
-
-如果要按 GitHub 项目方式推进，可以使用 [TODO.md](TODO.md)、`.github/ISSUE_TEMPLATE/` 里的模板，以及 `.github/labels.yml` 中建议的标签。项目看板列、标签、triage 节奏和 demo 晋级规则见 [Project Board Guide](docs/project_board.md)。
-
-## 项目能做什么
-
-- 把支持的自然语言 GEE 任务解析成可审查 plan；
-- 检索本地 dataset、operator、recipe、rule 和 failure evidence；
-- 渲染经过批准的 Jinja2 Earth Engine Python 模板；
-- 在 live 前验证脚本；
-- 在 export 前运行 dry-run 和 preflight；
-- 只有显式 `--confirm-live` 后才提交 live export；
-- 监控 export task，并把 trace 写入 `outputs/runs/<run_id>/`；
-- 保持公开知识通用化，避免把私有研究内容带进 GitHub。
-
-## Agent-Native 接口
-
-核心命令返回确定性 JSON，便于 agent 编排：
-
-```bash
 gee-skill info --json
-gee-skill doctor --json
-gee-skill catalog search "Sentinel-2 NDVI" --json
-gee-skill catalog evidence --category dataset --json
+gee-skill smoke-test --json
+```
+
+如果当前 shell 需要，请先激活 `.venv`。PowerShell 与 POSIX 的完整命令见 [快速开始](docs/how_to_start.md)。
+
+作为 Codex Skill 使用时，可以直接把仓库检出目录作为工作区打开，或让 `$skill-installer` 从该 GitHub 仓库安装。Agent 入口是 [SKILL.md](SKILL.md)，界面元数据位于 [agents/openai.yaml](agents/openai.yaml)。
+
+## 标准工作流
+
+```bash
 gee-skill recipe list --json
 gee-skill plan from-text "Compute NDVI for a supplied AOI in March 2024 and export CSV." --json
 gee-skill render <plan.yaml> --script-out <script.py> --json
 gee-skill validate <script.py> --json
-gee-skill preflight <plan.yaml> --project "$EE_PROJECT" --json
-gee-skill run <plan.yaml> --project "$EE_PROJECT" --confirm-live --json
-gee-skill exports list --project "$EE_PROJECT" --json
+gee-skill preflight <plan.yaml> --project <project-id> --json
+gee-skill run <plan.yaml> --project <project-id> --confirm-live --json
+gee-skill exports list --project <project-id> --json
 gee-skill trace inspect <run_id> --json
-gee-skill eval evals/benchmark_suite.yml --json
 ```
 
-兼容命令 `ask`、`review-plan`、`preflight-plan`、`run-plan` 和 `monitor-exports` 仍可用于现有公开示例。
+计划、检索、渲染、验证和离线评测不需要 Earth Engine 凭证。Live 工作使用用户自己的 Earth Engine 账户、Google Cloud Project、本地认证、配额和导出位置。
+
+## 公开证据
+
+| 能力 | 公开状态 | 证据边界 |
+| --- | --- | --- |
+| 最小 Sentinel-2 NDVI CSV | Golden | 公开的端到端回归路径。 |
+| 土地覆盖感知 NDVI CSV | Golden | 加入 Dynamic World 分层，并保留解释限制。 |
+| HLS/MODIS NDVI 产品互检 | Golden | 证明产品一致性和工作流可靠性，不等同于原位精度。 |
+| 年度多源转移配方 | Partial | 通用 render-and-validate 能力；没有公开 live 科学结果。 |
+| 私有栅格接力流程 | Curated workflow | 通用权限与验证模式；不包含私有标识或数据。 |
+
+详细状态见 [能力矩阵](docs/capability_matrix.md)。公开产品互检的完整方法、指标、图表和局限见 [v0.3 验证报告](docs/validation/hk_ndvi_product_intercomparison_v03.md)。
+
+v0.3 的 `Golden` 状态以全年 CSV、年度 GeoTIFF 的 Google Drive 回读、本地 QA 和通过的 readiness audit 为依据；这是产品级一致性证据，不是 in-situ ground-truth accuracy。
+
+[![Public HLS/MODIS product intercomparison](outputs/hk_ndvi_product_validation_v03/figures/hk_v03_hls_vs_modis_hexbin.png)](docs/validation/hk_ndvi_product_intercomparison_v03.md)
+
+## 安全与结论边界
+
+- 不提交凭证、token、service-account 文件、本地凭证路径或私钥。
+- 未经过上下文审查、preflight、项目指定和显式确认时，不运行 live export。
+- 不把覆盖、删除、公开访问或扩大 IAM 权限作为自动恢复步骤。
+- 把导出和模型输出视为工作流产物，而不是科学结论或 ground truth。
+- 只有能力矩阵记录了完整公开证据时，才能称为 `live verified`。
+
+进一步阅读 [安全策略](SECURITY.md)、[工具权限](docs/tool_permissions.md)和[私有栅格接力流程](references/knowledge_base/workflows/private-raster-ingestion-handoff.md)。
 
 ## 文档
 
-- [How to start](docs/how_to_start.md)
-- [Demo gallery](docs/demo_gallery.md)
-- [Tool permissions](docs/tool_permissions.md)
-- [Closed loop](docs/closed_loop.md)
-- [Remote sensing validation ladder](docs/remote_sensing_validation.md)
-- [Capability matrix](docs/capability_matrix.md)
-- [Project board guide](docs/project_board.md)
-- [Roadmap and TODO](docs/roadmap.md)
-- [CLI reference](docs/cli_reference.md)
-- [Recipe registry](docs/recipes.md)
-- [Benchmark protocol](docs/benchmark_protocol.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [Extending workflows](docs/extending.md)
+- [CLI 参考](docs/cli_reference.md)
+- [配方](docs/recipes.md)
+- [能力矩阵](docs/capability_matrix.md)
+- [KG-RAG 架构](docs/kg_rag_architecture.md)
+- [评测协议](docs/benchmark_protocol.md)
+- [遥感验证](docs/remote_sensing_validation.md)
+- [故障排查](docs/troubleshooting.md)
+- [发布就绪检查](docs/release_readiness.md)
 
-## 参考资料与数据源
+Earth Engine 的 API 行为、数据集 ID、波段、比例因子、投影、配额和导出语义，仍以官方文档和 Data Catalog 为准。
 
-- [Earth Engine Python API](https://developers.google.com/earth-engine/guides/python_install)
-- [Earth Engine authentication](https://developers.google.com/earth-engine/guides/auth)
-- [Sentinel-2 SR Harmonized](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED)
-- [MODIS Terra Vegetation Indices MOD13Q1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1)
-- [MODIS Aqua Vegetation Indices MYD13Q1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MYD13Q1)
-- [Landsat 8 Collection 2 Level 2](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2)
-- [Landsat 9 Collection 2 Level 2](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2)
-- [Dynamic World V1](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1)
-- [ESA WorldCover](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200)
-- [JRC Global Surface Water](https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_4_GlobalSurfaceWater)
+## 发布与贡献
 
-本地知识库位于 `references/knowledge_base/`。官方 Earth Engine 文档仍然是 API 行为的最高依据。
-
-## 安全
-
-Live Earth Engine 运行需要你自己的 Earth Engine account、Google Cloud Project 和本地 OAuth authentication。不要提交 service account JSON、OAuth token、本地 credential 文件、refresh token、credential path、private key、client secret、private asset id、论文草稿或未发表研究输出。
-
-## v0.4 KG-RAG 研究引擎
-
-v0.4 引入 source-grounded KG-RAG 层，用知识图谱和证据卡增强原有 Markdown BM25 检索。新的公开知识循环是：
-
-```text
-官方文档 / Data Catalog / API docs / 论文 / 可信社区仓库
-  -> source registry
-  -> evidence cards
-  -> deterministic knowledge graph
-  -> hybrid text + evidence + graph retrieval
-  -> planner hints / semantic validator hints / eval cases
-```
-
-这不是模型训练、不是微调，也不是通用聊天机器人。它是面向 Earth Engine agent workflow 的确定性、可审计、公开知识管线。官方 Earth Engine 文档和 Data Catalog 仍然是 dataset id、band、QA、scale factor、API 行为、quota、projection 和 export semantics 的最高依据。论文和社区仓库只能支持方法论与通用 pattern，不能覆盖官方当前事实。
-
-新增离线命令：
+当前版本：[v0.4.2 发布说明](docs/releases/v0.4.2.md)。发布前从仓库根目录运行：
 
 ```bash
-gee-skill sources validate --json
-gee-skill evidence search "MODIS NDVI scale factor" --json
-gee-skill kg build --json
-gee-skill kg search "HLS MODIS product intercomparison" --json
-gee-skill kg explain product_intercomparison --json
-gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS pixels?" --json
-```
-
-更多说明见 [KG-RAG architecture](docs/kg_rag_architecture.md)、[knowledge graph schema](docs/knowledge_graph_schema.md)、[KG-RAG examples](docs/kg_rag_examples.md) 和 [source policy](docs/source_policy.md)。
-
-### v0.4.1 hardening
-
-v0.4.1 是发布前加固，不是新的自动科学判断层。它新增可审计的 source refresh status、evidence-card quality audit、带 alias 和 negative routing 的确定性加权 lexical ranking、区分 accepted/candidate evidence 的 hybrid bundle、KG-RAG trace sidecar、product-intercomparison validator fixtures、更完整的 red-team/eval 覆盖，以及一个本地 release gate：
-
-```bash
-python scripts/audit_evidence_quality.py --json
+python -m pytest
+python scripts/ingest_docs.py
 python scripts/release_gate_kg_rag.py --json
+python -m build --sdist --wheel
 ```
 
-v0.5 才考虑 typed `product_intercomparison` planner/schema。v0.4.1 仍然保留现有 control plane，并把 KG-RAG 作为 grounding 和 validation support，而不是 ground-truth proof。
+公开贡献请参考 [CONTRIBUTING.md](CONTRIBUTING.md)、`.github/ISSUE_TEMPLATE/` 下的模板和 [TODO.md](TODO.md)。本项目采用 [MIT License](LICENSE)。

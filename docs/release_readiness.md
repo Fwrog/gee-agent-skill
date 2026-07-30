@@ -1,6 +1,6 @@
 # Release Readiness
 
-Last updated: 2026-07-25
+Last updated: 2026-07-30
 
 This checklist defines what can be published for the public `gee-agent-skill` repository. It covers the agent-native GEE harness, public v0.1/v0.2 golden regression examples, generic knowledge cards, and documentation assets. Personal academic demos, unpublished workflows, private asset ids, result values, and paper drafts must stay outside this repository.
 
@@ -12,7 +12,7 @@ This checklist defines what can be published for the public `gee-agent-skill` re
 - More complex academic demos are withheld from public display and must not be referenced in README, docs, examples, evidence bundles, or packaged resources.
 - `gee-plan/v0.3` remains a public plan schema and generic harness contract.
 - v0.4 KG-RAG is the source/evidence/KG/hybrid retrieval baseline.
-- v0.4.1 is the deterministic hardening pass for source refresh, evidence quality, retrieval ranking, trace sidecars, evals, and release gates.
+- v0.4.2 is the public release candidate: package metadata is aligned, the Skill and bilingual homepage are compressed, the annual recipe is hardened, and the privacy gate covers every tracked or pending text file.
 - Non-golden workflows should be described by their actual evidence level: planned, render/validate, mocked preflight blocker, or live verified only when listed in `docs/capability_matrix.md`.
 - `annual-endmember-transition` is a generic render/validate recipe only; it has no public live-export or scientific-result status.
 
@@ -36,17 +36,11 @@ python scripts/release_gate_kg_rag.py --json
 python -m pytest -q
 gee-skill smoke-test --json
 gee-skill eval evals/benchmark_suite.yml --json
+python -m build --sdist --wheel
 git diff --check
 ```
 
-Also run a privacy scan over public-facing content:
-
-```bash
-rg -n "private_key|client_secret|refresh_token|service_account|application_default_credentials" .
-rg -n "private asset|draft manuscript|unpublished result" README.md README.zh-CN.md docs references examples src tests evals
-```
-
-Any hit must be reviewed. Generic privacy rules may appear in security guidance, but concrete private paths, asset ids, unpublished results, and withheld academic demo names must not appear.
+The release gate scans every Git-tracked or pending text file for non-portable local paths, concrete user/project assets, bucket URIs, and secret-looking values. It permits only explicit synthetic placeholders. Generic privacy rules may appear in security guidance, but concrete private identifiers, unpublished results, and withheld academic demo names must not appear.
 
 ## Demo Promotion Checklist
 

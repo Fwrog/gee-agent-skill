@@ -7,7 +7,7 @@ This file is the short public task entry point. The detailed roadmap and board p
 - [x] Finish v0.3 annual GeoTIFF evidence: monitor Earth Engine tile exports, read completed files back from Google Drive, run local raster QA, and rerun the readiness audit.
 - [x] Promote v0.3 to `Golden` after task completion, Drive readback, figure/report QA, and readiness audit passed.
 - [ ] Turn the reusable HLS/MODIS lessons into generic v0.4 `product_intercomparison` planning, validation, and recipe support.
-- [ ] Run final release hygiene before PR/merge: full pytest, CLI smoke/eval, privacy scan, and `git diff --check`.
+- [x] Run final release hygiene before PR/merge: full pytest, CLI smoke/eval, privacy scan, and `git diff --check`.
 - [ ] Keep private research tasks, unpublished results, local asset ids, and private Drive links out of public issues and docs.
 
 ## Project Board Flow

@@ -10,15 +10,32 @@ from pathlib import Path
 from typing import Any
 
 
-SCAN_ROOTS = [
-    Path("references/sources"),
-    Path("references/evidence_cards"),
-    Path("references/graph"),
-    Path("docs/reviews"),
-    Path("evals"),
-]
+TEXT_SUFFIXES = {
+    ".cff",
+    ".geojson",
+    ".j2",
+    ".json",
+    ".md",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
 PRIVATE_RE = re.compile(
-    r"(/Users/|/Volumes/|C:\\Users\\|users/[A-Za-z0-9_.-]+/|projects/[^/\s]+/assets/[^,\s]+|AIza[0-9A-Za-z_-]{20,}|ya29\.)",
+    r"("
+    r"[A-Za-z]:\\[A-Za-z0-9._-]{2,}\\|"
+    r"/Users/[A-Za-z0-9._-]+/|"
+    r"/Volumes/[A-Za-z0-9._-]+/|"
+    r"users/(?!example/)[A-Za-z0-9_.-]+/|"
+    r"projects/[A-Za-z0-9_.-]+/assets/[A-Za-z0-9_./-]+|"
+    r"gs://[A-Za-z0-9][A-Za-z0-9._-]+|"
+    r"AIza[0-9A-Za-z_-]{20,}|"
+    r"ya29\.|"
+    r"gh[pousr]_[A-Za-z0-9]{20,}|"
+    r"AKIA[0-9A-Z]{16}|"
+    r"-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    r")",
     re.IGNORECASE,
 )
 
@@ -34,16 +51,54 @@ def _run(command: list[str]) -> dict[str, Any]:
     }
 
 
+def _release_text_paths() -> list[Path]:
+    proc = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if proc.returncode:
+        raise RuntimeError(proc.stderr.strip() or "git ls-files failed")
+    return [
+        Path(value)
+        for value in proc.stdout.split("\0")
+        if value and Path(value).suffix.lower() in TEXT_SUFFIXES
+    ]
+
+
 def _privacy_scan() -> dict[str, Any]:
     findings = []
-    for root in SCAN_ROOTS:
-        if not root.exists():
-            continue
-        for path in sorted(item for item in root.rglob("*") if item.is_file()):
-            text = path.read_text(encoding="utf-8", errors="ignore")
-            scanned = text.replace("users/example/private_aoi", "synthetic_private_asset_fixture")
-            if PRIVATE_RE.search(scanned):
-                findings.append({"path": str(path), "code": "private-or-secret-looking-content"})
+    try:
+        paths = _release_text_paths()
+    except RuntimeError as exc:
+        return {
+            "command": "privacy_scan",
+            "ok": False,
+            "findings": [{"path": "", "code": str(exc)}],
+        }
+    for path in paths:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        scanned = re.sub(
+            r"users/example/[A-Za-z0-9_./-]+",
+            "synthetic_private_asset_fixture",
+            text,
+        )
+        scanned = re.sub(
+            r"projects/(?:example|demo-valid)/assets/[A-Za-z0-9_./-]+",
+            "synthetic_private_asset_fixture",
+            scanned,
+        )
+        scanned = re.sub(
+            r"C:\\path\\to\\[A-Za-z0-9_.\\-]+",
+            "synthetic_checkout_path",
+            scanned,
+            flags=re.IGNORECASE,
+        )
+        if PRIVATE_RE.search(scanned):
+            findings.append(
+                {"path": str(path), "code": "private-or-secret-looking-content"}
+            )
     return {"command": "privacy_scan", "ok": not findings, "findings": findings}
 
 
@@ -78,7 +133,7 @@ def run_release_gate() -> dict[str, Any]:
     checks.append(_run(["git", "diff", "--check"]))
     return {
         "ok": all(check["ok"] for check in checks),
-        "schema_version": "gee-kg-rag-release-gate/v0.4.1",
+        "schema_version": "gee-kg-rag-release-gate/v0.4.2",
         "check_count": len(checks),
         "checks": checks,
     }
@@ -87,7 +142,7 @@ def run_release_gate() -> dict[str, Any]:
 def _write_markdown(report: dict[str, Any], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "# v0.4.1 KG-RAG Release Gate Report",
+        "# v0.4.2 KG-RAG Release Gate Report",
         "",
         f"- Overall ok: {report['ok']}",
         f"- Check count: {report['check_count']}",
@@ -101,9 +156,9 @@ def _write_markdown(report: dict[str, Any], path: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run the v0.4.1 KG-RAG release gate.")
+    parser = argparse.ArgumentParser(description="Run the v0.4.2 KG-RAG release gate.")
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("--report", default="outputs/research/v041_release_gate_report.md")
+    parser.add_argument("--report", default="outputs/research/v042_release_gate_report.md")
     args = parser.parse_args(argv)
     report = run_release_gate()
     _write_markdown(report, Path(args.report))
