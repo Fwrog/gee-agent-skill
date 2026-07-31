@@ -65,6 +65,14 @@ tasks:
     expected_recipe: landcover-summary-dynamic-world
     expected_metric: landcover
     expected_template_ready: true
+  - id: plan_hls_modis_ndvi_product_intercomparison
+    kind: plan_from_text
+    request: Compare HLS and MODIS NDVI for a supplied AOI in 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: product_intercomparison
+    expected_recipe: hls-modis-ndvi-product-intercomparison
+    expected_metric: NDVI_PRODUCT_INTERCOMPARISON
+    expected_template_ready: false
   - id: plan_zonal_statistics_csv
     kind: plan_from_text
     request: Compute zonal statistics for supplied GeoJSON zones in March 2024 and export CSV.

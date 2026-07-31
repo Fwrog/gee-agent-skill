@@ -37,3 +37,18 @@ def test_privacy_scan_accepts_synthetic_asset_placeholders(tmp_path, monkeypatch
     monkeypatch.setattr(release_gate_kg_rag, "_release_text_paths", lambda: [fixture])
 
     assert release_gate_kg_rag._privacy_scan()["ok"] is True
+
+
+def test_privacy_scan_skips_tracked_files_deleted_from_worktree(tmp_path, monkeypatch):
+    deleted_path = tmp_path / "deleted.md"
+    monkeypatch.setattr(
+        release_gate_kg_rag,
+        "_release_text_paths",
+        lambda: [deleted_path],
+    )
+
+    assert release_gate_kg_rag._privacy_scan() == {
+        "command": "privacy_scan",
+        "ok": True,
+        "findings": [],
+    }

@@ -4,6 +4,29 @@ All notable changes to `gee-agent-skill` are documented here.
 
 ## Unreleased
 
+## 0.4.3 - 2026-07-31
+
+### Added
+
+- Added generic HLS/MODIS NDVI `product_intercomparison` planning with explicit temporal matching, QA, target-grid, validation, and claim-boundary contracts.
+- Added a seven-case unit/combination/theme quick-reference benchmark adapted from AutoGEEval++ with explicit external-score non-comparability.
+- Added a 200-project direct-domain-evidence discovery queue and a separate deep-review ledger covering 21 queue records plus 3 anchors.
+- Added 9 reviewed project-paper pairs, 10 accepted pattern cards, and explicit non-promotion decisions for sources that added no mainline rule.
+- Added a 17-case mistake-distillation lab whose important targets must exist.
+- Added a two-layer learning architecture that keeps versioned official knowledge separate from user-owned Obsidian Skills and accepts only sanitized candidate manifests through `learning contract` and the read-only `learning review-manifest` gate.
+
+### Changed
+
+- Refreshed official HLS, MOD13Q1, projection, and resolution sources and promoted GEE-OPs and AutoGEEval++ as bounded methodology references.
+- Kept `SKILL.md` concise while adding knowledge-distillation routing and an explicit public ignorance boundary for omitted private context.
+- Excluded search-lane-only false positives and added a regression gate for direct GEE domain evidence.
+- Rejected zero-case benchmark runs and directed case-based KG-RAG fixtures to their dedicated evaluator.
+- Documented the local-to-official promotion contract in both READMEs and kept official releases from overwriting user-owned learning state.
+
+### Fixed
+
+- Kept the privacy release gate operational when `git ls-files` reports a tracked path that has already been deleted from the worktree, without weakening scans of files that still exist.
+
 ## 0.4.2 - 2026-07-30
 
 ### Added

@@ -54,7 +54,7 @@ DATASETS: tuple[DatasetCard, ...] = (
         bands=("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B9", "B10", "B11", "Fmask"),
         qa_bands=("Fmask",),
         common_uses=("harmonized Landsat reflectance", "annual optical features", "vegetation indices", "change detection"),
-        recommended_tasks=("vegetation_index", "annual_endmember_transition", "change_detection", "export_image"),
+        recommended_tasks=("vegetation_index", "product_intercomparison", "annual_endmember_transition", "change_detection", "export_image"),
         known_limitations=(
             "Fmask and valid-observation coverage must be reviewed for every annual composite.",
             "Reflectance bands use a documented scale factor before physical interpretation.",
@@ -62,7 +62,7 @@ DATASETS: tuple[DatasetCard, ...] = (
         scale_notes="Use the documented 0.0001 reflectance scaling and aggregate intentionally when targeting a coarser grid.",
         projection_notes="HLS is delivered on 30m grids; apply one explicit target projection and affine transform for annual multi-source work.",
         license_attribution="NASA HLS data terms apply.",
-        last_checked="2026-07-25",
+        last_checked="2026-07-31",
     ),
     DatasetCard(
         dataset_id="NASA/HLS/HLSS30/v002",
@@ -74,7 +74,7 @@ DATASETS: tuple[DatasetCard, ...] = (
         bands=("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B10", "B11", "B12", "Fmask"),
         qa_bands=("Fmask",),
         common_uses=("harmonized Sentinel-2 reflectance", "annual optical features", "vegetation indices", "change detection"),
-        recommended_tasks=("vegetation_index", "annual_endmember_transition", "change_detection", "export_image"),
+        recommended_tasks=("vegetation_index", "product_intercomparison", "annual_endmember_transition", "change_detection", "export_image"),
         known_limitations=(
             "Fmask and valid-observation coverage must be reviewed for every annual composite.",
             "NIR band choice must be explicit when merging with HLSL30.",
@@ -82,7 +82,7 @@ DATASETS: tuple[DatasetCard, ...] = (
         scale_notes="Use the documented 0.0001 reflectance scaling; use B8A as the narrow-NIR harmonized counterpart when merging with HLSL30.",
         projection_notes="HLS is delivered on 30m grids; apply one explicit target projection and affine transform for annual multi-source work.",
         license_attribution="NASA HLS data terms apply.",
-        last_checked="2026-07-25",
+        last_checked="2026-07-31",
     ),
     DatasetCard(
         dataset_id="projects/sat-io/open-datasets/ORNL/LANDSCAN_GLOBAL",
@@ -272,7 +272,7 @@ DATASETS: tuple[DatasetCard, ...] = (
         ),
         qa_bands=("DetailedQA", "SummaryQA"),
         common_uses=("vegetation-index sanity checks", "coarse NDVI/EVI temporal context", "cross-sensor validation"),
-        recommended_tasks=("vegetation_index", "zonal_statistics", "change_detection"),
+        recommended_tasks=("vegetation_index", "product_intercomparison", "zonal_statistics", "change_detection"),
         known_limitations=(
             "NDVI and EVI bands require the documented 0.0001 scale factor.",
             "The 250m composite is useful for temporal/regional sanity checks, not 10m Sentinel-2 pixel-level validation.",
@@ -281,7 +281,7 @@ DATASETS: tuple[DatasetCard, ...] = (
         scale_notes="Use 250m or coarser summaries and compare trends or zonal means rather than fine-scale edges.",
         projection_notes="Document scale/resolution mismatch when comparing with Sentinel-2 or Landsat outputs.",
         license_attribution="NASA LP DAAC / USGS MODIS data terms apply.",
-        last_checked="2026-07-01",
+        last_checked="2026-07-31",
     ),
     DatasetCard(
         dataset_id="MODIS/061/MYD13Q1",

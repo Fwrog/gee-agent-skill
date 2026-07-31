@@ -1,10 +1,10 @@
 # Research Note: AutoGEEval++ Evaluation Design
 
-source_id: research-autogeeval-plus
-source_type: research-preprint
-publisher: arXiv
-url: https://arxiv.org/abs/2506.10365
-retrieved_at: 2026-06-21
+source_id: autogeeval-plus-paper
+source_type: journal-paper
+publisher: Big Earth Data
+url: https://doi.org/10.1080/20964471.2025.2581425
+retrieved_at: 2026-07-31
 primary_status: non-canonical
 ee_language: Python
 risk_level: medium
@@ -21,7 +21,7 @@ AutoGEEval++ motivates three levels of tests:
 - Combo tests: multi-operator workflows synthesized from common operator chains.
 - Theme tests: end-to-end geospatial tasks grounded in real research workflows.
 
-This repository mirrors that structure with unit tests for retrieval/rendering/validation, combo checks in `gee-skill smoke-test`, and the theme task `hk_2024_monthly_ndvi`.
+The paper reports 6,365 cases: 5,078 unit, 1,199 combination, and 88 theme cases. This repository adapts only that taxonomy in `evals/benchmark_quick_reference.yml`; it does not reproduce the paper's cases, live execution judge, or leaderboard protocol.
 
 ## Boundary Testing
 
@@ -47,7 +47,8 @@ Use practical repository-level metrics instead of model leaderboards:
 - Offline smoke-test success without credentials.
 - Live execution boundary safety: dry runs never contact Earth Engine, live runs require explicit project.
 
+Local pass counts are repository regression evidence only and must not be compared with external benchmark scores.
+
 ## Source Risk
 
 The paper evaluates model-generated code and includes time-sensitive model comparisons. This repository should reuse its evaluation categories and error taxonomy, not its leaderboard conclusions.
-

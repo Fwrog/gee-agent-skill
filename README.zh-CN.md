@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Release" src="https://img.shields.io/badge/release-v0.4.2-2563eb">
+  <img alt="Release" src="https://img.shields.io/badge/release-v0.4.3-2563eb">
   <img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-64748b"></a>
 </p>
@@ -63,6 +63,26 @@ gee-skill trace inspect <run_id> --json
 
 计划、检索、渲染、验证和离线评测不需要 Earth Engine 凭证。Live 工作使用用户自己的 Earth Engine 账户、Google Cloud Project、本地认证、配额和导出位置。
 
+## 官方知识库 + 用户学习层
+
+本版本加入双层学习架构：仓库维护经过审阅和版本发布的官方公共知识库；每位用户可以另外维护自己的 Obsidian 或 Markdown Skill，用来保存私有证据、个人规则和真实项目错题。
+
+```mermaid
+flowchart LR
+    A["用户自有 Obsidian Skill"] -->|"人工批准并脱敏的候选清单"| B["gee-skill learning review-manifest"]
+    B -->|"来源核验 + 复现 + 回归 + 维护者批准"| C["版本化官方知识库"]
+    C -.->|"用户选择性采用；不覆盖"| A
+```
+
+两层之间只通过显式审阅接口连接：
+
+```bash
+gee-skill learning contract --json
+gee-skill learning review-manifest <promotion-manifest.json> --json
+```
+
+清单校验通过只表示它满足传输与隐私契约，不代表本地经验已经成为官方知识。公开 Skill 不读取原始 vault，官方版本也不会覆盖用户自己的笔记或配置。详细协议见[用户本地学习层](references/knowledge_base/workflows/user-local-learning-overlay.md)和[候选提升 schema](schemas/mistake-promotion-manifest-v0.1.schema.json)。
+
 ## 公开证据
 
 | 能力 | 公开状态 | 证据边界 |
@@ -95,6 +115,7 @@ v0.3 的 `Golden` 状态以全年 CSV、年度 GeoTIFF 的 Google Drive 回读�
 - [配方](docs/recipes.md)
 - [能力矩阵](docs/capability_matrix.md)
 - [KG-RAG 架构](docs/kg_rag_architecture.md)
+- [用户本地学习层](references/knowledge_base/workflows/user-local-learning-overlay.md)
 - [评测协议](docs/benchmark_protocol.md)
 - [遥感验证](docs/remote_sensing_validation.md)
 - [故障排查](docs/troubleshooting.md)
@@ -104,7 +125,7 @@ Earth Engine 的 API 行为、数据集 ID、波段、比例因子、投影、�
 
 ## 发布与贡献
 
-当前版本：[v0.4.2 发布说明](docs/releases/v0.4.2.md)。发布前从仓库根目录运行：
+当前版本：[v0.4.3 发布说明](docs/releases/v0.4.3.md)。发布前从仓库根目录运行：
 
 ```bash
 python -m pytest

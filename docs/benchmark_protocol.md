@@ -6,6 +6,7 @@ This protocol checks public harness behavior, not scientific validity.
 
 ```bash
 gee-skill smoke-test --json
+gee-skill eval evals/benchmark_quick_reference.yml --json
 gee-skill eval evals/benchmark_suite.yml --json
 python -m pytest -q
 ```
@@ -13,11 +14,13 @@ python -m pytest -q
 The benchmark suite covers:
 
 - dataset/operator/failure retrieval;
-- plan generation for NDWI, EVI, NDBI, LST, Sentinel-1 change, Dynamic World, zonal statistics, and export utilities;
+- plan generation for NDWI, EVI, NDBI, LST, Sentinel-1 change, Dynamic World, zonal statistics, product intercomparison, and export utilities;
 - ambiguous prompt handling;
 - unsupported task handling;
 - render/validate for approved public templates;
 - placeholder-context preflight blocking.
+
+The quick-reference suite adopts only AutoGEEval++'s unit/combination/theme structure. It is a seven-case local regression suite and is not score-comparable with that external benchmark. See [benchmark_reference.md](benchmark_reference.md).
 
 ## Plan/Render Spot Check
 

@@ -1,6 +1,6 @@
 # Release Readiness
 
-Last updated: 2026-07-30
+Last updated: 2026-07-31
 
 This checklist defines what can be published for the public `gee-agent-skill` repository. It covers the agent-native GEE harness, public v0.1/v0.2 golden regression examples, generic knowledge cards, and documentation assets. Personal academic demos, unpublished workflows, private asset ids, result values, and paper drafts must stay outside this repository.
 
@@ -12,7 +12,10 @@ This checklist defines what can be published for the public `gee-agent-skill` re
 - More complex academic demos are withheld from public display and must not be referenced in README, docs, examples, evidence bundles, or packaged resources.
 - `gee-plan/v0.3` remains a public plan schema and generic harness contract.
 - v0.4 KG-RAG is the source/evidence/KG/hybrid retrieval baseline.
-- v0.4.2 is the public release candidate: package metadata is aligned, the Skill and bilingual homepage are compressed, the annual recipe is hardened, and the privacy gate covers every tracked or pending text file.
+- v0.4.3 is the public release candidate: the Skill keeps an explicit ignorance boundary, generic product-intercomparison planning is implemented, and source-backed knowledge distillation plus a non-comparable quick benchmark reference are included.
+- v0.4.3 keeps official and user-owned learning as separate layers. `candidate_review_ready` confirms only the sanitized transport/privacy contract; official promotion still requires reproduction, source review, a public regression target, maintainer approval, and a versioned release.
+- The public discovery layer contains 200 direct-domain-evidence candidates, not 200 authoritative sources. The pinned review overlay covers 21 queue records plus 3 anchors; 179 queue records remain unreviewed.
+- The first review batch records 9 project-paper pairs, 10 new accepted pattern cards, 7 deliberate non-promotions across the 24 reviews, and a 17-case mistake lab.
 - Non-golden workflows should be described by their actual evidence level: planned, render/validate, mocked preflight blocker, or live verified only when listed in `docs/capability_matrix.md`.
 - `annual-endmember-transition` is a generic render/validate recipe only; it has no public live-export or scientific-result status.
 
@@ -33,8 +36,10 @@ Run before publishing or opening a PR:
 ```bash
 python scripts/ingest_docs.py
 python scripts/release_gate_kg_rag.py --json
+python scripts/run_distillation_mistake_lab.py --json
 python -m pytest -q
 gee-skill smoke-test --json
+gee-skill eval evals/benchmark_quick_reference.yml --json
 gee-skill eval evals/benchmark_suite.yml --json
 python -m build --sdist --wheel
 git diff --check

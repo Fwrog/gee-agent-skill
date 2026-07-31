@@ -17,6 +17,24 @@ recipes:
     limitations:
       - Optical index outputs require cloud, shadow, and water-context review before scientific interpretation.
       - Public golden examples prove the harness loop, not vegetation-monitoring validity.
+  - recipe_id: hls-modis-ndvi-product-intercomparison
+    task_type: product_intercomparison
+    description: Compare quality-filtered HLS and MODIS NDVI on explicit temporal windows and a common MODIS target grid.
+    required_inputs: [aoi, time_range, output]
+    optional_inputs: [temporal_window, target_grid, quality_masks, metrics]
+    candidate_datasets: [NASA/HLS/HLSL30/v002, NASA/HLS/HLSS30/v002, MODIS/061/MOD13Q1]
+    default_dataset_policy: Combine HLSL30 and HLSS30 after Fmask filtering, scale MOD13Q1 NDVI by 0.0001 after QA filtering, and aggregate HLS to the selected MODIS grid.
+    template: null
+    preflight_profile: optical_index
+    validation_profile: product_intercomparison
+    output_schema: [time_window, sample_count, mean_hls_ndvi, mean_modis_ndvi, bias_hls_minus_modis, mae, rmse, pearson_r, target_scale_m, target_crs, claim_boundary]
+    live_risk_level: high
+    examples:
+      - Compare HLS and MODIS NDVI for a supplied AOI in 2024 and export CSV.
+    limitations:
+      - This recipe plans product-consistency analysis and is not an in-situ ground-truth validation claim.
+      - Direct comparison of native 30 m HLS and 250 m MODIS pixels is invalid without explicit aggregation and target-grid alignment.
+      - A live implementation still requires reviewed temporal matching, QA policies, and export confirmation.
   - recipe_id: vegetation-index-evi
     task_type: vegetation_index
     description: Compute EVI from optical reflectance bands with explicit coefficients.

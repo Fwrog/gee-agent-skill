@@ -2,6 +2,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from scripts.run_kg_rag_eval import run_suite
 from geeskill.kg import build_graph, write_graph_index
 
@@ -27,3 +29,11 @@ def test_kg_rag_eval_script_json():
         capture_output=True,
     )
     assert '"ok": true' in result.stdout
+
+
+def test_kg_rag_eval_rejects_zero_case_suite(tmp_path):
+    suite = tmp_path / "empty.yml"
+    suite.write_text("schema_version: gee-kg-rag-eval/v0.1\ncases: []\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="at least one case"):
+        run_suite(suite)

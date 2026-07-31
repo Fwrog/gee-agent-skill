@@ -1,0 +1,97 @@
+schema_version: gee-paper-linked-projects/v0.2
+last_reviewed: '2026-07-31'
+purpose: Reviewed project-paper pairs for generic data-usage and reproducibility patterns.
+boundary:
+  - Pair review does not reproduce the paper, validate reported performance, or authorize code reuse.
+  - Repository and paper claims remain subordinate to official Earth Engine dataset and API facts.
+pairs:
+  - pair_id: awesome-spectral-indices
+    repository: https://github.com/awesome-spectral-indices/awesome-spectral-indices
+    repository_source_id: awesome-spectral-indices-repo
+    paper: https://doi.org/10.1038/s41597-023-02096-0
+    paper_source_id: awesome-spectral-indices-paper
+    repository_license: MIT
+    reviewed_ref: c0d9cbcf5b28985d0cb9a2ae4e63b878140da748
+    review_state: reviewed_pattern_source
+    reusable_pattern: Structured formula, band-role, platform, provenance, domain, and validation records.
+    data_boundary: Sensor-specific IDs, scaling, QA, bandpass equivalence, and application validity remain separate checks.
+  - pair_id: coastsat
+    repository: https://github.com/kvos/CoastSat
+    repository_source_id: coastsat-repo
+    paper: https://doi.org/10.1016/j.envsoft.2019.104528
+    paper_source_id: coastsat-paper
+    repository_license: GPL-3.0
+    reviewed_ref: b9abb0c5902d9b160ba2790d55de41f0d5068497
+    review_state: reviewed_pattern_source
+    reusable_pattern: Explicit acquisition inputs, image metadata, projected output coordinates, quality control, and domain scope.
+    data_boundary: No code, site settings, reported accuracy, or downstream domain conclusion is imported.
+  - pair_id: landtrendr-gee
+    repository: https://github.com/eMapR/LT-GEE
+    repository_source_id: landtrendr-gee-repo
+    paper: https://doi.org/10.3390/rs10050691
+    paper_source_id: landtrendr-gee-paper
+    repository_license: Apache-2.0 code; CC-BY-4.0 documentation
+    reviewed_ref: c17bacdb76d0cf1b942300f6f9ddfe368b41eed0
+    review_state: reviewed_pattern_source
+    reusable_pattern: One-value-per-year support, sensor harmonization, missing-year handling, segmentation-index direction, and held-constant fidelity comparison.
+    data_boundary: No study-area result, runtime, parameter set, disturbance map, or accuracy value is imported.
+  - pair_id: eemont
+    repository: https://github.com/davemlz/eemont
+    repository_source_id: eemont-repo
+    paper: https://doi.org/10.21105/joss.03168
+    paper_source_id: eemont-paper
+    repository_license: MIT
+    reviewed_ref: c4ac0d162e8981f4c39c65a9f817a3e52ef306f4
+    review_state: reviewed_pattern_source
+    reusable_pattern: Expand compact wrapper chains into package revision, input scaling, product validity, thresholds, and output-band effects.
+    data_boundary: No wrapper default is promoted as universal dataset preprocessing.
+  - pair_id: rgee
+    repository: https://github.com/r-spatial/rgee
+    repository_source_id: null
+    paper: https://doi.org/10.21105/joss.02272
+    paper_source_id: null
+    repository_license: Apache-2.0
+    reviewed_ref: 73292255d92557a8504c6f2bb9bf775393ad620b
+    review_state: reviewed_no_new_promotion
+    reusable_pattern: Cross-language environment, Cloud project, and credential scope are reproducibility context.
+    data_boundary: R-specific mechanisms remain general knowledge because the public mainline is Python-oriented.
+  - pair_id: cubo
+    repository: https://github.com/ESDS-Leipzig/cubo
+    repository_source_id: cubo-repo
+    paper: https://doi.org/10.1109/IGARSS53475.2024.10640742
+    paper_source_id: cubo-paper
+    repository_license: MIT
+    reviewed_ref: 1bf975e5d928b42db1a6fd742a4770c9ea3f0631
+    review_state: reviewed_pattern_source
+    reusable_pattern: Persist requested and realized collection, bands, dates, CRS, resolution, edge size, units, shape, and backend.
+    data_boundary: A shaped data cube is not automatically quality-filtered, scaled, analysis-ready, or suitable for ML.
+  - pair_id: sentinel1-ard
+    repository: https://github.com/adugnag/gee_s1_ard
+    repository_source_id: sentinel1-ard-repo
+    paper: https://doi.org/10.3390/rs13101954
+    paper_source_id: sentinel1-ard-paper
+    repository_license: MIT
+    reviewed_ref: 39207cb4998c9c80c27af3d8a62debe7ab41e7c7
+    review_state: reviewed_pattern_source
+    reusable_pattern: Separate platform preprocessing from application-dependent orbit, polarization, speckle, terrain, DEM, layover-shadow, and output-unit choices.
+    data_boundary: No universal SAR ARD recipe or downstream thematic performance is imported.
+  - pair_id: spectral
+    repository: https://github.com/awesome-spectral-indices/spectral
+    repository_source_id: spectral-repo
+    paper: https://doi.org/10.5194/isprs-archives-XLVIII-4-W1-2022-301-2022
+    paper_source_id: spectral-paper
+    repository_license: MIT
+    reviewed_ref: 4d52c591372bee90f0aa3f4d08c82ce04f19bb00
+    review_state: reviewed_pattern_source
+    reusable_pattern: Catalogue-to-Code-Editor deployment keeps formula records separate from product scaling, QA, and band mapping.
+    data_boundary: Module support does not validate each index for every GEE product or application.
+  - pair_id: geemap
+    repository: https://github.com/gee-community/geemap
+    repository_source_id: gee-community-geemap
+    paper: https://doi.org/10.21105/joss.02305
+    paper_source_id: geemap-joss-paper
+    repository_license: MIT
+    reviewed_ref: 735e3a07437e2c47191bff04b98f86f9e4bbec8f
+    review_state: reviewed_no_new_promotion
+    reusable_pattern: Interactive Python mapping and software-paper provenance are useful ecosystem context.
+    data_boundary: The broad toolkit yielded no narrower new source of API, dataset, or execution authority.

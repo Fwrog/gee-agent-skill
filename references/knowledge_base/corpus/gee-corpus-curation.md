@@ -3,8 +3,8 @@
 source_id: corpus-gee-syntax-workflow-distillation
 source_type: curated-corpus-policy
 primary_status: curated
-source_url: references/corpus/github_gee_seed_repos.yml, references/corpus/github_gee_discovery_100.yml
-last_checked: 2026-06-23
+source_url: references/corpus/github_gee_seed_repos.yml, references/corpus/github_gee_discovery_200.yml, references/corpus/github_gee_reviewed_batch_01.yml
+last_checked: 2026-07-31
 method_name: filterDate, filterBounds, map, normalizedDifference, expression, reduceRegion, reduceRegions, Export.image.toDrive, Export.table.toDrive
 operator_chain: official docs -> curated source inventory -> pattern extraction -> distilled cards -> validation rules -> retrieval trace
 risk_level: medium
@@ -46,9 +46,13 @@ Use `references/corpus/github_gee_seed_repos.yml` as the curated seed inventory.
 - Export-heavy production workflows.
 - Paper-linked research workflows from venues such as IEEE TGRS, ISPRS Journal of Photogrammetry and Remote Sensing, International Journal of Applied Earth Observation and Geoinformation, Remote Sensing of Environment, and Remote Sensing.
 
-Use `references/corpus/github_gee_discovery_100.yml` as the broad 100+ exam queue. Each entry must remain metadata-only until it has a license/provenance review and a sampling plan. Promote a repository from discovery to seed only when it improves coverage or quality beyond the existing seed set.
+Use `references/corpus/github_gee_discovery_200.yml` as the quality-screened 200-project exam queue. The discovery snapshot deliberately retains metadata-only states. Use `references/corpus/github_gee_reviewed_batch_01.yml` as the separate deep-review overlay: 21 inventory records and 3 additional anchors have pinned revisions, checked surfaces, eight-field data contracts, and explicit promotion or non-promotion decisions. The remaining 179 discovery records are not reviewed.
 
 For paper-linked repositories, also require article DOI or publisher URL, repository URL, inspected commit or release, venue, license, private asset dependency check, and reproducibility scope. Keep them at `metadata_only_until_license_review` until those fields are recorded.
+
+For data-using repositories, review dataset identity/version, bands or variables, scale/offset, QA and masking, grid/projection/resampling, temporal coverage/cadence, access/license/asset stability, and private dependencies. Metadata-inferred signals are discovery aids, not dataset facts.
+
+Automated discovery must also pass the direct-domain-evidence gate. A README search match, star count, or license declaration cannot establish GEE relevance.
 
 Do not copy repository code into this project by default. Extract small, attributed patterns such as:
 

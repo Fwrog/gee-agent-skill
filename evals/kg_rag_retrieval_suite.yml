@@ -66,7 +66,7 @@ cases:
     expected_nodes: [source:google-earth-engine-data-catalog]
     expected_query_classification: dataset_fact
     min_tier_a_count: 1
-    top_k: 20
+    top_k: 30
   - id: sentinel2_ndvi
     query: Plan Sentinel-2 NDVI with cloud masking
     expected_cards: [sentinel2_sr_harmonized]
@@ -99,3 +99,53 @@ cases:
     expected_cards: []
     requires_insufficient_evidence_warning: true
     top_k: 8
+  - id: operator_knowledge_distillation
+    query: How should GitHub GEE scripts be distilled into operator syntax, relationships, frequent patterns, and workflow chains?
+    expected_cards: [gee_ops_operator_distillation_pattern]
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 10
+  - id: multilevel_benchmark_design
+    query: Design a quick GEE benchmark with unit, combination, theme, and boundary tests
+    expected_cards: [autogeeval_plus_multilevel_benchmark_pattern]
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 10
+  - id: lazy_grid_readback
+    query: Plan lazy Earth Engine Xarray readback with an explicit output grid and bounded parallel requests
+    expected_cards: [xee_lazy_readback_pattern]
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 10
+  - id: export_task_monitoring_boundary
+    query: Does submitting an Earth Engine export prove completion, or must task state be refreshed and output read back?
+    expected_cards: [eetasks_monitoring_pattern]
+    requires_claim_boundary: true
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 12
+  - id: data_usage_promotion_contract
+    query: Before promoting a GitHub data workflow, check dataset version bands scale QA grid temporal coverage license availability and private dependencies
+    expected_cards: [data_usage_promotion_contract]
+    requires_accepted_evidence: true
+    min_tier_a_count: 1
+    top_k: 12
+  - id: spectral_index_record_review
+    query: Review a spectral index formula with band roles platform mapping original paper provenance and scientific validation
+    expected_cards: [spectral_index_record_contract]
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 12
+  - id: community_dataset_authority
+    query: Does a public community Earth Engine catalog make each asset official and covered by the repository license?
+    expected_cards: [community_dataset_asset_boundary]
+    requires_claim_boundary: true
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 12
+  - id: paper_linked_data_workflow
+    query: Review a paper-linked GEE repository for acquisition metadata projection quality control domain scope and exact revision
+    expected_cards: [paper_linked_data_workflow_contract]
+    requires_accepted_evidence: true
+    min_tier_a_count: 0
+    top_k: 12

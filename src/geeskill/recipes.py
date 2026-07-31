@@ -356,6 +356,8 @@ def default_recipe_for(task_type: str, metric: str | None = None, output_type: s
         return get_recipe("builtup-index-ndbi")
     if task == "land_surface_temperature":
         return get_recipe("landsat-lst")
+    if task == "product_intercomparison":
+        return get_recipe("hls-modis-ndvi-product-intercomparison")
     output = (output_type or "").lower()
     if output == "geotiff":
         return get_recipe("image-export-geotiff")

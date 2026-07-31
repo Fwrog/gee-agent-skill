@@ -14,5 +14,5 @@ recursive-include references *.md *.json *.geojson *.yml
 recursive-include references *.yaml
 recursive-include docs *.md
 recursive-include evals *.json *.yml
-recursive-include examples *.yaml
+recursive-include examples *.json *.yaml
 recursive-include scripts *.py

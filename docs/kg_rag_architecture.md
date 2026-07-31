@@ -1,4 +1,4 @@
-# v0.4/v0.4.1 KG-RAG Architecture
+# v0.4/v0.4.3 KG-RAG Architecture
 
 v0.4 turns the local Markdown RAG layer into a source-grounded KG-RAG pipeline:
 
@@ -14,7 +14,7 @@ official docs / papers / vetted repos
 
 This is not model training, fine-tuning, or a generic chatbot layer. It is a deterministic evidence pipeline for Google Earth Engine agent workflows.
 
-v0.4.1 hardens the same layer rather than replacing it. The hardening adds source refresh status, evidence quality audit checks, deterministic weighted lexical ranking, accepted/candidate evidence separation, query classification, trace sidecars, semantic fixtures, red-team eval cases, and a local release gate.
+v0.4.3 hardens the same layer rather than replacing it. The hardening adds source refresh status, evidence quality audit checks, deterministic weighted lexical ranking, accepted/candidate evidence separation, a 200-project direct-domain-evidence discovery queue, a pinned deep-review overlay, a mistake-distillation lab, typed product-intercomparison planning, semantic fixtures, a user-local learning bridge, and a local release gate.
 
 ## Harness Planes
 
@@ -25,6 +25,7 @@ v0.4 preserves the existing CLI harness as the control plane and adds source-gro
 3. Reasoning plane: optional downstream LLMs may consume evidence bundles, but no LLM output bypasses schema validation, semantic validation, or preflight.
 4. Execution plane: Earth Engine Python API execution remains unchanged and still requires explicit project and live confirmation.
 5. Evaluation plane: local retrieval, planner-grounding, semantic-validator, trace, privacy, copyright, and source-policy checks.
+6. Learning plane: a user-owned Skill may keep private Obsidian evidence and export a sanitized candidate manifest; the official repository reviews that manifest without reading the vault or granting automatic promotion.
 
 ## Components
 
@@ -36,7 +37,16 @@ v0.4 preserves the existing CLI harness as the control plane and adds source-gro
 - `src/geeskill/kg.py`: graph build, validation, search, neighbors, shortest path, explain, and Mermaid export.
 - `src/geeskill/hybrid_retrieval.py`: BM25 text retrieval plus evidence cards plus graph context.
 - `scripts/audit_evidence_quality.py`: v0.4.1 evidence-card quality audit.
-- `scripts/release_gate_kg_rag.py`: v0.4.1 local release gate for source/evidence/KG/eval/privacy checks.
+- `references/corpus/github_gee_discovery_200.yml`: metadata-only, quality-screened project and paper-hint queue.
+- `references/corpus/github_gee_reviewed_batch_01.yml`: 24 pinned deep reviews, including 21 discovery records and 3 anchors, with checked surfaces, data contracts, and promotion decisions.
+- `references/corpus/paper_linked_gee_projects.yml`: 9 reviewed paper-repository pairs with explicit reproducibility boundaries.
+- `evals/distillation_mistake_suite.yml`: naive-review omissions and importance labels.
+- `scripts/run_distillation_mistake_lab.py`: deterministic omission reproduction and distillation routing.
+- `scripts/run_kg_rag_eval.py`: schema-matched retrieval/planner/semantic runner that rejects empty case collections.
+- `schemas/mistake-promotion-manifest-v0.1.schema.json`: public handoff contract for sanitized user-local lessons.
+- `src/geeskill/promotion.py`: strict, read-only manifest and ignorance-boundary review.
+- `references/knowledge_base/rules/real-project-failure-distillation-boundary.md`: gate from private failure evidence to a generic public rule and regression.
+- `scripts/release_gate_kg_rag.py`: v0.4.3 local release gate for source/evidence/KG/eval/privacy checks.
 
 ## Planner And Validator Use
 
@@ -61,4 +71,6 @@ Accepted evidence may ground planner and validator hints. Candidate evidence is 
 - Community repos support distilled patterns only unless license review explicitly allows more.
 - Hybrid retrieval must say `insufficient evidence` when sources are missing.
 - KG-RAG augments planning and validation; it does not bypass render, schema, semantic validation, preflight, `--confirm-live`, or trace gates.
-- v0.4.1 remains deterministic and local; v0.5 is the future scope for typed product-intercomparison planning.
+- v0.4.3 remains deterministic and local. Discovery metadata and paper hints cannot enter planner guidance until source, data-contract, and claim-boundary review pass.
+- The current review overlay covers 21 of 200 discovery records; the other 179 remain explicitly unreviewed.
+- User-local approval remains local. `candidate_review_ready` admits a sanitized package to official review but cannot write the public corpus, alter source precedence, or bypass reproduction and regression.

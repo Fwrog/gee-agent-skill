@@ -124,6 +124,10 @@ repositories:
     license: CC-BY-4.0
     harvest_level: metadata_only
     topics: [community_datasets, catalog]
+    review_state: reviewed_pattern_source
+    reviewed_at: 2026-07-31
+    review_evidence: GitHub README and LICENSE
+    data_contract_scope: Per-dataset identity, schema, license, availability, and asset stability still require separate review.
   - full_name: awesome-spectral-indices/awesome-spectral-indices
     url: https://github.com/awesome-spectral-indices/awesome-spectral-indices
     role: spectral_index_definitions
@@ -131,6 +135,11 @@ repositories:
     license: MIT
     harvest_level: metadata_and_patterns_only
     topics: [spectral_indices, sentinel, landsat, modis]
+    review_state: reviewed_pattern_source
+    reviewed_at: 2026-07-31
+    review_evidence: GitHub README and LICENSE plus linked publisher page
+    article_doi_or_publisher_url: https://doi.org/10.1038/s41597-023-02096-0
+    data_contract_scope: Formula, band roles, platforms, provenance, and validation schema only; sensor preprocessing remains external.
   - full_name: awesome-spectral-indices/spyndex
     url: https://github.com/awesome-spectral-indices/spyndex
     role: python_spectral_index_library
@@ -187,6 +196,11 @@ repositories:
     license: GPL-3.0
     harvest_level: metadata_and_patterns_only
     topics: [coastline, landsat, sentinel2, time_series]
+    review_state: reviewed_pattern_source
+    reviewed_at: 2026-07-31
+    review_evidence: GitHub README and LICENSE plus linked publisher page
+    article_doi_or_publisher_url: https://doi.org/10.1016/j.envsoft.2019.104528
+    data_contract_scope: Acquisition inputs, metadata, projected coordinates, quality control, and domain limits only; no code or performance claims are imported.
   - full_name: eMapR/LT-GEE
     url: https://github.com/eMapR/LT-GEE
     role: landtrendr_change_detection

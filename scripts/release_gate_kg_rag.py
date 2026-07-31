@@ -78,6 +78,8 @@ def _privacy_scan() -> dict[str, Any]:
             "findings": [{"path": "", "code": str(exc)}],
         }
     for path in paths:
+        if not path.is_file():
+            continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         scanned = re.sub(
             r"users/example/[A-Za-z0-9_./-]+",
@@ -105,6 +107,7 @@ def _privacy_scan() -> dict[str, Any]:
 def _docs_command_consistency() -> dict[str, Any]:
     docs = [Path("README.md"), Path("README.zh-CN.md"), Path("docs/cli_reference.md"), Path("docs/kg_rag_architecture.md")]
     required = [
+        "gee-skill learning review-manifest",
         "gee-skill sources validate",
         "gee-skill evidence search",
         "gee-skill kg search",
@@ -126,6 +129,8 @@ def run_release_gate() -> dict[str, Any]:
         [sys.executable, "scripts/run_kg_rag_eval.py", "--suite", "evals/kg_rag_retrieval_suite.yml", "--json"],
         [sys.executable, "scripts/run_kg_rag_eval.py", "--suite", "evals/planner_research_grounding_suite.yml", "--json"],
         [sys.executable, "scripts/run_kg_rag_eval.py", "--suite", "evals/semantic_validator_fixture_suite.yml", "--json"],
+        [sys.executable, "scripts/run_distillation_mistake_lab.py", "--suite", "evals/distillation_mistake_suite.yml", "--json"],
+        [sys.executable, "scripts/validate_promotion_manifest.py", "--json"],
     ]
     checks = [_run(command) for command in commands]
     checks.append(_privacy_scan())
@@ -133,7 +138,7 @@ def run_release_gate() -> dict[str, Any]:
     checks.append(_run(["git", "diff", "--check"]))
     return {
         "ok": all(check["ok"] for check in checks),
-        "schema_version": "gee-kg-rag-release-gate/v0.4.2",
+        "schema_version": "gee-kg-rag-release-gate/v0.4.3",
         "check_count": len(checks),
         "checks": checks,
     }
@@ -142,7 +147,7 @@ def run_release_gate() -> dict[str, Any]:
 def _write_markdown(report: dict[str, Any], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "# v0.4.2 KG-RAG Release Gate Report",
+        "# v0.4.3 KG-RAG Release Gate Report",
         "",
         f"- Overall ok: {report['ok']}",
         f"- Check count: {report['check_count']}",
@@ -156,9 +161,9 @@ def _write_markdown(report: dict[str, Any], path: Path) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run the v0.4.2 KG-RAG release gate.")
+    parser = argparse.ArgumentParser(description="Run the v0.4.3 KG-RAG release gate.")
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("--report", default="outputs/research/v042_release_gate_report.md")
+    parser.add_argument("--report", default="outputs/research/v043_release_gate_report.md")
     args = parser.parse_args(argv)
     report = run_release_gate()
     _write_markdown(report, Path(args.report))

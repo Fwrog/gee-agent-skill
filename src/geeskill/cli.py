@@ -200,6 +200,7 @@ def cmd_info(args: argparse.Namespace) -> int:
             "exports": ["list", "watch"],
             "trace": ["list", "inspect"],
             "corpus": ["coverage"],
+            "learning": ["contract", "review-manifest"],
             "sources": ["discover", "validate"],
             "evidence": ["list", "show", "search"],
             "kg": ["build", "validate", "search", "neighbors", "path", "explain"],
@@ -2364,6 +2365,37 @@ def cmd_eval(args: argparse.Namespace) -> int:
     return 0 if result["ok"] else 1
 
 
+def cmd_learning_contract(args: argparse.Namespace) -> int:
+    from .promotion import promotion_contract
+
+    return _print_envelope(
+        _command_envelope("learning contract", promotion_contract()),
+        as_json=args.json,
+    )
+
+
+def cmd_learning_review_manifest(args: argparse.Namespace) -> int:
+    from .promotion import load_promotion_manifest, review_promotion_manifest
+
+    try:
+        report = review_promotion_manifest(
+            load_promotion_manifest(Path(args.manifest))
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        payload = _envelope_error(
+            "PROMOTION_MANIFEST_READ_FAILED",
+            str(exc),
+            "Check the manifest path and JSON syntax, then rerun the review.",
+        )
+        payload["command"] = "learning review-manifest"
+        payload["schema_version"] = "gee-cli/v0.3"
+        return _print_envelope(payload, as_json=args.json)
+
+    payload = _command_envelope("learning review-manifest", report)
+    payload["ok"] = bool(report["ok"])
+    return _print_envelope(payload, as_json=args.json)
+
+
 def cmd_sources_discover(args: argparse.Namespace) -> int:
     from .sources import load_source_registry
 
@@ -2748,6 +2780,28 @@ def build_parser() -> argparse.ArgumentParser:
     corpus_coverage.add_argument("--top-k", type=int, default=8)
     corpus_coverage.add_argument("--json", action="store_true")
     corpus_coverage.set_defaults(func=cmd_corpus_coverage)
+
+    learning_parser = sub.add_parser(
+        "learning",
+        help="Review the boundary between user-owned learning and official knowledge.",
+    )
+    learning_sub = learning_parser.add_subparsers(
+        dest="learning_command",
+        required=True,
+    )
+    learning_contract = learning_sub.add_parser(
+        "contract",
+        help="Show the local-to-official promotion contract.",
+    )
+    learning_contract.add_argument("--json", action="store_true")
+    learning_contract.set_defaults(func=cmd_learning_contract)
+    learning_review = learning_sub.add_parser(
+        "review-manifest",
+        help="Validate a public-safe candidate manifest without promoting it.",
+    )
+    learning_review.add_argument("manifest")
+    learning_review.add_argument("--json", action="store_true")
+    learning_review.set_defaults(func=cmd_learning_review_manifest)
 
     sources_parser = sub.add_parser("sources", help="Inspect and validate KG-RAG source governance.")
     sources_sub = sources_parser.add_subparsers(dest="sources_command", required=True)

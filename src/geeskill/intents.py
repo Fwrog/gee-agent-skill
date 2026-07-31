@@ -123,6 +123,13 @@ def _month_end(year: int, month: int) -> str:
 
 
 def _extract_metric(text: str) -> tuple[str | None, str | None]:
+    if (
+        "hls" in text
+        and "modis" in text
+        and "ndvi" in text
+        and re.search(r"\b(?:compare|compared|comparing|comparison|intercomparison|versus|vs)\b", text)
+    ):
+        return "NDVI_PRODUCT_INTERCOMPARISON", "product_intercomparison"
     if "zonal statistics" in text or "zonal statistic" in text:
         return "zonal_mean", "zonal_statistics"
     if "export image" in text or "image export" in text:
@@ -364,7 +371,10 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
             "closest_recipes": closest_recipes(request),
         }
     dataset_candidates = recommend_datasets(task_type=task_type, metric=metric)
-    selected = [item for item in dataset_candidates if item["dataset_id"] == requested_dataset] if requested_dataset else dataset_candidates[:1]
+    if task_type == "product_intercomparison":
+        selected = dataset_candidates
+    else:
+        selected = [item for item in dataset_candidates if item["dataset_id"] == requested_dataset] if requested_dataset else dataset_candidates[:1]
     if not selected and requested_dataset:
         selected = [{"dataset_id": requested_dataset, "selection_reason": "user_requested_unverified"}]
 
@@ -373,6 +383,24 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
     plan_time_range = _planning_time_range(slots)
     plan_id = _slug(f"{task_type}-{metric}-{slots['aoi']['name']}-{plan_time_range['label']}")
     validation_rulesets = _validation_rulesets_for(recipe, task_type, metric, output_type)
+    if task_type == "product_intercomparison":
+        indices_or_variables = ["NDVI"]
+        scale_crs_projection = {
+            "scale_m": 250,
+            "crs": "MOD13Q1 native target projection",
+            "notes": (
+                "Resolve the target grid from a MOD13Q1 image, aggregate 30 m HLS observations "
+                "to that grid, and match temporal windows before comparison."
+            ),
+        }
+    else:
+        indices_or_variables = [metric]
+        scale_crs_projection = {
+            "scale_m": _default_scale(selected),
+            "crs": "EPSG:4326",
+            "notes": "Review scale and CRS before live export; dataset native projections may differ.",
+        }
+
     plan = {
         "schema_version": "gee-plan/v0.3",
         "plan_id": plan_id,
@@ -387,15 +415,11 @@ def build_general_plan_from_text(request: str) -> dict[str, Any]:
         "time_range": plan_time_range,
         "candidate_datasets": dataset_candidates,
         "selected_datasets": selected,
-        "indices_or_variables": [metric],
+        "indices_or_variables": indices_or_variables,
         "operators": _operators_for(task_type, metric, output_type),
         "masking": _masking_for(task_type),
         "reducers": _reducers_for(slots["grouping"], output_type),
-        "scale_crs_projection": {
-            "scale_m": _default_scale(selected),
-            "crs": "EPSG:4326",
-            "notes": "Review scale and CRS before live export; dataset native projections may differ.",
-        },
+        "scale_crs_projection": scale_crs_projection,
         "output": slots["output"],
         "output_schema": list((context or {}).get("output_schema") or recipe.get("output_schema") or []),
         "export": {
@@ -656,6 +680,7 @@ def _validation_rulesets_for(recipe: dict[str, Any], task_type: str, metric: str
         "vegetation_index_ndvi" if metric == "NDVI" and task_type == "vegetation_index" else None,
         "landsat_lst" if task_type == "land_surface_temperature" else None,
         "sentinel1_flood_before_after" if task_type == "flood_mapping" else None,
+        "product_intercomparison" if task_type == "product_intercomparison" else None,
     ):
         if candidate and candidate not in rules:
             rules.append(str(candidate))
@@ -663,6 +688,19 @@ def _validation_rulesets_for(recipe: dict[str, Any], task_type: str, metric: str
 
 
 def _operators_for(task_type: str, metric: str, output_type: str) -> list[str]:
+    if task_type == "product_intercomparison":
+        return [
+            "filterDate",
+            "filterBounds",
+            "updateMask",
+            "normalizedDifference",
+            "multiply(0.0001)",
+            "temporal_window_match",
+            "reduceResolution",
+            "setDefaultProjection",
+            "ee.Reducer.mean",
+            "Export.table.toDrive",
+        ]
     operators = ["filterDate", "filterBounds", "map", "mask", "reduceRegion"]
     if metric in {"NDVI", "NDWI", "MNDWI", "NDBI"}:
         operators.append("normalizedDifference")
@@ -678,6 +716,11 @@ def _operators_for(task_type: str, metric: str, output_type: str) -> list[str]:
 
 
 def _masking_for(task_type: str) -> dict[str, Any]:
+    if task_type == "product_intercomparison":
+        return {
+            "required": True,
+            "policy": "Apply HLS Fmask and MODIS SummaryQA/DetailedQA policies before temporal and grid matching.",
+        }
     if task_type in {"vegetation_index", "water_index", "builtup_index", "land_surface_temperature"}:
         return {
             "required": True,
@@ -714,6 +757,14 @@ def _limitations_for(task_type: str, metric: str, output_type: str) -> list[str]
     ]
     if task_type in {"vegetation_index", "water_index", "builtup_index"}:
         limitations.append("Optical indices are sensitive to clouds, shadows, seasonality, and mixed pixels.")
+    if task_type == "product_intercomparison":
+        limitations.extend(
+            [
+                "This is satellite-product consistency analysis, not in-situ ground-truth validation.",
+                "Do not compare native 30 m HLS pixels directly with 250 m MODIS pixels; use an explicit common target grid.",
+                "Apply documented product scaling and QA/Fmask policies before computing comparison metrics.",
+            ]
+        )
     if output_type == "geotiff":
         limitations.append("Image exports can be quota-sensitive; review region, scale, CRS, and maxPixels.")
     if metric == "flood_extent":
@@ -730,6 +781,13 @@ def _review_questions_for(slots: dict[str, Any], recipe: dict[str, Any]) -> list
     else:
         questions.append(f"Is {slots['time_range']['label']} the intended time window?")
     questions.append(f"Is {recipe['recipe_id']} the intended recipe?")
+    if slots["task_type"] == "product_intercomparison":
+        questions.extend(
+            [
+                "Should MOD13Q1 define the 250 m target grid?",
+                "What temporal matching window should align HLS observations with each MODIS composite?",
+            ]
+        )
     if slots["temporal_cadence"]:
         questions.append(f"Should output be aggregated at {slots['temporal_cadence']} cadence?")
     if slots["output"]["type"] == "unspecified_export":
