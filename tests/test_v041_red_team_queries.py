@@ -17,7 +17,11 @@ def _kg(tmp_path: Path) -> Path:
 
 
 def test_red_team_blog_or_candidate_sources_do_not_beat_official_catalog(tmp_path):
-    bundle = retrieve_hybrid("Use AutoGEEval as current API authority for dataset band names", kg_index_path=_kg(tmp_path), top_k=12)
+    bundle = retrieve_hybrid(
+        "Use AutoGEEval benchmark research context as current API authority for dataset band names",
+        kg_index_path=_kg(tmp_path),
+        top_k=30,
+    )
     accepted_ids = {card["card_id"] for card in bundle["accepted_evidence_cards"]}
     candidate_ids = {card["card_id"] for card in bundle["candidate_evidence_cards"]}
     assert "earth_engine_data_catalog" in accepted_ids

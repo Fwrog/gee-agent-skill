@@ -1,10 +1,10 @@
 # Research Note: GEE-OPs Operator Knowledge Base
 
-source_id: research-gee-ops
+source_id: gee-ops-paper
 source_type: research-paper
 publisher: Geo-spatial Information Science
 url: https://doi.org/10.1080/10095020.2025.2505556
-retrieved_at: 2026-06-21
+retrieved_at: 2026-07-31
 primary_status: non-canonical
 ee_language: JavaScript
 risk_level: medium
@@ -23,6 +23,8 @@ GEE-OPs organizes Earth Engine operator knowledge into four complementary tables
 - Operator relationship chain: longer ordered usage paths that resemble workflow skeletons.
 
 The practical lesson for this repository is to index not only prose docs, but also operator relationships such as `ImageCollection.filterDate -> filterBounds -> map -> select -> mean -> reduceRegions -> Export.table.toDrive`.
+
+The paper reports mining 185,236 public GEE scripts. That corpus size and the paper's reported retrieval improvements are external results; this repository does not claim to reproduce them.
 
 ## RAG Metadata Implications
 
@@ -45,4 +47,3 @@ The paper uses abstract syntax tree ideas to extract operator relationships. For
 ## Source Risk
 
 The paper reports results from mined JavaScript scripts and syntax documentation. This is valuable for designing retrieval and operator chains, but examples can encode outdated, non-idiomatic, or JavaScript-only practices. Official Google Earth Engine docs remain the source of truth.
-

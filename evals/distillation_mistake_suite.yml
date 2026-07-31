@@ -1,0 +1,240 @@
+schema_version: gee-distillation-mistake-suite/v0.1
+id: github_data_usage_mistake_lab_v0.1
+purpose: Reproduce plausible metadata-first review mistakes and route missed checks into important or general knowledge.
+importance_policy:
+  important_knowledge: The omission can change correctness, authorization, reproducibility, data integrity, or a scientific claim.
+  general_knowledge: The omission improves discovery or explanation but does not change those outcomes.
+cases:
+  - id: spectral_index_catalog_metadata_only
+    source_kind: paper_linked_repository
+    simulated_failure: A formula is promoted without original provenance or sensor preprocessing requirements.
+    promotion_decision: promote_only_after_contract
+    naive_observations: [repository_license, paper_link, formula_schema]
+    required_observations:
+      - {id: repository_license, importance: general_knowledge, distill_to: source_registry}
+      - {id: paper_link, importance: general_knowledge, distill_to: paper_project_pair}
+      - {id: formula_schema, importance: general_knowledge, distill_to: spectral_index_record}
+      - {id: original_source_provenance, importance: important_knowledge, distill_to: spectral_index_record_contract}
+      - {id: sensor_preprocessing_contract, importance: important_knowledge, distill_to: data_usage_promotion_contract}
+      - {id: catalogue_version_and_migration, importance: general_knowledge, distill_to: general_corpus_note}
+    expected_missed_ids: [original_source_provenance, sensor_preprocessing_contract, catalogue_version_and_migration]
+  - id: community_catalog_public_means_ready
+    source_kind: community_dataset_catalog
+    simulated_failure: A public community asset is treated as official and used without per-dataset license, schema, or availability review.
+    promotion_decision: block_dataset_selection
+    naive_observations: [repository_license, public_asset_catalog, catalog_citation]
+    required_observations:
+      - {id: repository_license, importance: general_knowledge, distill_to: source_registry}
+      - {id: public_asset_catalog, importance: general_knowledge, distill_to: general_corpus_note}
+      - {id: catalog_citation, importance: general_knowledge, distill_to: paper_project_pair}
+      - {id: per_dataset_provider_license, importance: important_knowledge, distill_to: community_dataset_asset_boundary}
+      - {id: exact_asset_id_version_and_availability, importance: important_knowledge, distill_to: data_usage_promotion_contract}
+      - {id: band_schema_qa_and_units, importance: important_knowledge, distill_to: data_usage_promotion_contract}
+      - {id: official_vs_community_authority, importance: important_knowledge, distill_to: community_dataset_asset_boundary}
+    expected_missed_ids: [per_dataset_provider_license, exact_asset_id_version_and_availability, band_schema_qa_and_units, official_vs_community_authority]
+  - id: paper_and_repo_link_means_reproducible
+    source_kind: paper_linked_application
+    simulated_failure: A repository link is used to transfer domain accuracy without reproducing acquisition, projection, quality-control, or evaluation conditions.
+    promotion_decision: promote_structure_not_performance
+    naive_observations: [paper_repository_link, aoi_time_sensor_inputs]
+    required_observations:
+      - {id: paper_repository_link, importance: general_knowledge, distill_to: paper_project_pair}
+      - {id: aoi_time_sensor_inputs, importance: important_knowledge, distill_to: paper_linked_data_workflow_contract}
+      - {id: acquisition_metadata_and_revision, importance: important_knowledge, distill_to: paper_linked_data_workflow_contract}
+      - {id: projected_output_coordinates, importance: important_knowledge, distill_to: data_usage_promotion_contract}
+      - {id: quality_control_and_domain_scope, importance: important_knowledge, distill_to: paper_linked_data_workflow_contract}
+      - {id: interactive_tutorial_mode, importance: general_knowledge, distill_to: general_corpus_note}
+    expected_missed_ids: [acquisition_metadata_and_revision, projected_output_coordinates, quality_control_and_domain_scope, interactive_tutorial_mode]
+  - id: lazy_readback_means_safe_scaling
+    source_kind: data_access_tool
+    simulated_failure: A lazy readback opens successfully but uses an implicit grid and unbounded requests.
+    promotion_decision: require_grid_and_request_contract
+    naive_observations: [lazy_readback, xarray_interface]
+    required_observations:
+      - {id: lazy_readback, importance: general_knowledge, distill_to: xee_lazy_readback_pattern}
+      - {id: xarray_interface, importance: general_knowledge, distill_to: xee_lazy_readback_pattern}
+      - {id: explicit_output_grid, importance: important_knowledge, distill_to: xee_lazy_readback_pattern}
+      - {id: server_side_preprocessing_first, importance: important_knowledge, distill_to: xee_lazy_readback_pattern}
+      - {id: bounded_parallel_requests, importance: important_knowledge, distill_to: xee_lazy_readback_pattern}
+      - {id: unofficial_product_boundary, importance: important_knowledge, distill_to: xee_lazy_readback_pattern}
+    expected_missed_ids: [explicit_output_grid, server_side_preprocessing_first, bounded_parallel_requests, unofficial_product_boundary]
+  - id: submitted_task_means_completed_export
+    source_kind: task_monitor
+    simulated_failure: A submitted or visible task is reported as completed without a refreshed terminal state or output readback.
+    promotion_decision: require_terminal_state_and_readback
+    naive_observations: [task_submission, task_list_visible]
+    required_observations:
+      - {id: task_submission, importance: general_knowledge, distill_to: eetasks_monitoring_pattern}
+      - {id: task_list_visible, importance: general_knowledge, distill_to: eetasks_monitoring_pattern}
+      - {id: refreshed_terminal_state, importance: important_knowledge, distill_to: eetasks_monitoring_pattern}
+      - {id: output_readback, importance: important_knowledge, distill_to: eetasks_monitoring_pattern}
+      - {id: account_project_context, importance: important_knowledge, distill_to: eetasks_monitoring_pattern}
+      - {id: monitoring_ui_refresh_behavior, importance: general_knowledge, distill_to: general_corpus_note}
+    expected_missed_ids: [refreshed_terminal_state, output_readback, account_project_context, monitoring_ui_refresh_behavior]
+  - id: accepted_card_growth_preserves_source_precedence
+    source_kind: retrieval_regression
+    simulated_failure: New accepted cards crowd official authority or lower-tier red-team context out of a fixed retrieval window.
+    promotion_decision: block_release_until_precedence_regression_passes
+    naive_observations: [new_cards_validate, new_cards_are_retrievable]
+    required_observations:
+      - {id: new_cards_validate, importance: general_knowledge, distill_to: release_note}
+      - {id: new_cards_are_retrievable, importance: general_knowledge, distill_to: retrieval_smoke_test}
+      - {id: official_authority_still_retrieved, importance: important_knowledge, distill_to: source_tier_precedence_regression}
+      - {id: candidate_context_still_visible_for_red_team, importance: important_knowledge, distill_to: source_tier_precedence_regression}
+      - {id: fixed_query_budget_is_rechecked, importance: important_knowledge, distill_to: source_tier_precedence_regression}
+    expected_missed_ids: [official_authority_still_retrieved, candidate_context_still_visible_for_red_team, fixed_query_budget_is_rechecked]
+  - id: readme_search_match_means_domain_relevant
+    source_kind: corpus_discovery
+    simulated_failure: Broad README search matches admit unrelated high-star repositories into the GEE review queue.
+    promotion_decision: exclude_without_direct_domain_evidence
+    naive_observations: [query_match, high_star_count, declared_license]
+    required_observations:
+      - {id: query_match, importance: general_knowledge, distill_to: discovery_provenance}
+      - {id: high_star_count, importance: general_knowledge, distill_to: discovery_ranking}
+      - {id: declared_license, importance: general_knowledge, distill_to: license_review_queue}
+      - {id: direct_gee_topic_or_metadata_evidence, importance: important_knowledge, distill_to: domain_relevance_gate}
+      - {id: unrelated_high_rank_false_positive_check, importance: important_knowledge, distill_to: domain_relevance_gate}
+      - {id: review_queue_contamination_regression, importance: important_knowledge, distill_to: domain_relevance_gate}
+    expected_missed_ids: [direct_gee_topic_or_metadata_evidence, unrelated_high_rank_false_positive_check, review_queue_contamination_regression]
+  - id: code_editor_runnable_means_wrapper_equivalent
+    source_kind: runtime_wrapper
+    simulated_failure: A Code Editor script is run in a wrapper that silently ignores UI commands and automatically submits exports.
+    promotion_decision: require_runtime_surface_and_live_authorization
+    naive_observations: [script_runs_in_code_editor, wrapper_supports_export]
+    required_observations:
+      - {id: script_runs_in_code_editor, importance: general_knowledge, distill_to: runtime_inventory}
+      - {id: wrapper_supports_export, importance: general_knowledge, distill_to: runtime_inventory}
+      - {id: supported_global_surface, importance: important_knowledge, distill_to: code_editor_wrapper_equivalence_boundary}
+      - {id: silent_ignore_behavior, importance: important_knowledge, distill_to: code_editor_wrapper_equivalence_boundary}
+      - {id: automatic_submission_behavior, importance: important_knowledge, distill_to: code_editor_wrapper_equivalence_boundary}
+      - {id: explicit_export_destination, importance: important_knowledge, distill_to: code_editor_wrapper_equivalence_boundary}
+    expected_missed_ids: [supported_global_surface, silent_ignore_behavior, automatic_submission_behavior, explicit_export_destination]
+  - id: shaped_xarray_means_analysis_ready_cube
+    source_kind: data_cube_tool
+    simulated_failure: A regridded Xarray cube is used for analysis although QA, scaling, temporal aggregation, and realized grid rounding were never reviewed.
+    promotion_decision: block_analysis_ready_claim
+    naive_observations: [array_shape, requested_resolution, selected_bands]
+    required_observations:
+      - {id: array_shape, importance: general_knowledge, distill_to: cube_manifest}
+      - {id: requested_resolution, importance: general_knowledge, distill_to: cube_manifest}
+      - {id: selected_bands, importance: general_knowledge, distill_to: cube_manifest}
+      - {id: realized_grid_and_rounding, importance: important_knowledge, distill_to: data_cube_grid_materialization_contract}
+      - {id: dataset_scaling_and_qa, importance: important_knowledge, distill_to: data_cube_grid_materialization_contract}
+      - {id: temporal_sampling_contract, importance: important_knowledge, distill_to: data_cube_grid_materialization_contract}
+      - {id: nodata_and_mask_semantics, importance: important_knowledge, distill_to: data_cube_grid_materialization_contract}
+    expected_missed_ids: [realized_grid_and_rounding, dataset_scaling_and_qa, temporal_sampling_contract, nodata_and_mask_semantics]
+  - id: same_metric_names_mean_comparable_benchmark
+    source_kind: benchmark_repository
+    simulated_failure: A local RMSE is compared with an external benchmark despite different reference versions, time matching, sample gates, and group grain.
+    promotion_decision: block_cross_benchmark_comparison
+    naive_observations: [metric_name, public_reference_data, repository_link]
+    required_observations:
+      - {id: metric_name, importance: general_knowledge, distill_to: benchmark_inventory}
+      - {id: public_reference_data, importance: general_knowledge, distill_to: benchmark_inventory}
+      - {id: repository_link, importance: general_knowledge, distill_to: benchmark_inventory}
+      - {id: reference_version_and_provenance, importance: important_knowledge, distill_to: benchmark_dataset_protocol_contract}
+      - {id: temporal_matching_direction_and_tolerance, importance: important_knowledge, distill_to: benchmark_dataset_protocol_contract}
+      - {id: minimum_paired_sample_gate, importance: important_knowledge, distill_to: benchmark_dataset_protocol_contract}
+      - {id: coordinate_and_datum_contract, importance: important_knowledge, distill_to: benchmark_dataset_protocol_contract}
+      - {id: exclusions_and_group_grain, importance: important_knowledge, distill_to: benchmark_dataset_protocol_contract}
+    expected_missed_ids: [reference_version_and_provenance, temporal_matching_direction_and_tolerance, minimum_paired_sample_gate, coordinate_and_datum_contract, exclusions_and_group_grain]
+  - id: sentinel1_ard_name_means_universal_preprocessing
+    source_kind: paper_linked_sar_workflow
+    simulated_failure: One Sentinel-1 ARD configuration is applied across terrain and applications without reviewing orbit, units, DEM, speckle, or layover-shadow choices.
+    promotion_decision: require_application_specific_sar_contract
+    naive_observations: [paper_link, analysis_ready_label, public_code]
+    required_observations:
+      - {id: paper_link, importance: general_knowledge, distill_to: paper_project_pair}
+      - {id: analysis_ready_label, importance: general_knowledge, distill_to: sar_workflow_inventory}
+      - {id: public_code, importance: general_knowledge, distill_to: sar_workflow_inventory}
+      - {id: linear_or_db_units, importance: important_knowledge, distill_to: sentinel1_ard_processing_contract}
+      - {id: orbit_and_polarization, importance: important_knowledge, distill_to: sentinel1_ard_processing_contract}
+      - {id: dem_scope_and_terrain_model, importance: important_knowledge, distill_to: sentinel1_ard_processing_contract}
+      - {id: speckle_framework_and_parameters, importance: important_knowledge, distill_to: sentinel1_ard_processing_contract}
+      - {id: layover_shadow_handling, importance: important_knowledge, distill_to: sentinel1_ard_processing_contract}
+    expected_missed_ids: [linear_or_db_units, orbit_and_polarization, dem_scope_and_terrain_model, speckle_framework_and_parameters, layover_shadow_handling]
+  - id: generated_samples_mean_valid_ml_dataset
+    source_kind: dataset_generation_framework
+    simulated_failure: Generated files are treated as valid ML data although label versions, spatial splits, source revisions, leakage, and processing lineage are missing.
+    promotion_decision: block_training_evidence
+    naive_observations: [generation_completed, tensor_shapes, output_format]
+    required_observations:
+      - {id: generation_completed, importance: general_knowledge, distill_to: generation_report}
+      - {id: tensor_shapes, importance: general_knowledge, distill_to: generation_report}
+      - {id: output_format, importance: general_knowledge, distill_to: generation_report}
+      - {id: label_and_source_versions, importance: important_knowledge, distill_to: geospatial_ml_dataset_generation_contract}
+      - {id: spatial_split_grain_and_leakage, importance: important_knowledge, distill_to: geospatial_ml_dataset_generation_contract}
+      - {id: bands_scale_time_masks, importance: important_knowledge, distill_to: geospatial_ml_dataset_generation_contract}
+      - {id: resolved_command_and_config, importance: important_knowledge, distill_to: geospatial_ml_dataset_generation_contract}
+      - {id: license_and_private_dependency_review, importance: important_knowledge, distill_to: geospatial_ml_dataset_generation_contract}
+    expected_missed_ids: [label_and_source_versions, spatial_split_grain_and_leakage, bands_scale_time_masks, resolved_command_and_config, license_and_private_dependency_review]
+  - id: completed_upload_means_valid_asset
+    source_kind: asset_ingestion_tool
+    simulated_failure: A completed upload is called analysis-ready even though pyramiding, nodata, masks, metadata, and pixel readback were not checked.
+    promotion_decision: require_semantic_asset_readback
+    naive_observations: [upload_submitted, task_completed, asset_visible]
+    required_observations:
+      - {id: upload_submitted, importance: general_knowledge, distill_to: ingestion_trace}
+      - {id: task_completed, importance: general_knowledge, distill_to: ingestion_trace}
+      - {id: asset_visible, importance: general_knowledge, distill_to: ingestion_trace}
+      - {id: source_checksum_and_destination_authority, importance: important_knowledge, distill_to: asset_ingestion_semantics_contract}
+      - {id: dtype_nodata_and_mask, importance: important_knowledge, distill_to: asset_ingestion_semantics_contract}
+      - {id: semantic_pyramiding_policy, importance: important_knowledge, distill_to: asset_ingestion_semantics_contract}
+      - {id: metadata_and_pixel_readback, importance: important_knowledge, distill_to: asset_ingestion_semantics_contract}
+      - {id: explicit_overwrite_authorization, importance: important_knowledge, distill_to: asset_ingestion_semantics_contract}
+    expected_missed_ids: [source_checksum_and_destination_authority, dtype_nodata_and_mask, semantic_pyramiding_policy, metadata_and_pixel_readback, explicit_overwrite_authorization]
+  - id: convenience_chain_means_correct_preprocessing
+    source_kind: third_party_wrapper
+    simulated_failure: A compact preprocessing chain runs but applies unreviewed scaling, cloud-mask thresholds, band dropping, and package defaults.
+    promotion_decision: expand_wrapper_preconditions
+    naive_observations: [method_chain_runs, output_bands_exist]
+    required_observations:
+      - {id: method_chain_runs, importance: general_knowledge, distill_to: wrapper_smoke_test}
+      - {id: output_bands_exist, importance: general_knowledge, distill_to: wrapper_smoke_test}
+      - {id: package_revision, importance: important_knowledge, distill_to: third_party_preprocessing_wrapper_boundary}
+      - {id: input_value_range, importance: important_knowledge, distill_to: third_party_preprocessing_wrapper_boundary}
+      - {id: product_specific_mask_validity, importance: important_knowledge, distill_to: third_party_preprocessing_wrapper_boundary}
+      - {id: thresholds_and_ignored_parameters, importance: important_knowledge, distill_to: third_party_preprocessing_wrapper_boundary}
+      - {id: output_band_retention, importance: important_knowledge, distill_to: third_party_preprocessing_wrapper_boundary}
+    expected_missed_ids: [package_revision, input_value_range, product_specific_mask_validity, thresholds_and_ignored_parameters, output_band_retention]
+  - id: landtrendr_segments_mean_disturbance_truth
+    source_kind: temporal_segmentation_workflow
+    simulated_failure: Spectral segments are reported as disturbance truth although annual support, sensor harmonization, sign convention, and independent references are absent.
+    promotion_decision: block_disturbance_truth_claim
+    naive_observations: [segment_vertices, change_magnitude, year_of_change]
+    required_observations:
+      - {id: segment_vertices, importance: general_knowledge, distill_to: segmentation_output}
+      - {id: change_magnitude, importance: general_knowledge, distill_to: segmentation_output}
+      - {id: year_of_change, importance: general_knowledge, distill_to: segmentation_output}
+      - {id: one_value_per_year_provenance, importance: important_knowledge, distill_to: landtrendr_temporal_segmentation_contract}
+      - {id: clear_pixel_and_missing_year_support, importance: important_knowledge, distill_to: landtrendr_temporal_segmentation_contract}
+      - {id: sensor_harmonization, importance: important_knowledge, distill_to: landtrendr_temporal_segmentation_contract}
+      - {id: index_direction_convention, importance: important_knowledge, distill_to: landtrendr_temporal_segmentation_contract}
+      - {id: independent_reference_validation, importance: important_knowledge, distill_to: landtrendr_temporal_segmentation_contract}
+    expected_missed_ids: [one_value_per_year_provenance, clear_pixel_and_missing_year_support, sensor_harmonization, index_direction_convention, independent_reference_validation]
+  - id: real_project_fix_means_public_context_can_be_copied
+    source_kind: authorized_real_project_failure
+    simulated_failure: A successful project-specific repair is copied into the public knowledge base with identifying context and without separating observed behavior from inference.
+    promotion_decision: keep_private_evidence_and_promote_only_generic_regression
+    naive_observations: [issue_summary, local_fix_passed]
+    required_observations:
+      - {id: issue_summary, importance: general_knowledge, distill_to: private_failure_ledger}
+      - {id: local_fix_passed, importance: general_knowledge, distill_to: private_failure_ledger}
+      - {id: observed_vs_inferred_split, importance: important_knowledge, distill_to: real_project_failure_distillation_boundary}
+      - {id: minimal_public_reproduction, importance: important_knowledge, distill_to: real_project_failure_distillation_boundary}
+      - {id: ignorance_boundary_redaction, importance: important_knowledge, distill_to: real_project_failure_distillation_boundary}
+      - {id: scoped_non_claims, importance: important_knowledge, distill_to: real_project_failure_distillation_boundary}
+      - {id: public_rule_or_card_and_regression, importance: important_knowledge, distill_to: real_project_failure_distillation_boundary}
+    expected_missed_ids: [observed_vs_inferred_split, minimal_public_reproduction, ignorance_boundary_redaction, scoped_non_claims, public_rule_or_card_and_regression]
+  - id: green_evaluation_means_cases_ran
+    source_kind: evaluation_harness
+    simulated_failure: A mismatched evaluator reports success after executing zero cases, and the result is cited as a passed retrieval regression.
+    promotion_decision: block_release_on_zero_case_or_schema_mismatch
+    naive_observations: [process_exit_zero, top_level_ok_true]
+    required_observations:
+      - {id: process_exit_zero, importance: general_knowledge, distill_to: command_log}
+      - {id: top_level_ok_true, importance: general_knowledge, distill_to: command_log}
+      - {id: evaluator_matches_fixture_schema, importance: important_knowledge, distill_to: nonempty_evaluation_gate}
+      - {id: executed_case_count_positive, importance: important_knowledge, distill_to: nonempty_evaluation_gate}
+      - {id: expected_case_ids_present, importance: important_knowledge, distill_to: nonempty_evaluation_gate}
+    expected_missed_ids: [evaluator_matches_fixture_schema, executed_case_count_positive, expected_case_ids_present]

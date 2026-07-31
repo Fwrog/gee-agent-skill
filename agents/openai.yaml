@@ -1,4 +1,4 @@
 interface:
   display_name: "GEE Agent Skill"
-  short_description: "Traceable Google Earth Engine workflows"
-  default_prompt: "Use $gee-agent-skill to plan, ground, render, and validate a reproducible Earth Engine workflow before any confirmed live export."
+  short_description: "Traceable Earth Engine workflows and gated learning"
+  default_prompt: "Use $gee-agent-skill to plan, ground, validate, and benchmark a reproducible Earth Engine workflow, or review a sanitized local-learning candidate, before official promotion or confirmed live export."

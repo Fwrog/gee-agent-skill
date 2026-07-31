@@ -1,0 +1,534 @@
+schema_version: gee-corpus-reviewed/v0.1
+reviewed_at: '2026-07-31'
+discovery_snapshot: references/corpus/github_gee_discovery_200.yml
+purpose: Deep-review ledger for reusable public patterns, rejected promotions, and data-use boundaries.
+review_protocol:
+  minimum_surfaces: README plus license, and one relevant implementation or method surface when a pattern is promoted.
+  paper_rule: A paper link is verified against a DOI, publisher, or journal page before it supports a pattern.
+  data_rule: Every record reviews identity, variables, scaling, QA, grid, temporal scope, access, and private dependencies; unknown remains explicit.
+  promotion_rule: Important findings must map to a source-backed evidence card or regression rule. General findings remain searchable but non-blocking.
+  ignorance_rule: Checked public surfaces do not authorize inference about private assets, unpublished settings, credentials, or unreviewed files.
+progress:
+  discovery_inventory_total: 200
+  discovery_records_reviewed: 21
+  discovery_records_remaining: 179
+  additional_anchor_records_reviewed: 3
+  total_deep_review_records: 24
+  reviewed_pattern_sources: 17
+  reviewed_no_new_promotion: 7
+records:
+- full_name: awesome-spectral-indices/awesome-spectral-indices
+  in_discovery_inventory: true
+  reviewed_ref: c0d9cbcf5b28985d0cb9a2ae4e63b878140da748
+  checked_surfaces:
+  - {path: README.md, blob_sha: 307b419caf965b6529739c8ef3bcee0d94b13a77, purpose: schema, provenance, paper, and validation policy}
+  - {path: LICENSE, blob_sha: 7bd30da58459558af297594fc38f7f210dd64033, purpose: MIT license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.1038/s41597-023-02096-0'}
+  data_contract:
+    identity_and_revision: Catalogue revision pinned; no Earth Engine dataset is selected.
+    bands_or_variables: Abstract band roles are explicit.
+    scale_and_offset: Not defined by the catalogue and must come from sensor sources.
+    qa_and_mask: Not defined by the catalogue.
+    grid_projection_resampling: Not defined by the catalogue.
+    temporal: Index definitions are not temporal data coverage.
+    access_license_asset_stability: MIT repository; original references retain separate terms.
+    private_dependencies: not_observed_in_checked_surfaces
+  important_findings: [original formula provenance, preprocessing remains sensor-specific, AI-generated formula is not validation]
+  general_findings: [catalogue version and migration notices improve maintenance]
+  decision: {state: reviewed_pattern_source, promoted_to: [spectral_index_record_contract, data_usage_promotion_contract]}
+  claim_boundary: A listed index is not automatically valid for every sensor, product, preprocessing chain, or application.
+
+- full_name: samapriya/awesome-gee-community-datasets
+  in_discovery_inventory: true
+  reviewed_ref: f1ba23c302fe0dd21d574d15fb02d0e4f63b2448
+  checked_surfaces:
+  - {path: README.md, blob_sha: eb83d6548ad015ee5a88d25fc9134cae44060443, purpose: community asset scope and release metadata}
+  - {path: LICENSE, blob_sha: 4ea99c213c5c0c005ae4e80df8e52169d06896ec, purpose: repository content license}
+  paper: {status: catalogue_citation_only, url: 'https://doi.org/10.5281/zenodo.17248117'}
+  data_contract:
+    identity_and_revision: Catalogue release exists; each dataset identity and version remains separate.
+    bands_or_variables: requires_per_dataset_review
+    scale_and_offset: requires_per_dataset_review
+    qa_and_mask: requires_per_dataset_review
+    grid_projection_resampling: requires_per_dataset_review
+    temporal: requires_per_dataset_review
+    access_license_asset_stability: Repository license does not replace provider terms or asset availability.
+    private_dependencies: Community asset ownership and upstream dependencies require per-dataset review.
+  important_findings: [public asset is not official catalog authority, per-dataset license and availability are mandatory]
+  general_findings: [catalogue uptime and release badges are useful discovery signals]
+  decision: {state: reviewed_pattern_source, promoted_to: [community_dataset_asset_boundary]}
+  claim_boundary: Catalogue inclusion cannot establish live availability, scientific fitness, or provider authorization.
+
+- full_name: kvos/CoastSat
+  in_discovery_inventory: true
+  reviewed_ref: b9abb0c5902d9b160ba2790d55de41f0d5068497
+  checked_surfaces:
+  - {path: README.md, blob_sha: d14422538c646e86755039d09b587c0ff411e946, purpose: acquisition, preprocessing, QC, and domain scope}
+  - {path: LICENSE, blob_sha: f288702d2fa16d3cdf0035b15a9fcbc552cd88e7, purpose: GPL-3.0 license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.1016/j.envsoft.2019.104528'}
+  data_contract:
+    identity_and_revision: Repository revision pinned; public Landsat and Sentinel-2 families are named.
+    bands_or_variables: Workflow-specific and not imported.
+    scale_and_offset: Workflow-specific and not imported.
+    qa_and_mask: Cloud and downstream quality-control stages are explicit at pattern level.
+    grid_projection_resampling: Projected output coordinates are part of the reproducibility contract.
+    temporal: User-defined acquisition bounds and image timestamps are required.
+    access_license_asset_stability: GPL-3.0 code; imagery and ancillary data retain provider terms.
+    private_dependencies: User sites and local downstream inputs are deliberately not imported.
+  important_findings: [acquisition metadata, projected coordinates, domain-specific quality control, no accuracy transfer]
+  general_findings: [interactive tutorial mode is a usability note]
+  decision: {state: reviewed_pattern_source, promoted_to: [paper_linked_data_workflow_contract]}
+  claim_boundary: Paper-repository linkage supports workflow structure, not transferred shoreline accuracy.
+
+- full_name: gee-community/eetasks
+  in_discovery_inventory: true
+  reviewed_ref: a800bc2ed0b3cf093e13c642587d1837e8e8dcb1
+  checked_surfaces:
+  - {path: README.md, blob_sha: a9099e4bc45208800b413c48166c9e4b84bb9d6a, purpose: task and account workflow}
+  - {path: docs/runGEEscripts.md, blob_sha: db71f28b219999797b6acb3fbcc44e92783f5acd, purpose: wrapper behavior and unsupported surfaces}
+  - {path: LICENSE, blob_sha: cabb5c685132a47dc949b867caf8323c8199f4ca, purpose: MIT license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Runtime wrapper revision pinned.
+    bands_or_variables: not_applicable
+    scale_and_offset: not_applicable
+    qa_and_mask: not_applicable
+    grid_projection_resampling: not_applicable
+    temporal: Task states are time-varying and require refresh.
+    access_license_asset_stability: MIT extension; account and project context are required for use.
+    private_dependencies: Credentials are required at runtime but no credential content is imported.
+  important_findings: [submission is not completion, wrapper may auto-submit exports, unsupported UI or Map commands may be ignored]
+  general_findings: [monitor refresh behavior is implementation-specific]
+  decision: {state: reviewed_pattern_source, promoted_to: [eetasks_monitoring_pattern, code_editor_wrapper_equivalence_boundary]}
+  claim_boundary: A visible task or successful wrapper run does not prove output existence or Code Editor equivalence.
+
+- full_name: eMapR/LT-GEE
+  in_discovery_inventory: true
+  reviewed_ref: c17bacdb76d0cf1b942300f6f9ddfe368b41eed0
+  checked_surfaces:
+  - {path: README.md, blob_sha: 81716d1ab808c74febe641cdf6c121dd2ac3bc85, purpose: paper and license linkage}
+  - {path: bookdown/09-api.Rmd, blob_sha: 29790908926a3ff73f9c4c94f4d4c453be0a45ee, purpose: inputs, harmonization, sign, missing years, and outputs}
+  paper: {status: verified_primary, url: 'https://doi.org/10.3390/rs10050691'}
+  data_contract:
+    identity_and_revision: API guide and repository revision pinned.
+    bands_or_variables: TM-equivalent reflectance bands, segmentation index, and fitted bands are distinct.
+    scale_and_offset: Surface-reflectance preparation is required; current dataset facts need official refresh.
+    qa_and_mask: Cloud, shadow, snow masks and clear-pixel counts are explicit.
+    grid_projection_resampling: Not generalized from the reviewed guide.
+    temporal: One annual value, seasonal bounds, missing-year behavior, and year range are explicit.
+    access_license_asset_stability: Apache-2.0 code and CC-BY-4.0 documentation; public EE module remains externally maintained.
+    private_dependencies: AOI and project settings are user supplied and not imported.
+  important_findings: [sensor harmonization, one value per year, sign orientation, clear observation support, segmentation is not truth]
+  general_findings: [visualization helpers are outside the mainline]
+  decision: {state: reviewed_pattern_source, promoted_to: [landtrendr_temporal_segmentation_contract]}
+  claim_boundary: Spectral segmentation is not an independently validated disturbance label or attribution.
+
+- full_name: davemlz/eemont
+  in_discovery_inventory: true
+  reviewed_ref: c4ac0d162e8981f4c39c65a9f817a3e52ef306f4
+  checked_surfaces:
+  - {path: README.md, blob_sha: a874a009cc0265b57658229933bd6c5f66ff74a0, purpose: package and paper scope}
+  - {path: eemont/imagecollection.py, blob_sha: af1f3fc43e4c33a562a2f099a7044ba6d30b67b9, purpose: scaling, masking, index preconditions, and parameters}
+  - {path: LICENSE, blob_sha: 0a1488441bd6838dcd8139f8a044de9e917271ca, purpose: MIT license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.21105/joss.03168'}
+  data_contract:
+    identity_and_revision: Package revision pinned; dataset ID remains an explicit caller input.
+    bands_or_variables: Wrapper maps platform bands but official dataset definitions remain authoritative.
+    scale_and_offset: Spectral-index inputs must be scaled to the required range.
+    qa_and_mask: Cloud-mask validity and thresholds vary by product.
+    grid_projection_resampling: Not established by convenience methods.
+    temporal: Closest-image tolerance and collection windows remain explicit caller decisions.
+    access_license_asset_stability: MIT package with external dependencies and catalogue revisions.
+    private_dependencies: not_observed_in_checked_surfaces
+  important_findings: [short method chains hide preconditions, product-specific ignored parameters, output band policy must be reviewed]
+  general_findings: [method chaining improves readability]
+  decision: {state: reviewed_pattern_source, promoted_to: [third_party_preprocessing_wrapper_boundary]}
+  claim_boundary: Wrapper execution cannot replace official dataset review or scientific validation.
+
+- full_name: bellingcat/sar-interference-tracker
+  in_discovery_inventory: true
+  reviewed_ref: 636514257b91afecb67e945705177177aba99ed4
+  checked_surfaces:
+  - {path: README.md, blob_sha: ff6e454c60e7df5e7b68d42420b9d8ccc97365d4, purpose: application claims and visualization scope}
+  - {path: RIT.js, blob_sha: 3caf467c44e7e0c4e2d58457f84526135a346c40, purpose: Sentinel-1 filters and aggregation}
+  - {path: LICENSE, blob_sha: f13ef72f016378fae9cfbdb2af5d1cba1560d43e, purpose: MIT license}
+  paper: {status: no_peer_reviewed_validation_used, url: null}
+  data_contract:
+    identity_and_revision: COPERNICUS/S1_GRD and application revision are explicit.
+    bands_or_variables: VV and VH with IW and ascending or descending orbit filters.
+    scale_and_offset: Visualization ranges are application settings, not measurement calibration.
+    qa_and_mask: No independent RFI truth or false-positive protocol was established in checked surfaces.
+    grid_projection_resampling: not_established
+    temporal: Day, month, and year maximum composites are distinct.
+    access_license_asset_stability: MIT application; Earth Engine app availability is external.
+    private_dependencies: Example locations are public; no private context is imported.
+  important_findings: [visual pattern does not prove radar identity, aggregation changes interpretation]
+  general_findings: [interactive UI can support hypothesis generation]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: domain-specific identification claims lack an independently reviewed validation protocol}
+  claim_boundary: Retained only as a negative example of visualization-to-identity overclaim.
+
+- full_name: ESDS-Leipzig/cubo
+  in_discovery_inventory: true
+  reviewed_ref: 1bf975e5d928b42db1a6fd742a4770c9ea3f0631
+  checked_surfaces:
+  - {path: README.md, blob_sha: 3c5ebcbd5f9dafe5ab491c7b011308edfd3117ae, purpose: cube interface and paper linkage}
+  - {path: cubo/cubo.py, blob_sha: 89eee5a28d9735c54122570479ab24363a64cb37, purpose: grid realization and metadata}
+  - {path: LICENSE, blob_sha: 328944fb421b968aaeb9d07b5ea36d7e196bb9b4, purpose: MIT license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.1109/IGARSS53475.2024.10640742'}
+  data_contract:
+    identity_and_revision: Collection and code revision are explicit.
+    bands_or_variables: Caller-selected and ordered.
+    scale_and_offset: Resolution is explicit; dataset radiometric scaling is not automatically applied.
+    qa_and_mask: Dataset-specific QA is not automatically established.
+    grid_projection_resampling: Local UTM grid, edge units, resolution, and rounded shape are recorded.
+    temporal: Start and end bounds are explicit; aggregation semantics remain caller-controlled.
+    access_license_asset_stability: MIT package; STAC or GEE sources retain separate terms.
+    private_dependencies: User collections may be accepted but no private identifiers are imported.
+  important_findings: [realized grid differs from request through rounding, array shape is not analysis-readiness]
+  general_findings: [shared interface across STAC and GEE improves portability]
+  decision: {state: reviewed_pattern_source, promoted_to: [data_cube_grid_materialization_contract]}
+  claim_boundary: A materialized cube does not prove QA, scaling, completeness, or ML fitness.
+
+- full_name: gee-community/geemap
+  in_discovery_inventory: true
+  reviewed_ref: 735e3a07437e2c47191bff04b98f86f9e4bbec8f
+  checked_surfaces:
+  - {path: README.md, blob_sha: 9a25f6b8a539a9bff492cc1b0cb84b62efae17da, purpose: package, paper, and capability scope}
+  - {path: LICENSE, blob_sha: e8c76c0db760a7cab8c6563f6497ffbf2141e5bb, purpose: MIT license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.21105/joss.02305'}
+  data_contract:
+    identity_and_revision: Package revision is pinned.
+    bands_or_variables: not_defined_by_general_mapping_package
+    scale_and_offset: not_defined_by_general_mapping_package
+    qa_and_mask: not_defined_by_general_mapping_package
+    grid_projection_resampling: Capability exists but no single contract is inferred from README.
+    temporal: not_applicable
+    access_license_asset_stability: MIT package; linked data retain their own terms.
+    private_dependencies: Interactive user assets may be supported; none are imported.
+  important_findings: [interactive mapping and JavaScript conversion do not establish semantic equivalence]
+  general_findings: [mature Python visualization and teaching surface]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: broad toolkit review did not yield a narrower new rule beyond existing runtime and source boundaries}
+  claim_boundary: Software context only; not API or dataset authority.
+
+- full_name: opengeos/Awesome-GEE
+  in_discovery_inventory: true
+  reviewed_ref: b5e399afc890c5e242b2fdec8e34eae183f0751d
+  checked_surfaces:
+  - {path: readme.md, blob_sha: 0db7f26ca275f94558df090d1edeba0982a604f6, purpose: discovery categories and official links}
+  - {path: LICENSE, blob_sha: 0e259d42c996742e9e3cba14c677129b2c1b6311, purpose: CC0-1.0 license}
+  paper: {status: not_applicable, url: null}
+  data_contract:
+    identity_and_revision: Link-list revision pinned.
+    bands_or_variables: not_applicable
+    scale_and_offset: not_applicable
+    qa_and_mask: not_applicable
+    grid_projection_resampling: not_applicable
+    temporal: Link freshness is time-varying.
+    access_license_asset_stability: CC0 list; every linked resource retains separate terms.
+    private_dependencies: not_observed_in_checked_surfaces
+  important_findings: [curated link presence is discovery only and cannot confer authority]
+  general_findings: [useful source-discovery map]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: links-only resource contributes no independently verified technical fact}
+  claim_boundary: Remains a discovery pointer, never runtime evidence.
+
+- full_name: gee-community/geetools
+  in_discovery_inventory: true
+  reviewed_ref: 9b46ec784edaff7443f2b1350faa49579b860074
+  checked_surfaces:
+  - {path: README.rst, blob_sha: d3a1de870ee9137a2a80127e0880e7885384acd3, purpose: wrapper architecture and example preconditions}
+  - {path: LICENSE, blob_sha: 148be08da25b8e7937a717a144af3d9b6272d8f9, purpose: MIT license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Package revision pinned.
+    bands_or_variables: Wrapper-selected; official dataset sources remain authoritative.
+    scale_and_offset: Explicit preprocessing method is shown but not generalized.
+    qa_and_mask: Cloud thresholds are wrapper and product dependent.
+    grid_projection_resampling: not_established
+    temporal: not_established
+    access_license_asset_stability: MIT package with external dependencies.
+    private_dependencies: not_observed_in_checked_surfaces
+  important_findings: [server-side convenience methods still require expanded preconditions]
+  general_findings: [namespace extension avoids monkey-patch ambiguity]
+  decision: {state: reviewed_pattern_source, promoted_to: [third_party_preprocessing_wrapper_boundary], reason: corroborates an existing promoted boundary without adding a duplicate card}
+  claim_boundary: No package default is promoted as universal preprocessing.
+
+- full_name: opengeos/qgis-timelapse-plugin
+  in_discovery_inventory: true
+  reviewed_ref: efcaf3601c768e0cd21ea0be4b553540b3830b4c
+  checked_surfaces:
+  - {path: README.md, blob_sha: e44d1338b25fba6ebd8b4b43f8cf1d8a09540948, purpose: supported datasets and interaction scope}
+  - {path: timelapse/core/timelapse_core.py, blob_sha: 0edf547be9e8475c9a5fde41ba35aaba058def84, purpose: initialization and observed credential failure note}
+  - {path: LICENSE, blob_sha: 628ad398e9280a64e8456345e3a5c82f173b8fba, purpose: MIT license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Plugin revision pinned.
+    bands_or_variables: Product-specific UI settings; not imported.
+    scale_and_offset: Product-specific; not imported.
+    qa_and_mask: Cloud and orbit controls exist but were not promoted as authoritative.
+    grid_projection_resampling: Visualization/export settings are application-specific.
+    temporal: Timelapse windows are user-defined.
+    access_license_asset_stability: MIT plugin; QGIS, EE account, and external media dependencies apply.
+    private_dependencies: Project IDs and credentials are runtime inputs; no values are imported.
+  important_findings: [credential construction shortcuts caused a reproduced upstream failure, GUI success is not data QA]
+  general_findings: [useful interactive timelapse surface]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: application-specific UI and credential behavior should not enter the core data workflow}
+  claim_boundary: No visualization or authentication implementation is copied into the public Skill.
+
+- full_name: adugnag/gee_s1_ard
+  in_discovery_inventory: true
+  reviewed_ref: 39207cb4998c9c80c27af3d8a62debe7ab41e7c7
+  checked_surfaces:
+  - {path: README.md, blob_sha: b00217920b036f67e0fd3fca5b4e263ea42a526b, purpose: processing modules and paper linkage}
+  - {path: python-api/wrapper.py, blob_sha: 1bbce0635e3f8ec7fe723eff6e6ac0ee1cad74b3, purpose: selection, parameters, units, and export behavior}
+  - {path: LICENSE, blob_sha: 377563cddcdae98c9822ae045ea2af89f4820b18, purpose: MIT license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.3390/rs13101954'}
+  data_contract:
+    identity_and_revision: COPERNICUS/S1_GRD_FLOAT and implementation revision pinned.
+    bands_or_variables: VV, VH, angle, polarization, and orbit are explicit.
+    scale_and_offset: Linear processing versus dB output is explicit.
+    qa_and_mask: Border, speckle, terrain, layover, and shadow choices are explicit and optional.
+    grid_projection_resampling: DEM and terrain model affect normalization; output export scale is explicit.
+    temporal: Start, stop, multi-temporal filter window, and image count are explicit.
+    access_license_asset_stability: MIT code; output assets and DEMs retain separate authority.
+    private_dependencies: ROI and optional asset destination are caller inputs and are not imported.
+  important_findings: [ARD is application-dependent, DEM scope matters, orbit and units cannot be hidden]
+  general_findings: [JavaScript and Python implementations improve accessibility]
+  decision: {state: reviewed_pattern_source, promoted_to: [sentinel1_ard_processing_contract]}
+  claim_boundary: Preprocessed SAR backscatter is not a validated thematic product.
+
+- full_name: awesome-spectral-indices/spyndex
+  in_discovery_inventory: true
+  reviewed_ref: 3ade9aeb8a9d4837b98d5ba169d983f6fcefc250
+  checked_surfaces:
+  - {path: README.md, blob_sha: ec1dcb2a670c6c560c044d3e911f1676b65623e8, purpose: band-role interface and catalogue linkage}
+  - {path: LICENSE, blob_sha: 7bd30da58459558af297594fc38f7f210dd64033, purpose: MIT license}
+  paper: {status: verified_shared_catalogue_paper, url: 'https://doi.org/10.1038/s41597-023-02096-0'}
+  data_contract:
+    identity_and_revision: Package and catalogue revision pinned.
+    bands_or_variables: Abstract role mapping is explicit.
+    scale_and_offset: Caller responsibility.
+    qa_and_mask: Caller responsibility.
+    grid_projection_resampling: Array-library dependent.
+    temporal: not_applicable
+    access_license_asset_stability: MIT package; source data retain separate terms.
+    private_dependencies: not_observed_in_checked_surfaces
+  important_findings: [formula portability still depends on preprocessing and band mapping]
+  general_findings: [array-library interoperability is useful]
+  decision: {state: reviewed_pattern_source, promoted_to: [spectral_index_record_contract], reason: corroborates the existing catalogue contract without a duplicate card}
+  claim_boundary: Library support is not sensor or application validation.
+
+- full_name: awesome-spectral-indices/spectral
+  in_discovery_inventory: true
+  reviewed_ref: 4d52c591372bee90f0aa3f4d08c82ce04f19bb00
+  checked_surfaces:
+  - {path: README.rst, blob_sha: 168ec40a70a2c14871daf8d28cd457f8564305ae, purpose: Code Editor deployment and scaling example}
+  - {path: LICENSE, blob_sha: 7bd30da58459558af297594fc38f7f210dd64033, purpose: MIT license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.5194/isprs-archives-XLVIII-4-W1-2022-301-2022'}
+  data_contract:
+    identity_and_revision: Module and catalogue revision pinned.
+    bands_or_variables: Catalogue band roles are mapped to GEE products.
+    scale_and_offset: Scaling method is explicit but official dataset facts remain authoritative.
+    qa_and_mask: not_established_by_index_module
+    grid_projection_resampling: not_established_by_index_module
+    temporal: not_applicable
+    access_license_asset_stability: MIT code; public module stability is externally maintained.
+    private_dependencies: not_observed_in_checked_surfaces
+  important_findings: [catalogue deployment does not validate per-product preprocessing]
+  general_findings: [single query and compute surface reduces hard-coded formula duplication]
+  decision: {state: reviewed_pattern_source, promoted_to: [spectral_index_record_contract, third_party_preprocessing_wrapper_boundary]}
+  claim_boundary: Code Editor module availability is not scientific validity.
+
+- full_name: samapriya/geeup
+  in_discovery_inventory: true
+  reviewed_ref: a947909358129b5ab598b50f883152c7939f68a0
+  checked_surfaces:
+  - {path: README.md, blob_sha: 75032a7761e1b6636891a5a1011c966cfa9614cb, purpose: dry-run, metadata, upload, task, resume, and destructive controls}
+  - {path: LICENSE, blob_sha: 261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64, purpose: Apache-2.0 license}
+  paper: {status: software_release_citation_only, url: 'https://doi.org/10.5281/zenodo.18073520'}
+  data_contract:
+    identity_and_revision: Tool revision and local source set must be pinned.
+    bands_or_variables: Band count and metadata can be inventoried but semantics require review.
+    scale_and_offset: Source raster semantics must be supplied.
+    qa_and_mask: Nodata and optional validity-mask behavior are explicit upload choices.
+    grid_projection_resampling: Source raster grid and ingestion pyramiding require review.
+    temporal: Metadata mapping must carry temporal semantics when present.
+    access_license_asset_stability: Apache-2.0 tool; destination authority and data license are separate.
+    private_dependencies: Account and destination assets are runtime inputs and remain unknown publicly.
+  important_findings: [pyramiding is semantic, overwrite is destructive, completion requires readback, concurrency must be bounded]
+  general_findings: [resume state improves operations]
+  decision: {state: reviewed_pattern_source, promoted_to: [asset_ingestion_semantics_contract]}
+  claim_boundary: Uploaded or visible assets are not automatically normalized or analysis-ready.
+
+- full_name: google-deepmind/geeflow
+  in_discovery_inventory: true
+  reviewed_ref: a0ea107d65c9e1ddfce895ec5df5fd31bb33b916
+  checked_surfaces:
+  - {path: README.md, blob_sha: 374df326f1c5c9ef975f142a20b89f73f258eba1, purpose: labels, sources, splits, grids, temporal windows, and versioning}
+  - {path: geeflow/validation.py, blob_sha: 4f57400b408c64301e6aa5ff7ba81ab806bc6383, purpose: accepted config surface}
+  - {path: LICENSE, blob_sha: 261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64, purpose: Apache-2.0 license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Generator revision, resolved config, and launch command are required.
+    bands_or_variables: Per-source ordered selections and output types are explicit.
+    scale_and_offset: Per-source scale and mask or processing choices are explicit.
+    qa_and_mask: Per-source sampling and cloud-mask functions are configurable.
+    grid_projection_resampling: Sample footprint, UTM or spherical CRS, max cell size, and source scales are explicit.
+    temporal: Per-source ranges and aggregation windows are explicit.
+    access_license_asset_stability: Apache-2.0 framework; every source and label file retains separate terms.
+    private_dependencies: Custom assets and label paths may exist but no identifiers or contents are imported.
+  important_findings: [labels and sources need independent versions, spatial split and leakage need validation, generation is not model evidence]
+  general_findings: [TFDS bookkeeping is reusable]
+  decision: {state: reviewed_pattern_source, promoted_to: [geospatial_ml_dataset_generation_contract]}
+  claim_boundary: Generated tensors are not validated labels, leakage-free splits, or benchmark evidence.
+
+- full_name: giswqs/earthengine-py-notebooks
+  in_discovery_inventory: true
+  reviewed_ref: 99fbc4abd1fb6ba41e3d8a55f8911217353a3237
+  checked_surfaces:
+  - {path: README.md, blob_sha: cbd63e54f0e2baca92c5c145a0f457c1e644d283, purpose: notebook scope and official-doc boundary}
+  - {path: LICENSE, blob_sha: de03c9d9b9153092ee132ee80cc2a3943fca2408, purpose: MIT license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Repository revision is pinned and old relative to current API review.
+    bands_or_variables: Example-specific and not imported.
+    scale_and_offset: Example-specific and not imported.
+    qa_and_mask: Example-specific and not imported.
+    grid_projection_resampling: Example-specific and not imported.
+    temporal: Example-specific and not imported.
+    access_license_asset_stability: MIT examples; linked datasets and APIs can drift.
+    private_dependencies: User authentication is required; no values are imported.
+  important_findings: [large example count and API-shaped table of contents do not establish current correctness]
+  general_findings: [useful discovery and education surface]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: stale examples remain retrieval hints subordinate to current official documentation}
+  claim_boundary: No notebook output or dataset fact is promoted.
+
+- full_name: gee-community/ee-runner
+  in_discovery_inventory: true
+  reviewed_ref: 5c6e186f70b3c1ef72735eba82d2026161c694a6
+  checked_surfaces:
+  - {path: README.md, blob_sha: 219e14bc880ea9f5f7681044a66cb19b4485f6c9, purpose: runtime, authentication, and example scope}
+  - {path: LICENSE, blob_sha: 8dada3edaf50dbc082c9a125058f25def75e625a, purpose: Apache-2.0 license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Runner revision pinned.
+    bands_or_variables: Example-specific.
+    scale_and_offset: not_established
+    qa_and_mask: not_established
+    grid_projection_resampling: not_established
+    temporal: not_established
+    access_license_asset_stability: Apache-2.0 runner; documented Playground endpoint may be historical.
+    private_dependencies: Cloud project and local authentication are required but not imported.
+  important_findings: [runtime and endpoint age must be checked before reuse]
+  general_findings: [simple Node runner pattern]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: narrower and older runtime surface adds no safer pattern than the existing wrapper boundary}
+  claim_boundary: Historical runner examples are not current API authority.
+
+- full_name: leftfield-geospatial/geedim
+  in_discovery_inventory: true
+  reviewed_ref: 6f0ab8d3e136fe7d3338545fa0fa222b05b6b159
+  checked_surfaces:
+  - {path: README.rst, blob_sha: 3ecb64201ffd0caaf4a160f5e1937a7879cac642, purpose: export, masking, and project scope}
+  - {path: docs/getting_started/api.rst, blob_sha: d9f2cd25c169486ac2591c9a9b26f7f704c4aa8b, purpose: grids, nodata, metadata, arrays, and split layout}
+  - {path: LICENSE, blob_sha: 261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64, purpose: Apache-2.0 license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Exporter and source image revisions must be pinned.
+    bands_or_variables: Band order and collection split layout are explicit.
+    scale_and_offset: Export dtype and scale or offset behavior are explicit choices.
+    qa_and_mask: Cloud masking, nodata, masked array, and validity semantics are separate.
+    grid_projection_resampling: CRS, transform or region, shape or scale, and resampling are explicit.
+    temporal: Collection filters and per-image layout remain explicit.
+    access_license_asset_stability: Apache-2.0 tool; source imagery retains provider terms.
+    private_dependencies: User assets may be exported but no identifiers are imported.
+  important_findings: [requested versus realized grid, nodata collision, band-axis ambiguity, readback before completion claim]
+  general_findings: [metadata tags improve artifact audit]
+  decision: {state: reviewed_pattern_source, promoted_to: [export_readback_array_contract]}
+  claim_boundary: Export or array creation is artifact evidence only.
+
+- full_name: google/Xee
+  in_discovery_inventory: false
+  reviewed_ref: 17dfdd9e492be422e94a8d07059fd7fabf3e1664
+  checked_surfaces:
+  - {path: README.md, blob_sha: cb31a1ca11140802e52c14963b33a4623ba57ac3, purpose: lazy Xarray scope}
+  - {path: docs/concepts.md, blob_sha: f2746a01d2333a9d14e34b03348c1d200ed62c2b, purpose: grid, orientation, chunking, and errors}
+  - {path: LICENSE, blob_sha: 7a4a3ea2424c09fbe48d455aed1eaa94d9124835, purpose: Apache-2.0 license}
+  paper: {status: not_used_for_review, url: null}
+  data_contract:
+    identity_and_revision: Backend revision and collection are explicit.
+    bands_or_variables: Collection bands become dataset variables.
+    scale_and_offset: Dataset-specific and not guaranteed by readback.
+    qa_and_mask: Dataset-specific and not guaranteed by readback.
+    grid_projection_resampling: CRS, transform, shape, orientation, and source-grid helpers are explicit.
+    temporal: Collection filtering remains caller-controlled.
+    access_license_asset_stability: Apache-2.0 code; explicitly not an official Google product.
+    private_dependencies: Cloud project and optional user data remain runtime inputs.
+  important_findings: [explicit output grid, bounded parallelism, server-side preprocessing first]
+  general_findings: [lazy Xarray interoperability]
+  decision: {state: reviewed_pattern_source, promoted_to: [xee_lazy_readback_pattern]}
+  claim_boundary: Successful lazy opening is not dataset or comparison validation.
+
+- full_name: r-spatial/rgee
+  in_discovery_inventory: true
+  reviewed_ref: 73292255d92557a8504c6f2bb9bf775393ad620b
+  checked_surfaces:
+  - {path: README.md, blob_sha: 8ddc7c4461aac6da4ca410d9f3515ad05bebcca4, purpose: cross-language environment and project requirements}
+  - {path: R/ee_Initialize.R, blob_sha: 81c5005a0a694f5eec75f292c1a947434494e5a9, purpose: account, project, credentials, Drive, and GCS context}
+  - {path: LICENSE.md, blob_sha: 41790e37a0bd043759819f60034f1ca15731a1e5, purpose: Apache-2.0 license}
+  paper: {status: verified_primary, url: 'https://doi.org/10.21105/joss.02272'}
+  data_contract:
+    identity_and_revision: R and embedded Python environment revisions are required.
+    bands_or_variables: not_defined_by_binding
+    scale_and_offset: not_defined_by_binding
+    qa_and_mask: not_defined_by_binding
+    grid_projection_resampling: I/O helpers exist but no generic rule is imported.
+    temporal: not_applicable
+    access_license_asset_stability: Apache-2.0 binding; registered Cloud project and scoped credentials are required.
+    private_dependencies: Credential stores and account identities remain deliberately unknown.
+  important_findings: [cross-language environment and project context are part of reproducibility]
+  general_findings: [R spatial ecosystem integration]
+  decision: {state: reviewed_no_new_promotion, promoted_to: [], reason: Python-oriented public mainline already records project and environment context; R-specific mechanisms remain general knowledge}
+  claim_boundary: Binding availability does not define dataset or API facts.
+
+- full_name: SatelliteShorelines/SDS_Benchmark
+  in_discovery_inventory: false
+  reviewed_ref: c0747c52b310433411fc4ab96822ee67441a8d2e
+  checked_surfaces:
+  - {path: README.md, blob_sha: da82a17a71e789791cda69354d999d92a77a27cb, purpose: common inputs, reference sites, schema, and corrections}
+  - {path: utils.py, blob_sha: b4ff52b94d61415326c5d5823b471d2ffd108565, purpose: time matching, minimum sample gate, and metrics}
+  - {path: LICENSE, blob_sha: f288702d2fa16d3cdf0035b15a9fcbc552cd88e7, purpose: GPL-3.0 license}
+  paper: {status: multiple_reference_dataset_papers_verified_as_links_only, url: null}
+  data_contract:
+    identity_and_revision: Benchmark revision and four reference-site sources are explicit.
+    bands_or_variables: Submitted shoreline time series and optional sensor labels are explicit.
+    scale_and_offset: Distance units and datum offsets are explicit benchmark inputs.
+    qa_and_mask: Missing pairs and minimum sample count are handled in comparison.
+    grid_projection_resampling: Site EPSG and vertical datum context are explicit.
+    temporal: UTC dates, matching direction, tolerance, and interpolation rules are explicit.
+    access_license_asset_stability: GPL-3.0 code; reference datasets retain their own public terms.
+    private_dependencies: Public inputs only in checked scope.
+  important_findings: [common inputs, reference provenance, datum, matching tolerance, sample gate, per-group metrics]
+  general_findings: [pull-request submission structure]
+  decision: {state: reviewed_pattern_source, promoted_to: [benchmark_dataset_protocol_contract]}
+  claim_boundary: Local metric names cannot be compared without reproducing the benchmark protocol.
+
+- full_name: google/earthengine-catalog
+  in_discovery_inventory: false
+  reviewed_ref: f5c5eade6cb360654384053d5a1c2419f33fb01c
+  checked_surfaces:
+  - {path: README.md, blob_sha: c3bf104c8ba59630c26d4dbdbbd354f31519a2a0, purpose: official catalog and non-commercial boundary}
+  - {path: docs/adding_datasets.md, blob_sha: 775ead4b54ceb3a8b2f03407716c92cbd49646d9, purpose: license, status, bands, time, version, and pyramiding}
+  - {path: LICENSE, blob_sha: d645695673349e3947e8e5ae42332d0ac3164cd7, purpose: Apache-2.0 repository license}
+  paper: {status: not_applicable, url: null}
+  data_contract:
+    identity_and_revision: Catalog source revision and dataset version links are explicit.
+    bands_or_variables: Collections must have homogeneous human-readable band signatures.
+    scale_and_offset: Dataset descriptions must document semantics; ingestion normalization is separate.
+    qa_and_mask: Classification and bitmask semantics affect pyramiding.
+    grid_projection_resampling: Ingestion preparation and preview are reviewed separately.
+    temporal: UTC start and end times are required.
+    access_license_asset_stability: Explicit terms links, beta activation state, and live page review are required.
+    private_dependencies: Mirrored source assets may exist, but no identifiers are imported.
+  important_findings: [metadata merge is not activation, classification uses mode pyramiding, version deprecation and terms are mandatory]
+  general_findings: [Jsonnet reduces repeated catalog metadata]
+  decision: {state: reviewed_pattern_source, promoted_to: [catalog_publication_semantics_contract, data_usage_promotion_contract]}
+  claim_boundary: Official repository metadata at a checked revision still requires live catalog confirmation for a selected dataset.

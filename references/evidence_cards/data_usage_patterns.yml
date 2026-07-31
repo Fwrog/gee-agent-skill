@@ -1,0 +1,208 @@
+cards:
+- card_id: data_usage_promotion_contract
+  title: Data-usage contract before knowledge promotion
+  source_id: google-earth-engine-data-catalog
+  source_url: https://developers.google.com/earth-engine/datasets
+  source_type: official_data_catalog
+  trust_tier: A
+  allowed_use: summary_only
+  topics:
+  - data_contract
+  - dataset_review
+  - knowledge_promotion
+  extracted_facts:
+  - Official Earth Engine catalog entries are the primary source for current public dataset IDs, bands, scale factors, QA fields, availability, and provider notes.
+  extracted_patterns:
+  - Before promoting a data-using pattern, record dataset identity and version, bands or variables, scaling, QA or masking, spatial grid and resampling, temporal coverage, access and license, asset stability, and private dependencies.
+  - Keep unknown fields explicit and block correctness claims that depend on them.
+  limitations:
+  - A generic contract does not replace reading the specific dataset page and provider terms.
+  - Community or private assets need separate authority, availability, and semantic review.
+  claim_boundaries:
+  - Metadata-inferred dataset signals are discovery hints only and cannot authorize execution or scientific interpretation.
+  applicable_workflows:
+  - corpus_promotion
+  - recipe_distillation
+  - dataset_selection
+  applicable_datasets: []
+  applicable_operators:
+  - ImageCollection
+  - Image
+  known_failure_modes:
+  - incomplete_data_contract
+  - inferred_dataset_fact
+  validation_implications:
+  - Treat missing version, scaling, QA, grid, temporal, access, or private-dependency fields as important omissions when they affect correctness or reproducibility.
+  planner_hints:
+  - Retrieve the exact official dataset card before selecting bands, scale, QA, projection, or temporal coverage.
+  validator_hints:
+  - Do not promote metadata-only repository tags into dataset facts.
+  citation: Google Earth Engine Data Catalog, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - data usage contract
+  - dataset version bands scale QA grid temporal access license
+  - knowledge promotion dataset review
+  aliases:
+  - data contract checklist
+  negative_queries:
+  - infer dataset semantics from repository topic
+
+- card_id: spectral_index_record_contract
+  title: Reference-backed spectral-index record contract
+  source_id: awesome-spectral-indices-repo
+  source_url: https://github.com/awesome-spectral-indices/awesome-spectral-indices
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - spectral_indices
+  - formula_provenance
+  - platform_mapping
+  - scientific_validation
+  extracted_facts: []
+  extracted_patterns:
+  - Store an index short name, formula, required band roles, supported platform families, original reference, application domain, and catalogue version as separate fields.
+  - Require scientific provenance and schema validation before accepting a new formula.
+  limitations:
+  - Platform support does not define Earth Engine dataset IDs, reflectance scaling, QA masks, bandpass equivalence, or application validity.
+  - A DOI, generated formula, or software implementation is not scientific validation by itself.
+  claim_boundaries:
+  - Official sensor and Earth Engine catalog sources remain authoritative for data preprocessing and band identifiers.
+  applicable_workflows:
+  - spectral_index_planning
+  - knowledge_card_authoring
+  applicable_datasets: []
+  applicable_operators:
+  - normalizedDifference
+  - expression
+  known_failure_modes:
+  - formula_without_original_reference
+  - platform_label_used_as_preprocessing_contract
+  validation_implications:
+  - Reject index definitions that omit required band roles or original provenance.
+  planner_hints:
+  - Resolve abstract band roles to the selected sensor only after checking its official band and preprocessing documentation.
+  validator_hints:
+  - Separate formula correctness from data scaling, masking, bandpass, and domain validity.
+  citation: Awesome Spectral Indices repository and MIT license, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - spectral index formula bands platforms reference domain
+  - scientific validation of spectral index
+  aliases:
+  - ASI record schema
+  negative_queries:
+  - arbitrary generated spectral index
+
+- card_id: community_dataset_asset_boundary
+  title: Community dataset catalog authority boundary
+  source_id: gee-community-datasets-repo
+  source_url: https://github.com/samapriya/awesome-gee-community-datasets
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - community_assets
+  - data_catalog
+  - license
+  - asset_stability
+  extracted_facts: []
+  extracted_patterns:
+  - Treat a community catalog as a discovery surface and review each dataset's provider, license, asset ID, version, schema, temporal coverage, and availability separately.
+  limitations:
+  - The repository license does not replace each dataset's provider license or usage terms.
+  - A public community asset is not an official Earth Engine dataset and may change or disappear independently.
+  claim_boundaries:
+  - Community catalog presence cannot establish current availability, scientific fitness, or official support.
+  applicable_workflows:
+  - community_dataset_discovery
+  - dataset_ingestion_review
+  applicable_datasets: []
+  applicable_operators:
+  - ImageCollection
+  - FeatureCollection
+  known_failure_modes:
+  - repository_license_applied_to_dataset
+  - stale_community_asset
+  validation_implications:
+  - Require a per-dataset access, license, schema, and availability record before planning with a community asset.
+  planner_hints:
+  - Keep community candidates out of selected datasets until the exact asset and semantics are reviewed.
+  validator_hints:
+  - Reject claims that a community asset is official merely because it is public in Earth Engine.
+  citation: GEE Community Datasets repository and CC-BY-4.0 license, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - community Earth Engine asset authority boundary
+  - per-dataset license availability schema
+  aliases:
+  - community catalog review
+  negative_queries:
+  - official catalog authority
+
+- card_id: paper_linked_data_workflow_contract
+  title: Paper-linked data workflow reproducibility contract
+  source_id: coastsat-paper
+  source_url: https://doi.org/10.1016/j.envsoft.2019.104528
+  source_type: journal_paper
+  trust_tier: B
+  allowed_use: summary_only
+  topics:
+  - paper_linked_repository
+  - acquisition_metadata
+  - projection
+  - quality_control
+  extracted_facts:
+  - The paper links a public GEE-enabled repository and describes public Landsat and Sentinel-2 acquisition plus preprocessing and downstream quality control.
+  extracted_patterns:
+  - A paper-linked workflow review should record AOI and time bounds, sensor families, acquisition metadata, output projection, quality-control decisions, domain scope, and the exact repository revision.
+  - Separate data acquisition evidence from downstream algorithm validation and reported domain accuracy.
+  limitations:
+  - The domain method and reported performance were not reproduced in this repository.
+  - Project-specific thresholds, sites, and code are not imported.
+  claim_boundaries:
+  - Paper and repository linkage supports reproducibility structure only, not transfer of accuracy claims to other domains.
+  applicable_workflows:
+  - paper_linked_repository_review
+  - data_acquisition_planning
+  applicable_datasets:
+  - Landsat
+  - Sentinel-2
+  applicable_operators:
+  - filterDate
+  - filterBounds
+  known_failure_modes:
+  - paper_link_without_data_contract
+  - acquisition_success_used_as_algorithm_validation
+  validation_implications:
+  - Require projection and quality-control fields before promoting a paper-linked acquisition workflow.
+  planner_hints:
+  - Record the repository revision and distinguish public acquisition inputs from local or domain-specific downstream inputs.
+  validator_hints:
+  - Block transfer of external performance values unless the original protocol and data are reproduced.
+  citation: CoastSat, Environmental Modelling and Software, DOI 10.1016/j.envsoft.2019.104528, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - paper linked data workflow contract
+  - acquisition metadata projection quality control repository revision
+  aliases:
+  - reproducible paper repository review
+  negative_queries:
+  - transfer external accuracy

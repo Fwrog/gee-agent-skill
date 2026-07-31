@@ -1,0 +1,549 @@
+cards:
+- card_id: code_editor_wrapper_equivalence_boundary
+  title: Code Editor wrapper equivalence and authorization boundary
+  source_id: gee-community-eetasks
+  source_url: https://github.com/gee-community/eetasks
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - runtime_wrapper
+  - code_editor
+  - export_authorization
+  - unsupported_features
+  extracted_facts: []
+  extracted_patterns:
+  - A script that runs in the Earth Engine Code Editor is not automatically equivalent in a third-party runner; record the supported print, Export, Map, Chart, and UI surfaces.
+  - Require explicit export destinations and parameters because a wrapper may auto-submit tasks that the Code Editor would leave awaiting user action.
+  limitations:
+  - The reviewed behavior belongs to one VS Code extension revision and is not a canonical Earth Engine runtime contract.
+  - Unsupported commands and asynchronous print ordering can vary by wrapper version.
+  claim_boundaries:
+  - Wrapper compatibility cannot authorize live execution or prove semantic equivalence.
+  applicable_workflows:
+  - script_portability_review
+  - live_export
+  - runtime_selection
+  applicable_datasets: []
+  applicable_operators:
+  - Export
+  - Map
+  - print
+  known_failure_modes:
+  - code_editor_script_assumed_portable
+  - silent_unsupported_ui
+  - automatic_export_submission
+  validation_implications:
+  - Inventory supported globals and require explicit live confirmation before running a script through a non-Code-Editor wrapper.
+  planner_hints:
+  - Preserve the target runtime as part of the plan and treat runtime changes as behavior changes.
+  validator_hints:
+  - Reject claims of equivalence when unsupported commands are silently ignored or export behavior differs.
+  citation: gee-community/eetasks README and runGEEscripts guide at commit a800bc2ed0b3cf093e13c642587d1837e8e8dcb1.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Code Editor wrapper equivalence
+  - automatic export submission
+  - unsupported Map UI commands
+  aliases:
+  - runtime wrapper boundary
+  negative_queries:
+  - runs in Code Editor therefore portable
+
+- card_id: landtrendr_temporal_segmentation_contract
+  title: LandTrendr temporal-segmentation input contract
+  source_id: landtrendr-gee-paper
+  source_url: https://doi.org/10.3390/rs10050691
+  source_type: journal_paper
+  trust_tier: B
+  allowed_use: summary_only
+  topics:
+  - temporal_segmentation
+  - landsat
+  - sensor_harmonization
+  - missing_data
+  extracted_facts:
+  - The published implementation expects one spectral value per year after geometric, cloud-shadow, and reflectance preprocessing.
+  - The linked API constructs annual medoid composites, harmonizes OLI inputs to TM-equivalent bands, and orients the segmentation index so vegetation loss has positive delta.
+  extracted_patterns:
+  - Persist seasonal bounds, valid observation counts, sensor harmonization, annual compositing, missing-year handling, segmentation-index direction, fitted-band direction, and algorithm parameters.
+  limitations:
+  - The original study compared LT-GEE with LT-IDL at six United States study areas; that validation was not reproduced here.
+  - Parameter defaults and vegetation-loss orientation are not universal change-detection truth.
+  claim_boundaries:
+  - A segmented spectral trajectory is not an independently validated disturbance label or causal attribution.
+  applicable_workflows:
+  - temporal_segmentation
+  - landsat_change_detection
+  applicable_datasets:
+  - Landsat
+  applicable_operators:
+  - TemporalSegmentation.LandTrendr
+  - ImageCollection
+  known_failure_modes:
+  - mixed_sensor_unharmonized_series
+  - index_direction_inversion
+  - missing_year_hidden
+  - clear_observation_count_omitted
+  validation_implications:
+  - Require one-value-per-year provenance and an explicit sign convention before interpreting segment magnitude or direction.
+  planner_hints:
+  - Add clear-pixel count and missing-year diagnostics alongside the segmented output.
+  validator_hints:
+  - Reject disturbance claims that omit input harmonization, annual support, or independent reference evidence.
+  citation: Kennedy et al. 2018, Remote Sensing 10, 691; reviewed with eMapR/LT-GEE commit c17bacdb76d0cf1b942300f6f9ddfe368b41eed0.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - one value per year LandTrendr
+  - segmentation index orientation
+  - Landsat sensor harmonization
+  aliases:
+  - LT-GEE input contract
+  negative_queries:
+  - LandTrendr output is ground truth
+
+- card_id: third_party_preprocessing_wrapper_boundary
+  title: Third-party preprocessing wrapper precondition boundary
+  source_id: eemont-repo
+  source_url: https://github.com/davemlz/eemont
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - preprocessing
+  - spectral_indices
+  - cloud_mask
+  - wrapper_defaults
+  extracted_facts: []
+  extracted_patterns:
+  - Record a wrapper method, package revision, dataset identity, input value range, method parameters, and output-band policy as separate fields.
+  - Confirm whether cloud masking is valid for the selected product and whether spectral-index inputs have been scaled to the required reflectance range.
+  limitations:
+  - Convenience methods delegate to package-specific metadata and algorithms that may change independently of Earth Engine.
+  - A short method chain can hide sensor-specific thresholds, ignored parameters, dropped bands, and catalogue-version choices.
+  claim_boundaries:
+  - Wrapper success does not establish correct preprocessing, current dataset semantics, or scientific validity.
+  applicable_workflows:
+  - optical_preprocessing
+  - spectral_index_planning
+  applicable_datasets: []
+  applicable_operators:
+  - maskClouds
+  - scaleAndOffset
+  - spectralIndices
+  known_failure_modes:
+  - unscaled_index_input
+  - cloud_mask_product_mismatch
+  - wrapper_default_unreviewed
+  validation_implications:
+  - Expand every third-party preprocessing call into reviewable input preconditions and output effects before promotion.
+  planner_hints:
+  - Pin the package revision and keep official dataset metadata authoritative.
+  validator_hints:
+  - Reject opaque wrapper use when scaling, QA, thresholds, or band retention are not inspectable.
+  citation: davemlz/eemont README, LICENSE, and ImageCollection method documentation at commit c4ac0d162e8981f4c39c65a9f817a3e52ef306f4.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - wrapper preprocessing preconditions
+  - scaled reflectance before spectral indices
+  aliases:
+  - eemont boundary
+  negative_queries:
+  - short method chain proves correctness
+
+- card_id: data_cube_grid_materialization_contract
+  title: Data-cube grid and materialization contract
+  source_id: cubo-repo
+  source_url: https://github.com/ESDS-Leipzig/cubo
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - data_cube
+  - xarray
+  - grid
+  - machine_learning_data
+  extracted_facts: []
+  extracted_patterns:
+  - Persist collection and revision, selected bands, date bounds, center or AOI, CRS, resolution, edge size and units, rounded output shape, and retrieval backend for every materialized cube.
+  - Treat reprojection, shape construction, scaling, masking, temporal aggregation, and analysis-readiness as separate decisions.
+  limitations:
+  - The reviewed implementation can select and regrid data without applying dataset-specific QA, scaling, or compositing.
+  - Requested physical edge size can be rounded when converted to pixels at the selected resolution.
+  claim_boundaries:
+  - A correctly shaped Xarray object is not automatically analysis-ready or suitable training data.
+  applicable_workflows:
+  - data_cube_materialization
+  - machine_learning_dataset_generation
+  - local_array_analysis
+  applicable_datasets: []
+  applicable_operators:
+  - xarray.open_dataset
+  - ImageCollection.select
+  known_failure_modes:
+  - array_shape_used_as_quality_evidence
+  - implicit_grid_rounding
+  - qa_scaling_omitted
+  validation_implications:
+  - Compare requested and realized grid metadata and require a separate dataset-specific preprocessing record.
+  planner_hints:
+  - Store the realized EPSG, resolution, dimensions, spatial bounds, bands, and time coverage with the cube.
+  validator_hints:
+  - Reject analysis-ready wording when QA, scaling, temporal sampling, or nodata semantics are unknown.
+  citation: ESDS-Leipzig/cubo README and implementation at commit 1bf975e5d928b42db1a6fd742a4770c9ea3f0631.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - realized cube grid
+  - shaped array not analysis ready
+  aliases:
+  - cubo materialization contract
+  negative_queries:
+  - xarray cube guarantees preprocessing
+
+- card_id: benchmark_dataset_protocol_contract
+  title: Reference-dataset benchmark protocol contract
+  source_id: sds-benchmark-repo
+  source_url: https://github.com/SatelliteShorelines/SDS_Benchmark
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - benchmark
+  - reference_data
+  - temporal_matching
+  - metrics
+  extracted_facts: []
+  extracted_patterns:
+  - Freeze reference-dataset sources, site or group identifiers, coordinate systems, vertical datums, shared ancillary inputs, submission schema, matching direction and tolerance, exclusions, minimum paired-sample count, and metric definitions.
+  - Keep raw and corrected outputs separate and report per-group sample counts with aggregate metrics.
+  limitations:
+  - The reviewed benchmark is shoreline-specific and its datasets, thresholds, and results were not reproduced here.
+  - Public data availability does not make every reference source interchangeable or redistribution-compatible.
+  claim_boundaries:
+  - Borrowing a metric name or repository structure does not make local scores comparable with the external benchmark.
+  applicable_workflows:
+  - benchmark_design
+  - reference_data_validation
+  - product_intercomparison
+  applicable_datasets: []
+  applicable_operators:
+  - temporal_matching
+  - rmse
+  - bias
+  known_failure_modes:
+  - unmatched_reference_protocol
+  - hidden_datum_difference
+  - aggregate_metric_without_sample_gate
+  validation_implications:
+  - Fail comparability claims when the reference version, matching protocol, exclusions, group grain, or metric calculation differs.
+  planner_hints:
+  - Write the benchmark protocol before computing scores and preserve raw paired observations.
+  validator_hints:
+  - Require sample counts and reference provenance beside RMSE, bias, correlation, or goodness-of-fit values.
+  citation: SatelliteShorelines/SDS_Benchmark README and comparison utilities at commit c0747c52b310433411fc4ab96822ee67441a8d2e.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - benchmark reference version matching tolerance sample gate
+  - common inputs and submission schema
+  aliases:
+  - benchmark data contract
+  negative_queries:
+  - same metric name means comparable score
+
+- card_id: catalog_publication_semantics_contract
+  title: Official catalog publication semantics contract
+  source_id: earthengine-catalog-repo
+  source_url: https://github.com/google/earthengine-catalog
+  source_type: official_github_repo
+  trust_tier: A
+  allowed_use: distilled_patterns
+  topics:
+  - data_catalog
+  - dataset_versioning
+  - license
+  - pyramiding_policy
+  extracted_facts:
+  - The official catalog workflow requires explicit terms-of-use links, beta status before activation, UTC time metadata, homogeneous band signatures, and version/deprecation links.
+  - Classification and bitmask bands should use mode pyramiding rather than mean during ingestion.
+  extracted_patterns:
+  - Keep repository acceptance, catalog activation, live asset availability, and rendered dataset-page review as separate states.
+  - Preserve continuous and categorical semantics through band separation, data types, nodata, and pyramiding policy.
+  limitations:
+  - Publication guidance does not establish that a specific dataset is currently active or scientifically suitable.
+  - User-uploaded and community assets follow different authority and stability paths.
+  claim_boundaries:
+  - A merged metadata contribution is not evidence that a dataset is activated, accessible, or fit for a task.
+  applicable_workflows:
+  - dataset_publication
+  - asset_ingestion_review
+  - catalog_refresh
+  applicable_datasets: []
+  applicable_operators:
+  - asset_ingestion
+  - pyramiding_policy
+  known_failure_modes:
+  - categorical_mean_pyramiding
+  - merged_but_not_active
+  - repository_license_substituted_for_data_terms
+  validation_implications:
+  - Require terms, live catalog status, version links, UTC coverage, homogeneous bands, and semantic pyramiding before accepting a public dataset card.
+  planner_hints:
+  - Read the rendered live catalog entry after repository review and before runtime selection.
+  validator_hints:
+  - Reject active-dataset claims based only on a repository file or pull request.
+  citation: google/earthengine-catalog README and dataset-addition guide at commit f5c5eade6cb360654384053d5a1c2419f33fb01c.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - catalog activation versus metadata merge
+  - classification pyramiding mode
+  - dataset version deprecation links
+  aliases:
+  - official catalog publication contract
+  negative_queries:
+  - repository entry proves live dataset
+
+- card_id: sentinel1_ard_processing_contract
+  title: Application-dependent Sentinel-1 ARD processing contract
+  source_id: sentinel1-ard-paper
+  source_url: https://doi.org/10.3390/rs13101954
+  source_type: journal_paper
+  trust_tier: B
+  allowed_use: summary_only
+  topics:
+  - sentinel1
+  - sar
+  - analysis_ready_data
+  - terrain_normalization
+  extracted_facts:
+  - The reviewed framework makes additional border-noise correction, speckle filtering, and radiometric terrain normalization optional and configurable.
+  - Its selection and output contract distinguishes instrument mode, polarization, orbit, linear versus decibel representation, DEM, terrain model, and layover-shadow handling.
+  extracted_patterns:
+  - Record the platform-provided preprocessing separately from application-specific additional processing.
+  - Keep polarization, orbit, incidence geometry, DEM coverage and resolution, speckle framework, terrain model, layover-shadow mask, and output units visible.
+  limitations:
+  - Analysis-ready SAR has no single application-independent definition.
+  - Terrain normalization may be inappropriate or unsupported where the DEM or application assumptions do not hold.
+  claim_boundaries:
+  - A processed backscatter collection is not a validated flood, disturbance, or object-detection product.
+  applicable_workflows:
+  - sentinel1_preprocessing
+  - flood_mapping
+  - sar_change_detection
+  applicable_datasets:
+  - COPERNICUS/S1_GRD_FLOAT
+  applicable_operators:
+  - ImageCollection.filter
+  - terrain_normalization
+  - speckle_filter
+  known_failure_modes:
+  - db_linear_confusion
+  - mixed_orbit_comparison
+  - dem_scope_mismatch
+  - universal_ard_recipe_assumption
+  validation_implications:
+  - Require output units and every enabled additional processing step in the trace, then validate the choices for the application and terrain.
+  planner_hints:
+  - Start from the official current Sentinel-1 catalog entry and add only justified application-specific processing.
+  validator_hints:
+  - Reject universal ARD wording and any downstream thematic claim without independent reference evidence.
+  citation: Mullissa et al. 2021, Remote Sensing 13, 1954; reviewed with adugnag/gee_s1_ard commit 39207cb4998c9c80c27af3d8a62debe7ab41e7c7.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Sentinel-1 application-dependent ARD
+  - linear dB orbit polarization terrain normalization
+  aliases:
+  - Sentinel-1 preprocessing contract
+  negative_queries:
+  - one universal SAR preprocessing recipe
+
+- card_id: geospatial_ml_dataset_generation_contract
+  title: Geospatial ML dataset generation and lineage contract
+  source_id: geeflow-repo
+  source_url: https://github.com/google-deepmind/geeflow
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - machine_learning_data
+  - dataset_lineage
+  - spatial_split
+  - multi_source_sampling
+  extracted_facts: []
+  extracted_patterns:
+  - Separate label configuration from source configuration and persist sample coordinates, image footprint, metadata keys, split assignment, source class and asset identity, bands, scale, time windows, aggregation, masks, data types, and output schema.
+  - Version label changes, source changes, processing changes, and split changes separately; preserve the resolved launch command and changelog.
+  limitations:
+  - A configuration-driven generator does not validate label quality, sampling representativeness, leakage control, dataset licensing, or model fitness.
+  - Multi-source tensors may intentionally differ in spatial, temporal, and spectral dimensions.
+  claim_boundaries:
+  - Successful generation is data-lineage evidence, not benchmark performance or scientific validity.
+  applicable_workflows:
+  - machine_learning_dataset_generation
+  - multi_source_sampling
+  - dataset_versioning
+  applicable_datasets: []
+  applicable_operators:
+  - ImageCollection
+  - FeatureCollection
+  - spatial_split
+  known_failure_modes:
+  - split_lineage_omitted
+  - source_revision_unpinned
+  - label_source_version_conflation
+  - generated_means_validated
+  validation_implications:
+  - Require explicit split grain and leakage checks in addition to config validation and generation success.
+  planner_hints:
+  - Store resolved labels, sources, split policy, revisions, and command beside the generated dataset manifest.
+  validator_hints:
+  - Reject performance or generalization claims based only on successful TFDS or sample generation.
+  citation: google-deepmind/geeflow README and config validation at commit a0ea107d65c9e1ddfce895ec5df5fd31bb33b916.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - labels sources split lineage
+  - geospatial dataset version bookkeeping
+  aliases:
+  - GeeFlow dataset contract
+  negative_queries:
+  - generated dataset proves model validity
+
+- card_id: asset_ingestion_semantics_contract
+  title: Resumable asset-ingestion semantics contract
+  source_id: geeup-repo
+  source_url: https://github.com/samapriya/geeup
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - asset_ingestion
+  - pyramiding
+  - nodata
+  - task_monitoring
+  extracted_facts: []
+  extracted_patterns:
+  - Before upload, persist source checksums, destination authority, metadata mapping, band semantics, dtype, nodata and mask policy, pyramiding policy, overwrite decision, task concurrency, and resume state.
+  - Separate dry-run validation, task submission, terminal task state, asset readback, and semantic QA.
+  limitations:
+  - Third-party upload defaults and concurrency limits do not override current Earth Engine quotas or data semantics.
+  - Overwrite, cancel, and delete operations are destructive and require explicit target confirmation.
+  claim_boundaries:
+  - An uploaded asset is not automatically normalized, licensed, analysis-ready, or scientifically validated.
+  applicable_workflows:
+  - private_raster_ingestion
+  - public_dataset_preparation
+  - batch_upload
+  applicable_datasets: []
+  applicable_operators:
+  - upload
+  - task_status
+  - asset_readback
+  known_failure_modes:
+  - wrong_pyramiding_policy
+  - nodata_mask_confusion
+  - submitted_means_ingested
+  - unconfirmed_overwrite
+  validation_implications:
+  - Require semantic readback checks after terminal completion and block destructive flags without explicit confirmation.
+  planner_hints:
+  - Default to dry-run and one bounded worker until source and destination semantics are reviewed.
+  validator_hints:
+  - Reject ingestion completion claims without terminal task and asset metadata or pixel readback.
+  citation: samapriya/geeup README and LICENSE at commit a947909358129b5ab598b50f883152c7939f68a0.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - ingestion nodata mask pyramiding overwrite
+  - dry run terminal task asset readback
+  aliases:
+  - geeup ingestion contract
+  negative_queries:
+  - uploaded therefore analysis ready
+
+- card_id: export_readback_array_contract
+  title: Export and array-readback metadata contract
+  source_id: geedim-repo
+  source_url: https://github.com/leftfield-geospatial/geedim
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - export
+  - readback
+  - nodata
+  - array_layout
+  extracted_facts: []
+  extracted_patterns:
+  - Persist CRS, transform or region, scale or shape, resampling, band order, dtype, nodata, mask representation, collection split layout, file tags, and realized array dimensions.
+  - Read exported metadata and a bounded pixel sample back before declaring the artifact usable.
+  limitations:
+  - A third-party exporter does not replace official export limits, dataset metadata, or scientific QA.
+  - Numeric arrays can lose semantic meaning when band, image, mask, and nodata layout are not retained.
+  claim_boundaries:
+  - Export success proves artifact creation only, not complete coverage, correct preprocessing, or valid interpretation.
+  applicable_workflows:
+  - image_export
+  - export_readback
+  - local_array_analysis
+  applicable_datasets: []
+  applicable_operators:
+  - Export.image
+  - toGeoTIFF
+  - toNumPy
+  known_failure_modes:
+  - nodata_value_collision
+  - band_axis_ambiguity
+  - requested_grid_not_realized
+  validation_implications:
+  - Compare persisted requested and realized metadata, then perform pixel and mask sanity checks.
+  planner_hints:
+  - Choose the output layout and nodata semantics before export rather than inferring them after readback.
+  validator_hints:
+  - Reject readback-based metrics when array axes, grid, band order, or masks are ambiguous.
+  citation: leftfield-geospatial/geedim README and API guide at commit 6f0ab8d3e136fe7d3338545fa0fa222b05b6b159.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - export grid nodata band layout readback
+  - requested versus realized metadata
+  aliases:
+  - GeoTIFF array readback contract
+  negative_queries:
+  - export success proves correctness

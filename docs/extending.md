@@ -40,12 +40,37 @@ python scripts/validate_kg.py --json
 
 Use `references/knowledge_base/core/`, `operators/`, `workflows/`, and `failure-cases/` for reusable GEE AI knowledge that is not tied to one dataset. Include source URLs, last-checked dates, operator chains, known failures, and recovery hints so retrieval traces remain auditable.
 
+## Review A User-Local Lesson
+
+Users may maintain a separate Obsidian or Markdown Skill with private evidence
+and personal rules. Do not copy that vault into this repository.
+
+1. Ask the user-owned Skill to export an approved public-safe manifest.
+2. Validate it without mutation:
+
+```bash
+gee-skill learning review-manifest <promotion-manifest.json> --json
+```
+
+3. Treat `candidate_review_ready` as queue admission only.
+4. Independently reproduce the failure and verify current platform or dataset
+   facts against official sources.
+5. Map each `<kind>:<portable-id>` target to a public artifact and implement the
+   named regression.
+6. Run the relevant tests and release gate.
+7. Merge only through normal maintainer review and a versioned release.
+
+See
+[user-local-learning-overlay.md](../references/knowledge_base/workflows/user-local-learning-overlay.md)
+and
+[`mistake-promotion-manifest-v0.1.schema.json`](../schemas/mistake-promotion-manifest-v0.1.schema.json).
+
 ## Add Corpus Sources
 
 1. Refresh broad candidates when needed:
 
 ```bash
-python scripts/discover_gee_repos.py --min-candidates 100 --max-candidates 125 --out references/corpus/github_gee_discovery_100.yml
+python scripts/discover_gee_repos.py --min-candidates 200 --max-candidates 200 --out references/corpus/github_gee_discovery_200.yml
 ```
 
 2. Promote only reviewed candidates into `references/corpus/github_gee_seed_repos.yml`.

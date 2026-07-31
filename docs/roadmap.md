@@ -10,7 +10,7 @@ This roadmap keeps the public project honest: finished evidence, pending live ch
 | Public demos v0.1/v0.2 | ✅ Golden | Preserve as regression examples. |
 | Public validation v0.3 | ✅ Golden | Preserve as portfolio-grade product-intercomparison evidence. |
 | Skill generation v0.4 | ✅ Baseline complete | Source registry, evidence cards, KG, hybrid retrieval, CLI, hints, and evals exist. |
-| KG-RAG hardening v0.4.1 | 🚧 Active | Strengthen source refresh, evidence quality, ranking, trace sidecars, evals, and release gate. |
+| KG-RAG hardening v0.4.3 | Release candidate | Preserve source precedence while expanding the quality-screened corpus and mistake-distillation loop. |
 | Knowledge loop | 🚧 Active | Promote only generic, source-backed, privacy-reviewed lessons. |
 | Packaging and contributor UX | 🚧 Active | Turn TODOs into small, labeled GitHub issues. |
 
@@ -75,8 +75,8 @@ These numbers come from Drive-read full-year CSV exports. They are product-inter
 ### 🧹 Release Hygiene
 
 - [x] Confirm README, README.zh-CN, capability matrix, validation docs, and output report all use the same v0.3 status label.
-- [ ] Run release checks: `python -m pytest -q`, `gee-skill smoke-test --json`, `gee-skill eval evals/benchmark_suite.yml --json`, and `git diff --check`.
-- [ ] Run privacy scan over public docs, examples, references, scripts, tests, and committed outputs.
+- [x] Run release checks: `python -m pytest -q`, `gee-skill smoke-test --json`, `gee-skill eval evals/benchmark_suite.yml --json`, and `git diff --check`.
+- [x] Run privacy scan over public docs, examples, references, scripts, tests, and committed outputs.
 - [ ] Ensure raw Drive exports and intermediate analysis files remain ignored.
 - [ ] Open or draft small issues for unfinished v0.4 items instead of burying them in prose.
 
@@ -89,9 +89,9 @@ These tasks are good candidates for a project board column named `Next`: scoped,
 - [x] Add a source registry, source policy, evidence cards, lightweight KG, hybrid retrieval, CLI commands, and KG-RAG eval fixtures.
 - [x] Add semantic validator hooks for MODIS scale factor, MODIS QA, HLS Fmask, reduceResolution/projection, direct fine/coarse comparison, claim boundaries, and Golden evidence checks.
 - [x] Add v0.4.1 source refresh status, evidence quality audit, weighted lexical ranking, richer hybrid bundles, validator fixtures, expanded evals, and release gate.
-- [ ] Add a generic `product_intercomparison` task type to the plan schema.
-- [ ] Add an HLS/MODIS NDVI product-intercomparison recipe card after the canonical v0.3 script has live evidence.
-- [ ] Teach the planner to generate scale-aware comparison plans with temporal windows and grid matching.
+- [x] Add a generic `product_intercomparison` task type to the plan schema.
+- [x] Add an HLS/MODIS NDVI product-intercomparison recipe card after the canonical v0.3 script has live evidence.
+- [x] Teach the planner to generate scale-aware comparison plans with temporal windows and grid matching.
 - [ ] Add an automated comparator that checks skill-generated workflows against canonical v0.3 expectations.
 - [ ] Add optional VIIRS VNP13A1 secondary comparison once the primary MODIS path is stable.
 
@@ -102,7 +102,14 @@ These tasks are good candidates for a project board column named `Next`: scoped,
 - [x] Add a rule card requiring explicit product scale factors for official vegetation-index products.
 - [x] Add a rule card requiring a claim boundary for every validation report.
 - [x] Add auditable `source_refresh_status` and review notes to the source registry.
+- [x] Expand the discovery queue to 200 quality-screened project and paper-hint records without promoting metadata into authority.
+- [x] Add a 17-case mistake lab covering data, community assets, paper workflows, retrieval precedence, domain relevance, grid/readback, task monitoring, benchmark comparability, nonempty evaluation, ML generation, ingestion semantics, temporal segmentation, and real-project privacy boundaries.
+- [x] Complete the controlled 2026-07-31 refresh for the official HLS, MOD13Q1, resolution, and projection sources used in product intercomparison.
+- [x] Deep-review 21 of 200 discovery records plus 3 anchors at pinned revisions; record 9 verified paper-repository pairs and explicit promotion/non-promotion decisions.
+- [x] Add a privacy-bounded user-local learning loop that routes important generic lessons into rules/cards and regressions.
+- [x] Add a regression for privacy scans encountering Git-listed paths already deleted from the worktree.
 - [ ] Refresh official dataset cards on a scheduled cadence and record `last_checked`.
+- [ ] Review the next bounded batch from the remaining 179 records and record repository revision, license, data dependency, paper linkage where applicable, and reproducibility scope.
 
 ### 🧰 Project Polish
 

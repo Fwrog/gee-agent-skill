@@ -1,0 +1,57 @@
+id: gee_harness_quick_reference_v0.1
+reference:
+  source_id: autogeeval-plus-paper
+  taxonomy: [unit, combination, theme]
+  includes_boundary_cases: true
+  execution_scope: offline harness regression
+  comparable_to_external_scores: false
+  claim_boundary: This suite adapts the evaluation structure only; it does not reproduce AutoGEEval++ cases, live execution protocol, or leaderboard scores.
+tasks:
+  - id: unit_retrieval_modis_scale
+    level: unit
+    kind: retrieval
+    query: MODIS NDVI scale factor SummaryQA
+    top_k: 5
+    expected_source_contains: modis
+  - id: unit_boundary_missing_aoi
+    level: unit
+    boundary: true
+    kind: plan_from_text
+    request: Compute NDWI in March 2024 and export GeoTIFF.
+    expected_status: ambiguous
+    expected_error_code: AMBIGUOUS_TASK
+    expected_missing_fields: [aoi]
+  - id: unit_boundary_unknown_dataset
+    level: unit
+    boundary: true
+    kind: plan_from_text
+    request: Compute NDVI for Hong Kong in 2024 using NASA/MADE_UP/DATASET and export CSV.
+    expected_status: ambiguous
+    expected_error_code: UNKNOWN_DATASET_ID
+  - id: combination_flood_plan
+    level: combination
+    kind: plan_from_text
+    request: Map Sentinel-1 flood extent for a supplied AOI before June 2024 and after July 2024 and export GeoTIFF.
+    expected_status: planned
+    expected_task_type: flood_mapping
+    expected_recipe: sentinel1-flood-before-after
+    expected_metric: flood_extent
+  - id: combination_monthly_render_validate
+    level: combination
+    kind: render_validate
+    template: hk_district_monthly_ndvi
+    context: evals/contexts/hk_2024_monthly_ndvi.json
+  - id: theme_landcover_ndvi_render_validate
+    level: theme
+    kind: render_validate
+    template: hk_january_2024_ndvi_by_landcover_csv
+    context: evals/contexts/hk_2024_01_ndvi_landcover_v02.json
+  - id: theme_product_intercomparison_plan
+    level: theme
+    kind: plan_from_text
+    request: Compare HLS and MODIS NDVI for a supplied AOI in 2024 and export CSV.
+    expected_status: planned
+    expected_task_type: product_intercomparison
+    expected_recipe: hls-modis-ndvi-product-intercomparison
+    expected_metric: NDVI_PRODUCT_INTERCOMPARISON
+    expected_template_ready: false

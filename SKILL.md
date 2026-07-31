@@ -1,6 +1,6 @@
 ---
 name: gee-agent-skill
-description: Plan, ground, render, validate, preflight, run, and audit reproducible Google Earth Engine Python workflows with source-backed recipes, export monitoring, and run traces. Use for GEE task planning, script generation, dataset or operator retrieval, private-raster handoffs, annual multi-source workflows, and evidence-bounded evaluation.
+description: Plan, ground, render, validate, preflight, run, and audit reproducible Google Earth Engine Python workflows with source-backed recipes, export monitoring, and run traces. Use for GEE task planning, script generation, dataset or operator retrieval, private-raster handoffs, annual multi-source workflows, knowledge-base distillation, and evidence-bounded evaluation.
 ---
 
 # GEE Agent Skill
@@ -34,7 +34,7 @@ Build reviewable Earth Engine workflows through the `gee-skill` CLI and the offi
    `gee-skill exports watch --project <project-id> --task-id <id> --json`.
 9. Inspect the persisted trace before reporting results:
    `gee-skill trace inspect <run_id> --json`.
-10. Use `gee-skill eval evals/benchmark_suite.yml --json` for offline regression evidence. Check [docs/capability_matrix.md](docs/capability_matrix.md) before assigning a readiness label.
+10. Run `gee-skill eval evals/benchmark_quick_reference.yml --json`, then `gee-skill eval evals/benchmark_suite.yml --json`. Check [docs/capability_matrix.md](docs/capability_matrix.md) before assigning a readiness label.
 
 ## Evidence And Claim Boundaries
 
@@ -42,7 +42,23 @@ Build reviewable Earth Engine workflows through the `gee-skill` CLI and the offi
 - Treat exports and model outputs as workflow artifacts, not scientific conclusions or ground truth.
 - Prefer official Earth Engine documentation and Data Catalog facts. Use papers and community sources only for scoped methods or patterns.
 - When promoting a reusable lesson, add a dataset, rule, failure, or workflow card with a source, `last_checked`, scope, limitations, and explicit non-claims.
+- Treat omitted private context as intentionally unknown. Do not infer, reconstruct, retrieve, or publish it from nearby files, issue history, or examples.
 - Keep real study identifiers, project and asset IDs, bucket and object names, task IDs, private source files, draft manuscripts, and unpublished results outside the public repository.
+
+## Official And User Learning Layers
+
+Keep the versioned repository knowledge base separate from user-owned Obsidian
+or Markdown learning. A user Skill may retain private evidence and personal
+rules; it may export only an explicitly approved, sanitized candidate manifest.
+
+Inspect the interface with `gee-skill learning contract --json` and review a
+candidate with
+`gee-skill learning review-manifest <promotion-manifest.json> --json`.
+Treat `candidate_review_ready` as a transport/privacy result only. Before an
+item enters this Skill, independently reproduce it, verify official facts, map
+it to a public target and regression, run the release gates, and obtain
+maintainer approval in a versioned release. Never read the raw user vault or
+overwrite the user's local Skill.
 
 ## Live And Private Data Safety
 
@@ -63,6 +79,6 @@ Persist each planned or executed run under `outputs/runs/<run_id>/`. The run dir
 ## Read On Demand
 
 - Setup and command details: [docs/how_to_start.md](docs/how_to_start.md), [docs/cli_reference.md](docs/cli_reference.md), and [docs/troubleshooting.md](docs/troubleshooting.md).
-- Recipes and readiness: [docs/recipes.md](docs/recipes.md), [docs/capability_matrix.md](docs/capability_matrix.md), and [docs/benchmark_protocol.md](docs/benchmark_protocol.md).
-- Evidence and extension: [docs/kg_rag_architecture.md](docs/kg_rag_architecture.md), [docs/source_policy.md](docs/source_policy.md), and [docs/extending.md](docs/extending.md).
+- Recipes and readiness: [docs/recipes.md](docs/recipes.md), [docs/capability_matrix.md](docs/capability_matrix.md), [docs/benchmark_protocol.md](docs/benchmark_protocol.md), and [docs/benchmark_reference.md](docs/benchmark_reference.md).
+- Evidence and extension: [docs/kg_rag_architecture.md](docs/kg_rag_architecture.md), [docs/source_policy.md](docs/source_policy.md), [references/knowledge_base/workflows/github-knowledge-distillation.md](references/knowledge_base/workflows/github-knowledge-distillation.md), [references/knowledge_base/workflows/user-local-learning-overlay.md](references/knowledge_base/workflows/user-local-learning-overlay.md), [references/knowledge_base/rules/data-usage-promotion-contract.md](references/knowledge_base/rules/data-usage-promotion-contract.md), and [docs/extending.md](docs/extending.md).
 - Public examples and validation limits: [docs/demo_gallery.md](docs/demo_gallery.md) and [docs/remote_sensing_validation.md](docs/remote_sensing_validation.md).

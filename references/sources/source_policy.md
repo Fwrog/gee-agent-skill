@@ -24,7 +24,7 @@ Official Tier A sources override all other sources for current dataset IDs, band
 
 A source can be `accepted` only when it has a stable ID, URL, source type, trust tier, allowed use, last checked date, clear include reason, low or mitigated private-content risk, and source-policy approval.
 
-## v0.4.1 Refresh Status
+## Refresh Status
 
 Every source has `source_refresh_status`:
 
@@ -33,4 +33,4 @@ Every source has `source_refresh_status`:
 - `unavailable`: URL or source family could not be verified; do not rely on it.
 - `candidate_unverified`: candidate source retained for metadata or research context only.
 
-Accepted Tier A sources should be `fresh` before they ground current dataset/API facts. Candidate papers and candidate repositories must not override official sources even if their URLs are reachable.
+Accepted Tier A sources should be `fresh` before they ground current dataset/API facts. Accepted Tier B methodology sources and Tier C implementation patterns remain subordinate to Tier A facts. Candidate papers and repositories must not influence runtime guidance until promoted through review. An adapted local benchmark must declare whether it reproduces the external cases and protocol; otherwise its scores are not comparable.

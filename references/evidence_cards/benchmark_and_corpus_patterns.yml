@@ -1,0 +1,219 @@
+cards:
+- card_id: gee_ops_operator_distillation_pattern
+  title: GEE operator knowledge distillation pattern
+  source_id: gee-ops-paper
+  source_url: https://doi.org/10.1080/10095020.2025.2505556
+  source_type: journal_paper
+  trust_tier: B
+  allowed_use: summary_only
+  topics:
+  - operator_knowledge
+  - corpus_distillation
+  - knowledge_graph
+  - retrieval
+  extracted_facts:
+  - GEE-OPs separates operator syntax, relationship frequency, frequent patterns, and relationship chains into distinct knowledge structures.
+  - The study derives operator knowledge from a large JavaScript corpus with syntax documentation, AST processing, and frequent-pattern mining.
+  extracted_patterns:
+  - Distill operator identity and signature separately from common neighbors, reusable chains, and workflow-level patterns.
+  - Treat corpus frequency as a retrieval signal, then confirm every blocking API or dataset fact against current official Earth Engine sources.
+  limitations:
+  - The reported corpus, extraction metrics, and RAG gains belong to the paper and were not reproduced in this repository.
+  - JavaScript operator patterns may not transfer directly to the Earth Engine Python API.
+  claim_boundaries:
+  - This card supports knowledge-base design only and cannot establish current API correctness or local model improvement.
+  applicable_workflows:
+  - recipe_distillation
+  - operator_retrieval
+  - knowledge_base_refresh
+  applicable_datasets: []
+  applicable_operators:
+  - abstract_syntax_tree
+  - frequent_pattern_mining
+  known_failure_modes:
+  - corpus_frequency_overpromotion
+  - javascript_python_surface_confusion
+  validation_implications:
+  - Require official API confirmation before a corpus-derived operator fact can block or authorize execution.
+  planner_hints:
+  - Retrieve operator syntax, required inputs, adjacent operators, and known workflow chains as separate evidence fields.
+  validator_hints:
+  - Reject corpus-only claims about signatures, dataset bands, scale factors, or execution success.
+  citation: GEE-OPs, Geo-spatial Information Science, DOI 10.1080/10095020.2025.2505556, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - GEE operator knowledge distillation
+  - operator syntax relationship frequency frequent pattern chain
+  - corpus distillation
+  aliases:
+  - GEE-OPs
+  - operator knowledge table
+  negative_queries:
+  - current Earth Engine API signature
+
+- card_id: autogeeval_plus_multilevel_benchmark_pattern
+  title: Multi-level GEE code benchmark pattern
+  source_id: autogeeval-plus-paper
+  source_url: https://doi.org/10.1080/20964471.2025.2581425
+  source_type: journal_paper
+  trust_tier: B
+  allowed_use: summary_only
+  topics:
+  - benchmark_design
+  - code_evaluation
+  - boundary_testing
+  - execution_validation
+  extracted_facts:
+  - AutoGEEval++ organizes 6,365 cases across 26 data types into unit, combination, and theme levels.
+  - Its unit layer includes general and boundary cases, while judging also records accuracy, resource use, runtime, and error types.
+  extracted_patterns:
+  - Separate exact operator behavior, multi-operator composition, and end-to-end thematic workflow evaluation.
+  - Pair happy-path cases with invalid parameters, empty inputs, missing context, and other explicit boundary conditions.
+  limitations:
+  - The external benchmark depends on its own cases, reference artifacts, execution environment, and judge implementation.
+  - The local quick suite is a structural adaptation and does not reproduce the external benchmark dataset or scores.
+  claim_boundaries:
+  - Never compare local pass rates with AutoGEEval++ results unless the same public suite and protocol are executed unchanged.
+  applicable_workflows:
+  - benchmark_design
+  - offline_evaluation
+  - release_gate
+  applicable_datasets: []
+  applicable_operators:
+  - unit_test
+  - combination_test
+  - theme_test
+  known_failure_modes:
+  - benchmark_score_overclaim
+  - syntax_only_evaluation
+  validation_implications:
+  - Report level, expected outcome, pass or fail, error category, and whether live Earth Engine execution occurred.
+  planner_hints:
+  - Assign every quick benchmark case a unit, combination, or theme level and mark boundary cases explicitly.
+  validator_hints:
+  - Keep local harness regression, mocked preflight, and live execution evidence as separate result classes.
+  citation: AutoGEEval++, DOI 10.1080/20964471.2025.2581425, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: high
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - unit combination theme GEE benchmark
+  - boundary execution error type evaluation
+  - AutoGEEval++ benchmark taxonomy
+  aliases:
+  - multi-level GEE benchmark
+  - AutoGEEval plus
+  negative_queries:
+  - comparable leaderboard score
+
+- card_id: xee_lazy_readback_pattern
+  title: Lazy grid-explicit Earth Engine readback pattern
+  source_id: google-xee-repo
+  source_url: https://github.com/google/Xee
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - xarray
+  - lazy_readback
+  - grid_contract
+  - local_analysis
+  extracted_facts: []
+  extracted_patterns:
+  - Open Earth Engine imagery for local array analysis only after declaring or extracting a reviewable grid, CRS, resolution, and dimension order.
+  - Keep heavy band math and filtering server-side before lazy pixel retrieval, and begin with bounded parallelism and AOI size.
+  limitations:
+  - Xee is explicitly described as not an official Google product and its API may change independently of Earth Engine.
+  - Lazy readback does not remove Earth Engine request, response-size, quota, or scientific validation constraints.
+  claim_boundaries:
+  - Use this card for readback architecture only; official sources govern Earth Engine endpoints, quotas, projections, and dataset semantics.
+  applicable_workflows:
+  - export_readback
+  - local_array_analysis
+  - product_intercomparison
+  applicable_datasets: []
+  applicable_operators:
+  - xarray.open_dataset
+  - extract_grid_params
+  known_failure_modes:
+  - implicit_output_grid
+  - unbounded_parallel_readback
+  validation_implications:
+  - Persist the requested grid and reject local comparisons whose arrays do not share an intentional coordinate contract.
+  planner_hints:
+  - Decide whether the task needs an export artifact or lazy readback, then record the grid and bounded execution policy.
+  validator_hints:
+  - Do not treat successful array opening as evidence of dataset accuracy, complete coverage, or cross-product comparability.
+  citation: google/Xee repository and performance guidance, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Xee lazy Earth Engine readback
+  - explicit output grid xarray
+  - bounded parallel pixel retrieval
+  aliases:
+  - Earth Engine xarray backend
+  negative_queries:
+  - official Earth Engine quota
+
+- card_id: eetasks_monitoring_pattern
+  title: Export submission and task monitoring separation
+  source_id: gee-community-eetasks
+  source_url: https://github.com/gee-community/eetasks
+  source_type: community_repo
+  trust_tier: C
+  allowed_use: distilled_patterns
+  topics:
+  - export_tasks
+  - monitoring
+  - account_project_context
+  - completion_evidence
+  extracted_facts: []
+  extracted_patterns:
+  - Treat task submission and task-state observation as separate operations with explicit account and project context.
+  - Refresh task state before reporting completion because a monitoring surface can show stale information.
+  limitations:
+  - The repository documents a VS Code extension, not the canonical task API for this Python harness.
+  - A visible task row is not evidence that an output exists or has passed readback QA.
+  claim_boundaries:
+  - Official task APIs and persisted traces remain authoritative; this card contributes workflow patterns only.
+  applicable_workflows:
+  - export_monitoring
+  - task_handoff
+  - release_evidence
+  applicable_datasets: []
+  applicable_operators:
+  - task_list
+  - task_status
+  known_failure_modes:
+  - submitted_means_completed
+  - stale_task_view
+  validation_implications:
+  - Require a terminal task state and output readback before claiming a completed export.
+  planner_hints:
+  - Record account and project context without credentials, then persist task identifiers only in private run traces.
+  validator_hints:
+  - Reject completion wording when the latest observed state is submitted, ready, running, unknown, or stale.
+  citation: gee-community/eetasks repository, checked 2026-07-31.
+  last_checked: '2026-07-31'
+  reviewer_status: accepted
+  confidence: medium
+  private_content_risk: low
+  source_refresh_status: fresh
+  canonical_terms:
+  - Earth Engine task monitoring
+  - submission versus completion
+  - refreshed terminal task state
+  aliases:
+  - eetasks monitoring
+  negative_queries:
+  - task submitted therefore complete

@@ -26,7 +26,8 @@ def test_recipe_registry_is_file_backed_yaml():
         "table-export-csv",
     }
     assert all("limitations" in item for item in recipes)
-    assert all(item["template"] for item in recipes)
+    plan_only = {item["recipe_id"] for item in recipes if item["template"] is None}
+    assert plan_only == {"hls-modis-ndvi-product-intercomparison"}
 
 
 def test_recipe_registry_cards_are_rag_visible_markdown():

@@ -65,6 +65,21 @@ gee-skill retrieve hybrid "Can I directly compare 30m HLS pixels with 250m MODIS
 
 The hybrid retrieval payload includes BM25 text evidence, evidence cards, graph nodes, graph edges, graph paths, required rules, failure cases, claim boundaries, source-tier counts, planner hints, validator hints, and compact prompt context.
 
+## Local Learning Bridge
+
+The public Skill and a user-owned Obsidian Skill remain separate. Inspect the
+handoff contract and review an explicitly exported public-safe candidate:
+
+```bash
+gee-skill learning contract --json
+gee-skill learning review-manifest examples/local_learning/promotion-manifest.example.json --json
+```
+
+The review is read-only. `candidate_review_ready` confirms the transport and
+privacy shape only; official promotion still requires source review,
+reproduction, a mapped regression, maintainer approval, and a versioned
+release.
+
 ## Preflight And Live Run
 
 Live Earth Engine work requires a user-owned Google Cloud Project and explicit confirmation.

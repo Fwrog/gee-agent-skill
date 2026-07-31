@@ -129,6 +129,9 @@ def _run_semantic_fixture_suite(path: Path, suite: dict[str, Any]) -> dict[str, 
 
 def run_suite(path: Path) -> dict[str, Any]:
     suite = yaml.safe_load(path.read_text(encoding="utf-8"))
+    cases = suite.get("cases") if isinstance(suite, dict) else None
+    if not isinstance(cases, list) or not cases:
+        raise ValueError(f"KG-RAG evaluation suite must define at least one case: {path}")
     schema = str(suite.get("schema_version", ""))
     if "planner-grounding" in schema:
         return _run_planner_grounding_suite(path, suite)

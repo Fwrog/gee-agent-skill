@@ -1,0 +1,33 @@
+{
+  "schema_version": "mistake-promotion-manifest/v0.1",
+  "created_at": "2026-07-31T00:00:00+00:00",
+  "item_count": 1,
+  "items": [
+    {
+      "id": "mistake-20260731T000000Z",
+      "title": "Target grid was omitted in a product comparison",
+      "failure_class": "data_semantics",
+      "source_tier": "internal",
+      "public_boundary": "pattern_only",
+      "public_summary": "Product comparisons require an explicit reviewed target grid before metric computation.",
+      "missed_checks": [
+        "target_grid_contract"
+      ],
+      "distill_targets": [
+        "rule:product-comparison-target-grid"
+      ],
+      "regression_ids": [
+        "product-grid-01"
+      ],
+      "ignorance_boundary": {
+        "omitted_or_unverified": [
+          "project dataset identifiers",
+          "study area"
+        ],
+        "project_alias_excluded": true,
+        "raw_evidence_refs_excluded": true,
+        "note_body_excluded": true
+      }
+    }
+  ]
+}

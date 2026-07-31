@@ -149,11 +149,20 @@ def run_benchmark_suite(path: Path) -> dict[str, Any]:
     suite = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(suite, dict):
         raise ValueError(f"Benchmark suite must be a mapping: {path}")
+    tasks = suite.get("tasks")
+    if not isinstance(tasks, list) or not tasks:
+        if suite.get("cases"):
+            raise ValueError(
+                "Benchmark suite must define at least one task. "
+                "Run case-based KG-RAG suites with scripts/run_kg_rag_eval.py."
+            )
+        raise ValueError("Benchmark suite must define at least one task.")
     index = load_index(Path(suite.get("index", default_index_path())))
     templates_dir = Path(suite.get("templates_dir", default_templates_dir()))
     results = []
-    for task in suite.get("tasks", []):
+    for task in tasks:
         kind = task.get("kind")
+        level = str(task.get("level", "uncategorized"))
         status = "passed"
         details: dict[str, Any] = {}
         try:
@@ -306,16 +315,35 @@ def run_benchmark_suite(path: Path) -> dict[str, Any]:
         except Exception as exc:
             status = "failed"
             details["error"] = str(exc)
-        results.append({"id": task.get("id"), "kind": kind, "status": status, "details": details})
+        results.append(
+            {
+                "id": task.get("id"),
+                "kind": kind,
+                "level": level,
+                "boundary": bool(task.get("boundary", False)),
+                "status": status,
+                "details": details,
+            }
+        )
     failed = [item["id"] for item in results if item["status"] != "passed"]
+    levels = {
+        level: {
+            "count": sum(1 for item in results if item["level"] == level),
+            "passed": sum(1 for item in results if item["level"] == level and item["status"] == "passed"),
+        }
+        for level in sorted({item["level"] for item in results})
+    }
     return {
         "suite": suite.get("id", path.stem),
         "ok": all(item["status"] == "passed" for item in results),
+        "reference": suite.get("reference", {}),
         "summary": {
             "count": len(results),
             "passed": len(results) - len(failed),
             "failed": len(failed),
             "failures": failed,
+            "levels": levels,
+            "boundary_count": sum(1 for item in results if item["boundary"]),
         },
         "results": results,
     }

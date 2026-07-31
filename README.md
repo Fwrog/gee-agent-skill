@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fwrog/gee-agent-skill/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Release" src="https://img.shields.io/badge/release-v0.4.2-2563eb">
+  <img alt="Release" src="https://img.shields.io/badge/release-v0.4.3-2563eb">
   <img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-64748b"></a>
 </p>
@@ -63,6 +63,26 @@ gee-skill trace inspect <run_id> --json
 
 Planning, retrieval, rendering, validation, and offline evaluation do not require Earth Engine credentials. Live work uses the user's own Earth Engine account, Google Cloud Project, local authentication, quota, and export destination.
 
+## Official Knowledge + User Learning
+
+This release adds a two-layer learning architecture. The repository maintains a versioned, reviewed public knowledge base, while each user may maintain a separate Obsidian or Markdown Skill containing private evidence, personal rules, and project-specific mistakes.
+
+```mermaid
+flowchart LR
+    A["User-owned Obsidian Skill"] -->|"approved and sanitized candidate manifest"| B["gee-skill learning review-manifest"]
+    B -->|"source review + reproduction + regression + maintainer approval"| C["Versioned official knowledge base"]
+    C -.->|"optional manual adoption; no overwrite"| A
+```
+
+The bridge is explicit and one-way per review:
+
+```bash
+gee-skill learning contract --json
+gee-skill learning review-manifest <promotion-manifest.json> --json
+```
+
+A passing manifest review means only that the package satisfies the transport and privacy contract. It does not make a local lesson official. The public Skill never reads the raw vault, and official releases never overwrite user-owned notes or configuration. See the [user-local learning overlay](references/knowledge_base/workflows/user-local-learning-overlay.md) and the [promotion schema](schemas/mistake-promotion-manifest-v0.1.schema.json).
+
 ## Public Evidence
 
 | Capability | Public status | Evidence boundary |
@@ -95,6 +115,7 @@ See [Security](SECURITY.md), [tool permissions](docs/tool_permissions.md), and t
 - [Recipes](docs/recipes.md)
 - [Capability matrix](docs/capability_matrix.md)
 - [KG-RAG architecture](docs/kg_rag_architecture.md)
+- [User-local learning overlay](references/knowledge_base/workflows/user-local-learning-overlay.md)
 - [Benchmark protocol](docs/benchmark_protocol.md)
 - [Remote-sensing validation](docs/remote_sensing_validation.md)
 - [Troubleshooting](docs/troubleshooting.md)
@@ -104,7 +125,7 @@ Official Earth Engine documentation and Data Catalog pages remain canonical for 
 
 ## Release And Contribution
 
-Current release: [v0.4.2 notes](docs/releases/v0.4.2.md). Run the local release gates before publishing:
+Current release: [v0.4.3 notes](docs/releases/v0.4.3.md). Run the local release gates before publishing:
 
 ```bash
 python -m pytest

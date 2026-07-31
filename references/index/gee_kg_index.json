@@ -1,8 +1,8 @@
 {
   "schema_version": "gee-kg/v0.1",
   "metadata": {
-    "source_count": 33,
-    "evidence_card_count": 45,
+    "source_count": 55,
+    "evidence_card_count": 60,
     "seed_path": "references/graph/seed_graph.yml"
   },
   "nodes": [
@@ -76,6 +76,18 @@
       }
     },
     {
+      "id": "dataset:copernicus/s1_grd_float",
+      "type": "Dataset",
+      "title": "COPERNICUS/S1_GRD_FLOAT",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "COPERNICUS/S1_GRD_FLOAT"
+      }
+    },
+    {
       "id": "dataset:copernicus/s2_sr_harmonized",
       "type": "Dataset",
       "title": "COPERNICUS/S2_SR_HARMONIZED",
@@ -133,6 +145,18 @@
       ],
       "metadata": {
         "dataset_id": "JRC/GSW1_4/GlobalSurfaceWater"
+      }
+    },
+    {
+      "id": "dataset:landsat",
+      "type": "Dataset",
+      "title": "Landsat",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "Landsat"
       }
     },
     {
@@ -220,6 +244,18 @@
       }
     },
     {
+      "id": "dataset:sentinel-2",
+      "type": "Dataset",
+      "title": "Sentinel-2",
+      "description": "Dataset referenced by evidence cards.",
+      "tags": [
+        "dataset"
+      ],
+      "metadata": {
+        "dataset_id": "Sentinel-2"
+      }
+    },
+    {
       "id": "dataset:umd/hansen/global_forest_change_2024_v1_12",
       "type": "Dataset",
       "title": "UMD/hansen/global_forest_change_2024_v1_12",
@@ -229,6 +265,89 @@
       ],
       "metadata": {
         "dataset_id": "UMD/hansen/global_forest_change_2024_v1_12"
+      }
+    },
+    {
+      "id": "evidence:asset_ingestion_semantics_contract",
+      "type": "EvidenceCard",
+      "title": "Resumable asset-ingestion semantics contract",
+      "description": "",
+      "tags": [
+        "asset_ingestion",
+        "pyramiding",
+        "nodata",
+        "task_monitoring",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "asset_ingestion_semantics_contract",
+        "title": "Resumable asset-ingestion semantics contract",
+        "source_id": "geeup-repo",
+        "source_url": "https://github.com/samapriya/geeup",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "asset_ingestion",
+          "pyramiding",
+          "nodata",
+          "task_monitoring"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Before upload, persist source checksums, destination authority, metadata mapping, band semantics, dtype, nodata and mask policy, pyramiding policy, overwrite decision, task concurrency, and resume state.",
+          "Separate dry-run validation, task submission, terminal task state, asset readback, and semantic QA."
+        ],
+        "limitations": [
+          "Third-party upload defaults and concurrency limits do not override current Earth Engine quotas or data semantics.",
+          "Overwrite, cancel, and delete operations are destructive and require explicit target confirmation."
+        ],
+        "claim_boundaries": [
+          "An uploaded asset is not automatically normalized, licensed, analysis-ready, or scientifically validated."
+        ],
+        "applicable_workflows": [
+          "private_raster_ingestion",
+          "public_dataset_preparation",
+          "batch_upload"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "upload",
+          "task_status",
+          "asset_readback"
+        ],
+        "known_failure_modes": [
+          "wrong_pyramiding_policy",
+          "nodata_mask_confusion",
+          "submitted_means_ingested",
+          "unconfirmed_overwrite"
+        ],
+        "validation_implications": [
+          "Require semantic readback checks after terminal completion and block destructive flags without explicit confirmation."
+        ],
+        "planner_hints": [
+          "Default to dry-run and one bounded worker until source and destination semantics are reviewed."
+        ],
+        "validator_hints": [
+          "Reject ingestion completion claims without terminal task and asset metadata or pixel readback."
+        ],
+        "citation": "samapriya/geeup README and LICENSE at commit a947909358129b5ab598b50f883152c7939f68a0.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "ingestion nodata mask pyramiding overwrite",
+          "dry run terminal task asset readback"
+        ],
+        "aliases": [
+          "geeup ingestion contract"
+        ],
+        "negative_queries": [
+          "uploaded therefore analysis ready"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -294,65 +413,256 @@
       }
     },
     {
-      "id": "evidence:autogeeval_plus_benchmark",
+      "id": "evidence:autogeeval_plus_multilevel_benchmark_pattern",
       "type": "EvidenceCard",
-      "title": "AutoGEEval++ benchmark research context",
-      "description": "",
+      "title": "Multi-level GEE code benchmark pattern",
+      "description": "AutoGEEval++ organizes 6,365 cases across 26 data types into unit, combination, and theme levels. Its unit layer includes general and boundary cases, while judging also records accuracy, resource use, runtime, and error types.",
       "tags": [
-        "research_context",
-        "benchmark",
-        "evaluation",
-        "candidate",
+        "benchmark_design",
+        "code_evaluation",
+        "boundary_testing",
+        "execution_validation",
+        "accepted",
         "tier_b"
       ],
       "metadata": {
-        "card_id": "autogeeval_plus_benchmark",
-        "title": "AutoGEEval++ benchmark research context",
+        "card_id": "autogeeval_plus_multilevel_benchmark_pattern",
+        "title": "Multi-level GEE code benchmark pattern",
         "source_id": "autogeeval-plus-paper",
-        "source_url": "https://arxiv.org/abs/2506.10365",
-        "source_type": "arxiv_paper",
+        "source_url": "https://doi.org/10.1080/20964471.2025.2581425",
+        "source_type": "journal_paper",
         "trust_tier": "B",
-        "allowed_use": "metadata_only",
+        "allowed_use": "summary_only",
         "topics": [
-          "research_context",
+          "benchmark_design",
+          "code_evaluation",
+          "boundary_testing",
+          "execution_validation"
+        ],
+        "extracted_facts": [
+          "AutoGEEval++ organizes 6,365 cases across 26 data types into unit, combination, and theme levels.",
+          "Its unit layer includes general and boundary cases, while judging also records accuracy, resource use, runtime, and error types."
+        ],
+        "extracted_patterns": [
+          "Separate exact operator behavior, multi-operator composition, and end-to-end thematic workflow evaluation.",
+          "Pair happy-path cases with invalid parameters, empty inputs, missing context, and other explicit boundary conditions."
+        ],
+        "limitations": [
+          "The external benchmark depends on its own cases, reference artifacts, execution environment, and judge implementation.",
+          "The local quick suite is a structural adaptation and does not reproduce the external benchmark dataset or scores."
+        ],
+        "claim_boundaries": [
+          "Never compare local pass rates with AutoGEEval++ results unless the same public suite and protocol are executed unchanged."
+        ],
+        "applicable_workflows": [
+          "benchmark_design",
+          "offline_evaluation",
+          "release_gate"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "unit_test",
+          "combination_test",
+          "theme_test"
+        ],
+        "known_failure_modes": [
+          "benchmark_score_overclaim",
+          "syntax_only_evaluation"
+        ],
+        "validation_implications": [
+          "Report level, expected outcome, pass or fail, error category, and whether live Earth Engine execution occurred."
+        ],
+        "planner_hints": [
+          "Assign every quick benchmark case a unit, combination, or theme level and mark boundary cases explicitly."
+        ],
+        "validator_hints": [
+          "Keep local harness regression, mocked preflight, and live execution evidence as separate result classes."
+        ],
+        "citation": "AutoGEEval++, DOI 10.1080/20964471.2025.2581425, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "unit combination theme GEE benchmark",
+          "boundary execution error type evaluation",
+          "AutoGEEval++ benchmark taxonomy"
+        ],
+        "aliases": [
+          "multi-level GEE benchmark",
+          "AutoGEEval plus"
+        ],
+        "negative_queries": [
+          "comparable leaderboard score"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:benchmark_dataset_protocol_contract",
+      "type": "EvidenceCard",
+      "title": "Reference-dataset benchmark protocol contract",
+      "description": "",
+      "tags": [
+        "benchmark",
+        "reference_data",
+        "temporal_matching",
+        "metrics",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "benchmark_dataset_protocol_contract",
+        "title": "Reference-dataset benchmark protocol contract",
+        "source_id": "sds-benchmark-repo",
+        "source_url": "https://github.com/SatelliteShorelines/SDS_Benchmark",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
           "benchmark",
-          "evaluation"
+          "reference_data",
+          "temporal_matching",
+          "metrics"
         ],
         "extracted_facts": [],
         "extracted_patterns": [
-          "Candidate multi-level benchmark context for GEE agent evaluation."
+          "Freeze reference-dataset sources, site or group identifiers, coordinate systems, vertical datums, shared ancillary inputs, submission schema, matching direction and tolerance, exclusions, minimum paired-sample count, and metric definitions.",
+          "Keep raw and corrected outputs separate and report per-group sample counts with aggregate metrics."
         ],
         "limitations": [
-          "Candidate source; no claims promoted without evidence review."
+          "The reviewed benchmark is shoreline-specific and its datasets, thresholds, and results were not reproduced here.",
+          "Public data availability does not make every reference source interchangeable or redistribution-compatible."
         ],
         "claim_boundaries": [
-          "Use only for evaluation framing until reviewed."
+          "Borrowing a metric name or repository structure does not make local scores comparable with the external benchmark."
         ],
         "applicable_workflows": [
-          "evaluation"
+          "benchmark_design",
+          "reference_data_validation",
+          "product_intercomparison"
         ],
         "applicable_datasets": [],
-        "applicable_operators": [],
-        "known_failure_modes": [],
-        "validation_implications": [],
-        "planner_hints": [],
-        "validator_hints": [],
-        "citation": "AutoGEEval++ arXiv record, checked 2026-07-09.",
-        "last_checked": "2026-07-09",
-        "reviewer_status": "candidate",
-        "confidence": "low",
+        "applicable_operators": [
+          "temporal_matching",
+          "rmse",
+          "bias"
+        ],
+        "known_failure_modes": [
+          "unmatched_reference_protocol",
+          "hidden_datum_difference",
+          "aggregate_metric_without_sample_gate"
+        ],
+        "validation_implications": [
+          "Fail comparability claims when the reference version, matching protocol, exclusions, group grain, or metric calculation differs."
+        ],
+        "planner_hints": [
+          "Write the benchmark protocol before computing scores and preserve raw paired observations."
+        ],
+        "validator_hints": [
+          "Require sample counts and reference provenance beside RMSE, bias, correlation, or goodness-of-fit values."
+        ],
+        "citation": "SatelliteShorelines/SDS_Benchmark README and comparison utilities at commit c0747c52b310433411fc4ab96822ee67441a8d2e.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
         "private_content_risk": "low",
         "canonical_terms": [
-          "AutoGEEval++ benchmark research context",
-          "autogeeval_plus_benchmark",
-          "research_context",
-          "benchmark",
-          "evaluation",
-          "evaluation"
+          "benchmark reference version matching tolerance sample gate",
+          "common inputs and submission schema"
         ],
-        "aliases": [],
-        "negative_queries": [],
-        "source_refresh_status": "candidate_unverified"
+        "aliases": [
+          "benchmark data contract"
+        ],
+        "negative_queries": [
+          "same metric name means comparable score"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:catalog_publication_semantics_contract",
+      "type": "EvidenceCard",
+      "title": "Official catalog publication semantics contract",
+      "description": "The official catalog workflow requires explicit terms-of-use links, beta status before activation, UTC time metadata, homogeneous band signatures, and version/deprecation links. Classification and bitmask bands should use mode pyramiding rather than mean during ingestion.",
+      "tags": [
+        "data_catalog",
+        "dataset_versioning",
+        "license",
+        "pyramiding_policy",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "catalog_publication_semantics_contract",
+        "title": "Official catalog publication semantics contract",
+        "source_id": "earthengine-catalog-repo",
+        "source_url": "https://github.com/google/earthengine-catalog",
+        "source_type": "official_github_repo",
+        "trust_tier": "A",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "data_catalog",
+          "dataset_versioning",
+          "license",
+          "pyramiding_policy"
+        ],
+        "extracted_facts": [
+          "The official catalog workflow requires explicit terms-of-use links, beta status before activation, UTC time metadata, homogeneous band signatures, and version/deprecation links.",
+          "Classification and bitmask bands should use mode pyramiding rather than mean during ingestion."
+        ],
+        "extracted_patterns": [
+          "Keep repository acceptance, catalog activation, live asset availability, and rendered dataset-page review as separate states.",
+          "Preserve continuous and categorical semantics through band separation, data types, nodata, and pyramiding policy."
+        ],
+        "limitations": [
+          "Publication guidance does not establish that a specific dataset is currently active or scientifically suitable.",
+          "User-uploaded and community assets follow different authority and stability paths."
+        ],
+        "claim_boundaries": [
+          "A merged metadata contribution is not evidence that a dataset is activated, accessible, or fit for a task."
+        ],
+        "applicable_workflows": [
+          "dataset_publication",
+          "asset_ingestion_review",
+          "catalog_refresh"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "asset_ingestion",
+          "pyramiding_policy"
+        ],
+        "known_failure_modes": [
+          "categorical_mean_pyramiding",
+          "merged_but_not_active",
+          "repository_license_substituted_for_data_terms"
+        ],
+        "validation_implications": [
+          "Require terms, live catalog status, version links, UTC coverage, homogeneous bands, and semantic pyramiding before accepting a public dataset card."
+        ],
+        "planner_hints": [
+          "Read the rendered live catalog entry after repository review and before runtime selection."
+        ],
+        "validator_hints": [
+          "Reject active-dataset claims based only on a repository file or pull request."
+        ],
+        "citation": "google/earthengine-catalog README and dataset-addition guide at commit f5c5eade6cb360654384053d5a1c2419f33fb01c.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "catalog activation versus metadata merge",
+          "classification pyramiding mode",
+          "dataset version deprecation links"
+        ],
+        "aliases": [
+          "official catalog publication contract"
+        ],
+        "negative_queries": [
+          "repository entry proves live dataset"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -434,6 +744,329 @@
         ],
         "negative_queries": [
           "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:code_editor_wrapper_equivalence_boundary",
+      "type": "EvidenceCard",
+      "title": "Code Editor wrapper equivalence and authorization boundary",
+      "description": "",
+      "tags": [
+        "runtime_wrapper",
+        "code_editor",
+        "export_authorization",
+        "unsupported_features",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "code_editor_wrapper_equivalence_boundary",
+        "title": "Code Editor wrapper equivalence and authorization boundary",
+        "source_id": "gee-community-eetasks",
+        "source_url": "https://github.com/gee-community/eetasks",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "runtime_wrapper",
+          "code_editor",
+          "export_authorization",
+          "unsupported_features"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "A script that runs in the Earth Engine Code Editor is not automatically equivalent in a third-party runner; record the supported print, Export, Map, Chart, and UI surfaces.",
+          "Require explicit export destinations and parameters because a wrapper may auto-submit tasks that the Code Editor would leave awaiting user action."
+        ],
+        "limitations": [
+          "The reviewed behavior belongs to one VS Code extension revision and is not a canonical Earth Engine runtime contract.",
+          "Unsupported commands and asynchronous print ordering can vary by wrapper version."
+        ],
+        "claim_boundaries": [
+          "Wrapper compatibility cannot authorize live execution or prove semantic equivalence."
+        ],
+        "applicable_workflows": [
+          "script_portability_review",
+          "live_export",
+          "runtime_selection"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export",
+          "Map",
+          "print"
+        ],
+        "known_failure_modes": [
+          "code_editor_script_assumed_portable",
+          "silent_unsupported_ui",
+          "automatic_export_submission"
+        ],
+        "validation_implications": [
+          "Inventory supported globals and require explicit live confirmation before running a script through a non-Code-Editor wrapper."
+        ],
+        "planner_hints": [
+          "Preserve the target runtime as part of the plan and treat runtime changes as behavior changes."
+        ],
+        "validator_hints": [
+          "Reject claims of equivalence when unsupported commands are silently ignored or export behavior differs."
+        ],
+        "citation": "gee-community/eetasks README and runGEEscripts guide at commit a800bc2ed0b3cf093e13c642587d1837e8e8dcb1.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Code Editor wrapper equivalence",
+          "automatic export submission",
+          "unsupported Map UI commands"
+        ],
+        "aliases": [
+          "runtime wrapper boundary"
+        ],
+        "negative_queries": [
+          "runs in Code Editor therefore portable"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:community_dataset_asset_boundary",
+      "type": "EvidenceCard",
+      "title": "Community dataset catalog authority boundary",
+      "description": "",
+      "tags": [
+        "community_assets",
+        "data_catalog",
+        "license",
+        "asset_stability",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "community_dataset_asset_boundary",
+        "title": "Community dataset catalog authority boundary",
+        "source_id": "gee-community-datasets-repo",
+        "source_url": "https://github.com/samapriya/awesome-gee-community-datasets",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "community_assets",
+          "data_catalog",
+          "license",
+          "asset_stability"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Treat a community catalog as a discovery surface and review each dataset's provider, license, asset ID, version, schema, temporal coverage, and availability separately."
+        ],
+        "limitations": [
+          "The repository license does not replace each dataset's provider license or usage terms.",
+          "A public community asset is not an official Earth Engine dataset and may change or disappear independently."
+        ],
+        "claim_boundaries": [
+          "Community catalog presence cannot establish current availability, scientific fitness, or official support."
+        ],
+        "applicable_workflows": [
+          "community_dataset_discovery",
+          "dataset_ingestion_review"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "ImageCollection",
+          "FeatureCollection"
+        ],
+        "known_failure_modes": [
+          "repository_license_applied_to_dataset",
+          "stale_community_asset"
+        ],
+        "validation_implications": [
+          "Require a per-dataset access, license, schema, and availability record before planning with a community asset."
+        ],
+        "planner_hints": [
+          "Keep community candidates out of selected datasets until the exact asset and semantics are reviewed."
+        ],
+        "validator_hints": [
+          "Reject claims that a community asset is official merely because it is public in Earth Engine."
+        ],
+        "citation": "GEE Community Datasets repository and CC-BY-4.0 license, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "community Earth Engine asset authority boundary",
+          "per-dataset license availability schema"
+        ],
+        "aliases": [
+          "community catalog review"
+        ],
+        "negative_queries": [
+          "official catalog authority"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:data_cube_grid_materialization_contract",
+      "type": "EvidenceCard",
+      "title": "Data-cube grid and materialization contract",
+      "description": "",
+      "tags": [
+        "data_cube",
+        "xarray",
+        "grid",
+        "machine_learning_data",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "data_cube_grid_materialization_contract",
+        "title": "Data-cube grid and materialization contract",
+        "source_id": "cubo-repo",
+        "source_url": "https://github.com/ESDS-Leipzig/cubo",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "data_cube",
+          "xarray",
+          "grid",
+          "machine_learning_data"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Persist collection and revision, selected bands, date bounds, center or AOI, CRS, resolution, edge size and units, rounded output shape, and retrieval backend for every materialized cube.",
+          "Treat reprojection, shape construction, scaling, masking, temporal aggregation, and analysis-readiness as separate decisions."
+        ],
+        "limitations": [
+          "The reviewed implementation can select and regrid data without applying dataset-specific QA, scaling, or compositing.",
+          "Requested physical edge size can be rounded when converted to pixels at the selected resolution."
+        ],
+        "claim_boundaries": [
+          "A correctly shaped Xarray object is not automatically analysis-ready or suitable training data."
+        ],
+        "applicable_workflows": [
+          "data_cube_materialization",
+          "machine_learning_dataset_generation",
+          "local_array_analysis"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "xarray.open_dataset",
+          "ImageCollection.select"
+        ],
+        "known_failure_modes": [
+          "array_shape_used_as_quality_evidence",
+          "implicit_grid_rounding",
+          "qa_scaling_omitted"
+        ],
+        "validation_implications": [
+          "Compare requested and realized grid metadata and require a separate dataset-specific preprocessing record."
+        ],
+        "planner_hints": [
+          "Store the realized EPSG, resolution, dimensions, spatial bounds, bands, and time coverage with the cube."
+        ],
+        "validator_hints": [
+          "Reject analysis-ready wording when QA, scaling, temporal sampling, or nodata semantics are unknown."
+        ],
+        "citation": "ESDS-Leipzig/cubo README and implementation at commit 1bf975e5d928b42db1a6fd742a4770c9ea3f0631.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "realized cube grid",
+          "shaped array not analysis ready"
+        ],
+        "aliases": [
+          "cubo materialization contract"
+        ],
+        "negative_queries": [
+          "xarray cube guarantees preprocessing"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:data_usage_promotion_contract",
+      "type": "EvidenceCard",
+      "title": "Data-usage contract before knowledge promotion",
+      "description": "Official Earth Engine catalog entries are the primary source for current public dataset IDs, bands, scale factors, QA fields, availability, and provider notes.",
+      "tags": [
+        "data_contract",
+        "dataset_review",
+        "knowledge_promotion",
+        "accepted",
+        "tier_a"
+      ],
+      "metadata": {
+        "card_id": "data_usage_promotion_contract",
+        "title": "Data-usage contract before knowledge promotion",
+        "source_id": "google-earth-engine-data-catalog",
+        "source_url": "https://developers.google.com/earth-engine/datasets",
+        "source_type": "official_data_catalog",
+        "trust_tier": "A",
+        "allowed_use": "summary_only",
+        "topics": [
+          "data_contract",
+          "dataset_review",
+          "knowledge_promotion"
+        ],
+        "extracted_facts": [
+          "Official Earth Engine catalog entries are the primary source for current public dataset IDs, bands, scale factors, QA fields, availability, and provider notes."
+        ],
+        "extracted_patterns": [
+          "Before promoting a data-using pattern, record dataset identity and version, bands or variables, scaling, QA or masking, spatial grid and resampling, temporal coverage, access and license, asset stability, and private dependencies.",
+          "Keep unknown fields explicit and block correctness claims that depend on them."
+        ],
+        "limitations": [
+          "A generic contract does not replace reading the specific dataset page and provider terms.",
+          "Community or private assets need separate authority, availability, and semantic review."
+        ],
+        "claim_boundaries": [
+          "Metadata-inferred dataset signals are discovery hints only and cannot authorize execution or scientific interpretation."
+        ],
+        "applicable_workflows": [
+          "corpus_promotion",
+          "recipe_distillation",
+          "dataset_selection"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "ImageCollection",
+          "Image"
+        ],
+        "known_failure_modes": [
+          "incomplete_data_contract",
+          "inferred_dataset_fact"
+        ],
+        "validation_implications": [
+          "Treat missing version, scaling, QA, grid, temporal, access, or private-dependency fields as important omissions when they affect correctness or reproducibility."
+        ],
+        "planner_hints": [
+          "Retrieve the exact official dataset card before selecting bands, scale, QA, projection, or temporal coverage."
+        ],
+        "validator_hints": [
+          "Do not promote metadata-only repository tags into dataset facts."
+        ],
+        "citation": "Google Earth Engine Data Catalog, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "data usage contract",
+          "dataset version bands scale QA grid temporal access license",
+          "knowledge promotion dataset review"
+        ],
+        "aliases": [
+          "data contract checklist"
+        ],
+        "negative_queries": [
+          "infer dataset semantics from repository topic"
         ],
         "source_refresh_status": "fresh"
       }
@@ -1663,6 +2296,87 @@
       }
     },
     {
+      "id": "evidence:eetasks_monitoring_pattern",
+      "type": "EvidenceCard",
+      "title": "Export submission and task monitoring separation",
+      "description": "",
+      "tags": [
+        "export_tasks",
+        "monitoring",
+        "account_project_context",
+        "completion_evidence",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "eetasks_monitoring_pattern",
+        "title": "Export submission and task monitoring separation",
+        "source_id": "gee-community-eetasks",
+        "source_url": "https://github.com/gee-community/eetasks",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "export_tasks",
+          "monitoring",
+          "account_project_context",
+          "completion_evidence"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Treat task submission and task-state observation as separate operations with explicit account and project context.",
+          "Refresh task state before reporting completion because a monitoring surface can show stale information."
+        ],
+        "limitations": [
+          "The repository documents a VS Code extension, not the canonical task API for this Python harness.",
+          "A visible task row is not evidence that an output exists or has passed readback QA."
+        ],
+        "claim_boundaries": [
+          "Official task APIs and persisted traces remain authoritative; this card contributes workflow patterns only."
+        ],
+        "applicable_workflows": [
+          "export_monitoring",
+          "task_handoff",
+          "release_evidence"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "task_list",
+          "task_status"
+        ],
+        "known_failure_modes": [
+          "submitted_means_completed",
+          "stale_task_view"
+        ],
+        "validation_implications": [
+          "Require a terminal task state and output readback before claiming a completed export."
+        ],
+        "planner_hints": [
+          "Record account and project context without credentials, then persist task identifiers only in private run traces."
+        ],
+        "validator_hints": [
+          "Reject completion wording when the latest observed state is submitted, ready, running, unknown, or stale."
+        ],
+        "citation": "gee-community/eetasks repository, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Earth Engine task monitoring",
+          "submission versus completion",
+          "refreshed terminal task state"
+        ],
+        "aliases": [
+          "eetasks monitoring"
+        ],
+        "negative_queries": [
+          "task submitted therefore complete"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
       "id": "evidence:esa_worldcover",
       "type": "EvidenceCard",
       "title": "ESA WorldCover v200 dataset card",
@@ -1738,6 +2452,88 @@
         "aliases": [],
         "negative_queries": [
           "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:export_readback_array_contract",
+      "type": "EvidenceCard",
+      "title": "Export and array-readback metadata contract",
+      "description": "",
+      "tags": [
+        "export",
+        "readback",
+        "nodata",
+        "array_layout",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "export_readback_array_contract",
+        "title": "Export and array-readback metadata contract",
+        "source_id": "geedim-repo",
+        "source_url": "https://github.com/leftfield-geospatial/geedim",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "export",
+          "readback",
+          "nodata",
+          "array_layout"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Persist CRS, transform or region, scale or shape, resampling, band order, dtype, nodata, mask representation, collection split layout, file tags, and realized array dimensions.",
+          "Read exported metadata and a bounded pixel sample back before declaring the artifact usable."
+        ],
+        "limitations": [
+          "A third-party exporter does not replace official export limits, dataset metadata, or scientific QA.",
+          "Numeric arrays can lose semantic meaning when band, image, mask, and nodata layout are not retained."
+        ],
+        "claim_boundaries": [
+          "Export success proves artifact creation only, not complete coverage, correct preprocessing, or valid interpretation."
+        ],
+        "applicable_workflows": [
+          "image_export",
+          "export_readback",
+          "local_array_analysis"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "Export.image",
+          "toGeoTIFF",
+          "toNumPy"
+        ],
+        "known_failure_modes": [
+          "nodata_value_collision",
+          "band_axis_ambiguity",
+          "requested_grid_not_realized"
+        ],
+        "validation_implications": [
+          "Compare persisted requested and realized metadata, then perform pixel and mask sanity checks."
+        ],
+        "planner_hints": [
+          "Choose the output layout and nodata semantics before export rather than inferring them after readback."
+        ],
+        "validator_hints": [
+          "Reject readback-based metrics when array axes, grid, band order, or masks are ambiguous."
+        ],
+        "citation": "leftfield-geospatial/geedim README and API guide at commit 6f0ab8d3e136fe7d3338545fa0fa222b05b6b159.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "export grid nodata band layout readback",
+          "requested versus realized metadata"
+        ],
+        "aliases": [
+          "GeoTIFF array readback contract"
+        ],
+        "negative_queries": [
+          "export success proves correctness"
         ],
         "source_refresh_status": "fresh"
       }
@@ -1918,67 +2714,88 @@
       }
     },
     {
-      "id": "evidence:gee_ops_operator_knowledge_base",
+      "id": "evidence:gee_ops_operator_distillation_pattern",
       "type": "EvidenceCard",
-      "title": "GEE-OPs operator knowledge-base research context",
-      "description": "",
+      "title": "GEE operator knowledge distillation pattern",
+      "description": "GEE-OPs separates operator syntax, relationship frequency, frequent patterns, and relationship chains into distinct knowledge structures. The study derives operator knowledge from a large JavaScript corpus with syntax documentation, AST processing, and frequent-pattern mining.",
       "tags": [
-        "research_context",
-        "operator_kb",
-        "rag",
-        "candidate",
+        "operator_knowledge",
+        "corpus_distillation",
+        "knowledge_graph",
+        "retrieval",
+        "accepted",
         "tier_b"
       ],
       "metadata": {
-        "card_id": "gee_ops_operator_knowledge_base",
-        "title": "GEE-OPs operator knowledge-base research context",
+        "card_id": "gee_ops_operator_distillation_pattern",
+        "title": "GEE operator knowledge distillation pattern",
         "source_id": "gee-ops-paper",
-        "source_url": "https://arxiv.org/abs/2412.05587",
-        "source_type": "arxiv_paper",
+        "source_url": "https://doi.org/10.1080/10095020.2025.2505556",
+        "source_type": "journal_paper",
         "trust_tier": "B",
-        "allowed_use": "metadata_only",
+        "allowed_use": "summary_only",
         "topics": [
-          "research_context",
-          "operator_kb",
-          "rag"
+          "operator_knowledge",
+          "corpus_distillation",
+          "knowledge_graph",
+          "retrieval"
         ],
-        "extracted_facts": [],
+        "extracted_facts": [
+          "GEE-OPs separates operator syntax, relationship frequency, frequent patterns, and relationship chains into distinct knowledge structures.",
+          "The study derives operator knowledge from a large JavaScript corpus with syntax documentation, AST processing, and frequent-pattern mining."
+        ],
         "extracted_patterns": [
-          "Candidate research context for operator knowledge-base and RAG design."
+          "Distill operator identity and signature separately from common neighbors, reusable chains, and workflow-level patterns.",
+          "Treat corpus frequency as a retrieval signal, then confirm every blocking API or dataset fact against current official Earth Engine sources."
         ],
         "limitations": [
-          "Candidate source; not accepted for current Earth Engine API or dataset facts."
+          "The reported corpus, extraction metrics, and RAG gains belong to the paper and were not reproduced in this repository.",
+          "JavaScript operator patterns may not transfer directly to the Earth Engine Python API."
         ],
         "claim_boundaries": [
-          "Use only for methodology inspiration until evidence curation review is complete."
+          "This card supports knowledge-base design only and cannot establish current API correctness or local model improvement."
         ],
         "applicable_workflows": [
-          "evaluation",
-          "retrieval_design"
+          "recipe_distillation",
+          "operator_retrieval",
+          "knowledge_base_refresh"
         ],
         "applicable_datasets": [],
-        "applicable_operators": [],
-        "known_failure_modes": [],
-        "validation_implications": [],
-        "planner_hints": [],
-        "validator_hints": [],
-        "citation": "GEE-OPs arXiv record, checked 2026-07-09.",
-        "last_checked": "2026-07-09",
-        "reviewer_status": "candidate",
-        "confidence": "low",
+        "applicable_operators": [
+          "abstract_syntax_tree",
+          "frequent_pattern_mining"
+        ],
+        "known_failure_modes": [
+          "corpus_frequency_overpromotion",
+          "javascript_python_surface_confusion"
+        ],
+        "validation_implications": [
+          "Require official API confirmation before a corpus-derived operator fact can block or authorize execution."
+        ],
+        "planner_hints": [
+          "Retrieve operator syntax, required inputs, adjacent operators, and known workflow chains as separate evidence fields."
+        ],
+        "validator_hints": [
+          "Reject corpus-only claims about signatures, dataset bands, scale factors, or execution success."
+        ],
+        "citation": "GEE-OPs, Geo-spatial Information Science, DOI 10.1080/10095020.2025.2505556, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "high",
         "private_content_risk": "low",
         "canonical_terms": [
-          "GEE-OPs operator knowledge-base research context",
-          "gee_ops_operator_knowledge_base",
-          "research_context",
-          "operator_kb",
-          "rag",
-          "evaluation",
-          "retrieval_design"
+          "GEE operator knowledge distillation",
+          "operator syntax relationship frequency frequent pattern chain",
+          "corpus distillation"
         ],
-        "aliases": [],
-        "negative_queries": [],
-        "source_refresh_status": "candidate_unverified"
+        "aliases": [
+          "GEE-OPs",
+          "operator knowledge table"
+        ],
+        "negative_queries": [
+          "current Earth Engine API signature"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2053,70 +2870,6 @@
         "aliases": [],
         "negative_queries": [],
         "source_refresh_status": "fresh"
-      }
-    },
-    {
-      "id": "evidence:geemap_joss_paper",
-      "type": "EvidenceCard",
-      "title": "geemap JOSS research software context",
-      "description": "",
-      "tags": [
-        "research_context",
-        "geemap",
-        "research_software",
-        "candidate",
-        "tier_b"
-      ],
-      "metadata": {
-        "card_id": "geemap_joss_paper",
-        "title": "geemap JOSS research software context",
-        "source_id": "geemap-joss-paper",
-        "source_url": "https://joss.theoj.org/papers/10.21105/joss.02305",
-        "source_type": "joss_paper",
-        "trust_tier": "B",
-        "allowed_use": "summary_only",
-        "topics": [
-          "research_context",
-          "geemap",
-          "research_software"
-        ],
-        "extracted_facts": [],
-        "extracted_patterns": [
-          "Candidate research-software context for geemap as an Earth Engine Python ecosystem tool."
-        ],
-        "limitations": [
-          "Software paper context does not override official Earth Engine API facts."
-        ],
-        "claim_boundaries": [
-          "Use for ecosystem positioning only."
-        ],
-        "applicable_workflows": [
-          "research_positioning",
-          "documentation"
-        ],
-        "applicable_datasets": [],
-        "applicable_operators": [],
-        "known_failure_modes": [],
-        "validation_implications": [],
-        "planner_hints": [],
-        "validator_hints": [],
-        "citation": "geemap JOSS paper, checked 2026-07-09.",
-        "last_checked": "2026-07-09",
-        "reviewer_status": "candidate",
-        "confidence": "low",
-        "private_content_risk": "low",
-        "canonical_terms": [
-          "geemap JOSS research software context",
-          "geemap_joss_paper",
-          "research_context",
-          "geemap",
-          "research_software",
-          "research_positioning",
-          "documentation"
-        ],
-        "aliases": [],
-        "negative_queries": [],
-        "source_refresh_status": "candidate_unverified"
       }
     },
     {
@@ -2254,6 +3007,89 @@
         "aliases": [],
         "negative_queries": [],
         "source_refresh_status": "candidate_unverified"
+      }
+    },
+    {
+      "id": "evidence:geospatial_ml_dataset_generation_contract",
+      "type": "EvidenceCard",
+      "title": "Geospatial ML dataset generation and lineage contract",
+      "description": "",
+      "tags": [
+        "machine_learning_data",
+        "dataset_lineage",
+        "spatial_split",
+        "multi_source_sampling",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "geospatial_ml_dataset_generation_contract",
+        "title": "Geospatial ML dataset generation and lineage contract",
+        "source_id": "geeflow-repo",
+        "source_url": "https://github.com/google-deepmind/geeflow",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "machine_learning_data",
+          "dataset_lineage",
+          "spatial_split",
+          "multi_source_sampling"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Separate label configuration from source configuration and persist sample coordinates, image footprint, metadata keys, split assignment, source class and asset identity, bands, scale, time windows, aggregation, masks, data types, and output schema.",
+          "Version label changes, source changes, processing changes, and split changes separately; preserve the resolved launch command and changelog."
+        ],
+        "limitations": [
+          "A configuration-driven generator does not validate label quality, sampling representativeness, leakage control, dataset licensing, or model fitness.",
+          "Multi-source tensors may intentionally differ in spatial, temporal, and spectral dimensions."
+        ],
+        "claim_boundaries": [
+          "Successful generation is data-lineage evidence, not benchmark performance or scientific validity."
+        ],
+        "applicable_workflows": [
+          "machine_learning_dataset_generation",
+          "multi_source_sampling",
+          "dataset_versioning"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "ImageCollection",
+          "FeatureCollection",
+          "spatial_split"
+        ],
+        "known_failure_modes": [
+          "split_lineage_omitted",
+          "source_revision_unpinned",
+          "label_source_version_conflation",
+          "generated_means_validated"
+        ],
+        "validation_implications": [
+          "Require explicit split grain and leakage checks in addition to config validation and generation success."
+        ],
+        "planner_hints": [
+          "Store resolved labels, sources, split policy, revisions, and command beside the generated dataset manifest."
+        ],
+        "validator_hints": [
+          "Reject performance or generalization claims based only on successful TFDS or sample generation."
+        ],
+        "citation": "google-deepmind/geeflow README and config validation at commit a0ea107d65c9e1ddfce895ec5df5fd31bb33b916.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "labels sources split lineage",
+          "geospatial dataset version bookkeeping"
+        ],
+        "aliases": [
+          "GeeFlow dataset contract"
+        ],
+        "negative_queries": [
+          "generated dataset proves model validity"
+        ],
+        "source_refresh_status": "fresh"
       }
     },
     {
@@ -2898,6 +3734,92 @@
       }
     },
     {
+      "id": "evidence:landtrendr_temporal_segmentation_contract",
+      "type": "EvidenceCard",
+      "title": "LandTrendr temporal-segmentation input contract",
+      "description": "The published implementation expects one spectral value per year after geometric, cloud-shadow, and reflectance preprocessing. The linked API constructs annual medoid composites, harmonizes OLI inputs to TM-equivalent bands, and orients the segmentation index so vegetation loss has positive delta.",
+      "tags": [
+        "temporal_segmentation",
+        "landsat",
+        "sensor_harmonization",
+        "missing_data",
+        "accepted",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "landtrendr_temporal_segmentation_contract",
+        "title": "LandTrendr temporal-segmentation input contract",
+        "source_id": "landtrendr-gee-paper",
+        "source_url": "https://doi.org/10.3390/rs10050691",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "topics": [
+          "temporal_segmentation",
+          "landsat",
+          "sensor_harmonization",
+          "missing_data"
+        ],
+        "extracted_facts": [
+          "The published implementation expects one spectral value per year after geometric, cloud-shadow, and reflectance preprocessing.",
+          "The linked API constructs annual medoid composites, harmonizes OLI inputs to TM-equivalent bands, and orients the segmentation index so vegetation loss has positive delta."
+        ],
+        "extracted_patterns": [
+          "Persist seasonal bounds, valid observation counts, sensor harmonization, annual compositing, missing-year handling, segmentation-index direction, fitted-band direction, and algorithm parameters."
+        ],
+        "limitations": [
+          "The original study compared LT-GEE with LT-IDL at six United States study areas; that validation was not reproduced here.",
+          "Parameter defaults and vegetation-loss orientation are not universal change-detection truth."
+        ],
+        "claim_boundaries": [
+          "A segmented spectral trajectory is not an independently validated disturbance label or causal attribution."
+        ],
+        "applicable_workflows": [
+          "temporal_segmentation",
+          "landsat_change_detection"
+        ],
+        "applicable_datasets": [
+          "Landsat"
+        ],
+        "applicable_operators": [
+          "TemporalSegmentation.LandTrendr",
+          "ImageCollection"
+        ],
+        "known_failure_modes": [
+          "mixed_sensor_unharmonized_series",
+          "index_direction_inversion",
+          "missing_year_hidden",
+          "clear_observation_count_omitted"
+        ],
+        "validation_implications": [
+          "Require one-value-per-year provenance and an explicit sign convention before interpreting segment magnitude or direction."
+        ],
+        "planner_hints": [
+          "Add clear-pixel count and missing-year diagnostics alongside the segmented output."
+        ],
+        "validator_hints": [
+          "Reject disturbance claims that omit input harmonization, annual support, or independent reference evidence."
+        ],
+        "citation": "Kennedy et al. 2018, Remote Sensing 10, 691; reviewed with eMapR/LT-GEE commit c17bacdb76d0cf1b942300f6f9ddfe368b41eed0.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "one value per year LandTrendr",
+          "segmentation index orientation",
+          "Landsat sensor harmonization"
+        ],
+        "aliases": [
+          "LT-GEE input contract"
+        ],
+        "negative_queries": [
+          "LandTrendr output is ground truth"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
       "id": "evidence:modis_lst",
       "type": "EvidenceCard",
       "title": "MOD11A2 LST dataset card",
@@ -3258,6 +4180,90 @@
       }
     },
     {
+      "id": "evidence:paper_linked_data_workflow_contract",
+      "type": "EvidenceCard",
+      "title": "Paper-linked data workflow reproducibility contract",
+      "description": "The paper links a public GEE-enabled repository and describes public Landsat and Sentinel-2 acquisition plus preprocessing and downstream quality control.",
+      "tags": [
+        "paper_linked_repository",
+        "acquisition_metadata",
+        "projection",
+        "quality_control",
+        "accepted",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "paper_linked_data_workflow_contract",
+        "title": "Paper-linked data workflow reproducibility contract",
+        "source_id": "coastsat-paper",
+        "source_url": "https://doi.org/10.1016/j.envsoft.2019.104528",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "topics": [
+          "paper_linked_repository",
+          "acquisition_metadata",
+          "projection",
+          "quality_control"
+        ],
+        "extracted_facts": [
+          "The paper links a public GEE-enabled repository and describes public Landsat and Sentinel-2 acquisition plus preprocessing and downstream quality control."
+        ],
+        "extracted_patterns": [
+          "A paper-linked workflow review should record AOI and time bounds, sensor families, acquisition metadata, output projection, quality-control decisions, domain scope, and the exact repository revision.",
+          "Separate data acquisition evidence from downstream algorithm validation and reported domain accuracy."
+        ],
+        "limitations": [
+          "The domain method and reported performance were not reproduced in this repository.",
+          "Project-specific thresholds, sites, and code are not imported."
+        ],
+        "claim_boundaries": [
+          "Paper and repository linkage supports reproducibility structure only, not transfer of accuracy claims to other domains."
+        ],
+        "applicable_workflows": [
+          "paper_linked_repository_review",
+          "data_acquisition_planning"
+        ],
+        "applicable_datasets": [
+          "Landsat",
+          "Sentinel-2"
+        ],
+        "applicable_operators": [
+          "filterDate",
+          "filterBounds"
+        ],
+        "known_failure_modes": [
+          "paper_link_without_data_contract",
+          "acquisition_success_used_as_algorithm_validation"
+        ],
+        "validation_implications": [
+          "Require projection and quality-control fields before promoting a paper-linked acquisition workflow."
+        ],
+        "planner_hints": [
+          "Record the repository revision and distinguish public acquisition inputs from local or domain-specific downstream inputs."
+        ],
+        "validator_hints": [
+          "Block transfer of external performance values unless the original protocol and data are reproduced."
+        ],
+        "citation": "CoastSat, Environmental Modelling and Software, DOI 10.1016/j.envsoft.2019.104528, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "paper linked data workflow contract",
+          "acquisition metadata projection quality control repository revision"
+        ],
+        "aliases": [
+          "reproducible paper repository review"
+        ],
+        "negative_queries": [
+          "transfer external accuracy"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
       "id": "evidence:product_intercomparison_claim_boundary",
       "type": "EvidenceCard",
       "title": "Product intercomparison claim boundary",
@@ -3521,6 +4527,94 @@
         ],
         "negative_queries": [
           "Generate a GEE workflow for flood mapping"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:sentinel1_ard_processing_contract",
+      "type": "EvidenceCard",
+      "title": "Application-dependent Sentinel-1 ARD processing contract",
+      "description": "The reviewed framework makes additional border-noise correction, speckle filtering, and radiometric terrain normalization optional and configurable. Its selection and output contract distinguishes instrument mode, polarization, orbit, linear versus decibel representation, DEM, terrain model, and layover-shadow handling.",
+      "tags": [
+        "sentinel1",
+        "sar",
+        "analysis_ready_data",
+        "terrain_normalization",
+        "accepted",
+        "tier_b"
+      ],
+      "metadata": {
+        "card_id": "sentinel1_ard_processing_contract",
+        "title": "Application-dependent Sentinel-1 ARD processing contract",
+        "source_id": "sentinel1-ard-paper",
+        "source_url": "https://doi.org/10.3390/rs13101954",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "topics": [
+          "sentinel1",
+          "sar",
+          "analysis_ready_data",
+          "terrain_normalization"
+        ],
+        "extracted_facts": [
+          "The reviewed framework makes additional border-noise correction, speckle filtering, and radiometric terrain normalization optional and configurable.",
+          "Its selection and output contract distinguishes instrument mode, polarization, orbit, linear versus decibel representation, DEM, terrain model, and layover-shadow handling."
+        ],
+        "extracted_patterns": [
+          "Record the platform-provided preprocessing separately from application-specific additional processing.",
+          "Keep polarization, orbit, incidence geometry, DEM coverage and resolution, speckle framework, terrain model, layover-shadow mask, and output units visible."
+        ],
+        "limitations": [
+          "Analysis-ready SAR has no single application-independent definition.",
+          "Terrain normalization may be inappropriate or unsupported where the DEM or application assumptions do not hold."
+        ],
+        "claim_boundaries": [
+          "A processed backscatter collection is not a validated flood, disturbance, or object-detection product."
+        ],
+        "applicable_workflows": [
+          "sentinel1_preprocessing",
+          "flood_mapping",
+          "sar_change_detection"
+        ],
+        "applicable_datasets": [
+          "COPERNICUS/S1_GRD_FLOAT"
+        ],
+        "applicable_operators": [
+          "ImageCollection.filter",
+          "terrain_normalization",
+          "speckle_filter"
+        ],
+        "known_failure_modes": [
+          "db_linear_confusion",
+          "mixed_orbit_comparison",
+          "dem_scope_mismatch",
+          "universal_ard_recipe_assumption"
+        ],
+        "validation_implications": [
+          "Require output units and every enabled additional processing step in the trace, then validate the choices for the application and terrain."
+        ],
+        "planner_hints": [
+          "Start from the official current Sentinel-1 catalog entry and add only justified application-specific processing."
+        ],
+        "validator_hints": [
+          "Reject universal ARD wording and any downstream thematic claim without independent reference evidence."
+        ],
+        "citation": "Mullissa et al. 2021, Remote Sensing 13, 1954; reviewed with adugnag/gee_s1_ard commit 39207cb4998c9c80c27af3d8a62debe7ab41e7c7.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "high",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Sentinel-1 application-dependent ARD",
+          "linear dB orbit polarization terrain normalization"
+        ],
+        "aliases": [
+          "Sentinel-1 preprocessing contract"
+        ],
+        "negative_queries": [
+          "one universal SAR preprocessing recipe"
         ],
         "source_refresh_status": "fresh"
       }
@@ -3802,6 +4896,166 @@
       }
     },
     {
+      "id": "evidence:spectral_index_record_contract",
+      "type": "EvidenceCard",
+      "title": "Reference-backed spectral-index record contract",
+      "description": "",
+      "tags": [
+        "spectral_indices",
+        "formula_provenance",
+        "platform_mapping",
+        "scientific_validation",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "spectral_index_record_contract",
+        "title": "Reference-backed spectral-index record contract",
+        "source_id": "awesome-spectral-indices-repo",
+        "source_url": "https://github.com/awesome-spectral-indices/awesome-spectral-indices",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "spectral_indices",
+          "formula_provenance",
+          "platform_mapping",
+          "scientific_validation"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Store an index short name, formula, required band roles, supported platform families, original reference, application domain, and catalogue version as separate fields.",
+          "Require scientific provenance and schema validation before accepting a new formula."
+        ],
+        "limitations": [
+          "Platform support does not define Earth Engine dataset IDs, reflectance scaling, QA masks, bandpass equivalence, or application validity.",
+          "A DOI, generated formula, or software implementation is not scientific validation by itself."
+        ],
+        "claim_boundaries": [
+          "Official sensor and Earth Engine catalog sources remain authoritative for data preprocessing and band identifiers."
+        ],
+        "applicable_workflows": [
+          "spectral_index_planning",
+          "knowledge_card_authoring"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "normalizedDifference",
+          "expression"
+        ],
+        "known_failure_modes": [
+          "formula_without_original_reference",
+          "platform_label_used_as_preprocessing_contract"
+        ],
+        "validation_implications": [
+          "Reject index definitions that omit required band roles or original provenance."
+        ],
+        "planner_hints": [
+          "Resolve abstract band roles to the selected sensor only after checking its official band and preprocessing documentation."
+        ],
+        "validator_hints": [
+          "Separate formula correctness from data scaling, masking, bandpass, and domain validity."
+        ],
+        "citation": "Awesome Spectral Indices repository and MIT license, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "spectral index formula bands platforms reference domain",
+          "scientific validation of spectral index"
+        ],
+        "aliases": [
+          "ASI record schema"
+        ],
+        "negative_queries": [
+          "arbitrary generated spectral index"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
+      "id": "evidence:third_party_preprocessing_wrapper_boundary",
+      "type": "EvidenceCard",
+      "title": "Third-party preprocessing wrapper precondition boundary",
+      "description": "",
+      "tags": [
+        "preprocessing",
+        "spectral_indices",
+        "cloud_mask",
+        "wrapper_defaults",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "third_party_preprocessing_wrapper_boundary",
+        "title": "Third-party preprocessing wrapper precondition boundary",
+        "source_id": "eemont-repo",
+        "source_url": "https://github.com/davemlz/eemont",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "preprocessing",
+          "spectral_indices",
+          "cloud_mask",
+          "wrapper_defaults"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Record a wrapper method, package revision, dataset identity, input value range, method parameters, and output-band policy as separate fields.",
+          "Confirm whether cloud masking is valid for the selected product and whether spectral-index inputs have been scaled to the required reflectance range."
+        ],
+        "limitations": [
+          "Convenience methods delegate to package-specific metadata and algorithms that may change independently of Earth Engine.",
+          "A short method chain can hide sensor-specific thresholds, ignored parameters, dropped bands, and catalogue-version choices."
+        ],
+        "claim_boundaries": [
+          "Wrapper success does not establish correct preprocessing, current dataset semantics, or scientific validity."
+        ],
+        "applicable_workflows": [
+          "optical_preprocessing",
+          "spectral_index_planning"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "maskClouds",
+          "scaleAndOffset",
+          "spectralIndices"
+        ],
+        "known_failure_modes": [
+          "unscaled_index_input",
+          "cloud_mask_product_mismatch",
+          "wrapper_default_unreviewed"
+        ],
+        "validation_implications": [
+          "Expand every third-party preprocessing call into reviewable input preconditions and output effects before promotion."
+        ],
+        "planner_hints": [
+          "Pin the package revision and keep official dataset metadata authoritative."
+        ],
+        "validator_hints": [
+          "Reject opaque wrapper use when scaling, QA, thresholds, or band retention are not inspectable."
+        ],
+        "citation": "davemlz/eemont README, LICENSE, and ImageCollection method documentation at commit c4ac0d162e8981f4c39c65a9f817a3e52ef306f4.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "wrapper preprocessing preconditions",
+          "scaled reflectance before spectral indices"
+        ],
+        "aliases": [
+          "eemont boundary"
+        ],
+        "negative_queries": [
+          "short method chain proves correctness"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
       "id": "evidence:tiled_export_fallback_recovery",
       "type": "EvidenceCard",
       "title": "Tiled export fallback recovery pattern",
@@ -3969,6 +5223,87 @@
       }
     },
     {
+      "id": "evidence:xee_lazy_readback_pattern",
+      "type": "EvidenceCard",
+      "title": "Lazy grid-explicit Earth Engine readback pattern",
+      "description": "",
+      "tags": [
+        "xarray",
+        "lazy_readback",
+        "grid_contract",
+        "local_analysis",
+        "accepted",
+        "tier_c"
+      ],
+      "metadata": {
+        "card_id": "xee_lazy_readback_pattern",
+        "title": "Lazy grid-explicit Earth Engine readback pattern",
+        "source_id": "google-xee-repo",
+        "source_url": "https://github.com/google/Xee",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "topics": [
+          "xarray",
+          "lazy_readback",
+          "grid_contract",
+          "local_analysis"
+        ],
+        "extracted_facts": [],
+        "extracted_patterns": [
+          "Open Earth Engine imagery for local array analysis only after declaring or extracting a reviewable grid, CRS, resolution, and dimension order.",
+          "Keep heavy band math and filtering server-side before lazy pixel retrieval, and begin with bounded parallelism and AOI size."
+        ],
+        "limitations": [
+          "Xee is explicitly described as not an official Google product and its API may change independently of Earth Engine.",
+          "Lazy readback does not remove Earth Engine request, response-size, quota, or scientific validation constraints."
+        ],
+        "claim_boundaries": [
+          "Use this card for readback architecture only; official sources govern Earth Engine endpoints, quotas, projections, and dataset semantics."
+        ],
+        "applicable_workflows": [
+          "export_readback",
+          "local_array_analysis",
+          "product_intercomparison"
+        ],
+        "applicable_datasets": [],
+        "applicable_operators": [
+          "xarray.open_dataset",
+          "extract_grid_params"
+        ],
+        "known_failure_modes": [
+          "implicit_output_grid",
+          "unbounded_parallel_readback"
+        ],
+        "validation_implications": [
+          "Persist the requested grid and reject local comparisons whose arrays do not share an intentional coordinate contract."
+        ],
+        "planner_hints": [
+          "Decide whether the task needs an export artifact or lazy readback, then record the grid and bounded execution policy."
+        ],
+        "validator_hints": [
+          "Do not treat successful array opening as evidence of dataset accuracy, complete coverage, or cross-product comparability."
+        ],
+        "citation": "google/Xee repository and performance guidance, checked 2026-07-31.",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "confidence": "medium",
+        "private_content_risk": "low",
+        "canonical_terms": [
+          "Xee lazy Earth Engine readback",
+          "explicit output grid xarray",
+          "bounded parallel pixel retrieval"
+        ],
+        "aliases": [
+          "Earth Engine xarray backend"
+        ],
+        "negative_queries": [
+          "official Earth Engine quota"
+        ],
+        "source_refresh_status": "fresh"
+      }
+    },
+    {
       "id": "failure:direct_fine_coarse_pixel_comparison",
       "type": "FailureCase",
       "title": "Direct fine/coarse pixel comparison",
@@ -4124,8 +5459,8 @@
         "private_content_risk": "medium",
         "include_reason": "Public repository for AutoGEEval benchmark workflow; current review did not find a LICENSE at the expected path.",
         "license": "license review required",
-        "source_refresh_status": "candidate_unverified",
-        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
+        "source_refresh_status": "fresh",
+        "review_notes": "The JOSS landing page, DOI, authorship, software link, and article license were checked; it remains software context only."
       }
     },
     {
@@ -4158,28 +5493,271 @@
     {
       "id": "source:autogeeval-plus-paper",
       "type": "Source",
-      "title": "AutoGEEval++ benchmark source",
-      "description": "Requested benchmark source family for multi-level GEE evaluation.",
+      "title": "AutoGEEval++ multi-level benchmark paper",
+      "description": "Published benchmark reference for unit, combination, theme, boundary, execution, resource, and error-type evaluation.",
       "tags": [
-        "arxiv_paper",
+        "journal_paper",
         "tier_b",
-        "candidate"
+        "accepted"
       ],
       "metadata": {
         "source_id": "autogeeval-plus-paper",
-        "title": "AutoGEEval++ benchmark source",
-        "source_url": "https://arxiv.org/abs/2506.10365",
-        "source_type": "arxiv_paper",
+        "title": "AutoGEEval++ multi-level benchmark paper",
+        "source_url": "https://doi.org/10.1080/20964471.2025.2581425",
+        "source_type": "journal_paper",
         "trust_tier": "B",
-        "allowed_use": "metadata_only",
-        "last_checked": "2026-07-09",
-        "reviewer_status": "candidate",
-        "claim_boundary": "Candidate benchmark context; do not promote claims without paper review.",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports benchmark taxonomy and evaluation design only; local harness results are not comparable to AutoGEEval++ scores unless the external suite and protocol are run unchanged.",
         "private_content_risk": "low",
-        "include_reason": "Requested benchmark source family for multi-level GEE evaluation.",
-        "license": "arXiv / author terms",
-        "source_refresh_status": "candidate_unverified",
-        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
+        "include_reason": "Published benchmark reference for unit, combination, theme, boundary, execution, resource, and error-type evaluation.",
+        "license": "Publisher terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "Published article and DOI were verified; this repository adopts only the evaluation taxonomy and explicit non-comparability boundary."
+      }
+    },
+    {
+      "id": "source:awesome-spectral-indices-paper",
+      "type": "Source",
+      "title": "A standardized catalogue of spectral indices to advance the use of remote sensing in Earth system research",
+      "description": "Peer-reviewed project-linked description of a structured, reference-backed spectral-index catalogue and its validation workflow.",
+      "tags": [
+        "journal_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "awesome-spectral-indices-paper",
+        "title": "A standardized catalogue of spectral indices to advance the use of remote sensing in Earth system research",
+        "source_url": "https://doi.org/10.1038/s41597-023-02096-0",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports catalogue schema, provenance, and validation methodology; it does not make every listed index scientifically valid for every sensor, preprocessing chain, or application.",
+        "private_content_risk": "low",
+        "include_reason": "Peer-reviewed project-linked description of a structured, reference-backed spectral-index catalogue and its validation workflow.",
+        "license": "Publisher open-access terms; summaries only",
+        "source_refresh_status": "fresh",
+        "review_notes": "DOI, project linkage, attribute model, and catalogue-validation method were checked against the publisher page."
+      }
+    },
+    {
+      "id": "source:awesome-spectral-indices-repo",
+      "type": "Source",
+      "title": "awesome-spectral-indices/awesome-spectral-indices",
+      "description": "MIT-licensed maintained catalogue with explicit formula, band-role, platform, reference, domain, validation, and contribution metadata.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "awesome-spectral-indices-repo",
+        "title": "awesome-spectral-indices/awesome-spectral-indices",
+        "source_url": "https://github.com/awesome-spectral-indices/awesome-spectral-indices",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports spectral-index record and provenance patterns only; official sensor and Earth Engine catalog documentation remains authoritative for band IDs, scaling, QA, and availability.",
+        "private_content_risk": "low",
+        "include_reason": "MIT-licensed maintained catalogue with explicit formula, band-role, platform, reference, domain, validation, and contribution metadata.",
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "README and LICENSE were checked through GitHub; only generic schema and scientific-validation patterns are retained."
+      }
+    },
+    {
+      "id": "source:coastsat-paper",
+      "type": "Source",
+      "title": "CoastSat: A Google Earth Engine-enabled Python toolkit to extract shorelines from publicly available satellite imagery",
+      "description": "Peer-reviewed project-linked GEE workflow with explicit public imagery, preprocessing, quality control, and GitHub implementation linkage.",
+      "tags": [
+        "journal_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "coastsat-paper",
+        "title": "CoastSat: A Google Earth Engine-enabled Python toolkit to extract shorelines from publicly available satellite imagery",
+        "source_url": "https://doi.org/10.1016/j.envsoft.2019.104528",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports the documented paper-to-repository workflow structure; reported domain performance is external and is not reproduced or generalized by this project.",
+        "private_content_risk": "low",
+        "include_reason": "Peer-reviewed project-linked GEE workflow with explicit public imagery, preprocessing, quality control, and GitHub implementation linkage.",
+        "license": "Publisher open-access terms; summaries only",
+        "source_refresh_status": "fresh",
+        "review_notes": "DOI landing page, paper title, journal, GEE linkage, public repository link, and high-level data workflow were checked."
+      }
+    },
+    {
+      "id": "source:coastsat-repo",
+      "type": "Source",
+      "title": "kvos/CoastSat",
+      "description": "GPL-3.0 maintained paper-linked project that makes acquisition inputs, image metadata, projected output coordinates, cloud review, and domain limits explicit.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "coastsat-repo",
+        "title": "kvos/CoastSat",
+        "source_url": "https://github.com/kvos/CoastSat",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports paper-linked acquisition, metadata, projection, and quality-control workflow patterns only; no code, domain accuracy claim, or site-specific setting is imported.",
+        "private_content_risk": "low",
+        "include_reason": "GPL-3.0 maintained paper-linked project that makes acquisition inputs, image metadata, projected output coordinates, cloud review, and domain limits explicit.",
+        "license": "GPL-3.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README and LICENSE were checked through GitHub; the associated method paper is registered separately."
+      }
+    },
+    {
+      "id": "source:cubo-paper",
+      "type": "Source",
+      "title": "On-Demand Earth System Data Cubes",
+      "description": "Paper linked to cubo and its coordinate, resolution, edge-size, time-range, and source-collection interface.",
+      "tags": [
+        "conference_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "cubo-paper",
+        "title": "On-Demand Earth System Data Cubes",
+        "source_url": "https://doi.org/10.1109/IGARSS53475.2024.10640742",
+        "source_type": "conference_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports the on-demand cube specification concept; no downstream AI fitness or performance claim is imported.",
+        "private_content_risk": "low",
+        "include_reason": "Paper linked to cubo and its coordinate, resolution, edge-size, time-range, and source-collection interface.",
+        "license": "Publisher terms; summaries only",
+        "source_refresh_status": "fresh",
+        "review_notes": "IEEE DOI record and public preprint metadata were checked."
+      }
+    },
+    {
+      "id": "source:cubo-repo",
+      "type": "Source",
+      "title": "ESDS-Leipzig/cubo",
+      "description": "MIT-licensed paper-linked implementation with explicit collection, bands, dates, grid, resolution, edge-size, CRS, and output metadata.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "cubo-repo",
+        "title": "ESDS-Leipzig/cubo",
+        "source_url": "https://github.com/ESDS-Leipzig/cubo",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports explicit cube geometry and materialization metadata only; a shaped array is not automatically quality-filtered, scaled, or analysis-ready.",
+        "private_content_risk": "low",
+        "include_reason": "MIT-licensed paper-linked implementation with explicit collection, bands, dates, grid, resolution, edge-size, CRS, and output metadata.",
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and cube construction code were checked at commit 1bf975e5d928b42db1a6fd742a4770c9ea3f0631."
+      }
+    },
+    {
+      "id": "source:earthengine-catalog-repo",
+      "type": "Source",
+      "title": "google/earthengine-catalog",
+      "description": "Official Apache-2.0 catalog source with explicit license, status, versioning, time, band-homogeneity, and pyramiding requirements.",
+      "tags": [
+        "official_github_repo",
+        "tier_a",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "earthengine-catalog-repo",
+        "title": "google/earthengine-catalog",
+        "source_url": "https://github.com/google/earthengine-catalog",
+        "source_type": "official_github_repo",
+        "trust_tier": "A",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Authoritative for public catalog publication structure at the checked revision; individual live dataset facts still require the rendered catalog entry.",
+        "private_content_risk": "low",
+        "include_reason": "Official Apache-2.0 catalog source with explicit license, status, versioning, time, band-homogeneity, and pyramiding requirements.",
+        "license": "Apache-2.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and dataset-addition guide were checked at commit f5c5eade6cb360654384053d5a1c2419f33fb01c."
+      }
+    },
+    {
+      "id": "source:eemont-paper",
+      "type": "Source",
+      "title": "eemont: A Python package that extends Google Earth Engine",
+      "description": "JOSS software paper linked to the reviewed MIT-licensed repository.",
+      "tags": [
+        "joss_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "eemont-paper",
+        "title": "eemont: A Python package that extends Google Earth Engine",
+        "source_url": "https://doi.org/10.21105/joss.03168",
+        "source_type": "joss_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports software purpose and review provenance only; it is not evidence that every wrapper default is appropriate for every dataset.",
+        "private_content_risk": "low",
+        "include_reason": "JOSS software paper linked to the reviewed MIT-licensed repository.",
+        "license": "CC-BY-4.0 article",
+        "source_refresh_status": "fresh",
+        "review_notes": "JOSS landing page, DOI, review metadata, and software linkage were checked."
+      }
+    },
+    {
+      "id": "source:eemont-repo",
+      "type": "Source",
+      "title": "davemlz/eemont",
+      "description": "MIT-licensed maintained package with explicit scaling, cloud-mask, and spectral-index preconditions.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "eemont-repo",
+        "title": "davemlz/eemont",
+        "source_url": "https://github.com/davemlz/eemont",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports wrapper-precondition and method-parameter patterns only; wrapper convenience does not establish dataset correctness or scientific fitness.",
+        "private_content_risk": "low",
+        "include_reason": "MIT-licensed maintained package with explicit scaling, cloud-mask, and spectral-index preconditions.",
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and ImageCollection method documentation were checked at commit c4ac0d162e8981f4c39c65a9f817a3e52ef306f4."
       }
     },
     {
@@ -4280,14 +5858,14 @@
         "source_type": "official_data_catalog",
         "trust_tier": "A",
         "allowed_use": "summary_only",
-        "last_checked": "2026-07-09",
+        "last_checked": "2026-07-31",
         "reviewer_status": "accepted",
         "claim_boundary": "Authoritative for HLSL30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required high-resolution HLS Landsat source for product intercomparison.",
         "license": "NASA HLS data terms",
         "source_refresh_status": "fresh",
-        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
+        "review_notes": "Live catalog refresh confirmed the 30 m bands, Fmask bits, and current public collection family."
       }
     },
     {
@@ -4307,14 +5885,14 @@
         "source_type": "official_data_catalog",
         "trust_tier": "A",
         "allowed_use": "summary_only",
-        "last_checked": "2026-07-09",
+        "last_checked": "2026-07-31",
         "reviewer_status": "accepted",
         "claim_boundary": "Authoritative for HLSS30 Earth Engine dataset ID, bands, Fmask field, resolution, and catalog limitations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Required high-resolution HLS Sentinel-2 source for product intercomparison.",
         "license": "NASA HLS data terms",
         "source_refresh_status": "fresh",
-        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
+        "review_notes": "Live catalog refresh confirmed the 250 m grid, NDVI/EVI scale factor 0.0001, and DetailedQA/SummaryQA fields."
       }
     },
     {
@@ -4415,7 +5993,7 @@
         "source_type": "official_data_catalog",
         "trust_tier": "A",
         "allowed_use": "summary_only",
-        "last_checked": "2026-07-09",
+        "last_checked": "2026-07-31",
         "reviewer_status": "accepted",
         "claim_boundary": "Authoritative for MOD13Q1 Earth Engine dataset ID, bands, scale factors, QA fields, and catalog limitations as of last check.",
         "private_content_risk": "low",
@@ -4476,7 +6054,7 @@
         "include_reason": "Required official optical dataset source for NDVI and cloud/QA policy examples.",
         "license": "Copernicus Sentinel data terms",
         "source_refresh_status": "fresh",
-        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
+        "review_notes": "Live catalog refresh confirmed the 30 m bands, B8A narrow-NIR band, Fmask bits, and current public collection family."
       }
     },
     {
@@ -4534,6 +6112,60 @@
       }
     },
     {
+      "id": "source:gee-community-datasets-repo",
+      "type": "Source",
+      "title": "samapriya/awesome-gee-community-datasets",
+      "description": "CC-BY-4.0 public catalogue repository with explicit community-asset scope, citation, and public availability framing.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-community-datasets-repo",
+        "title": "samapriya/awesome-gee-community-datasets",
+        "source_url": "https://github.com/samapriya/awesome-gee-community-datasets",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports community-catalog discovery and asset-governance patterns only; each dataset retains its own provider license, availability, schema, and authority boundary.",
+        "private_content_risk": "low",
+        "include_reason": "CC-BY-4.0 public catalogue repository with explicit community-asset scope, citation, and public availability framing.",
+        "license": "CC-BY-4.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README and LICENSE were checked through GitHub; no dataset asset is promoted without separate per-dataset review."
+      }
+    },
+    {
+      "id": "source:gee-community-eetasks",
+      "type": "Source",
+      "title": "gee-community/eetasks",
+      "description": "MIT-licensed public task viewer with explicit account, project, submission, refresh, and monitoring boundaries.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "gee-community-eetasks",
+        "title": "gee-community/eetasks",
+        "source_url": "https://github.com/gee-community/eetasks",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports task-monitoring workflow patterns only; official Earth Engine task APIs and guides remain authoritative, and the extension is not evidence that an export completed.",
+        "private_content_risk": "low",
+        "include_reason": "MIT-licensed public task viewer with explicit account, project, submission, refresh, and monitoring boundaries.",
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "Repository README, license, default branch, and public status were checked through GitHub; no code or credential-handling implementation was copied."
+      }
+    },
+    {
       "id": "source:gee-community-geemap",
       "type": "Source",
       "title": "gee-community/geemap",
@@ -4563,28 +6195,82 @@
     {
       "id": "source:gee-ops-paper",
       "type": "Source",
-      "title": "GEE-OPs operator knowledge base source",
-      "description": "Requested source family for GEE operator KB and code-generation evaluation context.",
+      "title": "GEE-OPs operator knowledge base paper",
+      "description": "Published methodological reference for syntax, relationship-frequency, frequent-pattern, and operator-chain knowledge tables.",
       "tags": [
-        "arxiv_paper",
+        "journal_paper",
         "tier_b",
-        "candidate"
+        "accepted"
       ],
       "metadata": {
         "source_id": "gee-ops-paper",
-        "title": "GEE-OPs operator knowledge base source",
-        "source_url": "https://arxiv.org/abs/2412.05587",
-        "source_type": "arxiv_paper",
+        "title": "GEE-OPs operator knowledge base paper",
+        "source_url": "https://doi.org/10.1080/10095020.2025.2505556",
+        "source_type": "journal_paper",
         "trust_tier": "B",
-        "allowed_use": "metadata_only",
-        "last_checked": "2026-07-09",
-        "reviewer_status": "candidate",
-        "claim_boundary": "Candidate research source for operator knowledge-base and RAG design only; does not override official GEE facts.",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports operator knowledge-base structure and evaluation framing only; official Earth Engine sources remain authoritative for current API and dataset facts.",
         "private_content_risk": "low",
-        "include_reason": "Requested source family for GEE operator KB and code-generation evaluation context.",
-        "license": "arXiv / author terms",
-        "source_refresh_status": "candidate_unverified",
-        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
+        "include_reason": "Published methodological reference for syntax, relationship-frequency, frequent-pattern, and operator-chain knowledge tables.",
+        "license": "Publisher terms",
+        "source_refresh_status": "fresh",
+        "review_notes": "Published article and DOI were verified; only paraphrased design patterns are promoted, and its reported extraction or RAG gains are not treated as local results."
+      }
+    },
+    {
+      "id": "source:geedim-repo",
+      "type": "Source",
+      "title": "leftfield-geospatial/geedim",
+      "description": "Apache-2.0 public export toolkit with explicit CRS, transform, shape, scale, dtype, nodata, mask, split, and output metadata controls.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "geedim-repo",
+        "title": "leftfield-geospatial/geedim",
+        "source_url": "https://github.com/leftfield-geospatial/geedim",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports explicit export-grid, nodata, band-layout, and metadata-readback patterns only; export success is not scientific validation.",
+        "private_content_risk": "low",
+        "include_reason": "Apache-2.0 public export toolkit with explicit CRS, transform, shape, scale, dtype, nodata, mask, split, and output metadata controls.",
+        "license": "Apache-2.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and API export guide were checked at commit 6f0ab8d3e136fe7d3338545fa0fa222b05b6b159."
+      }
+    },
+    {
+      "id": "source:geeflow-repo",
+      "type": "Source",
+      "title": "google-deepmind/geeflow",
+      "description": "Apache-2.0 public framework with explicit labels, sources, bands, grids, temporal windows, split strategy, versions, and launch-command bookkeeping.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "geeflow-repo",
+        "title": "google-deepmind/geeflow",
+        "source_url": "https://github.com/google-deepmind/geeflow",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports dataset-generation configuration and bookkeeping patterns only; generated samples, labels, splits, and models require project-specific validation.",
+        "private_content_risk": "low",
+        "include_reason": "Apache-2.0 public framework with explicit labels, sources, bands, grids, temporal windows, split strategy, versions, and launch-command bookkeeping.",
+        "license": "Apache-2.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and config validation code were checked at commit a0ea107d65c9e1ddfce895ec5df5fd31bb33b916."
       }
     },
     {
@@ -4595,7 +6281,7 @@
       "tags": [
         "joss_paper",
         "tier_b",
-        "candidate"
+        "accepted"
       ],
       "metadata": {
         "source_id": "geemap-joss-paper",
@@ -4604,14 +6290,41 @@
         "source_type": "joss_paper",
         "trust_tier": "B",
         "allowed_use": "summary_only",
-        "last_checked": "2026-07-09",
-        "reviewer_status": "candidate",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
         "claim_boundary": "Supports geemap software context, not authoritative dataset/API facts.",
         "private_content_risk": "low",
         "include_reason": "Research software paper for community Earth Engine Python workflows.",
         "license": "JOSS article terms",
-        "source_refresh_status": "candidate_unverified",
-        "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
+        "source_refresh_status": "fresh",
+        "review_notes": "The JOSS landing page, DOI, authorship, software link, and article license were checked; it remains software context only."
+      }
+    },
+    {
+      "id": "source:geeup-repo",
+      "type": "Source",
+      "title": "samapriya/geeup",
+      "description": "Apache-2.0 public CLI with explicit dry-run, metadata, nodata/mask, pyramiding, task-state, resume, retry, and concurrency controls.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "geeup-repo",
+        "title": "samapriya/geeup",
+        "source_url": "https://github.com/samapriya/geeup",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports resumable ingestion operations only; destructive overwrite/delete, high concurrency, asset semantics, and provider authorization require separate confirmation.",
+        "private_content_risk": "low",
+        "include_reason": "Apache-2.0 public CLI with explicit dry-run, metadata, nodata/mask, pyramiding, task-state, resume, retry, and concurrency controls.",
+        "license": "Apache-2.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README and LICENSE were checked at commit a947909358129b5ab598b50f883152c7939f68a0; no credentials or asset identifiers were copied."
       }
     },
     {
@@ -4847,14 +6560,14 @@
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
-        "last_checked": "2026-07-09",
+        "last_checked": "2026-07-31",
         "reviewer_status": "accepted",
         "claim_boundary": "Authoritative for current projection concepts and projection-sensitive operations as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official support for projection/default projection handling in product intercomparison validators.",
         "license": "Google documentation terms",
         "source_refresh_status": "fresh",
-        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
+        "review_notes": "Live refresh confirmed pull-based projection behavior, per-band projection checks, and the WGS84 one-degree default risk for mixed-projection composites."
       }
     },
     {
@@ -4874,14 +6587,14 @@
         "source_type": "official_docs",
         "trust_tier": "A",
         "allowed_use": "summary_only",
-        "last_checked": "2026-07-09",
+        "last_checked": "2026-07-31",
         "reviewer_status": "accepted",
         "claim_boundary": "Authoritative for Earth Engine reduceResolution/resampling guidance as of last check.",
         "private_content_risk": "low",
         "include_reason": "Official guidance for aggregating fine pixels to coarser pixels before cross-scale comparison.",
         "license": "Google documentation terms",
         "source_refresh_status": "fresh",
-        "review_notes": "v0.4.1 controlled refresh confirmed the public URL family and retained existing trust/allowed-use policy."
+        "review_notes": "Live refresh confirmed reduceResolution guidance for aggregating fine pixels to an explicit coarser output grid before cross-scale comparison."
       }
     },
     {
@@ -4966,6 +6679,33 @@
       }
     },
     {
+      "id": "source:google-xee-repo",
+      "type": "Source",
+      "title": "google/Xee",
+      "description": "Apache-2.0 public repository with explicit grid, lazy retrieval, chunking, endpoint, and performance guidance useful for reproducible readback planning.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "google-xee-repo",
+        "title": "google/Xee",
+        "source_url": "https://github.com/google/Xee",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports lazy Earth Engine-to-Xarray readback and grid-review patterns; it is not an official Google product and does not override Earth Engine API, quota, or dataset documentation.",
+        "private_content_risk": "low",
+        "include_reason": "Apache-2.0 public repository with explicit grid, lazy retrieval, chunking, endpoint, and performance guidance useful for reproducible readback planning.",
+        "license": "Apache-2.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "Repository README, license, default branch, and public status were checked through GitHub; only generic patterns are retained."
+      }
+    },
+    {
       "id": "source:gorelick-2017-earth-engine",
       "type": "Source",
       "title": "Google Earth Engine planetary-scale geospatial analysis for everyone",
@@ -4990,6 +6730,195 @@
         "license": "publisher terms",
         "source_refresh_status": "candidate_unverified",
         "review_notes": "v0.4.1 controlled refresh kept this as candidate metadata; it is not authority for current Earth Engine API or dataset facts; do not promote to current API or dataset authority without separate review."
+      }
+    },
+    {
+      "id": "source:landtrendr-gee-paper",
+      "type": "Source",
+      "title": "Implementation of the LandTrendr Algorithm on Google Earth Engine",
+      "description": "Peer-reviewed technical note linked to the reviewed repository and explicit one-value-per-year preprocessing and comparison protocol.",
+      "tags": [
+        "journal_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "landtrendr-gee-paper",
+        "title": "Implementation of the LandTrendr Algorithm on Google Earth Engine",
+        "source_url": "https://doi.org/10.3390/rs10050691",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports the published input and fidelity-testing structure; reported study-area agreement and runtime are not reproduced or generalized.",
+        "private_content_risk": "low",
+        "include_reason": "Peer-reviewed technical note linked to the reviewed repository and explicit one-value-per-year preprocessing and comparison protocol.",
+        "license": "CC-BY-4.0 article",
+        "source_refresh_status": "fresh",
+        "review_notes": "Publisher page, methods, validation scope, DOI, and repository link were checked."
+      }
+    },
+    {
+      "id": "source:landtrendr-gee-repo",
+      "type": "Source",
+      "title": "eMapR/LT-GEE",
+      "description": "Public paper-linked implementation with an explicit API guide, dual content/code licenses, input construction, and output semantics.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "landtrendr-gee-repo",
+        "title": "eMapR/LT-GEE",
+        "source_url": "https://github.com/eMapR/LT-GEE",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports temporal-segmentation input, sensor-harmonization, index-direction, and missing-data contracts only; no disturbance result or parameter set is transferred.",
+        "private_content_risk": "low",
+        "include_reason": "Public paper-linked implementation with an explicit API guide, dual content/code licenses, input construction, and output semantics.",
+        "license": "Apache-2.0 code; CC-BY-4.0 documentation",
+        "source_refresh_status": "fresh",
+        "review_notes": "README and API guide were checked at commit c17bacdb76d0cf1b942300f6f9ddfe368b41eed0."
+      }
+    },
+    {
+      "id": "source:sds-benchmark-repo",
+      "type": "Source",
+      "title": "SatelliteShorelines/SDS_Benchmark",
+      "description": "GPL-3.0 public benchmark repository with documented reference datasets, common inputs, output schema, time matching, sample gates, and error metrics.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "sds-benchmark-repo",
+        "title": "SatelliteShorelines/SDS_Benchmark",
+        "source_url": "https://github.com/SatelliteShorelines/SDS_Benchmark",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports benchmark input, submission, matching, and metric contracts only; shoreline results and domain performance are not transferred.",
+        "private_content_risk": "low",
+        "include_reason": "GPL-3.0 public benchmark repository with documented reference datasets, common inputs, output schema, time matching, sample gates, and error metrics.",
+        "license": "GPL-3.0",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and comparison utilities were checked at commit c0747c52b310433411fc4ab96822ee67441a8d2e."
+      }
+    },
+    {
+      "id": "source:sentinel1-ard-paper",
+      "type": "Source",
+      "title": "Sentinel-1 SAR Backscatter Analysis Ready Data Preparation in Google Earth Engine",
+      "description": "Peer-reviewed technical note linked to the reviewed repository and explicit about application-dependent border, speckle, terrain, DEM, orbit, polarization, and output choices.",
+      "tags": [
+        "journal_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "sentinel1-ard-paper",
+        "title": "Sentinel-1 SAR Backscatter Analysis Ready Data Preparation in Google Earth Engine",
+        "source_url": "https://doi.org/10.3390/rs13101954",
+        "source_type": "journal_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports the documented optional preprocessing chain and scope; it does not define one universal SAR preprocessing recipe.",
+        "private_content_risk": "low",
+        "include_reason": "Peer-reviewed technical note linked to the reviewed repository and explicit about application-dependent border, speckle, terrain, DEM, orbit, polarization, and output choices.",
+        "license": "CC-BY-4.0 article",
+        "source_refresh_status": "fresh",
+        "review_notes": "Publisher page, methods, data-selection scope, output semantics, DOI, and repository link were checked."
+      }
+    },
+    {
+      "id": "source:sentinel1-ard-repo",
+      "type": "Source",
+      "title": "adugnag/gee_s1_ard",
+      "description": "MIT-licensed paper-linked JavaScript/Python implementation with explicit selection and preprocessing parameters.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "sentinel1-ard-repo",
+        "title": "adugnag/gee_s1_ard",
+        "source_url": "https://github.com/adugnag/gee_s1_ard",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports configurable Sentinel-1 preprocessing structure only; analysis-ready choices remain application-, terrain-, polarization-, orbit-, and scale-dependent.",
+        "private_content_risk": "low",
+        "include_reason": "MIT-licensed paper-linked JavaScript/Python implementation with explicit selection and preprocessing parameters.",
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "README, LICENSE, and Python wrapper were checked at commit 39207cb4998c9c80c27af3d8a62debe7ab41e7c7."
+      }
+    },
+    {
+      "id": "source:spectral-paper",
+      "type": "Source",
+      "title": "spectral: Awesome Spectral Indices deployed via the Google Earth Engine JavaScript API",
+      "description": "Peer-reviewed conference paper explicitly linked to the spectral implementation and ASI catalogue.",
+      "tags": [
+        "conference_paper",
+        "tier_b",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "spectral-paper",
+        "title": "spectral: Awesome Spectral Indices deployed via the Google Earth Engine JavaScript API",
+        "source_url": "https://doi.org/10.5194/isprs-archives-XLVIII-4-W1-2022-301-2022",
+        "source_type": "conference_paper",
+        "trust_tier": "B",
+        "allowed_use": "summary_only",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports the catalogue-to-Code-Editor deployment pattern; it does not validate every index for every product or application.",
+        "private_content_risk": "low",
+        "include_reason": "Peer-reviewed conference paper explicitly linked to the spectral implementation and ASI catalogue.",
+        "license": "CC-BY-4.0 article",
+        "source_refresh_status": "fresh",
+        "review_notes": "Publisher page, DOI, abstract, and repository relationship were checked."
+      }
+    },
+    {
+      "id": "source:spectral-repo",
+      "type": "Source",
+      "title": "awesome-spectral-indices/spectral",
+      "description": "MIT-licensed paper-linked Code Editor module tied to the reviewed Awesome Spectral Indices catalogue.",
+      "tags": [
+        "community_repo",
+        "tier_c",
+        "accepted"
+      ],
+      "metadata": {
+        "source_id": "spectral-repo",
+        "title": "awesome-spectral-indices/spectral",
+        "source_url": "https://github.com/awesome-spectral-indices/spectral",
+        "source_type": "community_repo",
+        "trust_tier": "C",
+        "allowed_use": "distilled_patterns",
+        "last_checked": "2026-07-31",
+        "reviewer_status": "accepted",
+        "claim_boundary": "Supports JavaScript catalogue-deployment structure only; formula provenance and official dataset preprocessing remain separate authorities.",
+        "private_content_risk": "low",
+        "include_reason": "MIT-licensed paper-linked Code Editor module tied to the reviewed Awesome Spectral Indices catalogue.",
+        "license": "MIT",
+        "source_refresh_status": "fresh",
+        "review_notes": "README and LICENSE were checked at commit 4d52c591372bee90f0aa3f4d08c82ce04f19bb00."
       }
     },
     {
@@ -5085,20 +7014,62 @@
       "description": ""
     },
     {
+      "source": "evidence:asset_ingestion_semantics_contract",
+      "target": "source:geeup-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
       "source": "evidence:autogeeval_benchmark",
       "target": "source:autogeeval-paper",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
     },
     {
-      "source": "evidence:autogeeval_plus_benchmark",
+      "source": "evidence:autogeeval_plus_multilevel_benchmark_pattern",
       "target": "source:autogeeval-plus-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:benchmark_dataset_protocol_contract",
+      "target": "source:sds-benchmark-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:catalog_publication_semantics_contract",
+      "target": "source:earthengine-catalog-repo",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
     },
     {
       "source": "evidence:claim_boundary_required_for_validation_report",
       "target": "source:google-earth-engine-docs",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:code_editor_wrapper_equivalence_boundary",
+      "target": "source:gee-community-eetasks",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:community_dataset_asset_boundary",
+      "target": "source:gee-community-datasets-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:data_cube_grid_materialization_contract",
+      "target": "source:cubo-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:data_usage_promotion_contract",
+      "target": "source:google-earth-engine-data-catalog",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
     },
@@ -5223,6 +7194,12 @@
       "description": "Evidence card cites reviewed source metadata."
     },
     {
+      "source": "evidence:eetasks_monitoring_pattern",
+      "target": "source:gee-community-eetasks",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
       "source": "evidence:esa_worldcover",
       "target": "source:gee-catalog-esa-worldcover-v200",
       "type": "cites_source",
@@ -5233,6 +7210,12 @@
       "target": "dataset:esa/worldcover/v200",
       "type": "uses_dataset",
       "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:export_readback_array_contract",
+      "target": "source:geedim-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
     },
     {
       "source": "evidence:external_annual_categorical_landcover",
@@ -5253,7 +7236,7 @@
       "description": "Evidence card cites reviewed source metadata."
     },
     {
-      "source": "evidence:gee_ops_operator_knowledge_base",
+      "source": "evidence:gee_ops_operator_distillation_pattern",
       "target": "source:gee-ops-paper",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
@@ -5261,12 +7244,6 @@
     {
       "source": "evidence:geemap_community_patterns",
       "target": "source:gee-community-geemap",
-      "type": "cites_source",
-      "description": "Evidence card cites reviewed source metadata."
-    },
-    {
-      "source": "evidence:geemap_joss_paper",
-      "target": "source:geemap-joss-paper",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
     },
@@ -5279,6 +7256,12 @@
     {
       "source": "evidence:geofub_operator_function_kb",
       "target": "source:geofub-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:geospatial_ml_dataset_generation_contract",
+      "target": "source:geeflow-repo",
       "type": "cites_source",
       "description": "Evidence card cites reviewed source metadata."
     },
@@ -5385,6 +7368,18 @@
       "description": "Evidence applies to dataset."
     },
     {
+      "source": "evidence:landtrendr_temporal_segmentation_contract",
+      "target": "source:landtrendr-gee-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:landtrendr_temporal_segmentation_contract",
+      "target": "dataset:landsat",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
       "source": "evidence:modis_lst",
       "target": "source:gee-catalog-mod11a2-lst",
       "type": "cites_source",
@@ -5435,6 +7430,24 @@
     {
       "source": "evidence:modis_qa_rule",
       "target": "dataset:modis/061/mod13q1",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:paper_linked_data_workflow_contract",
+      "target": "source:coastsat-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:paper_linked_data_workflow_contract",
+      "target": "dataset:landsat",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:paper_linked_data_workflow_contract",
+      "target": "dataset:sentinel-2",
       "type": "uses_dataset",
       "description": "Evidence applies to dataset."
     },
@@ -5505,6 +7518,18 @@
       "description": "Evidence applies to dataset."
     },
     {
+      "source": "evidence:sentinel1_ard_processing_contract",
+      "target": "source:sentinel1-ard-paper",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:sentinel1_ard_processing_contract",
+      "target": "dataset:copernicus/s1_grd_float",
+      "type": "uses_dataset",
+      "description": "Evidence applies to dataset."
+    },
+    {
       "source": "evidence:sentinel1_flood_mapping_rule",
       "target": "source:gee-catalog-sentinel1-grd",
       "type": "cites_source",
@@ -5565,6 +7590,18 @@
       "description": "Evidence applies to dataset."
     },
     {
+      "source": "evidence:spectral_index_record_contract",
+      "target": "source:awesome-spectral-indices-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
+      "source": "evidence:third_party_preprocessing_wrapper_boundary",
+      "target": "source:eemont-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
+    },
+    {
       "source": "evidence:tiled_export_fallback_recovery",
       "target": "source:google-earth-engine-docs",
       "type": "cites_source",
@@ -5587,6 +7624,12 @@
       "target": "dataset:nasa/viirs/002/vnp13a1",
       "type": "uses_dataset",
       "description": "Evidence applies to dataset."
+    },
+    {
+      "source": "evidence:xee_lazy_readback_pattern",
+      "target": "source:google-xee-repo",
+      "type": "cites_source",
+      "description": "Evidence card cites reviewed source metadata."
     },
     {
       "source": "failure:direct_fine_coarse_pixel_comparison",

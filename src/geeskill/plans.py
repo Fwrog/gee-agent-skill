@@ -39,6 +39,7 @@ V03_SUPPORTED_TASK_TYPES = {
     "zonal_statistics",
     "change_detection",
     "flood_mapping",
+    "product_intercomparison",
     "export_image",
     "export_table",
 }
